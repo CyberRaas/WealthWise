@@ -30,7 +30,7 @@ export default function Home() {
       setCurrentStat((prev) => (prev + 1) % stats.length)
     }, 2000)
     return () => clearInterval(interval)
-  }, [])
+  }, [stats.length])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 relative overflow-hidden">
@@ -113,7 +113,7 @@ export default function Home() {
               <p className="max-w-4xl mx-auto text-xl text-slate-400 leading-relaxed font-medium">
                 Transform your financial future with AI-powered insights, intelligent budgeting, 
                 and personalized strategies that adapt to your lifestyle. Join thousands of users 
-                who've already taken control of their finances.
+                who&apos;ve already taken control of their finances.
               </p>
             </div>
 
@@ -208,7 +208,7 @@ export default function Home() {
                   Smart Expense Tracking
                 </h3>
                 <p className="text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors">
-                  Automatically categorize expenses with intelligent recognition. Get real-time insights and alerts when you're overspending in any category.
+                  Automatically categorize expenses with intelligent recognition. Get real-time insights and alerts when you&apos;re overspending in any category.
                 </p>
                 <div className="mt-6 flex items-center text-indigo-400 font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                   <span>Learn more</span>

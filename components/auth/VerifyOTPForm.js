@@ -154,7 +154,7 @@ export default function VerifyOTPForm({ email, type = 'registration', onVerified
           )}
           
           <div className="text-center text-sm text-gray-600">
-            <p>Didn't receive the code?</p>
+            <p>Didn&apos;t receive the code?</p>
             <button
               type="button"
               onClick={onBack}

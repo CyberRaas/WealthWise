@@ -211,7 +211,7 @@ export default function DashboardPage() {
                     Welcome back, {user?.name?.split(' ')[0] || 'User'}! 👋
                   </h1>
                   <p className="text-gray-600 mt-1">
-                    Here's what's happening with your finances today.
+                    Here&apos;s what&apos;s happening with your finances today.
                   </p>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -362,7 +362,7 @@ export default function DashboardPage() {
                     🎉 Welcome to Smart Financial Planner!
                   </h2>
                   <p className="text-blue-100 text-lg mb-6">
-                    You're all set! Start your journey towards better financial health with our comprehensive tools and insights.
+                    You&apos;re all set! Start your journey towards better financial health with our comprehensive tools and insights.
                   </p>
                   <Button 
                     variant="secondary" 

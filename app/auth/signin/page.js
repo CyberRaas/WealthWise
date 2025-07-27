@@ -277,7 +277,7 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
@@ -296,7 +296,7 @@ const signinSchema = z.object({
   rememberMe: z.boolean().optional()
 })
 
-export default function SignInPage() {
+function SignInForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
@@ -532,7 +532,7 @@ export default function SignInPage() {
         {/* Sign Up Link */}
         <div className="text-center mt-6">
           <p className="text-slate-600 font-medium">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link 
               href="/auth/signup" 
               className="font-bold text-emerald-600 hover:text-emerald-700 transition-colors duration-200 hover:underline"
@@ -551,5 +551,20 @@ export default function SignInPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-indigo-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
+          <p className="text-slate-600 mt-4">Loading...</p>
+        </div>
+      </div>
+    }>
+      <SignInForm />
+    </Suspense>
   )
 }
