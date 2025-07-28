@@ -45,7 +45,7 @@
 //   useEffect(() => {
 //     if (message === 'registration-complete') {
 //       toast.success('🎉 Registration completed!', {
-//         description: 'Welcome to Smart Financial Planner! Please sign in to continue.',
+//         description: 'Welcome to WealthWise ! Please sign in to continue.',
 //         duration: 6000
 //       })
 //     }
@@ -112,7 +112,7 @@
 //               Welcome back
 //             </CardTitle>
 //             <CardDescription className="text-center text-lg text-slate-400 font-medium">
-//               Sign in to your Smart Financial Planner account
+//               Sign in to your WealthWise  account
 //             </CardDescription>
 //           </CardHeader>
           
@@ -322,7 +322,7 @@ function SignInForm() {
   useEffect(() => {
     if (message === 'registration-complete') {
       toast.success('Registration completed successfully!', {
-        description: 'Welcome to Smart Financial Planner. Please sign in to continue.',
+        description: 'Welcome to WealthWise . Please sign in to continue.',
         duration: 5000
       })
     }
@@ -386,7 +386,7 @@ function SignInForm() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 rounded-2xl shadow-xl mb-4 ring-4 ring-white/50">
             <Shield className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent mb-2">Smart Financial Planner</h1>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent mb-2">WealthWise </h1>
           <p className="text-slate-600 text-sm font-medium">Professional wealth management platform</p>
         </div>
 

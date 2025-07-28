@@ -1,8 +1,8 @@
-# Smart Financial Planner - Authentication System
+# WealthWise  - Authentication System
 
 ## 🎉 Authentication System Implementation Complete!
 
-This document outlines the complete authentication system that has been implemented for the Smart Financial Planner application, following the backend architecture document specifications.
+This document outlines the complete authentication system that has been implemented for the WealthWise  application, following the backend architecture document specifications.
 
 ## ✅ Features Implemented
 

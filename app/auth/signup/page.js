@@ -239,7 +239,7 @@
 //                 Create Account
 //               </CardTitle>
 //               <CardDescription className="text-center text-lg text-slate-400 font-medium">
-//                 Join Smart Financial Planner and start your journey
+//                 Join WealthWise  and start your journey
 //               </CardDescription>
 //             </CardHeader>
             
@@ -778,7 +778,7 @@ export default function SignUpPage() {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 rounded-2xl shadow-xl mb-4 ring-4 ring-white/50">
               <Shield className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent mb-2">Smart Financial Planner</h1>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent mb-2">WealthWise </h1>
             <p className="text-slate-600 text-sm font-medium">Join our professional wealth management platform</p>
           </div>
 

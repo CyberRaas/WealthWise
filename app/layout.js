@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Smart Financial Planner",
+  title: "WealthWise ",
   description: "AI-powered personal finance management and budgeting application",
 };
 

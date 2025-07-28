@@ -106,7 +106,7 @@ async function registerHandler(req) {
   // Return success response (don't include sensitive data)
   return NextResponse.json({
     success: true,
-    message: "Registration successful! Welcome to Smart Financial Planner.",
+    message: "Registration successful! Welcome to WealthWise .",
     data: {
       user: {
         id: result.insertedId,

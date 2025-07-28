@@ -61,7 +61,7 @@ print("Reports collection indexes created successfully");
 db.users.createIndex({ "passwordResetExpires": 1 }, { expireAfterSeconds: 0, name: "password_reset_expiry" });
 
 print("All database indexes created successfully!");
-print("Database is optimized for the Smart Financial Planner application.");
+print("Database is optimized for the WealthWise  application.");
 
 // Verify indexes
 print("\n=== Index Verification ===");

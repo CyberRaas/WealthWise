@@ -1,9 +1,9 @@
-# Smart Financial Planner - App Flow Document
+# WealthWise  - App Flow Document
 
 **Version:** 1.0  
 **Date:** July 15, 2025  
 **Prepared by:** Product Team  
-**Project:** Smart Financial Planner - AI-Powered Budget Allocation System
+**Project:** WealthWise  - AI-Powered Budget Allocation System
 
 ## Table of Contents
 
@@ -22,7 +22,7 @@
 
 ## Executive Summary
 
-This document outlines the complete user journey and app flow for the Smart Financial Planner application. The flow is designed to provide a seamless, privacy-first experience that leverages AI to deliver personalized budget recommendations without requiring bank account integration.
+This document outlines the complete user journey and app flow for the WealthWise  application. The flow is designed to provide a seamless, privacy-first experience that leverages AI to deliver personalized budget recommendations without requiring bank account integration.
 
 ### Key Flow Principles
 - **Privacy First**: No banking integration required
@@ -653,7 +653,7 @@ Family Setup → Role Assignment → Expense Allocation → Progress Tracking
 
 ## Conclusion
 
-This app flow document provides a comprehensive guide for implementing the Smart Financial Planner application. The flow prioritizes user experience while maintaining technical excellence and privacy standards. Regular reviews and updates should be conducted based on user feedback and technical requirements evolution.
+This app flow document provides a comprehensive guide for implementing the WealthWise  application. The flow prioritizes user experience while maintaining technical excellence and privacy standards. Regular reviews and updates should be conducted based on user feedback and technical requirements evolution.
 
 **Next Steps:**
 1. Technical architecture review

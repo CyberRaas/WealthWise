@@ -132,7 +132,7 @@ export default function DashboardPage() {
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Smart Financial
+                  WealthWise 
                 </span>
               </div>
             </div>
@@ -164,7 +164,7 @@ export default function DashboardPage() {
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Smart Financial
+                  WealthWise 
                 </span>
               </div>
             </div>
@@ -359,7 +359,7 @@ export default function DashboardPage() {
               <CardContent className="p-8">
                 <div className="text-center">
                   <h2 className="text-2xl font-bold mb-4">
-                    🎉 Welcome to Smart Financial Planner!
+                    🎉 Welcome to WealthWise !
                   </h2>
                   <p className="text-blue-100 text-lg mb-6">
                     You&apos;re all set! Start your journey towards better financial health with our comprehensive tools and insights.

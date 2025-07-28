@@ -1,4 +1,4 @@
-# Smart Financial Planner - Backend Architecture Document
+# WealthWise  - Backend Architecture Document
 
 **Version:** 1.0  
 **Date:** July 26, 2025  
@@ -2442,7 +2442,7 @@ export const config = {
 
   // Application
   app: {
-    name: 'Smart Financial Planner',
+    name: 'WealthWise ',
     version: process.env.APP_VERSION || '1.0.0',
     environment: process.env.NODE_ENV || 'development',
     port: parseInt(process.env.PORT) || 3000,
@@ -2818,7 +2818,7 @@ export default handler
 
 ## Conclusion
 
-This backend architecture document provides a comprehensive foundation for building the Smart Financial Planner application using Next.js 15, MongoDB, and Gemini AI. The structure emphasizes:
+This backend architecture document provides a comprehensive foundation for building the WealthWise  application using Next.js 15, MongoDB, and Gemini AI. The structure emphasizes:
 
 ### Key Features Implemented:
 - **Scalable Architecture**: Modular service layer with clear separation of concerns
