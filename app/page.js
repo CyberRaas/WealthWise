@@ -672,7 +672,7 @@ export default function FinanceFlowLanding() {
                 </h1>
                 <p className="text-xl text-slate-600 leading-relaxed max-w-2xl font-medium">
                   WealthWise  uses AI to help you budget smarter, save more, and achieve your financial goals faster. 
-                  Join thousands who've transformed their money management.
+                  Join thousands who&apos;ve transformed their money management.
                 </p>
               </div>
 
@@ -730,7 +730,7 @@ export default function FinanceFlowLanding() {
                       <div className="flex items-center justify-between mb-8">
                         <div>
                           <h3 className="text-slate-800 font-bold text-lg">Good Morning</h3>
-                          <p className="text-slate-500 text-sm">Here's your overview</p>
+                          <p className="text-slate-500 text-sm">Here&apos;s your overview</p>
                         </div>
                         <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"></div>
                       </div>
@@ -934,7 +934,7 @@ export default function FinanceFlowLanding() {
                     <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
                   ))}
                 </div>
-                <p className="text-slate-700 leading-relaxed mb-6 font-medium">"{testimonial.content}"</p>
+                <p className="text-slate-700 leading-relaxed mb-6 font-medium">&ldquo;{testimonial.content}&rdquo;</p>
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
                     <span className="text-white font-bold">{testimonial.avatar}</span>
