@@ -550,7 +550,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { UserPlus, Eye, EyeOff, Mail, ArrowLeft, Shield } from 'lucide-react'
-import { toast } from 'sonner'
+import toast from 'react-hot-toast'
 import Link from 'next/link'
 
 // Schema for signup form
@@ -628,19 +628,14 @@ export default function SignUpPage() {
         setOtpTimer(300) // 5 minutes
         startTimer()
         
-        toast.success('OTP Sent!', {
-          description: `A 6-digit verification code has been sent to ${data.email}`,
+        toast.success(`OTP Sent! A 6-digit verification code has been sent to ${data.email}`, {
           duration: 4000
         })
       } else {
-        toast.error('Failed to send OTP', {
-          description: result.message || 'Please try again'
-        })
+        toast.error(`Failed to send OTP. ${result.message || 'Please try again'}`)
       }
     } catch (error) {
-      toast.error('Network error', {
-        description: 'Please check your connection and try again'
-      })
+      toast.error('Network error. Please check your connection and try again')
     } finally {
       setIsLoading(false)
     }
@@ -680,27 +675,20 @@ export default function SignUpPage() {
         const registerResult = await registerResponse.json()
 
         if (registerResponse.ok) {
-          toast.success('🎉 Registration Successful!', {
-            description: 'Your account has been created. Please sign in to continue.',
+          toast.success('🎉 Registration Successful! Your account has been created. Please sign in to continue.', {
             duration: 5000
           })
           
           // Redirect to signin page
           router.push(`/auth/signin?email=${encodeURIComponent(userData.email)}&message=registration-complete`)
         } else {
-          toast.error('Registration failed', {
-            description: registerResult.message || 'Please try again'
-          })
+          toast.error(`Registration failed. ${registerResult.message || 'Please try again'}`)
         }
       } else {
-        toast.error('Invalid OTP', {
-          description: verifyResult.message || 'Please check the code and try again'
-        })
+        toast.error(`Invalid OTP. ${verifyResult.message || 'Please check the code and try again'}`)
       }
     } catch (error) {
-      toast.error('Network error', {
-        description: 'Please check your connection and try again'
-      })
+      toast.error('Network error. Please check your connection and try again')
     } finally {
       setIsLoading(false)
     }
@@ -737,18 +725,12 @@ export default function SignUpPage() {
       if (response.ok) {
         setOtpTimer(300)
         startTimer()
-        toast.success('OTP Resent!', {
-          description: 'A new verification code has been sent to your email'
-        })
+        toast.success('OTP Resent! A new verification code has been sent to your email')
       } else {
-        toast.error('Failed to resend OTP', {
-          description: 'Please try again'
-        })
+        toast.error('Failed to resend OTP. Please try again')
       }
     } catch (error) {
-      toast.error('Network error', {
-        description: 'Please try again'
-      })
+      toast.error('Network error. Please try again')
     } finally {
       setIsLoading(false)
     }

@@ -23,7 +23,7 @@ import {
   Wallet,
   CreditCard
 } from 'lucide-react'
-import { toast } from 'sonner'
+import toast from 'react-hot-toast'
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -49,13 +49,9 @@ export default function DashboardPage() {
         callbackUrl: '/auth/signin',
         redirect: true 
       })
-      toast.success('Signed out successfully', {
-        description: 'You have been logged out of your account.'
-      })
+      toast.success('Signed out successfully. You have been logged out of your account.')
     } catch (error) {
-      toast.error('Sign out failed', {
-        description: 'Please try again.'
-      })
+      toast.error('Sign out failed. Please try again.')
     }
   }
 

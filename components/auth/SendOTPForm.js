@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Mail, ArrowRight, RefreshCw } from 'lucide-react'
-import { toast } from 'sonner'
+import toast from 'react-hot-toast'
 
 const sendOtpSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -65,19 +65,13 @@ export default function SendOTPForm({ type = 'registration', onOtpSent }) {
       if (response.ok) {
         setOtpSent(true)
         startCountdown()
-        toast.success('OTP sent successfully!', {
-          description: result.message
-        })
+        toast.success(`OTP sent successfully! ${result.message}`)
         onOtpSent?.(data.email)
       } else {
-        toast.error('Failed to send OTP', {
-          description: result.message
-        })
+        toast.error(`Failed to send OTP. ${result.message}`)
       }
     } catch (error) {
-      toast.error('Network error', {
-        description: 'Please check your connection and try again'
-      })
+      toast.error('Network error. Please check your connection and try again')
     } finally {
       setIsLoading(false)
     }
@@ -99,18 +93,12 @@ export default function SendOTPForm({ type = 'registration', onOtpSent }) {
 
       if (response.ok) {
         startCountdown()
-        toast.success('OTP resent successfully!', {
-          description: result.message
-        })
+        toast.success(`OTP resent successfully! ${result.message}`)
       } else {
-        toast.error('Failed to resend OTP', {
-          description: result.message
-        })
+        toast.error(`Failed to resend OTP. ${result.message}`)
       }
     } catch (error) {
-      toast.error('Network error', {
-        description: 'Please check your connection and try again'
-      })
+      toast.error('Network error. Please check your connection and try again')
     } finally {
       setIsLoading(false)
     }

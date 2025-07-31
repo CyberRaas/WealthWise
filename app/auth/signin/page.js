@@ -287,8 +287,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LogIn, Eye, EyeOff, Shield } from 'lucide-react'
-import { toast } from 'sonner'
+import toast from 'react-hot-toast'
 import Link from 'next/link'
+
 
 const signinSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -321,9 +322,9 @@ function SignInForm() {
   // Show welcome message if redirected from registration
   useEffect(() => {
     if (message === 'registration-complete') {
-      toast.success('Registration completed successfully!', {
-        description: 'Welcome to WealthWise . Please sign in to continue.',
-        duration: 5000
+      toast.success('Registration completed successfully! Welcome to WealthWise. Please sign in to continue.', {
+        duration: 5000,
+        position: 'top-center',
       })
     }
   }, [message])
@@ -340,19 +341,13 @@ function SignInForm() {
       })
 
       if (result?.error) {
-        toast.error('Authentication failed', {
-          description: 'Invalid credentials. Please verify your email and password.'
-        })
+        toast.error('Invalid credentials. Please verify your email and password.')
       } else {
-        toast.success('Welcome back!', {
-          description: 'Successfully signed in to your account.'
-        })
+        toast.success('Welcome back! Successfully signed in to your account.')
         router.push(callbackUrl)
       }
     } catch (error) {
-      toast.error('Connection error', {
-        description: 'Unable to connect. Please check your network and try again.'
-      })
+      toast.error('Unable to connect. Please check your network and try again.')
     } finally {
       setIsLoading(false)
     }
@@ -364,9 +359,7 @@ function SignInForm() {
     try {
       await signIn('google', { callbackUrl })
     } catch (error) {
-      toast.error('Google authentication failed', {
-        description: 'Please try again or use email sign-in.'
-      })
+      toast.error('Google authentication failed. Please try again or use email sign-in.')
       setIsLoading(false)
     }
   }

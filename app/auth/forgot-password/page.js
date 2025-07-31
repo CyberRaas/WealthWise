@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import SendOTPForm from '@/components/auth/SendOTPForm'
 import VerifyOTPForm from '@/components/auth/VerifyOTPForm'
 import { KeyRound, Eye, EyeOff, ArrowLeft } from 'lucide-react'
-import { toast } from 'sonner'
+import toast from 'react-hot-toast'
 import Link from 'next/link'
 
 const resetPasswordSchema = z.object({
@@ -87,9 +87,7 @@ export default function ForgotPasswordPage() {
     
     if (!verifiedOtp) {
       console.error('❌ No verified OTP found!')
-      toast.error('OTP verification required', {
-        description: 'Please verify your OTP first'
-      })
+      toast.error('OTP verification required. Please verify your OTP first')
       setStep('otp')
       return
     }
@@ -117,28 +115,21 @@ export default function ForgotPasswordPage() {
       console.log('📥 Response:', result)
 
       if (response.ok) {
-        toast.success('🎉 Password reset successfully!', {
-          description: 'You can now sign in with your new password',
+        toast.success('🎉 Password reset successfully! You can now sign in with your new password', {
           duration: 5000
         })
         router.push('/auth/signin?message=password-reset-complete&email=' + encodeURIComponent(email))
       } else {
         console.error('❌ Reset failed:', result)
-        toast.error('Password reset failed', {
-          description: result.message || 'Something went wrong'
-        })
+        toast.error(`Password reset failed. ${result.message || 'Something went wrong'}`)
         if (result.code === 'OTP_VERIFICATION_REQUIRED') {
-          toast.error('OTP Expired', {
-            description: 'Please verify your OTP again'
-          })
+          toast.error('OTP Expired. Please verify your OTP again')
           setStep('otp')
         }
       }
     } catch (error) {
       console.error('💥 Network error:', error)
-      toast.error('Network error', {
-        description: 'Please check your connection and try again'
-      })
+      toast.error('Network error. Please check your connection and try again')
     } finally {
       setIsLoading(false)
     }

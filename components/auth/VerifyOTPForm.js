@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Shield, ArrowLeft } from 'lucide-react'
-import { toast } from 'sonner'
+import toast from 'react-hot-toast'
 
 export default function VerifyOTPForm({ email, type = 'registration', onVerified, onBack }) {
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
@@ -86,9 +86,7 @@ export default function VerifyOTPForm({ email, type = 'registration', onVerified
       const result = await response.json()
 
       if (response.ok) {
-        toast.success('OTP verified successfully!', {
-          description: result.message
-        })
+        toast.success(`OTP verified successfully! ${result.message}`)
         // Pass both the API response data and the OTP value that was verified
         onVerified?.({
           ...result.data,
