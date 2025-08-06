@@ -17,25 +17,34 @@ export default function OnboardingPage() {
     const checkOnboardingStatus = async () => {
       try {
         console.log('Checking onboarding status...')
-        const response = await fetch('/api/onboarding')
-        const data = await response.json()
-        
-        console.log('Onboarding API response:', { status: response.status, data })
-        
-        if (response.ok && data.profile) {
-          // Check if onboarding is complete
-          const isComplete = data.profile.onboardingCompleted && data.profile.onboardingProgress >= 100
-          
-          if (isComplete) {
-            console.log('Onboarding is complete, redirecting to dashboard')
-            router.replace('/dashboard')
-            return
+        const response = await fetch('/api/onboarding', {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
           }
+        })
+        
+        if (response.ok) {
+          const data = await response.json()
+          console.log('Onboarding API response:', { status: response.status, data })
+          
+          if (data.profile) {
+            // Check if onboarding is complete
+            const isComplete = data.profile.onboardingCompleted && data.profile.onboardingProgress >= 100
+            
+            if (isComplete) {
+              console.log('Onboarding is complete, redirecting to dashboard')
+              router.replace('/dashboard')
+              return
+            }
+          }
+        } else {
+          console.log('Onboarding API returned error status:', response.status)
         }
       } catch (error) {
         console.error('Failed to check onboarding status:', error)
       }
-      setLoading(false)
+      setCheckingOnboarding(false)
     }
 
     if (status === 'unauthenticated') {
@@ -48,36 +57,6 @@ export default function OnboardingPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, session, router])
-
-  const checkOnboardingStatus = async () => {
-    try {
-      console.log('Checking onboarding status...')
-      const response = await fetch('/api/onboarding')
-      const data = await response.json()
-      
-      console.log('Onboarding API response:', { status: response.status, data })
-      
-      if (response.ok && data.profile) {
-        // Check if onboarding is complete
-        const isComplete = data.profile.onboardingCompleted && data.profile.onboardingProgress >= 100
-        
-        if (isComplete) {
-          console.log('Onboarding is complete, redirecting to dashboard')
-          toast.success('Welcome back! Redirecting to your dashboard...')
-          router.replace('/dashboard')
-          setOnboardingComplete(true)
-          return
-        }
-        
-        console.log('Onboarding is incomplete, showing onboarding flow')
-      }
-    } catch (error) {
-      console.error('Failed to check onboarding status:', error)
-      // Continue with onboarding flow if there's an error
-    } finally {
-      setCheckingOnboarding(false)
-    }
-  }
 
   if (status === 'loading' || checkingOnboarding) {
     return (

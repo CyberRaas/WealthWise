@@ -46,12 +46,16 @@ export default function BudgetDisplay({ refreshTrigger }) {
 
   const fetchBudget = async () => {
     try {
+      console.log('Fetching budget data...')
       const response = await fetch('/api/budget/generate')
       const data = await response.json()
+      
+      console.log('Budget API response:', { success: data.success, hasBudget: !!data.budget, hasCategories: !!data.budget?.categories })
       
       if (data.success) {
         setBudget(data.budget)
       } else {
+        console.log('No budget exists, showing generate button')
         // No budget exists, show generate button
         setBudget(null)
       }
@@ -139,6 +143,19 @@ export default function BudgetDisplay({ refreshTrigger }) {
               </>
             )}
           </Button>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Early return if budget is not properly loaded
+  if (!budget || !budget.categories) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="text-center">
+            <p className="text-gray-500">Budget data not available</p>
+          </div>
         </CardContent>
       </Card>
     )

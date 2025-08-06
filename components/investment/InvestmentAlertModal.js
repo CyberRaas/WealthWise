@@ -95,7 +95,7 @@ export default function InvestmentAlertModal({ alert, isOpen, onClose, onSimulat
             </div>
             
             <div className="space-y-2">
-              {Object.entries(alert.projectedReturns).map(([year, value]) => (
+              {alert.projectedReturns && Object.entries(alert.projectedReturns).map(([year, value]) => (
                 <div key={year} className="flex justify-between items-center p-2 bg-blue-100 rounded">
                   <span className="font-medium text-blue-800">{year}:</span>
                   <span className="font-bold text-blue-900">{value}</span>

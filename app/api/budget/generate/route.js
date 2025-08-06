@@ -77,11 +77,13 @@ export async function POST() {
     }
 
     // Convert categories and explanations to regular objects 
-    Object.entries(generatedBudget.categories).forEach(([key, value]) => {
-      budgetForStorage.categories[key] = value
-    })
+    if (generatedBudget.categories && typeof generatedBudget.categories === 'object') {
+      Object.entries(generatedBudget.categories).forEach(([key, value]) => {
+        budgetForStorage.categories[key] = value
+      })
+    }
 
-    if (generatedBudget.explanations?.categories) {
+    if (generatedBudget.explanations?.categories && typeof generatedBudget.explanations.categories === 'object') {
       Object.entries(generatedBudget.explanations.categories).forEach(([key, value]) => {
         budgetForStorage.explanations.categories[key] = String(value)
       })

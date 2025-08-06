@@ -19,7 +19,11 @@ export default function OnboardingGuard({ children }) {
           // If onboarding is not complete, redirect immediately
           if (!data.profile.onboardingCompleted || !data.profile.monthlyIncome || !data.profile.city || !data.profile.familySize || !data.profile.age) {
             console.log('OnboardingGuard: Redirecting to onboarding')
-            toast.info('Please complete your profile setup first')
+            try {
+              toast.info('Please complete your profile setup first')
+            } catch (toastError) {
+              console.warn('Toast error:', toastError)
+            }
             router.replace('/onboarding')
             return
           }
@@ -39,31 +43,6 @@ export default function OnboardingGuard({ children }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, session])
-
-  const checkAndRedirect = async () => {
-    try {
-      const response = await fetch('/api/onboarding')
-      const data = await response.json()
-
-      if (response.ok && data.profile) {
-        // If onboarding is not complete, redirect immediately
-        if (!data.profile.onboardingCompleted || !data.profile.monthlyIncome || !data.profile.city || !data.profile.familySize || !data.profile.age) {
-          console.log('OnboardingGuard: Redirecting to onboarding')
-          toast.info('Please complete your profile setup first')
-          router.replace('/onboarding')
-          return
-        }
-      } else {
-        // If API fails, redirect to onboarding
-        console.log('OnboardingGuard: API error, redirecting to onboarding')
-        router.replace('/onboarding')
-        return
-      }
-    } catch (error) {
-      console.error('OnboardingGuard: Error checking status', error)
-      router.replace('/onboarding')
-    }
-  }
 
   // Only render children if authenticated
   if (status === 'authenticated') {
