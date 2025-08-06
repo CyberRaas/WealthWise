@@ -46,7 +46,7 @@
 //       <div className="absolute bottom-40 left-32 w-3 h-3 bg-indigo-400 rounded-full animate-float opacity-60"></div>
 
 //       {/* Navigation */}
-//       <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-slate-900/95 backdrop-blur-xl shadow-2xl border-b border-slate-700/50' : 'bg-transparent'}`}>
+//       <nav className={`fixed w-full z-50 transition-all duration-300 ₹{isScrolled ? 'bg-slate-900/95 backdrop-blur-xl shadow-2xl border-b border-slate-700/50' : 'bg-transparent'}`}>
 //         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 //           <div className="flex justify-between items-center h-20">
 //             <div className="flex items-center space-x-3">
@@ -480,7 +480,7 @@ export default function FinanceFlowLanding() {
 
   const stats = [
     { value: '250K+', label: 'Active Users', icon: Users },
-    { value: '$50M+', label: 'Money Managed', icon: DollarSign },
+    { value: '₹50M+', label: 'Money Managed', icon: DollarSign },
     { value: '98.5%', label: 'Success Rate', icon: TrendingUp },
     { value: '4.9★', label: 'App Rating', icon: Star }
   ];
@@ -574,7 +574,7 @@ export default function FinanceFlowLanding() {
       </div>
 
       {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-500 ${
+      <nav className={`fixed w-full z-50 transition-all duration-500 ₹{
         isScrolled 
           ? 'bg-white/95 backdrop-blur-xl shadow-2xl border-b border-emerald-100/50' 
           : 'bg-transparent'
@@ -650,7 +650,7 @@ export default function FinanceFlowLanding() {
             {/* Left Content */}
             <div className="space-y-8">
               {/* Trust Badge */}
-              <div className="inline-flex items-center space-x-3 bg-white/80 backdrop-blur-xl rounded-full px-6 py-3 border border-emerald-200/50 shadow-lg">
+              {/* <div className="inline-flex items-center space-x-3 bg-white/80 backdrop-blur-xl rounded-full px-6 py-3 border border-emerald-200/50 shadow-lg">
                 <div className="flex items-center space-x-1">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 text-yellow-500 fill-current" />
@@ -658,7 +658,7 @@ export default function FinanceFlowLanding() {
                 </div>
                 <span className="text-slate-700 font-medium">Trusted by 250K+ users</span>
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-              </div>
+              </div> */}
 
               {/* Main Headline */}
               <div className="space-y-6">
@@ -740,7 +740,7 @@ export default function FinanceFlowLanding() {
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
                         <div className="relative z-10">
                           <p className="text-emerald-100 text-sm mb-2">Total Balance</p>
-                          <p className="text-white text-3xl font-bold mb-4">$24,580.50</p>
+                          <p className="text-white text-3xl font-bold mb-4">₹24,580.50</p>
                           <div className="flex items-center space-x-2">
                             <TrendingUp className="w-4 h-4 text-white/90" />
                             <span className="text-white/90 text-sm font-medium">+12.5% this month</span>
@@ -780,7 +780,7 @@ export default function FinanceFlowLanding() {
                                 <p className="text-slate-500 text-xs">Coffee & Food</p>
                               </div>
                             </div>
-                            <span className="text-red-600 font-semibold">-$8.50</span>
+                            <span className="text-red-600 font-semibold">-₹8.50</span>
                           </div>
                           <div className="flex items-center justify-between bg-slate-50 rounded-xl p-3 border border-slate-100">
                             <div className="flex items-center space-x-3">
@@ -792,7 +792,7 @@ export default function FinanceFlowLanding() {
                                 <p className="text-slate-500 text-xs">Investment Income</p>
                               </div>
                             </div>
-                            <span className="text-emerald-600 font-semibold">+$125.00</span>
+                            <span className="text-emerald-600 font-semibold">+₹125.00</span>
                           </div>
                         </div>
                       </div>
@@ -820,20 +820,20 @@ export default function FinanceFlowLanding() {
                 const Icon = stat.icon;
                 const isActive = index === currentStat;
                 return (
-                  <div key={index} className={`text-center group transition-all duration-500 ${isActive ? 'scale-110' : ''}`}>
-                    <div className={`inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4 transition-all duration-500 ${
+                  <div key={index} className={`text-center group transition-all duration-500 ₹{isActive ? 'scale-110' : ''}`}>
+                    <div className={`inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4 transition-all duration-500 ₹{
                       isActive ? 'bg-gradient-to-r from-emerald-500 to-teal-500 shadow-lg' : 'bg-slate-100'
                     }`}>
-                      <Icon className={`w-6 h-6 transition-colors duration-500 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                      <Icon className={`w-6 h-6 transition-colors duration-500 ₹{isActive ? 'text-white' : 'text-slate-500'}`} />
                     </div>
-                    <div className={`text-3xl font-black mb-2 transition-all duration-500 ${
+                    <div className={`text-3xl font-black mb-2 transition-all duration-500 ₹{
                       isActive 
                         ? 'bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent' 
                         : 'text-slate-700'
                     }`}>
                       {stat.value}
                     </div>
-                    <div className={`font-medium transition-colors duration-500 ${
+                    <div className={`font-medium transition-colors duration-500 ₹{
                       isActive ? 'text-slate-600' : 'text-slate-500'
                     }`}>
                       {stat.label}
@@ -869,11 +869,11 @@ export default function FinanceFlowLanding() {
               return (
                 <div
                   key={index}
-                  className={`group relative bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-emerald-100/50 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl ${feature.hoverColor} shadow-lg`}
+                  className={`group relative bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-emerald-100/50 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl ₹{feature.hoverColor} shadow-lg`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-transparent to-teal-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="relative z-10">
-                    <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-2xl flex items-center justify-center mb-6 shadow-xl group-hover:shadow-2xl transition-all duration-300 group-hover:scale-110`}>
+                    <div className={`w-16 h-16 bg-gradient-to-r ₹{feature.color} rounded-2xl flex items-center justify-center mb-6 shadow-xl group-hover:shadow-2xl transition-all duration-300 group-hover:scale-110`}>
                       <Icon className="w-8 h-8 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-slate-800 mb-4 group-hover:text-emerald-700 transition-colors">
@@ -909,7 +909,7 @@ export default function FinanceFlowLanding() {
               {
                 name: "Sarah Chen",
                 role: "Startup Founder",
-                content: "WealthWise  helped me save $15K in my first year. The AI insights are incredibly accurate and actionable.",
+                content: "WealthWise  helped me save ₹15K in my first year. The AI insights are incredibly accurate and actionable.",
                 rating: 5,
                 avatar: "SC"
               },

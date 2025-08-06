@@ -46,9 +46,19 @@ export default async function middleware(request) {
     return NextResponse.redirect(signInUrl)
   }
 
-  // Redirect authenticated users away from auth pages
+  // Redirect authenticated users away from auth pages to onboarding
   if (sessionToken && pathname.startsWith("/auth/") && !pathname.includes("/signout") && !pathname.includes("/verify")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url))
+    return NextResponse.redirect(new URL("/onboarding", request.url))
+  }
+
+  // For dashboard routes, redirect to onboarding first (let client-side handle completion check)
+  if (sessionToken && (pathname === "/dashboard" || pathname.startsWith("/dashboard/"))) {
+    // Simple redirect to onboarding - let client-side OnboardingGuard handle the completion check
+    // This prevents users from directly accessing dashboard and ensures they go through onboarding flow
+    const response = NextResponse.redirect(new URL("/onboarding", request.url))
+    // Add a header to indicate this was a middleware redirect
+    response.headers.set('x-middleware-redirect', 'onboarding')
+    return response
   }
 
   return NextResponse.next()
