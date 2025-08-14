@@ -127,21 +127,28 @@ export default function OnboardingFlow() {
   const generateBudget = async () => {
     setIsGeneratingBudget(true)
     try {
+      console.log('Generating budget for onboarding...')
       const response = await fetch('/api/budget/generate', {
         method: 'POST'
       })
 
       const result = await response.json()
+      console.log('Budget generation response:', { success: response.ok, hasBudget: !!result.budget, hasCategories: !!result.budget?.categories })
 
       if (!response.ok) {
         throw new Error(result.error || 'Failed to generate budget')
+      }
+
+      if (!result.budget || !result.budget.categories) {
+        throw new Error('Invalid budget structure received')
       }
 
       setGeneratedBudget(result.budget)
       toast.success('Budget generated successfully! 🎉')
       return true
     } catch (error) {
-      toast.error(error.message)
+      console.error('Budget generation error:', error)
+      toast.error(`Budget generation failed: ${error.message}`)
       return false
     } finally {
       setIsGeneratingBudget(false)

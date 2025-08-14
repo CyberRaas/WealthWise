@@ -28,9 +28,13 @@ import {
   RefreshCw,
   AlertCircle,
   CheckCircle,
-  BarChart3
+  BarChart3,
+  Settings,
+  Edit3
 } from 'lucide-react'
 import ExpenseTrackingDashboard from '@/components/dashboard/ExpenseTrackingDashboard'
+import BudgetCustomizer from '@/components/budget/BudgetCustomizer'
+import BudgetCustomizationGuide from '@/components/budget/BudgetCustomizationGuide'
 import toast from 'react-hot-toast'
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658', '#ff7300']
@@ -39,6 +43,8 @@ export default function BudgetDisplay({ refreshTrigger }) {
   const [budget, setBudget] = useState(null)
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
+  const [showCustomizer, setShowCustomizer] = useState(false)
+  const [showGuide, setShowGuide] = useState(false)
 
   useEffect(() => {
     fetchBudget()
@@ -98,6 +104,48 @@ export default function BudgetDisplay({ refreshTrigger }) {
     if (score >= 80) return { text: 'Excellent', variant: 'default', color: 'bg-green-100 text-green-800' }
     if (score >= 60) return { text: 'Good', variant: 'secondary', color: 'bg-yellow-100 text-yellow-800' }
     return { text: 'Needs Improvement', variant: 'destructive', color: 'bg-red-100 text-red-800' }
+  }
+
+  const handleCustomizeBudget = () => {
+    setShowCustomizer(true)
+  }
+
+  const handleSaveCustomBudget = async (customizedBudget) => {
+    try {
+      const response = await fetch('/api/budget/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ budget: customizedBudget }),
+      })
+
+      const data = await response.json()
+      
+      if (data.success) {
+        setBudget(customizedBudget)
+        setShowCustomizer(false)
+        toast.success('🎉 Custom budget saved successfully!')
+      } else {
+        throw new Error(data.error || 'Failed to save budget')
+      }
+    } catch (error) {
+      console.error('Error saving custom budget:', error)
+      toast.error('Failed to save custom budget')
+    }
+  }
+
+  const handleCancelCustomization = () => {
+    setShowCustomizer(false)
+  }
+
+  const handleShowGuide = () => {
+    setShowGuide(true)
+  }
+
+  const handleStartCustomization = () => {
+    setShowGuide(false)
+    setShowCustomizer(true)
   }
 
   if (loading) {
@@ -176,28 +224,72 @@ export default function BudgetDisplay({ refreshTrigger }) {
 
   const healthBadge = getHealthScoreBadge(budget.healthScore)
 
+  // Show Budget Customization Guide if requested
+  if (showGuide) {
+    return (
+      <BudgetCustomizationGuide onStartCustomization={handleStartCustomization} />
+    )
+  }
+
+  // Show Budget Customizer if user wants to customize
+  if (showCustomizer) {
+    return (
+      <BudgetCustomizer
+        budget={budget}
+        onSave={handleSaveCustomBudget}
+        onCancel={handleCancelCustomization}
+      />
+    )
+  }
+
   return (
     <div className="space-y-8">
       {/* Budget Overview Header */}
       <Card className="group bg-gradient-to-br from-emerald-600 via-teal-600 to-blue-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-xl rounded-2xl ring-2 ring-white/20">
         <CardContent className="p-8">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex-1">
               <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-xl rounded-full px-4 py-2 mb-4">
                 <Star className="w-4 h-4 text-white" />
-                <span className="text-white font-medium text-sm">Smart Budget AI</span>
+                <span className="text-white font-medium text-sm">
+                  {budget.isCustomized ? 'Custom Budget' : 'Smart Budget AI'}
+                </span>
+                {budget.isCustomized && (
+                  <Badge className="bg-white/30 text-white text-xs px-2 py-0.5 ml-2">
+                    Customized
+                  </Badge>
+                )}
               </div>
               <h2 className="text-3xl lg:text-4xl font-bold mb-3">Your Smart Budget</h2>
               <p className="text-emerald-100 text-lg font-medium">
                 Monthly Budget: ₹{budget.totalBudget.toLocaleString('en-IN')}
               </p>
             </div>
-            <div className="text-right">
-              <div className="bg-white/20 backdrop-blur-xl rounded-2xl p-4">
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <div className="bg-white/20 backdrop-blur-xl rounded-2xl p-4 text-center">
                 <div className="text-4xl font-bold mb-2 text-white">{budget.healthScore}%</div>
                 <Badge className={`${healthBadge.color} font-bold text-sm px-3 py-1`}>
                   {healthBadge.text}
                 </Badge>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button
+                  onClick={handleCustomizeBudget}
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-xl px-4 py-2 rounded-xl transition-all duration-300"
+                  variant="outline"
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Customize Budget
+                </Button>
+                <Button
+                  onClick={handleShowGuide}
+                  className="bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-xl px-4 py-1 rounded-lg transition-all duration-300 text-sm"
+                  variant="outline"
+                  size="sm"
+                >
+                  <Lightbulb className="w-3 h-3 mr-1" />
+                  Learn More
+                </Button>
               </div>
             </div>
           </div>
@@ -291,11 +383,35 @@ export default function BudgetDisplay({ refreshTrigger }) {
       {/* Budget Categories */}
       <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <DollarSign className="w-5 h-5 mr-2 text-green-600" />
-            Budget Categories
-          </CardTitle>
-          <CardDescription>Detailed breakdown of your monthly budget allocation</CardDescription>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <CardTitle className="flex items-center">
+                <DollarSign className="w-5 h-5 mr-2 text-green-600" />
+                Budget Categories
+                {budget.isCustomized && (
+                  <Badge className="bg-blue-100 text-blue-800 ml-2">
+                    <Edit3 className="w-3 h-3 mr-1" />
+                    Customized
+                  </Badge>
+                )}
+              </CardTitle>
+              <CardDescription>
+                {budget.isCustomized 
+                  ? 'Your personalized budget allocation based on your preferences'
+                  : 'AI-recommended breakdown of your monthly budget allocation'
+                }
+              </CardDescription>
+            </div>
+            <Button
+              onClick={handleCustomizeBudget}
+              variant="outline"
+              size="sm"
+              className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              {budget.isCustomized ? 'Modify Budget' : 'Customize Budget'}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -319,6 +435,25 @@ export default function BudgetDisplay({ refreshTrigger }) {
               </div>
             ))}
           </div>
+          
+          {budget.isCustomized && (
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-medium text-blue-900 mb-1">Budget Customized Successfully!</h4>
+                  <p className="text-sm text-blue-700">
+                    Your budget has been tailored to your preferences. 
+                    {budget.customizedAt && (
+                      <span className="block mt-1 text-xs">
+                        Last modified: {new Date(budget.customizedAt).toLocaleDateString('en-IN')} at {new Date(budget.customizedAt).toLocaleTimeString('en-IN')}
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
