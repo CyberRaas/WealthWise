@@ -122,6 +122,50 @@ function ExpensesContent() {
     return expenseMonth === currentMonth
   }).reduce((sum, e) => sum + e.amount, 0)
 
+  const handleExport = async () => {
+    if (expenses.length === 0) {
+      toast.error('No expenses to export')
+      return
+    }
+    try {
+      const xlsx = await import('xlsx')
+      // Prepare data rows
+      const rows = expenses.map(e => ({
+        ID: e.id,
+        Date: e.date,
+        Timestamp: e.timestamp ? new Date(e.timestamp).toLocaleString('en-IN') : '',
+        Category: e.category,
+        Amount: e.amount,
+        Description: e.description || '',
+        Merchant: e.merchant || '',
+        Method: e.entryMethod || '',
+        OriginalVoiceText: e.originalText || '',
+        Confidence: e.confidence != null ? e.confidence : ''
+      }))
+      const ws = xlsx.utils.json_to_sheet(rows)
+      // Auto width
+      const colWidths = Object.keys(rows[0]).map(key => ({ wch: Math.min(40, Math.max(key.length, ...rows.map(r => String(r[key]).length)) + 2) }))
+      ws['!cols'] = colWidths
+      const wb = xlsx.utils.book_new()
+      xlsx.utils.book_append_sheet(wb, ws, 'Expenses')
+      const wbout = xlsx.write(wb, { bookType: 'xlsx', type: 'array' })
+      const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      const dateStr = new Date().toISOString().split('T')[0]
+      a.href = url
+      a.download = `expenses_${dateStr}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      toast.success('Exported expenses to Excel')
+    } catch (err) {
+      console.error('Export failed', err)
+      toast.error('Export failed')
+    }
+  }
+
   return (
     <DashboardLayout title="Expense Management">
       <div className="space-y-4 sm:space-y-6">
@@ -318,7 +362,7 @@ function ExpensesContent() {
                 </select>
               </div>
 
-              <Button variant="outline" size="sm" className="w-full lg:w-auto">
+              <Button onClick={handleExport} variant="outline" size="sm" className="w-full lg:w-auto">
                 <Download className="h-4 w-4 mr-2" />
                 Export
               </Button>
@@ -349,7 +393,7 @@ function ExpensesContent() {
               <div className="space-y-3">
                 {filteredExpenses.length > 0 ? (
                   filteredExpenses.map((expense) => (
-                    <div key={expense.id} className={`p-4 rounded-lg transition-colors border ${
+                    <div key={expense.id} className={`p-4 rounded-lg transition-colors border group ${
                       expense.entryMethod === 'voice' 
                         ? 'bg-blue-50 border-blue-200 hover:bg-blue-100' 
                         : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
@@ -361,8 +405,29 @@ function ExpensesContent() {
                           }`}></div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <p className="font-medium text-slate-800">
+                              <p className="font-medium text-slate-800 flex items-center gap-2">
                                 {expense.description || `${expense.category} expense`}
+                                <button
+                                  onClick={async () => {
+                                    try {
+                                      const res = await fetch(`/api/expenses?id=${expense.id}`, { method: 'DELETE' })
+                                      const data = await res.json()
+                                      if (data.success) {
+                                        setExpenses(prev => prev.filter(e => e.id !== expense.id))
+                                        toast.success('Expense deleted')
+                                      } else {
+                                        toast.error(data.error || 'Delete failed')
+                                      }
+                                    } catch (err) {
+                                      console.error('Delete failed', err)
+                                      toast.error('Delete failed')
+                                    }
+                                  }}
+                                  className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 text-xs transition-opacity"
+                                  title="Delete expense"
+                                >
+                                  ✕
+                                </button>
                               </p>
                               {expense.entryMethod === 'voice' && (
                                 <Badge variant="default" className="text-xs bg-blue-500">

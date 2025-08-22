@@ -11,6 +11,7 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
   const [error, setError] = useState('')
   const [confidence, setConfidence] = useState(0)
   const [showConfirmation, setShowConfirmation] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   
   const recognitionRef = useRef(null)
   const timeoutRef = useRef(null)
@@ -140,13 +141,47 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
     }
   }
 
-  // Confirm and add expense
-  const confirmExpense = () => {
-    if (processedExpense && onExpenseAdded) {
-      onExpenseAdded(processedExpense)
+  // Confirm and persist expense to backend
+  const confirmExpense = async () => {
+    if (!processedExpense || isSaving) return
+    setIsSaving(true)
+    setError('')
+    try {
+      const payload = {
+        amount: Number(processedExpense.amount),
+        // Use raw category id (e.g., 'food'). API will normalize.
+        category: processedExpense.category || processedExpense.categoryInfo?.englishName || 'other',
+        description: processedExpense.description || '',
+        merchant: processedExpense.merchant || null,
+        date: processedExpense.date || new Date().toISOString().split('T')[0],
+        entryMethod: 'voice',
+        originalText: processedExpense.originalText || transcript || null,
+        confidence: processedExpense.confidence ?? confidence ?? null
+      }
+
+      const res = await fetch('/api/expenses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+
+      const data = await res.json()
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to save expense')
+      }
+
+      // Notify parent with saved expense (canonical category, id, timestamp from server)
+      if (onExpenseAdded) onExpenseAdded(data.expense)
+
+      // Reset state
       setShowConfirmation(false)
       setTranscript('')
       setProcessedExpense(null)
+    } catch (e) {
+      console.error('Voice expense save error:', e)
+      setError(e.message || 'Failed to save expense')
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -290,10 +325,17 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
             <div className="flex space-x-3">
               <button
                 onClick={confirmExpense}
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg font-medium flex items-center justify-center"
+                disabled={isSaving}
+                className={`flex-1 py-3 px-4 rounded-lg font-medium flex items-center justify-center text-white ${
+                  isSaving ? 'bg-green-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
+                }`}
               >
-                <Check className="w-4 h-4 mr-2" />
-                Confirm & Add
+                {isSaving ? (
+                  <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Check className="w-4 h-4 mr-2" />
+                )}
+                {isSaving ? 'Saving...' : 'Confirm & Add'}
               </button>
               
               <button

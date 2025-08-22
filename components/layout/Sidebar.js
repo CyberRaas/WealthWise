@@ -89,6 +89,8 @@ export default function Sidebar() {
         ${isCollapsed ? 'w-16' : 'w-64'} 
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         fixed md:relative z-50 min-h-screen border-r border-slate-700/50 backdrop-blur-xl `}>
+
+          
       {/* Header */}
       <div className="p-3 sm:p-4 border-b border-slate-700/50">
         <div className="flex items-center justify-between">

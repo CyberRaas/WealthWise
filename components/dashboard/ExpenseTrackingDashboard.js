@@ -29,21 +29,47 @@ import {
   BarChart3
 } from 'lucide-react'
 
+// Unified color map including lowercase category keys used by voice expenses
 const CATEGORY_COLORS = {
+  // Food
   'खाना-पीना': '#FF6B6B',
   'Food': '#FF6B6B',
+  'Food & Dining': '#FF6B6B',
+  'food': '#FF6B6B',
+  'food & dining': '#FF6B6B',
+  // Home / Utilities
   'घर का खर्च': '#4ECDC4', 
   'Home': '#4ECDC4',
+  'Home & Utilities': '#4ECDC4',
+  'Utilities': '#4ECDC4',
+  'utilities': '#4ECDC4',
+  'home': '#4ECDC4',
+  'home & utilities': '#4ECDC4',
+  // Transport
   'यातायात': '#45B7D1',
   'Transport': '#45B7D1',
+  'Transportation': '#45B7D1',
+  'transport': '#45B7D1',
+  'transportation': '#45B7D1',
+  // Entertainment
   'मनोरंजन': '#96CEB4',
   'Entertainment': '#96CEB4',
+  'entertainment': '#96CEB4',
+  // Shopping
   'कपड़े-लत्ते': '#FECA57',
   'Shopping': '#FECA57',
+  'shopping': '#FECA57',
+  // Healthcare
   'दवाई-इलाज': '#FF9FF3',
   'Healthcare': '#FF9FF3',
+  'healthcare': '#FF9FF3',
+  // Savings
   'बचत': '#54A0FF',
-  'Savings': '#54A0FF'
+  'Savings': '#54A0FF',
+  'savings': '#54A0FF',
+  // Other fallback
+  'other': '#64748B',
+  'Other': '#64748B'
 }
 
 export default function ExpenseTrackingDashboard({ budget, refreshTrigger }) {
@@ -82,7 +108,19 @@ export default function ExpenseTrackingDashboard({ budget, refreshTrigger }) {
     if (!budget || !budget.categories) return []
 
     return Object.entries(budget.categories).map(([key, category]) => {
-      const spent = categorySpending[category.englishName] || categorySpending[category.hinglishName] || 0
+      // Canonical English name used in aggregation now
+      const canonical = category.englishName
+      const lookupKeys = [
+        canonical,
+        canonical.toLowerCase(),
+        key,
+        key.toLowerCase(),
+        category.hinglishName,
+        category?.hinglishName?.toLowerCase?.()
+      ].filter(Boolean)
+      const spent = lookupKeys.reduce((val, k) => (
+        typeof categorySpending[k] === 'number' ? categorySpending[k] : val
+      ), 0)
       const budget_amount = category.amount
       const percentage_used = budget_amount > 0 ? (spent / budget_amount) * 100 : 0
       const remaining = budget_amount - spent
@@ -137,116 +175,130 @@ export default function ExpenseTrackingDashboard({ budget, refreshTrigger }) {
 
   return (
     <div className="space-y-6">
-      {/* Monthly Overview */}
-      <Card className="bg-gradient-to-r from-blue-600 to-emerald-600 text-white border-0 shadow-lg">
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">📊 Budget Overview</h3>
-              <div className="text-3xl font-bold">₹{totalBudget.toLocaleString('en-IN')}</div>
-              <p className="text-blue-100">Monthly Budget</p>
+      {/* Monthly Overview - Simplified */}
+      <Card className="border shadow-sm bg-white rounded-xl">
+        <CardContent className="p-5">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border">
+              <div className="text-xl">📊</div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-500">Budget</p>
+                <p className="text-lg font-semibold text-slate-800">₹{totalBudget.toLocaleString('en-IN')}</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-2">💸 Total Spent</h3>
-              <div className="text-3xl font-bold">₹{monthlyTotal.toLocaleString('en-IN')}</div>
-              <p className="text-blue-100">{budgetUtilization.toFixed(1)}% of budget</p>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border">
+              <div className="text-xl">💸</div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-500">Spent</p>
+                <p className="text-lg font-semibold text-slate-800">₹{monthlyTotal.toLocaleString('en-IN')}</p>
+                <p className="text-[11px] text-slate-500">{budgetUtilization.toFixed(1)}% used</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-2">💰 Remaining</h3>
-              <div className="text-3xl font-bold">₹{Math.max(totalBudget - monthlyTotal, 0).toLocaleString('en-IN')}</div>
-              <p className="text-blue-100">{Math.max(100 - budgetUtilization, 0).toFixed(1)}% remaining</p>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border">
+              <div className="text-xl">💰</div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-500">Remaining</p>
+                <p className="text-lg font-semibold text-slate-800">₹{Math.max(totalBudget - monthlyTotal, 0).toLocaleString('en-IN')}</p>
+                <p className="text-[11px] text-slate-500">{Math.max(100 - budgetUtilization, 0).toFixed(1)}% left</p>
+              </div>
             </div>
-          </div>
-          
-          {/* Overall Progress Bar */}
-          <div className="mt-4">
-            <div className="flex justify-between text-sm mb-2">
-              <span>Monthly Progress</span>
-              <span>{budgetUtilization.toFixed(1)}%</span>
-            </div>
-            <div className="w-full bg-white/20 rounded-full h-3">
-              <div 
-                className={`h-3 rounded-full transition-all duration-300 ${
-                  budgetUtilization > 100 ? 'bg-red-400' : 
-                  budgetUtilization > 80 ? 'bg-yellow-400' : 'bg-white'
-                }`}
-                style={{ width: `${Math.min(budgetUtilization, 100)}%` }}
-              ></div>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border">
+              <div className="relative w-12 h-12">
+                <div className="absolute inset-0 rounded-full" style={{
+                  background: `conic-gradient(${budgetUtilization > 100 ? '#dc2626' : '#0ea5e9'} ${Math.min(budgetUtilization,100)}%, #e2e8f0 ${Math.min(budgetUtilization,100)}%)`
+                }}></div>
+                <div className="absolute inset-[6px] bg-white rounded-full flex items-center justify-center text-xs font-semibold text-slate-700">
+                  {budgetUtilization.toFixed(0)}%
+                </div>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-500">Progress</p>
+                <div className="w-28 h-2 bg-slate-200 rounded-full overflow-hidden mt-1">
+                  <div className={`h-2 ${budgetUtilization>100?'bg-red-500':budgetUtilization>80?'bg-amber-500':'bg-emerald-500'}`} style={{width:`${Math.min(budgetUtilization,100)}%`}}></div>
+                </div>
+                <p className="text-[11px] text-slate-500 mt-1">Monthly</p>
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Category Spending Breakdown - As per App Flow */}
-      <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+      {/* Category Spending Breakdown - Redesigned */}
+      <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <BarChart3 className="w-5 h-5 mr-2 text-blue-600" />
-            📊 Category Spending ({new Date().toLocaleString('default', { month: 'long' })})
-          </CardTitle>
-          <CardDescription>
-            Track your spending vs budget across all categories
-          </CardDescription>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <CardTitle className="flex items-center">
+                <BarChart3 className="w-5 h-5 mr-2 text-blue-600" />
+                Category Spending ({new Date().toLocaleString('default', { month: 'long' })})
+              </CardTitle>
+              <CardDescription>
+                Live view of spending vs budget (voice + manual)
+              </CardDescription>
+            </div>
+            <div className="flex gap-2 text-xs">
+              <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full">Good &lt; 80%</span>
+              <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full">Watch 80-100%</span>
+              <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full">Over &gt; 100%</span>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {spendingAnalysis.map((item) => (
-              <div 
-                key={item.key} 
-                className={`p-4 rounded-lg border-2 ${getStatusColor(item.status)} transition-all duration-200`}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-2xl">{item.emoji}</span>
-                    <div>
-                      <h4 className="font-semibold text-gray-900">
-                        {item.hinglishName}: ₹{item.spent.toLocaleString('en-IN')} / ₹{item.budgeted.toLocaleString('en-IN')}
-                      </h4>
-                      <p className="text-sm text-gray-600">
-                        ({item.percentageUsed.toFixed(0)}% used)
-                      </p>
+          {spendingAnalysis.length === 0 && (
+            <div className="text-center py-8 text-sm text-gray-500">No categories to display</div>
+          )}
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            {spendingAnalysis.map(item => {
+              const pct = Math.min(item.percentageUsed, 150) // allow overflow indication
+              const ringPct = Math.min(item.percentageUsed, 100)
+              const color = item.status === 'over' ? '#dc2626' : item.status === 'warning' ? '#f59e0b' : item.color
+              return (
+                <div key={item.key} className="relative group p-4 rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 hover:shadow-md transition-all">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-xl" style={{background: color + '20'}}>
+                        {item.emoji}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 leading-tight">{item.hinglishName}</h4>
+                        <p className="text-xs text-gray-500">₹{item.spent.toLocaleString('en-IN')} / ₹{item.budgeted.toLocaleString('en-IN')}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <div className="relative w-12 h-12">
+                        <div className="absolute inset-0 rounded-full" style={{
+                          background: `conic-gradient(${color} ${ringPct}%, #e5e7eb ${ringPct}%)`
+                        }}></div>
+                        <div className="absolute inset-[4px] bg-white rounded-full flex items-center justify-center text-[10px] font-bold text-gray-700">
+                          {Math.round(item.percentageUsed)}%
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        {getStatusIcon(item.status)}
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    {getStatusIcon(item.status)}
-                    <Badge variant={
-                      item.status === 'over' ? 'destructive' : 
-                      item.status === 'warning' ? 'secondary' : 'default'
-                    }>
-                      {item.percentageUsed.toFixed(0)}%
-                    </Badge>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs text-gray-500">
+                      <span>Progress</span>
+                      <span className={item.status === 'over' ? 'text-red-600 font-medium' : 'text-gray-600'}>
+                        ₹{item.remaining.toLocaleString('en-IN')} left
+                      </span>
+                    </div>
+                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-2 rounded-full transition-all" style={{
+                        width: `${Math.min(pct, 100)}%`,
+                        background: item.status === 'over' ? 'linear-gradient(to right,#f87171,#dc2626)' : item.status === 'warning' ? 'linear-gradient(to right,#fbbf24,#f59e0b)' : `linear-gradient(to right,${color},#16a34a)`
+                      }}></div>
+                    </div>
+                    {item.status === 'over' && (
+                      <p className="text-xs text-red-600 font-medium">Over by ₹{(item.spent - item.budgeted).toLocaleString('en-IN')}</p>
+                    )}
                   </div>
+                  <div className="absolute inset-0 rounded-xl ring-1 ring-transparent group-hover:ring-blue-200 pointer-events-none"></div>
                 </div>
-
-                {/* Visual Progress Bar - App Flow Style */}
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Progress</span>
-                    <span>₹{item.remaining.toLocaleString('en-IN')} remaining</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                    <div 
-                      className={`h-3 rounded-full transition-all duration-500 ${
-                        item.status === 'over' ? 'bg-red-500' :
-                        item.status === 'warning' ? 'bg-yellow-500' : 'bg-green-500'
-                      }`}
-                      style={{ 
-                        width: `${Math.min(item.percentageUsed, 100)}%`,
-                        backgroundColor: item.color
-                      }}
-                    ></div>
-                  </div>
-                  
-                  {/* Text-based progress bar like in app flow */}
-                  <div className="text-xs text-gray-600 font-mono">
-                    {Array.from({ length: 10 }, (_, i) => {
-                      const threshold = (i + 1) * 10
-                      return item.percentageUsed >= threshold ? '█' : '▁'
-                    }).join('')}
-                  </div>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </CardContent>
       </Card>
@@ -272,14 +324,39 @@ export default function ExpenseTrackingDashboard({ budget, refreshTrigger }) {
           ) : (
             <div className="space-y-3">
               {expenses.map((expense) => (
-                <div key={expense.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div key={expense.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
                   <div className="flex items-center space-x-3">
                     <div className={`w-3 h-3 rounded-full`} style={{ 
                       backgroundColor: CATEGORY_COLORS[expense.category] || '#95A5A6' 
                     }}></div>
                     <div>
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-gray-900 flex items-center gap-2">
                         {expense.description || expense.category}
+                        <button
+                          onClick={async () => {
+                            try {
+                              const res = await fetch(`/api/expenses?id=${expense.id}`, { method: 'DELETE' })
+                              const data = await res.json()
+                              if (data.success) {
+                                setExpenses(prev => prev.filter(e => e.id !== expense.id))
+                                // Recompute category spending after delete
+                                const updatedCategoryTotals = {...categorySpending}
+                                const cat = expense.category
+                                if (typeof updatedCategoryTotals[cat] === 'number') {
+                                  updatedCategoryTotals[cat] -= expense.amount
+                                  if (updatedCategoryTotals[cat] <= 0) delete updatedCategoryTotals[cat]
+                                }
+                                setCategorySpending(updatedCategoryTotals)
+                              }
+                            } catch (err) {
+                              console.error('Delete expense failed', err)
+                            }
+                          }}
+                          className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-opacity text-xs"
+                          title="Delete expense"
+                        >
+                          ✕
+                        </button>
                       </p>
                       <div className="flex items-center space-x-2 text-sm text-gray-500">
                         <span>{expense.category}</span>

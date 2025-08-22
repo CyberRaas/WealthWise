@@ -1,3 +1,4 @@
+// components/layout/DashboardLayout.js
 'use client'
 
 import { useSession, signOut } from 'next-auth/react'

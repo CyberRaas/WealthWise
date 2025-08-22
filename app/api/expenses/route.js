@@ -3,6 +3,76 @@ import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbConnect'
 import UserProfile from '@/models/UserProfile'
 
+// Canonical category mapping to unify voice + manual + budget keys
+// All expense.category values will be normalized to these display names
+const CATEGORY_CANONICAL_MAP = {
+  // Food & Dining
+  'food': 'Food & Dining',
+  'food & dining': 'Food & Dining',
+  'food_dining': 'Food & Dining',
+  'food &dining': 'Food & Dining',
+  'food and dining': 'Food & Dining',
+  'food & dining ': 'Food & Dining',
+  'food ': 'Food & Dining',
+  'food&dining': 'Food & Dining',
+  'food & dine': 'Food & Dining',
+  'foodanddining': 'Food & Dining',
+  'lunch': 'Food & Dining',
+  'dinner': 'Food & Dining',
+  'breakfast': 'Food & Dining',
+  'Food': 'Food & Dining',
+  'Food & Dining': 'Food & Dining',
+
+  // Transportation
+  'transport': 'Transportation',
+  'transportation': 'Transportation',
+  'Transport': 'Transportation',
+  'metro': 'Transportation',
+  'bus': 'Transportation',
+  'uber': 'Transportation',
+  'ola': 'Transportation',
+
+  // Home & Utilities
+  'home': 'Home & Utilities',
+  'home_utilities': 'Home & Utilities',
+  'utilities': 'Home & Utilities',
+  'Home': 'Home & Utilities',
+  'Utilities': 'Home & Utilities',
+  'home & utilities': 'Home & Utilities',
+  'housing': 'Home & Utilities',
+  'Housing': 'Home & Utilities',
+
+  // Entertainment
+  'entertainment': 'Entertainment',
+  'Entertainment': 'Entertainment',
+
+  // Shopping
+  'shopping': 'Shopping',
+  'Shopping': 'Shopping',
+
+  // Healthcare
+  'healthcare': 'Healthcare',
+  'Healthcare': 'Healthcare',
+  'medical': 'Healthcare',
+  'medicine': 'Healthcare',
+
+  // Savings
+  'savings': 'Savings',
+  'Savings': 'Savings',
+  'saving': 'Savings',
+  'Saving': 'Savings',
+
+  // Other / fallback
+  'other': 'Other',
+  'Other': 'Other'
+}
+
+function unifyCategory(raw) {
+  if (!raw) return 'Other'
+  const key = String(raw).trim().toLowerCase()
+  return CATEGORY_CANONICAL_MAP[raw] || CATEGORY_CANONICAL_MAP[key] || CATEGORY_CANONICAL_MAP[key.replace(/\s+/g,' ')] || 'Other'
+}
+
 // POST - Add new expense entry
 export async function POST(request) {
   try {
@@ -37,11 +107,14 @@ export async function POST(request) {
       )
     }
 
+    // Normalize category to canonical budget display name
+    const unifiedCategory = unifyCategory(expenseData.category)
+
     // Create expense entry
     const expense = {
       id: Date.now().toString(), // Simple ID for now
       amount: Number(expenseData.amount),
-      category: expenseData.category,
+      category: unifiedCategory,
       description: expenseData.description || '',
       merchant: expenseData.merchant || null,
       date: expenseData.date || new Date().toISOString().split('T')[0],
@@ -134,11 +207,15 @@ export async function GET(request) {
     // Calculate totals
     const monthlyTotal = expenses.reduce((sum, expense) => sum + expense.amount, 0)
 
-    // Group expenses by category for summary
+    // Group expenses by normalized category for summary (legacy entries normalized on the fly)
     const categoryTotals = expenses.reduce((acc, expense) => {
-      acc[expense.category] = (acc[expense.category] || 0) + expense.amount
+      const unified = unifyCategory(expense.category)
+      acc[unified] = (acc[unified] || 0) + expense.amount
       return acc
     }, {})
+
+    // Also normalize categories within returned expense objects for consistency
+    expenses = expenses.map(e => ({ ...e, category: unifyCategory(e.category) }))
 
     return NextResponse.json({
       success: true,
@@ -159,5 +236,36 @@ export async function GET(request) {
       { error: 'Failed to get expenses', details: error.message },
       { status: 500 }
     )
+  }
+}
+
+// DELETE - Remove an expense by id
+export async function DELETE(request) {
+  try {
+    const session = await auth()
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+    if (!id) {
+      return NextResponse.json({ error: 'Expense id is required' }, { status: 400 })
+    }
+    await dbConnect()
+    const userProfile = await UserProfile.findOne({ userId: session.user.id })
+    if (!userProfile || !Array.isArray(userProfile.expenses)) {
+      return NextResponse.json({ error: 'No expenses found' }, { status: 404 })
+    }
+    const before = userProfile.expenses.length
+    userProfile.expenses = userProfile.expenses.filter(e => String(e.id) !== String(id))
+    if (userProfile.expenses.length === before) {
+      return NextResponse.json({ error: 'Expense not found' }, { status: 404 })
+    }
+    userProfile.markModified('expenses')
+    await userProfile.save()
+    return NextResponse.json({ success: true, message: 'Expense deleted', deletedId: id, totalExpenses: userProfile.expenses.length })
+  } catch (error) {
+    console.error('Delete expense error:', error)
+    return NextResponse.json({ error: 'Failed to delete expense', details: error.message }, { status: 500 })
   }
 }

@@ -15,12 +15,14 @@ export default function ManualExpenseEntry({ onExpenseAdded, onVoiceEntry, onClo
   const [error, setError] = useState('')
 
   const categories = [
-    { id: 'Food', name: 'खाना-पीना (Food)', emoji: '🍽️', hinglish: 'खाना-पीना' },
-    { id: 'Transport', name: 'यातायात (Transport)', emoji: '🚗', hinglish: 'यातायात' },
+    { id: 'Food & Dining', name: 'खाना-पीना (Food)', emoji: '🍽️', hinglish: 'खाना-पीना' },
+    { id: 'Transportation', name: 'यातायात (Transport)', emoji: '🚗', hinglish: 'यातायात' },
     { id: 'Entertainment', name: 'मनोरंजन (Fun)', emoji: '🎬', hinglish: 'मनोरंजन' },
-    { id: 'Shopping', name: 'कपड़े-लत्ते (Shopping)', emoji: '👕', hinglish: 'कपड़े-लत्ते' },
+    { id: 'Shopping', name: 'ਕपड़े-ਲੱਤੇ (Shopping)', emoji: '👕', hinglish: 'कपड़े-लत्ते' },
     { id: 'Healthcare', name: 'दवाई-इलाज (Health)', emoji: '💊', hinglish: 'दवाई-इलाज' },
-    { id: 'Home', name: 'घर का खर्च (Home)', emoji: '🏠', hinglish: 'घर का खर्च' }
+    { id: 'Home & Utilities', name: 'घर का खर्च (Home)', emoji: '🏠', hinglish: 'घर का खर्च' },
+    { id: 'Savings', name: 'बचत (Savings)', emoji: '💰', hinglish: 'बचत' },
+    { id: 'Other', name: 'अन्य (Other)', emoji: '💳', hinglish: 'अन्य' }
   ]
 
   const quickAmounts = [20, 50, 100, 200, 500, 1000]
@@ -281,7 +283,6 @@ export default function ManualExpenseEntry({ onExpenseAdded, onVoiceEntry, onClo
                 Voice
               </button>
             )}
-a
             {/* Submit Button */}
             <button
               type="submit"
