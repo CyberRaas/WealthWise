@@ -60,7 +60,7 @@ function DashboardContent() {
     <DashboardLayout title="Dashboard Overview">
       <div className="space-y-8">
         {/* Welcome Section */}
-        <div className="text-center">
+        {/* <div className="text-center">
           <div className="inline-flex items-center space-x-2 bg-emerald-100 rounded-full px-4 py-2 mb-4">
             <TrendingUp className="w-4 h-4 text-emerald-600" />
             <span className="text-emerald-700 font-medium text-sm">Financial Command Center</span>
@@ -71,7 +71,7 @@ function DashboardContent() {
           <p className="text-slate-600 text-lg">
             Ready to manage your finances with ease?
           </p>
-        </div>
+        </div> */}
 
         {/* Budget Display - Real User Data */}
         <div className="mb-8">
