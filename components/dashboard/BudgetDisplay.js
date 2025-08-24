@@ -1417,8 +1417,8 @@ export default function BudgetDisplay({ refreshTrigger }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gray-50  ">
+      <div className="max-w-7xl mx-auto space-y-4">
         
         {/* Compact Budget Header */}
         <Card className="bg-white border border-gray-200 shadow-sm rounded-2xl">
@@ -1530,7 +1530,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
           {activeTab === 'overview' && (
             <>
               {/* Responsive Quick Stats Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {Object.entries(budget.categories).slice(0, 3).map(([key, category], index) => (
                   <Card 
                     key={key}
@@ -1553,18 +1553,18 @@ export default function BudgetDisplay({ refreshTrigger }) {
                     </CardContent>
                   </Card>
                 ))}
-              </div>
+              </div> */}
 
               {/* Budget Categories Grid */}
               <Card className="bg-white/80 backdrop-blur-xl border-0 shadow-xl rounded-3xl overflow-hidden">
-                <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50 p-8">
+                <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50 p-6">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                     <div>
                       <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
                         <Wallet className="w-6 h-6 mr-3 text-indigo-600" />
                         Budget Categories
                         {budget.isCustomized && (
-                          <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white ml-3">
+                          <Badge className=" bg-emerald-100 rounded-full text-emerald-700 ml-3">
                             <Edit3 className="w-3 h-3 mr-1" />
                             Customized
                           </Badge>
@@ -1579,15 +1579,15 @@ export default function BudgetDisplay({ refreshTrigger }) {
                     </div>
                     <Button
                       onClick={handleCustomizeBudget}
-                      className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-2xl font-semibold transform hover:scale-105 transition-all duration-300 shadow-lg"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg font-medium text-xs sm:text-sm not-[]:rounded-2xl  transform hover:scale-105 transition-all duration-300 shadow-lg"
                     >
                       <Settings className="w-5 h-5 mr-2" />
                       {budget.isCustomized ? 'Modify Budget' : 'Customize Budget'}
                     </Button>
                   </div>
                 </CardHeader>
-                <CardContent className="p-8">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+                <CardContent className="p-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-4 lg:gap-2">
                     {Object.entries(budget.categories).map(([key, category], index) => (
                       <div 
                         key={key}
@@ -1795,7 +1795,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
         {/* AI Tips Section */}
         {budget.tips && budget.tips.length > 0 && (
           <Card className="bg-white/80 backdrop-blur-xl border-0 shadow-xl rounded-3xl overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 p-8">
+            <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 p-6">
               <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
                 <Lightbulb className="w-7 h-7 mr-3 text-amber-600" />
                 AI-Powered Financial Tips
@@ -1804,8 +1804,8 @@ export default function BudgetDisplay({ refreshTrigger }) {
                 Personalized recommendations to boost your financial health
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CardContent className="p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {budget.tips.map((tip, index) => (
                   <div 
                     key={index} 
@@ -1832,7 +1832,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
         {/* Investment Recommendations */}
         {budget.recommendations && budget.recommendations.length > 0 && (
           <Card className="bg-white/80 backdrop-blur-xl border-0 shadow-xl rounded-3xl overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 p-8">
+            <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 p-6">
               <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
                 <Target className="w-7 h-7 mr-3 text-purple-600" />
                 Investment Recommendations
@@ -1841,7 +1841,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                 Smart investment opportunities tailored to your financial profile
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-8">
+            <CardContent className="p-2">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {budget.recommendations.map((rec, index) => (
                   <div 
@@ -1912,7 +1912,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                 <Button
                   onClick={handleCustomizeBudget}
                   variant="outline"
-                  className="border-2 border-white text-white hover:bg-white hover:text-slate-800 px-8 py-4 text-lg font-semibold rounded-2xl transform hover:scale-105 transition-all duration-300"
+                  className="border-2 border-white text-slate-800 hover:bg-gray-100  px-8 py-4 text-lg font-semibold rounded-2xl transform hover:scale-105 transition-all duration-300"
                 >
                   <Settings className="w-5 h-5 mr-3" />
                   Customize Instead

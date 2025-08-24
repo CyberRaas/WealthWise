@@ -130,8 +130,9 @@ export default function Home() {
                 <TrendingUp className="w-6 h-6 text-white animate-pulse-subtle" />
               </div>
               <h1 className="text-2xl font-bold text-slate-900">
-                WealthWise
+                Wealth<span className="text-2xl font-bold text-cyan-700">Wise</span>
               </h1>
+              
             </div>
 
             {/* Desktop Navigation */}

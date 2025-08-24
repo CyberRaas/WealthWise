@@ -101,9 +101,9 @@ export default function Sidebar() {
               </div>
               <div>
                 <h1 className="text-base sm:text-lg font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">
-                  WealthWise
+                  <span className="text-base sm:text-lg font-bold text-white">Wealth</span>Wise
                 </h1>
-                <p className="text-xs text-slate-400">Smart Finance</p>
+                <p className="text-xs text-slate-200">Smart Finance</p>
               </div>
             </div>
           )}
