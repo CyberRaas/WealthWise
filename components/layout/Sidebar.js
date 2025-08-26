@@ -150,7 +150,7 @@ export default function Sidebar({ isOpen, onClose }) {
             <div className="p-4 border-t border-slate-200">
               <Button
                 onClick={() => {
-                  signOut({ callbackUrl: '/' })
+                  signOut({ callbackUrl: window.location.origin })
                   onClose()
                 }}
                 variant="outline"
@@ -264,7 +264,7 @@ export default function Sidebar({ isOpen, onClose }) {
         {!isCollapsed && (
           <div className="p-4 border-t border-slate-200">
             <Button
-              onClick={() => signOut({ callbackUrl: '/' })}
+              onClick={() => signOut({ callbackUrl: window.location.origin })}
               variant="outline"
               className="w-full flex items-center justify-center gap-3 px-4 py-3 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-xl transition-all duration-200"
             >
@@ -278,7 +278,7 @@ export default function Sidebar({ isOpen, onClose }) {
         {isCollapsed && (
           <div className="p-4 border-t border-slate-200">
             <Button
-              onClick={() => signOut({ callbackUrl: '/' })}
+              onClick={() => signOut({ callbackUrl: window.location.origin })}
               variant="outline"
               className="w-12 h-12 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-xl mx-auto flex items-center justify-center transition-all duration-200"
             >

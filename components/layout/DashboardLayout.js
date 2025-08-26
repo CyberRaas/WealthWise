@@ -180,7 +180,7 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
                             label="Sign Out" 
                             onClick={() => {
                               setShowProfileDropdown(false)
-                              signOut({ callbackUrl: '/' })
+                              signOut({ callbackUrl: window.location.origin })
                             }}
                             className="text-red-600 hover:bg-red-50"
                           />
