@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { 
   Home,
@@ -15,7 +16,10 @@ import {
   ChevronRight,
   User,
   CreditCard,
-  BarChart3
+  BarChart3,
+  Menu,
+  X,
+  LogOut
 } from 'lucide-react'
 
 const navigationItems = [
@@ -57,133 +61,232 @@ const navigationItems = [
   }
 ]
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const [isMobileOpen, setIsMobileOpen] = useState(false)
   const pathname = usePathname()
 
   return (
     <>
-      {/* Mobile menu button */}
-      <div className="md:hidden fixed top-4 left-4 z-50">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="bg-white/90 text-slate-700 hover:bg-white shadow-lg"
-        >
-          <Home className="h-4 w-4" />
-        </Button>
-      </div>
-
-      {/* Mobile overlay */}
-      {isMobileOpen && (
-        <div 
-          className="md:hidden fixed inset-0 bg-black/50 z-40"
-          onClick={() => setIsMobileOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <div className={`bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white transition-all duration-300 
-        ${isCollapsed ? 'w-16' : 'w-64'} 
-        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-        fixed md:relative z-50 min-h-screen border-r border-slate-700/50 backdrop-blur-xl `}>
-
+      {/* Mobile overlay - Full screen like Codolio */}
+      {isOpen && (
+        <div className="lg:hidden fixed inset-0 z-50">
+          {/* Background overlay */}
+          <div 
+            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+            onClick={onClose}
+          />
           
-      {/* Header */}
-      <div className="p-3 sm:p-4 border-b border-slate-700/50">
-        <div className="flex items-center justify-between">
-          {!isCollapsed && (
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+          {/* Sidebar panel - Full height, slides from left */}
+          <div className="relative w-80 max-w-[85vw] h-full bg-white shadow-2xl animate-in slide-in-from-left duration-300">
+            {/* Header with close button */}
+            <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-white h-16">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold">
+                    <span className="text-slate-800">Wealth</span>
+                    <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">Wise</span>
+                  </h1>
+                </div>
               </div>
-              <div>
-                <h1 className="text-base sm:text-lg font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">
-                  <span className="text-base sm:text-lg font-bold text-white">Wealth</span>Wise
-                </h1>
-                <p className="text-xs text-slate-200">Smart Finance</p>
-              </div>
+              
+              {/* Close button - Top right like Codolio */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onClose}
+                className="text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg w-8 h-8 p-0"
+              >
+                <X className="h-5 w-5" />
+              </Button>
             </div>
-          )}
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="text-slate-400 hover:text-white hover:bg-slate-700/50 hidden md:flex"
-          >
-            {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          </Button>
 
-          {/* Mobile close button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsMobileOpen(false)}
-            className="text-slate-400 hover:text-white hover:bg-slate-700/50 md:hidden"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <nav className="p-2 space-y-1">
-        {navigationItems.map((item) => {
-          const isActive = pathname === item.href
-          const Icon = item.icon
-          
-          return (
-            <Link key={item.name} href={item.href}>
-              <div className={`group flex items-center px-3 py-3 rounded-xl transition-all duration-200 ${
-                isActive 
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg' 
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
-              }`}>
-                <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-emerald-400'} transition-colors`} />
+            {/* Navigation for mobile */}
+            <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+              {navigationItems.map((item) => {
+                const isActive = pathname === item.href
+                const Icon = item.icon
                 
-                {!isCollapsed && (
-                  <div className="ml-3 flex-1">
-                    <p className={`font-medium ${isActive ? 'text-white' : 'text-slate-200 group-hover:text-white'}`}>
-                      {item.name}
-                    </p>
-                    <p className={`text-xs ${isActive ? 'text-emerald-100' : 'text-slate-400'}`}>
-                      {item.description}
-                    </p>
-                  </div>
-                )}
-                
-                {isActive && (
-                  <div className="w-2 h-2 bg-white rounded-full opacity-80" />
-                )}
-              </div>
-            </Link>
-          )
-        })}
-      </nav>
+                return (
+                  <Link key={item.name} href={item.href} onClick={onClose}>
+                    <div 
+                      className={`group flex items-center px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
+                        isActive 
+                          ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg' 
+                          : 'text-slate-600 hover:text-emerald-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      <Icon className={`h-5 w-5 ${
+                        isActive 
+                          ? 'text-white' 
+                          : 'text-slate-500 group-hover:text-emerald-600'
+                      } transition-colors flex-shrink-0`} />
+                      
+                      <div className="ml-3 flex-1 min-w-0">
+                        <p className={`font-medium text-sm ${
+                          isActive ? 'text-white' : 'text-slate-700 group-hover:text-emerald-600'
+                        }`}>
+                          {item.name}
+                        </p>
+                        <p className={`text-xs ${
+                          isActive ? 'text-emerald-100' : 'text-slate-500 group-hover:text-emerald-500'
+                        }`}>
+                          {item.description}
+                        </p>
+                      </div>
+                      
+                      {isActive && (
+                        <div className="w-2 h-2 bg-white rounded-full opacity-90 flex-shrink-0" />
+                      )}
+                    </div>
+                  </Link>
+                )
+              })}
+            </nav>
 
-      {/* Bottom Section */}
-      {!isCollapsed && (
-        <div className="absolute bottom-4 left-4 right-4">
-          <div className="bg-slate-800/50 backdrop-blur rounded-xl p-4 border border-slate-700/50">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
-                <CreditCard className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">Premium Plan</p>
-                <p className="text-xs text-slate-400">All features unlocked</p>
-              </div>
-            </div>
-            <div className="w-full bg-slate-700 rounded-full h-1">
-              <div className="bg-gradient-to-r from-emerald-400 to-teal-400 h-1 rounded-full w-full" />
+            {/* Bottom Signout Section for mobile */}
+            <div className="p-4 border-t border-slate-200">
+              <Button
+                onClick={() => {
+                  signOut({ callbackUrl: '/' })
+                  onClose()
+                }}
+                variant="outline"
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-xl transition-all duration-200"
+              >
+                <LogOut className="w-5 h-5" />
+                <span className="font-medium">Sign Out</span>
+              </Button>
             </div>
           </div>
         </div>
       )}
-    </div>
+
+      {/* Desktop Sidebar - Sticky and Enhanced */}
+      <div className={`
+        hidden lg:flex
+        bg-white border-r border-slate-200 
+        transition-all duration-300 ease-in-out
+        ${isCollapsed ? 'w-20' : 'w-72'} 
+        h-screen
+        flex-col
+      `}>
+          
+        {/* Header */}
+        <div className="p-4 border-b border-slate-200 bg-slate-50 h-16 flex items-center">
+          <div className="flex items-center justify-between w-full">
+            {!isCollapsed && (
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex flex-col justify-center">
+                  <h1 className="text-xl font-bold leading-tight">
+                    <span className="text-slate-800">Wealth</span>
+                    <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">Wise</span>
+                  </h1>
+                  <p className="text-xs text-slate-500 leading-tight">Smart Finance Platform</p>
+                </div>
+              </div>
+            )}
+
+            {/* Collapsed state - Show just the logo */}
+            {isCollapsed && (
+              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white mx-auto">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
+            )}
+            
+            {/* Collapse Toggle - Desktop Only */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg w-8 h-8 p-0 flex-shrink-0"
+            >
+              {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </Button>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+          {navigationItems.map((item) => {
+            const isActive = pathname === item.href
+            const Icon = item.icon
+            
+            return (
+              <Link key={item.name} href={item.href}>
+                <div 
+                  className={`group flex items-center px-4 py-3.5 rounded-xl transition-all duration-200 cursor-pointer ${
+                    isActive 
+                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25' 
+                      : 'text-slate-600 hover:text-emerald-600 hover:bg-gray-200'
+                  }`}
+                >
+                  <Icon className={`h-6 w-6 ${
+                    isActive 
+                      ? 'text-white' 
+                      : 'text-slate-500 group-hover:text-emerald-600'
+                  } transition-colors flex-shrink-0`} />
+                  
+                  {!isCollapsed && (
+                    <div className="ml-4 flex-1 min-w-0">
+                      <p className={`font-semibold text-sm ${
+                        isActive ? 'text-white' : 'text-slate-700 group-hover:text-emerald-600'
+                      }`}>
+                        {item.name}
+                      </p>
+                      <p className={`text-xs ${
+                        isActive ? 'text-emerald-100' : 'text-slate-500 group-hover:text-emerald-500'
+                      }`}>
+                        {item.description}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {isActive && !isCollapsed && (
+                    <div className="w-2 h-2 bg-white rounded-full opacity-90 flex-shrink-0" />
+                  )}
+
+                  {isActive && isCollapsed && (
+                    <div className="absolute left-full ml-2 w-2 h-2 bg-emerald-500 rounded-full" />
+                  )}
+                </div>
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* Bottom Signout Section */}
+        {!isCollapsed && (
+          <div className="p-4 border-t border-slate-200">
+            <Button
+              onClick={() => signOut({ callbackUrl: '/' })}
+              variant="outline"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-xl transition-all duration-200"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="font-medium">Sign Out</span>
+            </Button>
+          </div>
+        )}
+
+        {/* Collapsed Signout Indicator */}
+        {isCollapsed && (
+          <div className="p-4 border-t border-slate-200">
+            <Button
+              onClick={() => signOut({ callbackUrl: '/' })}
+              variant="outline"
+              className="w-12 h-12 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-xl mx-auto flex items-center justify-center transition-all duration-200"
+            >
+              <LogOut className="w-6 h-6" />
+            </Button>
+          </div>
+        )}
+      </div>
     </>
   )
 }

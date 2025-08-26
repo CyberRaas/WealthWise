@@ -1,15 +1,10 @@
+// app/page.js
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
-import { 
-  TrendingUp, 
-  Shield, 
-  Zap, 
-  ArrowRight, 
-  BarChart3, 
-  PieChart, 
+import { TrendingUp, Shield, Zap, ArrowRight, BarChart3, PieChart, 
   Target,
   DollarSign,
   CreditCard,
