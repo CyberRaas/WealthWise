@@ -26,7 +26,7 @@ function BudgetContent() {
     <DashboardLayout title="Budget Management">
       <div className="space-y-6">
         {/* Budget Overview */}
-        <div className="flex justify-between items-center">
+        {/* <div className="flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-bold text-slate-800">Budget Overview</h2>
             <p className="text-slate-600">Monitor your spending and stay on track</p>
@@ -39,7 +39,7 @@ function BudgetContent() {
             <RefreshCw className="h-4 w-4" />
             Refresh
           </Button>
-        </div>
+        </div> */}
 
         {/* Budget Display Component */}
         <BudgetDisplay key={refreshTrigger} refreshTrigger={refreshTrigger} />
