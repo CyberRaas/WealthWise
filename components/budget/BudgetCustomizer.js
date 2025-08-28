@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,17 +9,22 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { 
   Save,
-  RotateCcw,
-  AlertTriangle,
-  CheckCircle,
+  RefreshCw,
   TrendingUp,
   TrendingDown,
+  AlertCircle,
+  CheckCircle,
   DollarSign,
+  PieChart,
+  BarChart3,
   Percent,
+  Calculator,
   Eye,
-  EyeOff
+  EyeOff,
+  AlertTriangle,
+  RotateCcw
 } from 'lucide-react'
-import { toast } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 export default function BudgetCustomizer({ budget, onSave, onCancel }) {
   const [customBudget, setCustomBudget] = useState(null)
@@ -29,20 +34,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
   const [originalBudget, setOriginalBudget] = useState(null)
   const [saving, setSaving] = useState(false)
 
-  useEffect(() => {
-    console.log('BudgetCustomizer received budget:', budget)
-    if (budget && budget.categories) {
-      console.log('Budget categories:', Object.keys(budget.categories))
-      const budgetCopy = JSON.parse(JSON.stringify(budget))
-      setCustomBudget(budgetCopy)
-      setOriginalBudget(JSON.parse(JSON.stringify(budget)))
-      calculateTotals(budgetCopy.categories)
-    } else {
-      console.error('Budget or categories missing:', { budget, hasCategories: !!budget?.categories })
-    }
-  }, [budget])
-
-  const calculateTotals = (categories) => {
+  const calculateTotals = useCallback((categories) => {
     if (!categories) {
       console.warn('calculateTotals called with no categories')
       return
@@ -68,7 +60,20 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
     
     setTotalAllocated(total)
     setIsBalanced(balanced)
-  }
+  }, [budget])
+
+  useEffect(() => {
+    console.log('BudgetCustomizer received budget:', budget)
+    if (budget && budget.categories) {
+      console.log('Budget categories:', Object.keys(budget.categories))
+      const budgetCopy = JSON.parse(JSON.stringify(budget))
+      setCustomBudget(budgetCopy)
+      setOriginalBudget(JSON.parse(JSON.stringify(budget)))
+      calculateTotals(budgetCopy.categories)
+    } else {
+      console.error('Budget or categories missing:', { budget, hasCategories: !!budget?.categories })
+    }
+  }, [budget, calculateTotals])
 
   const updateCategoryAmount = (categoryKey, newAmount) => {
     if (!customBudget) return

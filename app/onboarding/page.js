@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow'
@@ -55,7 +55,6 @@ export default function OnboardingPage() {
     if (status === 'authenticated' && session?.user) {
       checkOnboardingStatus()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, session, router])
 
   if (status === 'loading' || checkingOnboarding) {

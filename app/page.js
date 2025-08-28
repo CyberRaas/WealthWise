@@ -133,7 +133,7 @@ export default function Home() {
       window.removeEventListener('scroll', handleScroll)
       clearInterval(featureInterval)
     }
-  }, [])
+  }, [features.length])
 
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
@@ -506,7 +506,7 @@ export default function Home() {
               </h2>
               
               <p className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-                Join thousands of users who are already taking control of their finances with WealthWise's smart planning tools.
+                Join thousands of users who are already taking control of their finances with WealthWise&apos;s smart planning tools.
               </p>
             </div>
 

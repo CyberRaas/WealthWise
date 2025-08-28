@@ -64,7 +64,7 @@ export default function BudgetCustomizationDemo() {
     }, 3000)
 
     return () => clearInterval(timer)
-  }, [])
+  }, [demoSteps.length])
 
   const currentStepData = demoSteps[currentStep]
 

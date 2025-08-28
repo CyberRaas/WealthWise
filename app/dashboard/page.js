@@ -107,7 +107,7 @@ function DashboardContent() {
               </div>
               
               <p className="text-sm text-slate-500">
-                💪 Keep it up! You're on track to save ₹15 lakh this year.
+                💪 Keep it up! You&apos;re on track to save ₹15 lakh this year.
               </p>
             </div>
             
@@ -190,7 +190,7 @@ function DashboardContent() {
                     </div>
                   </div>
                   <h3 className="text-xl font-bold text-slate-800 mb-2">Good Financial Health</h3>
-                  <p className="text-slate-600">You're on track with your financial goals</p>
+                  <p className="text-slate-600">You&apos;re on track with your financial goals</p>
                 </div>
                 
                 <div className="grid grid-cols-3 gap-4 pt-4 border-t">
@@ -268,7 +268,7 @@ function DashboardContent() {
                       <span className="text-xs">🍕</span>
                     </div>
                     <div>
-                      <div className="font-medium text-sm">Domino's Pizza</div>
+                      <div className="font-medium text-sm">Domino&apos;s Pizza</div>
                       <div className="text-xs text-slate-500">Food • 2 hours ago</div>
                     </div>
                   </div>
@@ -338,7 +338,7 @@ function DashboardContent() {
                     <div>
                       <h4 className="font-medium text-emerald-800">Great Savings!</h4>
                       <p className="text-sm text-emerald-700 mt-1">
-                        You're saving ₹1.26 lakhs this month. Keep up the excellent work with your emergency fund!
+                        You&apos;re saving ₹1.26 lakhs this month. Keep up the excellent work with your emergency fund!
                       </p>
                     </div>
                   </div>
@@ -350,7 +350,7 @@ function DashboardContent() {
                     <div>
                       <h4 className="font-medium text-amber-800">Food Budget Alert</h4>
                       <p className="text-sm text-amber-700 mt-1">
-                        You've spent ₹18,000 of ₹20,000 food budget. Try cooking at home to save money.
+                        You&apos;ve spent ₹18,000 of ₹20,000 food budget. Try cooking at home to save money.
                       </p>
                     </div>
                   </div>

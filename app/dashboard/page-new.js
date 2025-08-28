@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -71,10 +71,9 @@ function DashboardContent() {
       setUser(session.user)
       checkOnboardingStatus()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, router, session])
+  }, [status, router, session, checkOnboardingStatus])
 
-  const checkOnboardingStatus = async () => {
+  const checkOnboardingStatus = useCallback(async () => {
     try {
       const response = await fetch('/api/onboarding')
       const data = await response.json()
@@ -101,7 +100,7 @@ function DashboardContent() {
     } finally {
       setCheckingOnboarding(false)
     }
-  }
+  }, [router])
 
   const handleExpenseAdded = (expense) => {
     console.log('Expense added:', expense)
