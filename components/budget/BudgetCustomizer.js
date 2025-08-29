@@ -443,18 +443,10 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                       }}
                       className="w-full"
                     />
-                  </div>
-
-                  {/* Progress Bar */}
-                  <div className="space-y-1">
-                    <Progress 
-                      value={category.percentage} 
-                      className="h-2"
-                    />
                     <div className="flex justify-between text-xs text-slate-500">
-                      <span>0%</span>
+                      <span>0{showPercentages ? '%' : ''}</span>
                       <span>{category.percentage}% of total budget</span>
-                      <span>100%</span>
+                      <span>{showPercentages ? '100%' : `₹${totalBudget.toLocaleString('en-IN')}`}</span>
                     </div>
                   </div>
 

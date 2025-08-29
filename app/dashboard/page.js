@@ -17,7 +17,9 @@ import {
   Plus,
   Mic,
   BarChart3,
-  DollarSign
+  DollarSign,
+  AlertCircle,
+  RefreshCw
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import BudgetDisplay from '@/components/dashboard/BudgetDisplay'
@@ -27,8 +29,16 @@ function DashboardContent() {
   const { data: session } = useSession()
   const router = useRouter()
   const [showExpenseEntry, setShowExpenseEntry] = useState(false)
-  const [refreshBudget, setRefreshBudget] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [budget, setBudget] = useState(null)
   const [expenses, setExpenses] = useState([])
+  const [goals, setGoals] = useState([])
+  const [monthlyData, setMonthlyData] = useState({
+    totalIncome: 0,
+    totalExpenses: 0,
+    totalSaved: 0,
+    savingsRate: 0
+  })
 
   // Get dynamic greeting based on time and day
   const getGreeting = () => {
@@ -59,13 +69,74 @@ function DashboardContent() {
 
   const greetingData = getGreeting()
 
+  // Fetch all user data
+  useEffect(() => {
+    fetchAllData()
+  }, [])
+
+  const fetchAllData = async () => {
+    setLoading(true)
+    try {
+      // Fetch budget, expenses, and goals in parallel
+      const [budgetResponse, expensesResponse, goalsResponse] = await Promise.all([
+        fetch('/api/budget/generate'),
+        fetch('/api/expenses?limit=10'),
+        fetch('/api/goals')
+      ])
+
+      const budgetData = await budgetResponse.json()
+      const expensesData = await expensesResponse.json()
+      const goalsData = await goalsResponse.json()
+
+      // Set budget data
+      if (budgetData.success && budgetData.budget) {
+        setBudget(budgetData.budget)
+      }
+
+      // Set expenses data
+      if (expensesData.success) {
+        setExpenses(expensesData.expenses || [])
+        
+        // Calculate monthly financial data
+        const currentMonth = new Date().toISOString().substring(0, 7)
+        const currentMonthExpenses = expensesData.expenses?.filter(expense => 
+          expense.date?.substring(0, 7) === currentMonth
+        ) || []
+        
+        const totalExpenses = currentMonthExpenses.reduce((sum, expense) => sum + expense.amount, 0)
+        const totalIncome = budgetData.budget?.totalBudget || 0
+        const totalSaved = totalIncome - totalExpenses
+        const savingsRate = totalIncome > 0 ? Math.round((totalSaved / totalIncome) * 100) : 0
+        
+        setMonthlyData({
+          totalIncome,
+          totalExpenses,
+          totalSaved,
+          savingsRate: Math.max(0, savingsRate)
+        })
+      }
+
+      // Set goals data
+      if (goalsData.success) {
+        setGoals(goalsData.goals || [])
+      }
+
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error)
+      toast.error('Failed to load dashboard data')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // Handle expense added
   const handleExpenseAdded = (expense) => {
     console.log('Expense added:', expense)
     toast.success('Expense added successfully!')
-    setExpenses(prev => [expense, ...prev])
-    setRefreshBudget(prev => prev + 1)
+    setExpenses(prev => [expense, ...prev].slice(0, 10)) // Keep only latest 10
     setShowExpenseEntry(false)
+    // Refresh monthly data
+    fetchAllData()
   }
 
   // Quick action handlers
@@ -85,10 +156,59 @@ function DashboardContent() {
     router.push('/dashboard/goals')
   }
 
+  // Calculate financial health score based on real data
+  const getFinancialHealthScore = () => {
+    if (!budget || !monthlyData.totalIncome) return 50
+    
+    let score = 0
+    
+    // Savings rate (40% of score)
+    const savingsRate = monthlyData.savingsRate
+    if (savingsRate >= 30) score += 40
+    else if (savingsRate >= 20) score += 30
+    else if (savingsRate >= 10) score += 20
+    else score += 10
+    
+    // Budget adherence (30% of score)
+    if (budget.healthScore) {
+      score += Math.round((budget.healthScore / 100) * 30)
+    } else {
+      score += 20 // Default if no health score
+    }
+    
+    // Goal progress (30% of score)
+    if (goals.length > 0) {
+      const avgProgress = goals.reduce((sum, goal) => {
+        const progress = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)
+        return sum + progress
+      }, 0) / goals.length
+      score += Math.round((avgProgress / 100) * 30)
+    } else {
+      score += 15 // Partial score if no goals set
+    }
+    
+    return Math.min(Math.max(score, 0), 100)
+  }
+
+  const financialHealthScore = getFinancialHealthScore()
+
+  if (loading) {
+    return (
+      <DashboardLayout title="Dashboard Overview">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <RefreshCw className="h-8 w-8 animate-spin text-emerald-600 mx-auto mb-2" />
+            <p className="text-slate-600">Loading your financial data...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
+  }
+
   return (
     <DashboardLayout title="Dashboard Overview">
       <div className="space-y-8">
-        {/* Welcome Message */}
+        {/* Welcome Message with Real Data */}
         <div className="bg-gradient-to-r from-emerald-50 via-blue-50 to-purple-50 rounded-2xl p-6 border border-emerald-100">
           <div className="flex items-center justify-between">
             <div className="flex-1">
@@ -99,16 +219,42 @@ function DashboardContent() {
                 {greetingData.greeting}
               </p>
               
-              {/* Dynamic motivational message */}
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-sm text-emerald-700 font-medium bg-emerald-100 px-3 py-1 rounded-full">
-                  💡 Your financial health score improved by 15% this month!
-                </span>
-              </div>
+              {/* Dynamic motivational message based on real data */}
+              {financialHealthScore >= 75 && (
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm text-emerald-700 font-medium bg-emerald-100 px-3 py-1 rounded-full">
+                    💡 Excellent financial health! Keep up the great work!
+                  </span>
+                </div>
+              )}
               
-              <p className="text-sm text-slate-500">
-                💪 Keep it up! You&apos;re on track to save ₹15 lakh this year.
-              </p>
+              {financialHealthScore < 75 && financialHealthScore >= 50 && (
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm text-blue-700 font-medium bg-blue-100 px-3 py-1 rounded-full">
+                    💪 Good progress! Consider optimizing your spending.
+                  </span>
+                </div>
+              )}
+              
+              {financialHealthScore < 50 && (
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm text-orange-700 font-medium bg-orange-100 px-3 py-1 rounded-full">
+                    📈 Room for improvement! Let&apos;s work on your budget.
+                  </span>
+                </div>
+              )}
+              
+              {monthlyData.savingsRate > 0 && (
+                <p className="text-sm text-slate-500">
+                  💰 You&apos;re saving {monthlyData.savingsRate}% of your income this month!
+                </p>
+              )}
+              
+              {monthlyData.savingsRate <= 0 && (
+                <p className="text-sm text-slate-500">
+                  🎯 Focus on reducing expenses to increase your savings rate.
+                </p>
+              )}
             </div>
             
             <div className="hidden sm:block ml-6">
@@ -118,37 +264,42 @@ function DashboardContent() {
             </div>
           </div>
           
-          {/* Quick stats row */}
-          <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-emerald-200">
-            <div className="text-center">
-              <div className="text-lg font-bold text-emerald-600">₹1.26L</div>
-              <div className="text-xs text-slate-600">Saved This Month</div>
+          {/* Real quick stats row */}
+          {monthlyData.totalIncome > 0 && (
+            <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-emerald-200">
+              <div className="text-center">
+                <div className="text-lg font-bold text-emerald-600">
+                  ₹{monthlyData.totalSaved > 0 ? (monthlyData.totalSaved / 100000).toFixed(1) : '0'}L
+                </div>
+                <div className="text-xs text-slate-600">Saved This Month</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-blue-600">{monthlyData.savingsRate}%</div>
+                <div className="text-xs text-slate-600">Savings Rate</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-purple-600">{goals.filter(g => g.status === 'active').length}</div>
+                <div className="text-xs text-slate-600">Active Goals</div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-lg font-bold text-blue-600">82%</div>
-              <div className="text-xs text-slate-600">Budget On Track</div>
+          )}
+          
+          {/* No data state */}
+          {monthlyData.totalIncome === 0 && (
+            <div className="mt-4 pt-4 border-t border-emerald-200 text-center">
+              <p className="text-sm text-slate-500 mb-2">No financial data available yet</p>
+              <Button
+                onClick={() => router.push('/dashboard/budget')}
+                size="sm"
+                className="bg-emerald-600 hover:bg-emerald-700"
+              >
+                Generate Your Budget
+              </Button>
             </div>
-            <div className="text-center">
-              <div className="text-lg font-bold text-purple-600">4/5</div>
-              <div className="text-xs text-slate-600">Goals Achieved</div>
-            </div>
-          </div>
+          )}
         </div>
-        {/* Welcome Section */}
-        {/* <div className="text-center">
-          <div className="inline-flex items-center space-x-2 bg-emerald-100 rounded-full px-4 py-2 mb-4">
-            <TrendingUp className="w-4 h-4 text-emerald-600" />
-            <span className="text-emerald-700 font-medium text-sm">Financial Command Center</span>
-          </div>
-          <h2 className="text-3xl font-bold text-slate-800 mb-2">
-            Welcome back! 👋
-          </h2>
-          <p className="text-slate-600 text-lg">
-            Ready to manage your finances with ease?
-          </p>
-        </div> */}
 
-        {/* Financial Health Score & Overview */}
+        {/* Financial Health Score & Overview with Real Data */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <Card className="lg:col-span-2">
             <CardHeader>
@@ -180,31 +331,41 @@ function DashboardContent() {
                         strokeWidth="8"
                         fill="transparent"
                         strokeDasharray={`${2 * Math.PI * 56}`}
-                        strokeDashoffset={`${2 * Math.PI * 56 * (1 - 0.78)}`}
+                        strokeDashoffset={`${2 * Math.PI * 56 * (1 - financialHealthScore / 100)}`}
                         className="text-emerald-500"
                         strokeLinecap="round"
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-3xl font-bold text-slate-800">78</span>
+                      <span className="text-3xl font-bold text-slate-800">{financialHealthScore}</span>
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">Good Financial Health</h3>
-                  <p className="text-slate-600">You&apos;re on track with your financial goals</p>
+                  <h3 className="text-xl font-bold text-slate-800 mb-2">
+                    {financialHealthScore >= 75 ? 'Excellent Financial Health' :
+                     financialHealthScore >= 50 ? 'Good Financial Health' :
+                     'Needs Improvement'}
+                  </h3>
+                  <p className="text-slate-600">
+                    {financialHealthScore >= 75 ? 'You\'re doing great with your finances!' :
+                     financialHealthScore >= 50 ? 'You\'re on the right track' :
+                     'Let\'s work together to improve your financial wellness'}
+                  </p>
                 </div>
                 
                 <div className="grid grid-cols-3 gap-4 pt-4 border-t">
                   <div className="text-center">
-                    <div className="text-lg font-bold text-emerald-600">+15%</div>
-                    <div className="text-sm text-slate-600">vs Last Month</div>
+                    <div className="text-lg font-bold text-emerald-600">{monthlyData.savingsRate}%</div>
+                    <div className="text-sm text-slate-600">Savings Rate</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-blue-600">82%</div>
-                    <div className="text-sm text-slate-600">Budget on Track</div>
+                    <div className="text-lg font-bold text-blue-600">
+                      {budget ? Math.round((monthlyData.totalExpenses / budget.totalBudget) * 100) : 0}%
+                    </div>
+                    <div className="text-sm text-slate-600">Budget Used</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-purple-600">4</div>
-                    <div className="text-sm text-slate-600">Active Goals</div>
+                    <div className="text-lg font-bold text-purple-600">{goals.length}</div>
+                    <div className="text-sm text-slate-600">Goals Set</div>
                   </div>
                 </div>
               </div>
@@ -219,41 +380,61 @@ function DashboardContent() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 bg-emerald-50 rounded-lg">
-                  <div>
-                    <div className="text-sm text-emerald-700">Total Income</div>
-                    <div className="text-lg font-bold text-emerald-800">₹4,20,000</div>
+              {monthlyData.totalIncome > 0 ? (
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-emerald-50 rounded-lg">
+                    <div>
+                      <div className="text-sm text-emerald-700">Total Income</div>
+                      <div className="text-lg font-bold text-emerald-800">
+                        ₹{monthlyData.totalIncome.toLocaleString('en-IN')}
+                      </div>
+                    </div>
+                    <TrendingUp className="h-6 w-6 text-emerald-600" />
                   </div>
-                  <TrendingUp className="h-6 w-6 text-emerald-600" />
-                </div>
-                
-                <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
-                  <div>
-                    <div className="text-sm text-red-700">Total Expenses</div>
-                    <div className="text-lg font-bold text-red-800">₹2,94,000</div>
+                  
+                  <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                    <div>
+                      <div className="text-sm text-red-700">Total Expenses</div>
+                      <div className="text-lg font-bold text-red-800">
+                        ₹{monthlyData.totalExpenses.toLocaleString('en-IN')}
+                      </div>
+                    </div>
+                    <Wallet className="h-6 w-6 text-red-600" />
                   </div>
-                  <Wallet className="h-6 w-6 text-red-600" />
-                </div>
-                
-                <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                  <div>
-                    <div className="text-sm text-blue-700">Money Saved</div>
-                    <div className="text-lg font-bold text-blue-800">₹1,26,000</div>
+                  
+                  <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                    <div>
+                      <div className="text-sm text-blue-700">Money Saved</div>
+                      <div className="text-lg font-bold text-blue-800">
+                        ₹{Math.max(0, monthlyData.totalSaved).toLocaleString('en-IN')}
+                      </div>
+                    </div>
+                    <PiggyBank className="h-6 w-6 text-blue-600" />
                   </div>
-                  <PiggyBank className="h-6 w-6 text-blue-600" />
+                  
+                  <div className="text-center pt-2 border-t">
+                    <div className="text-xs text-slate-500">Savings Rate</div>
+                    <div className="text-lg font-bold text-purple-600">{monthlyData.savingsRate}%</div>
+                  </div>
                 </div>
-                
-                <div className="text-center pt-2 border-t">
-                  <div className="text-xs text-slate-500">Savings Rate</div>
-                  <div className="text-lg font-bold text-purple-600">30%</div>
+              ) : (
+                <div className="text-center py-8">
+                  <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-2" />
+                  <p className="text-slate-500 text-sm mb-4">No financial data available</p>
+                  <Button
+                    onClick={() => router.push('/dashboard/budget')}
+                    size="sm"
+                    variant="outline"
+                  >
+                    Set Up Budget
+                  </Button>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
 
-        {/* Recent Activity & Insights */}
+        {/* Recent Activity & Insights with Real Data */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <Card>
             <CardHeader>
@@ -261,101 +442,124 @@ function DashboardContent() {
               <CardDescription>Your latest spending and income</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                      <span className="text-xs">🍕</span>
+              {expenses.length > 0 ? (
+                <div className="space-y-3">
+                  {expenses.slice(0, 4).map((expense) => (
+                    <div key={expense.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                          <span className="text-xs">
+                            {expense.category === 'Food & Dining' ? '🍕' :
+                             expense.category === 'Transportation' ? '🚗' :
+                             expense.category === 'Shopping' ? '🛒' :
+                             expense.category === 'Healthcare' ? '🏥' :
+                             expense.category === 'Entertainment' ? '🎬' :
+                             expense.category === 'Home & Utilities' ? '🏠' :
+                             '💰'}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="font-medium text-sm">
+                            {expense.description || expense.merchant || expense.category}
+                          </div>
+                          <div className="text-xs text-slate-500">
+                            {expense.category} • {new Date(expense.date).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-red-600 font-medium">
+                        -₹{expense.amount.toLocaleString('en-IN')}
+                      </div>
                     </div>
-                    <div>
-                      <div className="font-medium text-sm">Domino&apos;s Pizza</div>
-                      <div className="text-xs text-slate-500">Food • 2 hours ago</div>
-                    </div>
-                  </div>
-                  <div className="text-red-600 font-medium">-₹480</div>
+                  ))}
+                  
+                  <Button 
+                    onClick={() => router.push('/dashboard/expenses')}
+                    variant="outline" 
+                    className="w-full mt-4"
+                  >
+                    View All Transactions
+                  </Button>
                 </div>
-                
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-xs">🚗</span>
-                    </div>
-                    <div>
-                      <div className="font-medium text-sm">Petrol Pump</div>
-                      <div className="text-xs text-slate-500">Fuel • Yesterday</div>
-                    </div>
-                  </div>
-                  <div className="text-red-600 font-medium">-₹3,200</div>
+              ) : (
+                <div className="text-center py-8">
+                  <Wallet className="h-12 w-12 text-slate-400 mx-auto mb-2" />
+                  <p className="text-slate-500 text-sm mb-4">No transactions yet</p>
+                  <Button
+                    onClick={handleAddExpense}
+                    size="sm"
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Add Your First Expense
+                  </Button>
                 </div>
-                
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                      <span className="text-xs">🛒</span>
-                    </div>
-                    <div>
-                      <div className="font-medium text-sm">BigBasket</div>
-                      <div className="text-xs text-slate-500">Groceries • 2 days ago</div>
-                    </div>
-                  </div>
-                  <div className="text-red-600 font-medium">-₹2,800</div>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                      <span className="text-xs">💰</span>
-                    </div>
-                    <div>
-                      <div className="font-medium text-sm">Salary Credited</div>
-                      <div className="text-xs text-slate-500">Income • 5 days ago</div>
-                    </div>
-                  </div>
-                  <div className="text-emerald-600 font-medium">+₹85,000</div>
-                </div>
-                
-                <Button 
-                  onClick={() => router.push('/dashboard/expenses')}
-                  variant="outline" 
-                  className="w-full mt-4"
-                >
-                  View All Transactions
-                </Button>
-              </div>
+              )}
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
               <CardTitle>Smart Money Tips</CardTitle>
-              <CardDescription>Personalized advice for your finances</CardDescription>
+              <CardDescription>Personalized advice based on your data</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="p-4 bg-emerald-50 rounded-lg border-l-4 border-emerald-500">
-                  <div className="flex items-start gap-3">
-                    <div className="text-emerald-600">✅</div>
-                    <div>
-                      <h4 className="font-medium text-emerald-800">Great Savings!</h4>
-                      <p className="text-sm text-emerald-700 mt-1">
-                        You&apos;re saving ₹1.26 lakhs this month. Keep up the excellent work with your emergency fund!
-                      </p>
+                {/* Dynamic tips based on real data */}
+                {monthlyData.savingsRate >= 20 && (
+                  <div className="p-4 bg-emerald-50 rounded-lg border-l-4 border-emerald-500">
+                    <div className="flex items-start gap-3">
+                      <div className="text-emerald-600">✅</div>
+                      <div>
+                        <h4 className="font-medium text-emerald-800">Great Savings!</h4>
+                        <p className="text-sm text-emerald-700 mt-1">
+                          You&apos;re saving {monthlyData.savingsRate}% this month. Excellent work with your financial discipline!
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                <div className="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
-                  <div className="flex items-start gap-3">
-                    <div className="text-amber-600">⚠️</div>
-                    <div>
-                      <h4 className="font-medium text-amber-800">Food Budget Alert</h4>
-                      <p className="text-sm text-amber-700 mt-1">
-                        You&apos;ve spent ₹18,000 of ₹20,000 food budget. Try cooking at home to save money.
-                      </p>
+                )}
+
+                {monthlyData.savingsRate < 10 && monthlyData.totalIncome > 0 && (
+                  <div className="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+                    <div className="flex items-start gap-3">
+                      <div className="text-amber-600">⚠️</div>
+                      <div>
+                        <h4 className="font-medium text-amber-800">Low Savings Alert</h4>
+                        <p className="text-sm text-amber-700 mt-1">
+                          Your savings rate is {monthlyData.savingsRate}%. Try to save at least 10-20% of your income.
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                
+                )}
+
+                {/* Category-based tips */}
+                {expenses.length > 0 && (() => {
+                  const categoryTotals = expenses.reduce((acc, expense) => {
+                    acc[expense.category] = (acc[expense.category] || 0) + expense.amount
+                    return acc
+                  }, {})
+                  
+                  const topCategory = Object.entries(categoryTotals).sort(([,a], [,b]) => b - a)[0]
+                  const [categoryName, categoryAmount] = topCategory || ['', 0]
+                  
+                  if (categoryAmount > (monthlyData.totalIncome * 0.3)) {
+                    return (
+                      <div className="p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                        <div className="flex items-start gap-3">
+                          <div className="text-orange-600">📊</div>
+                          <div>
+                            <h4 className="font-medium text-orange-800">High Spending Alert</h4>
+                            <p className="text-sm text-orange-700 mt-1">
+                              You&apos;ve spent ₹{categoryAmount.toLocaleString('en-IN')} on {categoryName}. Consider optimizing this category.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  }
+                })()}
+
                 <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
                   <div className="flex items-start gap-3">
                     <div className="text-blue-600">💡</div>
@@ -367,6 +571,21 @@ function DashboardContent() {
                     </div>
                   </div>
                 </div>
+
+                {/* No data tip */}
+                {expenses.length === 0 && monthlyData.totalIncome === 0 && (
+                  <div className="p-4 bg-slate-50 rounded-lg border-l-4 border-slate-400">
+                    <div className="flex items-start gap-3">
+                      <div className="text-slate-600">📝</div>
+                      <div>
+                        <h4 className="font-medium text-slate-800">Get Started</h4>
+                        <p className="text-sm text-slate-700 mt-1">
+                          Set up your budget and start tracking expenses to get personalized financial advice.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -422,7 +641,7 @@ function DashboardContent() {
           </CardContent>
         </Card>
 
-        {/* Spending Trends */}
+        {/* Spending Trends and Goals with Real Data */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card className="lg:col-span-2">
             <CardHeader>
@@ -433,47 +652,56 @@ function DashboardContent() {
               <CardDescription>Where your money goes each month</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Food & Dining</span>
-                  <span className="text-sm text-slate-600">₹28,000/month</span>
+              {budget && budget.categories ? (
+                <div className="space-y-4">
+                  {Object.entries(budget.categories)
+                    .sort(([,a], [,b]) => b.amount - a.amount)
+                    .slice(0, 5)
+                    .map(([key, category]) => {
+                      // Calculate actual spending for this category
+                      const categoryExpenses = expenses.filter(e => e.category === category.englishName)
+                      const actualSpent = categoryExpenses.reduce((sum, e) => sum + e.amount, 0)
+                      const budgetAmount = category.amount
+                      const spentPercentage = budgetAmount > 0 ? Math.min((actualSpent / budgetAmount) * 100, 100) : 0
+                      
+                      return (
+                        <div key={key}>
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium">{category.englishName}</span>
+                            <span className="text-sm text-slate-600">
+                              ₹{actualSpent.toLocaleString('en-IN')} / ₹{budgetAmount.toLocaleString('en-IN')}
+                            </span>
+                          </div>
+                          <div className="w-full bg-slate-200 rounded-full h-2 mb-1">
+                            <div 
+                              className={`h-2 rounded-full ${
+                                spentPercentage > 90 ? 'bg-red-500' :
+                                spentPercentage > 70 ? 'bg-orange-500' :
+                                'bg-emerald-500'
+                              }`}
+                              style={{ width: `${Math.min(spentPercentage, 100)}%` }}
+                            ></div>
+                          </div>
+                          <div className="text-xs text-slate-500">
+                            {spentPercentage.toFixed(0)}% of budget used
+                          </div>
+                        </div>
+                      )
+                    })}
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-2">
-                  <div className="bg-red-500 h-2 rounded-full" style={{ width: '70%' }}></div>
+              ) : (
+                <div className="text-center py-8">
+                  <BarChart3 className="h-12 w-12 text-slate-400 mx-auto mb-2" />
+                  <p className="text-slate-500 text-sm mb-4">No budget data available</p>
+                  <Button
+                    onClick={() => router.push('/dashboard/budget')}
+                    size="sm"
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Create Your Budget
+                  </Button>
                 </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Transportation</span>
-                  <span className="text-sm text-slate-600">₹15,000/month</span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-2">
-                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: '38%' }}></div>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Shopping</span>
-                  <span className="text-sm text-slate-600">₹18,000/month</span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-2">
-                  <div className="bg-purple-500 h-2 rounded-full" style={{ width: '45%' }}></div>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Entertainment</span>
-                  <span className="text-sm text-slate-600">₹8,000/month</span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-2">
-                  <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '20%' }}></div>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Bills & Utilities</span>
-                  <span className="text-sm text-slate-600">₹12,000/month</span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-2">
-                  <div className="bg-orange-500 h-2 rounded-full" style={{ width: '30%' }}></div>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
@@ -485,51 +713,76 @@ function DashboardContent() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="p-3 bg-emerald-50 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium text-sm text-emerald-800">Emergency Fund</span>
-                    <span className="text-xs text-emerald-600">85%</span>
-                  </div>
-                  <div className="w-full bg-emerald-200 rounded-full h-2">
-                    <div className="bg-emerald-600 h-2 rounded-full" style={{ width: '85%' }}></div>
-                  </div>
-                  <div className="text-xs text-emerald-700 mt-1">₹8.5 lakh / ₹10 lakh</div>
+              {goals.length > 0 ? (
+                <div className="space-y-4">
+                  {goals.slice(0, 4).map((goal) => {
+                    const progress = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)
+                    const isCompleted = goal.status === 'completed' || progress >= 100
+                    
+                    return (
+                      <div key={goal.id} className={`p-3 rounded-lg ${
+                        isCompleted ? 'bg-emerald-50' : 
+                        progress > 50 ? 'bg-blue-50' : 'bg-slate-50'
+                      }`}>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className={`font-medium text-sm ${
+                            isCompleted ? 'text-emerald-800' :
+                            progress > 50 ? 'text-blue-800' : 'text-slate-800'
+                          }`}>
+                            {goal.name}
+                          </span>
+                          <span className={`text-xs ${
+                            isCompleted ? 'text-emerald-600' :
+                            progress > 50 ? 'text-blue-600' : 'text-slate-600'
+                          }`}>
+                            {progress.toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className={`w-full rounded-full h-2 ${
+                          isCompleted ? 'bg-emerald-200' :
+                          progress > 50 ? 'bg-blue-200' : 'bg-slate-200'
+                        }`}>
+                          <div 
+                            className={`h-2 rounded-full ${
+                              isCompleted ? 'bg-emerald-600' :
+                              progress > 50 ? 'bg-blue-600' : 'bg-slate-600'
+                            }`}
+                            style={{ width: `${Math.min(progress, 100)}%` }}
+                          ></div>
+                        </div>
+                        <div className={`text-xs mt-1 ${
+                          isCompleted ? 'text-emerald-700' :
+                          progress > 50 ? 'text-blue-700' : 'text-slate-700'
+                        }`}>
+                          ₹{goal.currentAmount.toLocaleString('en-IN')} / ₹{goal.targetAmount.toLocaleString('en-IN')}
+                          {isCompleted && ' ✅'}
+                        </div>
+                      </div>
+                    )
+                  })}
+                  
+                  <Button
+                    onClick={() => router.push('/dashboard/goals')}
+                    variant="outline"
+                    size="sm"
+                    className="w-full mt-2"
+                  >
+                    View All Goals
+                  </Button>
                 </div>
-                
-                <div className="p-3 bg-blue-50 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium text-sm text-blue-800">Home Down Payment</span>
-                    <span className="text-xs text-blue-600">40%</span>
-                  </div>
-                  <div className="w-full bg-blue-200 rounded-full h-2">
-                    <div className="bg-blue-600 h-2 rounded-full" style={{ width: '40%' }}></div>
-                  </div>
-                  <div className="text-xs text-blue-700 mt-1">₹8 lakh / ₹20 lakh</div>
+              ) : (
+                <div className="text-center py-8">
+                  <Target className="h-12 w-12 text-slate-400 mx-auto mb-2" />
+                  <p className="text-slate-500 text-sm mb-4">No goals set yet</p>
+                  <Button
+                    onClick={() => router.push('/dashboard/goals')}
+                    size="sm"
+                    className="bg-purple-600 hover:bg-purple-700"
+                  >
+                    Set Your First Goal
+                  </Button>
                 </div>
-                
-                <div className="p-3 bg-purple-50 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium text-sm text-purple-800">Vacation Fund</span>
-                    <span className="text-xs text-purple-600">60%</span>
-                  </div>
-                  <div className="w-full bg-purple-200 rounded-full h-2">
-                    <div className="bg-purple-600 h-2 rounded-full" style={{ width: '60%' }}></div>
-                  </div>
-                  <div className="text-xs text-purple-700 mt-1">₹1.8 lakh / ₹3 lakh</div>
-                </div>
-                
-                <div className="p-3 bg-orange-50 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium text-sm text-orange-800">New Bike</span>
-                    <span className="text-xs text-orange-600">25%</span>
-                  </div>
-                  <div className="w-full bg-orange-200 rounded-full h-2">
-                    <div className="bg-orange-600 h-2 rounded-full" style={{ width: '25%' }}></div>
-                  </div>
-                  <div className="text-xs text-orange-700 mt-1">₹37,500 / ₹1.5 lakh</div>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>

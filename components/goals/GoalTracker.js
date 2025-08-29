@@ -204,7 +204,7 @@ export default function GoalTracker({ userSavings = 0 }) {
               onClick={() => setShowCreateGoal(true)}
               className="group bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 ring-2 ring-white/20 text-lg font-bold"
             >
-              <Plus className="w-6 w-6 mr-3 group-hover:rotate-90 transition-transform duration-300" />
+              <Plus className="w-6 mr-3 group-hover:rotate-90 transition-transform duration-300" />
               Create Your First Goal
             </Button>
           </CardContent>
