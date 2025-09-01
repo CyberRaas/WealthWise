@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
@@ -31,67 +31,14 @@ function ProfileContent() {
   const fileInputRef = useRef(null)
   
   const [profile, setProfile] = useState({
-    name: '',
-    email: '',
+    name: session?.user?.name || '',
+    email: session?.user?.email || '',
     phone: '',
     location: '',
     bio: '',
     dateOfBirth: '',
     occupation: ''
   })
-
-  // Load user profile data on component mount
-  useEffect(() => {
-    loadUserProfile()
-  }, [session])
-
-  const loadUserProfile = async () => {
-    if (!session?.user) return
-    
-    try {
-      const response = await fetch('/api/user', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to load profile')
-      }
-
-      const data = await response.json()
-      const user = data.data.user
-
-      // Update profile state with loaded data
-      setProfile({
-        name: user.name || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        location: user.profile?.location || user.profile?.city || '',
-        bio: user.profile?.bio || '',
-        dateOfBirth: user.profile?.dateOfBirth || '',
-        occupation: user.profile?.occupation || ''
-      })
-
-      // Update profile image if different from session
-      if (user.avatar && user.avatar !== session?.user?.image) {
-        setProfileImage(user.avatar)
-      }
-    } catch (error) {
-      console.error('Error loading profile:', error)
-      // Fallback to session data
-      setProfile({
-        name: session?.user?.name || '',
-        email: session?.user?.email || '',
-        phone: '',
-        location: '',
-        bio: '',
-        dateOfBirth: '',
-        occupation: ''
-      })
-    }
-  }
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0]
@@ -112,83 +59,34 @@ function ProfileContent() {
 
   const handleSaveProfile = async () => {
     setSaving(true)
-    
-    // Debug logging
-    console.log('Session data:', session)
-    console.log('User ID:', session?.user?.id)
-    console.log('Profile data to save:', profile)
-    console.log('Profile image changed:', profileImage !== session?.user?.image)
-    
     try {
-      // Prepare data according to API schema
-      const updateData = {
-        name: profile.name,
-        phone: profile.phone || undefined,
-        avatar: profileImage !== session?.user?.image ? profileImage : undefined,
-        profile: {
-          location: profile.location || undefined,
-          occupation: profile.occupation || undefined,
-          bio: profile.bio || undefined,
-          dateOfBirth: profile.dateOfBirth || undefined
-        }
-      }
-
-      // Remove undefined values
-      Object.keys(updateData).forEach(key => {
-        if (updateData[key] === undefined) {
-          delete updateData[key]
-        }
-      })
-
-      if (updateData.profile) {
-        Object.keys(updateData.profile).forEach(key => {
-          if (updateData.profile[key] === undefined) {
-            delete updateData.profile[key]
-          }
-        })
-        
-        // Remove profile object if empty
-        if (Object.keys(updateData.profile).length === 0) {
-          delete updateData.profile
-        }
-      }
-
-      console.log('Sending update data:', updateData)
-
-      const response = await fetch('/api/user', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updateData)
-      })
-
-      const responseData = await response.json()
-      console.log('API Response:', responseData)
-      console.log('Response status:', response.status)
-
-      if (!response.ok) {
-        throw new Error(responseData.message || `Server error: ${response.status}`)
-      }
-
-      const result = responseData
+      // Here you would typically make an API call to save the profile
+      // await fetch('/api/profile', { method: 'PUT', body: JSON.stringify(profile) })
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
       setIsEditing(false)
-      
-      // Reload profile data to get the latest from database
-      await loadUserProfile()
-      
       toast.success('Profile updated successfully! 🎉')
     } catch (error) {
-      console.error('Error saving profile:', error)
-      toast.error(error.message || 'Failed to update profile. Please try again.')
+      toast.error('Failed to update profile. Please try again.')
     } finally {
       setSaving(false)
     }
   }
 
   const handleCancel = () => {
-    // Reset to loaded data by reloading from API
-    loadUserProfile()
+    // Reset to original values
+    setProfile({
+      name: session?.user?.name || '',
+      email: session?.user?.email || '',
+      phone: '',
+      location: '',
+      bio: '',
+      dateOfBirth: '',
+      occupation: ''
+    })
+    setProfileImage(session?.user?.image || '')
     setIsEditing(false)
   }
 
