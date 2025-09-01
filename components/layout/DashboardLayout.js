@@ -157,17 +157,17 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
                             label="Edit Profile" 
                             onClick={() => setShowProfileDropdown(false)}
                           />
-                          <MenuItem 
+                          {/* <MenuItem 
                             icon={CreditCard} 
                             label="Profile Card" 
                             onClick={() => setShowProfileDropdown(false)}
-                          />
-                          <MenuItem 
+                          /> */}
+                          {/* <MenuItem 
                             icon={FileText} 
                             label="My Sheets" 
                             onClick={() => setShowProfileDropdown(false)}
                           />
-                          
+                           */}
                           <div className="border-t border-slate-100 my-2"></div>
                           
                           <MenuItem 
