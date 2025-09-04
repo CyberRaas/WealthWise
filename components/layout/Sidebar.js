@@ -19,7 +19,8 @@ import {
   BarChart3,
   Menu,
   X,
-  LogOut
+  LogOut,
+  Calculator
 } from 'lucide-react'
 
 const navigationItems = [
@@ -40,6 +41,18 @@ const navigationItems = [
     href: '/dashboard/budget',
     icon: PieChart,
     description: 'Budget Management'
+  },
+  {
+    name: 'Debt Overview',
+    href: '/dashboard/debt',
+    icon: CreditCard,
+    description: 'Manage Your Debts'
+  },
+  {
+    name: 'Debt Calculator',
+    href: '/dashboard/debt-calculator',
+    icon: Calculator,
+    description: 'EMI & Loan Advisor'
   },
   {
     name: 'Goals',

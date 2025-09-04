@@ -192,14 +192,14 @@ async function updateUserHandler(req) {
   
   console.log('Update result:', result)
   
-  if (!result.value) {
+  if (!result) {
     throw new AppError('Failed to update user', 500, 'UPDATE_FAILED')
   }
   
   return NextResponse.json({
     success: true,
     message: validatedData.email ? "Profile updated. Please verify your new email address." : "Profile updated successfully",
-    data: { user: result.value }
+    data: { user: result }
   })
 }
 

@@ -1,0 +1,855 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { 
+  Plus,
+  Receipt,
+  TrendingDown,
+  TrendingUp,
+  Calendar,
+  AlertCircle,
+  CheckCircle,
+  Edit,
+  Trash2,
+  Eye,
+  DollarSign,
+  PieChart,
+  LineChart,
+  Brain,
+  
+} from 'lucide-react'
+import { toast } from 'react-hot-toast'
+import { PieChart as RechartsPieChart, Cell, ResponsiveContainer, LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Pie } from 'recharts'
+
+// Modal Component for Adding/Editing Debt
+function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
+  const [formData, setFormData] = useState({
+    type: type,
+    name: '',
+    amount: '',
+    interestRate: '',
+    duration: '',
+    monthlyInstallment: '',
+    dueDate: '',
+    description: ''
+  })
+
+  // Calculate monthly installment and due date based on amount, interest rate, and duration
+  const calculateLoanDetails = (amount, interestRate, duration) => {
+    if (!amount || !duration || amount <= 0 || duration <= 0) {
+      return { monthlyInstallment: '', dueDate: '' }
+    }
+
+    const principal = parseFloat(amount)
+    const months = parseInt(duration)
+    const monthlyRate = parseFloat(interestRate || 0) / 100 / 12
+
+    let monthlyInstallment
+    if (monthlyRate > 0) {
+      // EMI calculation with interest
+      monthlyInstallment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1)
+    } else {
+      // Simple division if no interest
+      monthlyInstallment = principal / months
+    }
+
+    // Calculate due date (duration months from today)
+    const today = new Date()
+    const dueDate = new Date(today.getFullYear(), today.getMonth() + months, today.getDate())
+
+    return {
+      monthlyInstallment: monthlyInstallment.toFixed(2),
+      dueDate: dueDate.toISOString().split('T')[0]
+    }
+  }
+
+  // Auto-calculate when amount, interest rate, or duration changes
+  useEffect(() => {
+    const { monthlyInstallment, dueDate } = calculateLoanDetails(
+      formData.amount, 
+      formData.interestRate, 
+      formData.duration
+    )
+    
+    if (monthlyInstallment && dueDate) {
+      setFormData(prev => ({
+        ...prev,
+        monthlyInstallment,
+        dueDate
+      }))
+    }
+  }, [formData.amount, formData.interestRate, formData.duration])
+
+  useEffect(() => {
+    if (debt) {
+      // For existing debt, calculate duration from current date to due date
+      const today = new Date()
+      const existingDueDate = new Date(debt.dueDate)
+      const monthsDiff = (existingDueDate.getFullYear() - today.getFullYear()) * 12 + 
+                        (existingDueDate.getMonth() - today.getMonth())
+      
+      setFormData({
+        type: debt.type,
+        name: debt.name,
+        amount: debt.amount.toString(),
+        interestRate: debt.interestRate.toString(),
+        duration: Math.max(1, monthsDiff).toString(),
+        monthlyInstallment: debt.monthlyInstallment.toString(),
+        dueDate: new Date(debt.dueDate).toISOString().split('T')[0],
+        description: debt.description || ''
+      })
+    } else {
+      setFormData({
+        type: type,
+        name: '',
+        amount: '',
+        interestRate: '',
+        duration: '',
+        monthlyInstallment: '',
+        dueDate: '',
+        description: ''
+      })
+    }
+  }, [debt, type])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    
+    if (!formData.name || !formData.amount || !formData.duration) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+
+    const debtData = {
+      ...formData,
+      amount: parseFloat(formData.amount),
+      interestRate: parseFloat(formData.interestRate) || 0,
+      duration: parseInt(formData.duration),
+      monthlyInstallment: parseFloat(formData.monthlyInstallment) || 0
+    }
+
+    await onSave(debtData)
+  }
+
+  if (!isOpen) return null
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-xl font-bold mb-4">
+          {debt ? 'Edit' : 'Add'} {type === 'taken' ? 'Debt Taken' : 'Debt Given'}
+        </h2>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {type === 'taken' ? 'Lender Name' : 'Borrower Name'} *
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder={type === 'taken' ? 'Enter lender name' : 'Enter borrower name'}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Amount *</label>
+            <input
+              type="number"
+              value={formData.amount}
+              onChange={(e) => setFormData({...formData, amount: e.target.value})}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="Enter amount"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Interest Rate (% per annum)</label>
+            <input
+              type="number"
+              value={formData.interestRate}
+              onChange={(e) => setFormData({...formData, interestRate: e.target.value})}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="Enter interest rate"
+              min="0"
+              max="100"
+              step="0.01"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Duration (months) *</label>
+            <input
+              type="number"
+              value={formData.duration}
+              onChange={(e) => setFormData({...formData, duration: e.target.value})}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="Enter duration in months"
+              min="1"
+              max="600"
+              required
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Monthly installment and due date will be calculated automatically
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Installment (Calculated)</label>
+            <input
+              type="number"
+              value={formData.monthlyInstallment}
+              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
+              placeholder="Auto-calculated"
+              disabled
+              step="0.01"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              This is automatically calculated based on amount, interest rate, and duration
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Final Due Date (Calculated)</label>
+            <input
+              type="date"
+              value={formData.dueDate}
+              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
+              disabled
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Final payment due date based on duration
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({...formData, description: e.target.value})}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="Enter description (optional)"
+              rows="3"
+            />
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className={`flex-1 ${type === 'taken' 
+                ? 'bg-red-500 hover:bg-red-600' 
+                : 'bg-green-500 hover:bg-green-600'
+              } text-white`}
+            >
+              {debt ? 'Update' : 'Add'} Debt
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+export default function DebtOverviewPage() {
+  const [debts, setDebts] = useState([])
+  const [summary, setSummary] = useState({ taken: {}, given: {} })
+  const [loading, setLoading] = useState(true)
+  const [showModal, setShowModal] = useState(false)
+  const [modalType, setModalType] = useState('taken')
+  const [editingDebt, setEditingDebt] = useState(null)
+  const [userProfile, setUserProfile] = useState(null)
+
+  useEffect(() => {
+    fetchDebts()
+    fetchUserProfile()
+  }, [])
+
+  const fetchDebts = async () => {
+    try {
+      const response = await fetch('/api/debt')
+      const data = await response.json()
+      
+      if (response.ok) {
+        setDebts(data.debts)
+        setSummary(data.summary)
+      } else {
+        toast.error(data.error || 'Failed to fetch debts')
+      }
+    } catch (error) {
+      console.error('Fetch error:', error)
+      toast.error('Failed to fetch debts')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await fetch('/api/user')
+      const data = await response.json()
+      
+      if (response.ok) {
+        setUserProfile(data.user)
+      }
+    } catch (error) {
+      console.error('Profile fetch error:', error)
+    }
+  }
+
+  const handleAddDebt = (type) => {
+    setModalType(type)
+    setEditingDebt(null)
+    setShowModal(true)
+  }
+
+  const handleEditDebt = (debt) => {
+    setEditingDebt(debt)
+    setModalType(debt.type)
+    setShowModal(true)
+  }
+
+  const handleSaveDebt = async (debtData) => {
+    try {
+      const url = editingDebt ? `/api/debt/${editingDebt._id}` : '/api/debt'
+      const method = editingDebt ? 'PUT' : 'POST'
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(debtData)
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        toast.success(editingDebt ? 'Debt updated successfully' : 'Debt added successfully')
+        setShowModal(false)
+        setEditingDebt(null)
+        fetchDebts()
+      } else {
+        toast.error(data.error || 'Failed to save debt')
+      }
+    } catch (error) {
+      console.error('Save error:', error)
+      toast.error('Failed to save debt')
+    }
+  }
+
+  const handleDeleteDebt = async (debtId) => {
+    if (!confirm('Are you sure you want to delete this debt?')) return
+
+    try {
+      const response = await fetch(`/api/debt/${debtId}`, {
+        method: 'DELETE'
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        toast.success('Debt deleted successfully')
+        fetchDebts()
+      } else {
+        toast.error(data.error || 'Failed to delete debt')
+      }
+    } catch (error) {
+      console.error('Delete error:', error)
+      toast.error('Failed to delete debt')
+    }
+  }
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0
+    }).format(amount)
+  }
+
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })
+  }
+
+  const getDaysUntilDue = (dueDate) => {
+    const today = new Date()
+    const due = new Date(dueDate)
+    const timeDiff = due.getTime() - today.getTime()
+    return Math.ceil(timeDiff / (1000 * 3600 * 24))
+  }
+
+  const calculateDebtScore = () => {
+    const monthlyIncome = userProfile?.monthlyIncome || 0
+    const totalDebtTaken = summary.taken.totalRemaining || 0
+    
+    if (monthlyIncome === 0) return 0
+    
+    const debtRatio = (totalDebtTaken / monthlyIncome) * 100
+    return Math.max(0, Math.min(100, 100 - debtRatio))
+  }
+
+  const getDebtScoreColor = (score) => {
+    if (score >= 70) return 'text-green-600'
+    if (score >= 40) return 'text-yellow-600'
+    return 'text-red-600'
+  }
+
+  const getDebtScoreLabel = (score) => {
+    if (score >= 70) return 'Excellent'
+    if (score >= 40) return 'Good'
+    return 'Needs Improvement'
+  }
+
+  // Data for charts
+  const pieChartData = [
+    { name: 'Debt Taken', value: summary.taken.totalRemaining || 0, color: '#ef4444' },
+    { name: 'Debt Given', value: summary.given.totalRemaining || 0, color: '#22c55e' }
+  ]
+
+  const lineChartData = debts.reduce((acc, debt) => {
+    const month = new Date(debt.createdAt).toISOString().slice(0, 7)
+    const existing = acc.find(item => item.month === month)
+    
+    if (existing) {
+      if (debt.type === 'taken') {
+        existing.taken += debt.amount
+      } else {
+        existing.given += debt.amount
+      }
+    } else {
+      acc.push({
+        month,
+        taken: debt.type === 'taken' ? debt.amount : 0,
+        given: debt.type === 'given' ? debt.amount : 0
+      })
+    }
+    
+    return acc
+  }, []).sort((a, b) => a.month.localeCompare(b.month)).slice(-6)
+
+  const debtScore = calculateDebtScore()
+
+  return (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-800">Debt Overview</h1>
+          <p className="text-slate-600 mt-1">
+            Track your debts taken and given to manage your financial obligations
+          </p>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center h-64">
+          <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : (
+        <>
+          {/* Debt Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Debt Taken Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-red-600 flex items-center">
+                  <TrendingDown className="w-5 h-5 mr-2" />
+                  Debt Taken (Liabilities)
+                </h2>
+                <Button
+                  onClick={() => handleAddDebt('taken')}
+                  className="bg-red-500 hover:bg-red-600 text-white"
+                  size="sm"
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add Debt
+                </Button>
+              </div>
+
+              <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-red-600 font-medium">Total Amount</p>
+                    <p className="text-red-800 font-bold text-lg">
+                      {formatCurrency(summary.taken.totalAmount || 0)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-red-600 font-medium">Remaining</p>
+                    <p className="text-red-800 font-bold text-lg">
+                      {formatCurrency(summary.taken.totalRemaining || 0)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-red-600 font-medium">Monthly Payments</p>
+                    <p className="text-red-800 font-bold">
+                      {formatCurrency(summary.taken.totalMonthlyPayments || 0)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-red-600 font-medium">Active Debts</p>
+                    <p className="text-red-800 font-bold">{summary.taken.count || 0}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {debts.filter(debt => debt.type === 'taken').slice(0, 3).map((debt) => {
+                  const daysUntilDue = getDaysUntilDue(debt.dueDate)
+                  const completionPercentage = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
+                  
+                  return (
+                    <div key={debt._id} className="bg-white border border-red-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-medium text-slate-800">{debt.name}</h3>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => handleEditDebt(debt)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-slate-500 hover:text-slate-700"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            onClick={() => handleDeleteDebt(debt._id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-600">Remaining:</span>
+                          <span className="font-medium text-red-600">
+                            {formatCurrency(debt.remainingBalance)}
+                          </span>
+                        </div>
+                        
+                        <div className="w-full bg-red-100 rounded-full h-2">
+                          <div 
+                            className="bg-red-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${completionPercentage}%` }}
+                          />
+                        </div>
+                        
+                        <div className="flex justify-between text-xs text-slate-500">
+                          <span>Due: {formatDate(debt.dueDate)}</span>
+                          <span className={daysUntilDue < 30 ? 'text-red-600 font-medium' : ''}>
+                            {daysUntilDue > 0 ? `${daysUntilDue} days left` : 'Overdue'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+                
+                {debts.filter(debt => debt.type === 'taken').length === 0 && (
+                  <div className="text-center py-8 text-slate-500">
+                    <Receipt className="w-12 h-12 mx-auto mb-2 text-slate-300" />
+                    <p>No debts taken yet</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Debt Given Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-green-600 flex items-center">
+                  <TrendingUp className="w-5 h-5 mr-2" />
+                  Debt Given (Assets)
+                </h2>
+                <Button
+                  onClick={() => handleAddDebt('given')}
+                  className="bg-green-500 hover:bg-green-600 text-white"
+                  size="sm"
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add Debt
+                </Button>
+              </div>
+
+              <div className="bg-green-50 border-l-4 border-green-500 rounded-lg p-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-green-600 font-medium">Total Amount</p>
+                    <p className="text-green-800 font-bold text-lg">
+                      {formatCurrency(summary.given.totalAmount || 0)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-green-600 font-medium">Remaining</p>
+                    <p className="text-green-800 font-bold text-lg">
+                      {formatCurrency(summary.given.totalRemaining || 0)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-green-600 font-medium">Monthly Payments</p>
+                    <p className="text-green-800 font-bold">
+                      {formatCurrency(summary.given.totalMonthlyPayments || 0)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-green-600 font-medium">Active Debts</p>
+                    <p className="text-green-800 font-bold">{summary.given.count || 0}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {debts.filter(debt => debt.type === 'given').slice(0, 3).map((debt) => {
+                  const daysUntilDue = getDaysUntilDue(debt.dueDate)
+                  const completionPercentage = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
+                  
+                  return (
+                    <div key={debt._id} className="bg-white border border-green-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-medium text-slate-800">{debt.name}</h3>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => handleEditDebt(debt)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-slate-500 hover:text-slate-700"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            onClick={() => handleDeleteDebt(debt._id)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-green-500 hover:text-green-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-600">Remaining:</span>
+                          <span className="font-medium text-green-600">
+                            {formatCurrency(debt.remainingBalance)}
+                          </span>
+                        </div>
+                        
+                        <div className="w-full bg-green-100 rounded-full h-2">
+                          <div 
+                            className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${completionPercentage}%` }}
+                          />
+                        </div>
+                        
+                        <div className="flex justify-between text-xs text-slate-500">
+                          <span>Due: {formatDate(debt.dueDate)}</span>
+                          <span className={daysUntilDue < 30 ? 'text-green-600 font-medium' : ''}>
+                            {daysUntilDue > 0 ? `${daysUntilDue} days left` : 'Overdue'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+                
+                {debts.filter(debt => debt.type === 'given').length === 0 && (
+                  <div className="text-center py-8 text-slate-500">
+                    <DollarSign className="w-12 h-12 mx-auto mb-2 text-slate-300" />
+                    <p>No debts given yet</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Analytics Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Debt Score */}
+            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" />
+                Debt Score
+              </h3>
+              
+              <div className="text-center">
+                <div className="relative w-32 h-32 mx-auto mb-4">
+                  <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 100 100">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke="#e5e7eb"
+                      strokeWidth="8"
+                      fill="none"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke={debtScore >= 70 ? '#22c55e' : debtScore >= 40 ? '#f59e0b' : '#ef4444'}
+                      strokeWidth="8"
+                      fill="none"
+                      strokeDasharray={`${debtScore * 2.51} 251`}
+                      strokeLinecap="round"
+                      className="transition-all duration-1000"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className={`text-2xl font-bold ${getDebtScoreColor(debtScore)}`}>
+                        {Math.round(debtScore)}
+                      </div>
+                      <div className="text-xs text-slate-500">out of 100</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className={`text-lg font-semibold ${getDebtScoreColor(debtScore)}`}>
+                  {getDebtScoreLabel(debtScore)}
+                </div>
+                <p className="text-sm text-slate-600 mt-2">
+                  Based on debt-to-income ratio
+                </p>
+              </div>
+            </div>
+
+            {/* Debt Distribution Pie Chart */}
+            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                <PieChart className="w-5 h-5 mr-2 text-emerald-500" />
+                Debt Distribution
+              </h3>
+              
+              {pieChartData.some(item => item.value > 0) ? (
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsPieChart>
+                      <Pie
+                        data={pieChartData.filter(item => item.value > 0)}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={80}
+                        dataKey="value"
+                      >
+                        {pieChartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(value) => formatCurrency(value)} />
+                    </RechartsPieChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-48 text-slate-500">
+                  <div className="text-center">
+                    <PieChart className="w-12 h-12 mx-auto mb-2 text-slate-300" />
+                    <p>No debt data available</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Debt Trend Line Chart */}
+            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                <LineChart className="w-5 h-5 mr-2 text-emerald-500" />
+                Debt Trends
+              </h3>
+              
+              {lineChartData.length > 0 ? (
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsLineChart data={lineChartData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" fontSize={12} />
+                      <YAxis fontSize={12} />
+                      <Tooltip formatter={(value) => formatCurrency(value)} />
+                      <Line type="monotone" dataKey="taken" stroke="#ef4444" strokeWidth={2} />
+                      <Line type="monotone" dataKey="given" stroke="#22c55e" strokeWidth={2} />
+                    </RechartsLineChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-48 text-slate-500">
+                  <div className="text-center">
+                    <LineChart className="w-12 h-12 mx-auto mb-2 text-slate-300" />
+                    <p>No trend data available</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* AI Recommendations Card */}
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl shadow-lg border border-purple-200 p-6">
+            <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+              <Brain className="w-5 h-5 mr-2 text-purple-500" />
+              AI Debt Recommendations
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="bg-white rounded-lg p-4 border border-purple-100">
+                <h4 className="font-medium text-purple-800 mb-2">Debt Consolidation</h4>
+                <p className="text-sm text-slate-600">
+                  Consider consolidating high-interest debts to reduce monthly payments and save on interest.
+                </p>
+              </div>
+              
+              <div className="bg-white rounded-lg p-4 border border-purple-100">
+                <h4 className="font-medium text-purple-800 mb-2">Payment Priority</h4>
+                <p className="text-sm text-slate-600">
+                  Focus on paying off highest interest rate debts first to minimize total interest paid.
+                </p>
+              </div>
+              
+              <div className="bg-white rounded-lg p-4 border border-purple-100">
+                <h4 className="font-medium text-purple-800 mb-2">Emergency Fund</h4>
+                <p className="text-sm text-slate-600">
+                  Build an emergency fund to avoid taking on additional debt during unexpected expenses.
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-4 text-xs text-slate-500">
+              * These are general recommendations. Consult with a financial advisor for personalized advice.
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Debt Modal */}
+      <DebtModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSave={handleSaveDebt}
+        debt={editingDebt}
+        type={modalType}
+      />
+    </div>
+  )
+}
