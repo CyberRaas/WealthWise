@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { 
@@ -266,7 +267,7 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
   )
 }
 
-export default function DebtOverviewPage() {
+function DebtOverview() {
   const [debts, setDebts] = useState([])
   const [summary, setSummary] = useState({ taken: {}, given: {} })
   const [loading, setLoading] = useState(true)
@@ -401,23 +402,91 @@ export default function DebtOverviewPage() {
   const calculateDebtScore = () => {
     const monthlyIncome = userProfile?.monthlyIncome || 0
     const totalDebtTaken = summary.taken.totalRemaining || 0
+    const totalDebtGiven = summary.given.totalRemaining || 0
+    const totalDebts = debts.length
+    const overdueDebts = debts.filter(debt => {
+      const dueDate = new Date(debt.dueDate)
+      const today = new Date()
+      return dueDate < today && debt.remainingBalance > 0
+    }).length
     
-    if (monthlyIncome === 0) return 0
+    // If no debts at all, return excellent score
+    if (totalDebts === 0) return 95
     
-    const debtRatio = (totalDebtTaken / monthlyIncome) * 100
-    return Math.max(0, Math.min(100, 100 - debtRatio))
+    let score = 50 // Base score
+    
+    // Factor 1: Debt-to-income ratio (40% weight) - only if income is available
+    if (monthlyIncome > 0) {
+      const debtRatio = (totalDebtTaken / monthlyIncome) * 100
+      if (debtRatio <= 10) score += 40
+      else if (debtRatio <= 20) score += 30
+      else if (debtRatio <= 30) score += 20
+      else if (debtRatio <= 40) score += 10
+      else score -= 10
+    } else {
+      // If no income data, use debt amount as indicator
+      if (totalDebtTaken <= 100000) score += 25      // Under 1L
+      else if (totalDebtTaken <= 500000) score += 15 // Under 5L
+      else if (totalDebtTaken <= 1000000) score += 5 // Under 10L
+      else score -= 10 // Above 10L
+    }
+    
+    // Factor 2: Debt diversity (20% weight)
+    const debtBalance = totalDebtTaken > 0 && totalDebtGiven > 0
+    if (debtBalance && totalDebtGiven >= totalDebtTaken * 0.5) {
+      score += 20 // Good balance between lending and borrowing
+    } else if (totalDebtTaken === 0 && totalDebtGiven > 0) {
+      score += 15 // Only lending, no borrowing
+    } else if (totalDebtTaken > 0 && totalDebtGiven === 0) {
+      score += 5 // Only borrowing
+    }
+    
+    // Factor 3: Overdue payments (20% weight)
+    if (overdueDebts === 0) {
+      score += 20 // No overdue payments
+    } else {
+      const overdueRatio = overdueDebts / totalDebts
+      if (overdueRatio <= 0.1) score += 10      // Less than 10% overdue
+      else if (overdueRatio <= 0.25) score += 5 // Less than 25% overdue
+      else score -= 15 // More than 25% overdue
+    }
+    
+    // Factor 4: Number of active debts (10% weight)
+    if (totalDebts <= 2) score += 10        // Few debts to manage
+    else if (totalDebts <= 5) score += 5    // Moderate number
+    else score -= 5 // Too many debts
+    
+    // Factor 5: Average debt size (10% weight)
+    const avgDebtSize = totalDebts > 0 ? totalDebtTaken / debts.filter(d => d.type === 'taken').length : 0
+    if (avgDebtSize <= 50000) score += 10      // Small average debt
+    else if (avgDebtSize <= 200000) score += 5 // Medium average debt
+    else score -= 5 // Large average debt
+    
+    return Math.max(0, Math.min(100, Math.round(score)))
   }
 
   const getDebtScoreColor = (score) => {
-    if (score >= 70) return 'text-green-600'
+    if (score >= 80) return 'text-green-600'
+    if (score >= 60) return 'text-blue-600'
     if (score >= 40) return 'text-yellow-600'
+    if (score >= 20) return 'text-orange-600'
     return 'text-red-600'
   }
 
   const getDebtScoreLabel = (score) => {
-    if (score >= 70) return 'Excellent'
-    if (score >= 40) return 'Good'
-    return 'Needs Improvement'
+    if (score >= 80) return 'Excellent'
+    if (score >= 60) return 'Good'
+    if (score >= 40) return 'Fair'
+    if (score >= 20) return 'Poor'
+    return 'Critical'
+  }
+
+  const getDebtScoreDescription = (score) => {
+    if (score >= 80) return 'Your debt management is excellent! Keep it up.'
+    if (score >= 60) return 'Good debt management with room for minor improvements.'
+    if (score >= 40) return 'Fair debt situation. Consider optimizing your strategy.'
+    if (score >= 20) return 'Poor debt management. Immediate action recommended.'
+    return 'Critical debt situation. Seek professional financial advice.'
   }
 
   // Data for charts
@@ -450,70 +519,68 @@ export default function DebtOverviewPage() {
   const debtScore = calculateDebtScore()
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800">Debt Overview</h1>
-          <p className="text-slate-600 mt-1">
-            Track your debts taken and given to manage your financial obligations
-          </p>
+    <DashboardLayout title="Debt Overview">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-slate-600 mt-1">
+              Track your debts taken and given to manage your financial obligations
+            </p>
+          </div>
         </div>
-      </div>
 
-      {loading ? (
-        <div className="flex items-center justify-center h-64">
-          <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-        </div>
-      ) : (
-        <>
-          {/* Debt Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Debt Taken Section */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-red-600 flex items-center">
-                  <TrendingDown className="w-5 h-5 mr-2" />
-                  Debt Taken (Liabilities)
-                </h2>
-                <Button
-                  onClick={() => handleAddDebt('taken')}
-                  className="bg-red-500 hover:bg-red-600 text-white"
-                  size="sm"
-                >
-                  <Plus className="w-4 h-4 mr-1" />
-                  Add Debt
-                </Button>
-              </div>
-
-              <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-red-600 font-medium">Total Amount</p>
-                    <p className="text-red-800 font-bold text-lg">
-                      {formatCurrency(summary.taken.totalAmount || 0)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-red-600 font-medium">Remaining</p>
-                    <p className="text-red-800 font-bold text-lg">
-                      {formatCurrency(summary.taken.totalRemaining || 0)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-red-600 font-medium">Monthly Payments</p>
-                    <p className="text-red-800 font-bold">
-                      {formatCurrency(summary.taken.totalMonthlyPayments || 0)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-red-600 font-medium">Active Debts</p>
-                    <p className="text-red-800 font-bold">{summary.taken.count || 0}</p>
-                  </div>
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : (
+          <>
+            {/* Debt Summary Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Debt Taken Section */}
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <h2 className="text-lg sm:text-xl font-semibold text-red-600 flex items-center">
+                    <TrendingDown className="w-5 h-5 mr-2" />
+                    Debt Taken (Liabilities)
+                  </h2>
+                  <Button
+                    onClick={() => handleAddDebt('taken')}
+                    className="bg-red-500 hover:bg-red-600 text-white w-full sm:w-auto"
+                    size="sm"
+                  >
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add Debt
+                  </Button>
                 </div>
-              </div>
 
-              <div className="space-y-3">
+                <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 text-sm">
+                    <div>
+                      <p className="text-red-600 font-medium">Total Amount</p>
+                      <p className="text-red-800 font-bold text-base sm:text-lg">
+                        {formatCurrency(summary.taken.totalAmount || 0)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-red-600 font-medium">Remaining</p>
+                      <p className="text-red-800 font-bold text-base sm:text-lg">
+                        {formatCurrency(summary.taken.totalRemaining || 0)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-red-600 font-medium">Monthly Payments</p>
+                      <p className="text-red-800 font-bold text-sm sm:text-base">
+                        {formatCurrency(summary.taken.totalMonthlyPayments || 0)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-red-600 font-medium">Active Debts</p>
+                      <p className="text-red-800 font-bold text-sm sm:text-base">{summary.taken.count || 0}</p>
+                    </div>
+                  </div>
+                </div>              <div className="space-y-3">
                 {debts.filter(debt => debt.type === 'taken').slice(0, 3).map((debt) => {
                   const daysUntilDue = getDaysUntilDue(debt.dueDate)
                   const completionPercentage = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
@@ -577,51 +644,49 @@ export default function DebtOverviewPage() {
               </div>
             </div>
 
-            {/* Debt Given Section */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-green-600 flex items-center">
-                  <TrendingUp className="w-5 h-5 mr-2" />
-                  Debt Given (Assets)
-                </h2>
-                <Button
-                  onClick={() => handleAddDebt('given')}
-                  className="bg-green-500 hover:bg-green-600 text-white"
-                  size="sm"
-                >
-                  <Plus className="w-4 h-4 mr-1" />
-                  Add Debt
-                </Button>
-              </div>
-
-              <div className="bg-green-50 border-l-4 border-green-500 rounded-lg p-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-green-600 font-medium">Total Amount</p>
-                    <p className="text-green-800 font-bold text-lg">
-                      {formatCurrency(summary.given.totalAmount || 0)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-green-600 font-medium">Remaining</p>
-                    <p className="text-green-800 font-bold text-lg">
-                      {formatCurrency(summary.given.totalRemaining || 0)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-green-600 font-medium">Monthly Payments</p>
-                    <p className="text-green-800 font-bold">
-                      {formatCurrency(summary.given.totalMonthlyPayments || 0)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-green-600 font-medium">Active Debts</p>
-                    <p className="text-green-800 font-bold">{summary.given.count || 0}</p>
-                  </div>
+              {/* Debt Given Section */}
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <h2 className="text-lg sm:text-xl font-semibold text-green-600 flex items-center">
+                    <TrendingUp className="w-5 h-5 mr-2" />
+                    Debt Given (Assets)
+                  </h2>
+                  <Button
+                    onClick={() => handleAddDebt('given')}
+                    className="bg-green-500 hover:bg-green-600 text-white w-full sm:w-auto"
+                    size="sm"
+                  >
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add Debt
+                  </Button>
                 </div>
-              </div>
 
-              <div className="space-y-3">
+                <div className="bg-green-50 border-l-4 border-green-500 rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 text-sm">
+                    <div>
+                      <p className="text-green-600 font-medium">Total Amount</p>
+                      <p className="text-green-800 font-bold text-base sm:text-lg">
+                        {formatCurrency(summary.given.totalAmount || 0)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-green-600 font-medium">Remaining</p>
+                      <p className="text-green-800 font-bold text-base sm:text-lg">
+                        {formatCurrency(summary.given.totalRemaining || 0)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-green-600 font-medium">Monthly Payments</p>
+                      <p className="text-green-800 font-bold text-sm sm:text-base">
+                        {formatCurrency(summary.given.totalMonthlyPayments || 0)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-green-600 font-medium">Active Debts</p>
+                      <p className="text-green-800 font-bold text-sm sm:text-base">{summary.given.count || 0}</p>
+                    </div>
+                  </div>
+                </div>              <div className="space-y-3">
                 {debts.filter(debt => debt.type === 'given').slice(0, 3).map((debt) => {
                   const daysUntilDue = getDaysUntilDue(debt.dueDate)
                   const completionPercentage = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
@@ -689,15 +754,15 @@ export default function DebtOverviewPage() {
           {/* Analytics Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Debt Score */}
-            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4 flex items-center">
                 <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" />
                 Debt Score
               </h3>
               
               <div className="text-center">
-                <div className="relative w-32 h-32 mx-auto mb-4">
-                  <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 100 100">
+                <div className="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4">
+                  <svg className="w-24 h-24 sm:w-32 sm:h-32 transform -rotate-90" viewBox="0 0 100 100">
                     <circle
                       cx="50"
                       cy="50"
@@ -710,7 +775,12 @@ export default function DebtOverviewPage() {
                       cx="50"
                       cy="50"
                       r="40"
-                      stroke={debtScore >= 70 ? '#22c55e' : debtScore >= 40 ? '#f59e0b' : '#ef4444'}
+                      stroke={
+                        debtScore >= 80 ? '#22c55e' : 
+                        debtScore >= 60 ? '#3b82f6' :
+                        debtScore >= 40 ? '#f59e0b' : 
+                        debtScore >= 20 ? '#f97316' : '#ef4444'
+                      }
                       strokeWidth="8"
                       fill="none"
                       strokeDasharray={`${debtScore * 2.51} 251`}
@@ -720,7 +790,7 @@ export default function DebtOverviewPage() {
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <div className={`text-2xl font-bold ${getDebtScoreColor(debtScore)}`}>
+                      <div className={`text-xl sm:text-2xl font-bold ${getDebtScoreColor(debtScore)}`}>
                         {Math.round(debtScore)}
                       </div>
                       <div className="text-xs text-slate-500">out of 100</div>
@@ -728,32 +798,62 @@ export default function DebtOverviewPage() {
                   </div>
                 </div>
                 
-                <div className={`text-lg font-semibold ${getDebtScoreColor(debtScore)}`}>
+                <div className={`text-base sm:text-lg font-semibold ${getDebtScoreColor(debtScore)}`}>
                   {getDebtScoreLabel(debtScore)}
                 </div>
-                <p className="text-sm text-slate-600 mt-2">
-                  Based on debt-to-income ratio
+                <p className="text-xs sm:text-sm text-slate-600 mt-2">
+                  {getDebtScoreDescription(debtScore)}
                 </p>
+              </div>
+              
+              {/* Score Factors */}
+              <div className="mt-4 pt-4 border-t border-slate-200">
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-slate-600">Total Debts:</span>
+                    <span className="font-medium">{debts.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-600">Total Borrowed:</span>
+                    <span className="font-medium text-red-600">
+                      ₹{(summary.taken.totalRemaining || 0).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-600">Total Lent:</span>
+                    <span className="font-medium text-green-600">
+                      ₹{(summary.given.totalRemaining || 0).toLocaleString()}
+                    </span>
+                  </div>
+                  {userProfile?.monthlyIncome && (
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Debt-to-Income:</span>
+                      <span className="font-medium">
+                        {((summary.taken.totalRemaining || 0) / userProfile.monthlyIncome * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Debt Distribution Pie Chart */}
-            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4 flex items-center">
                 <PieChart className="w-5 h-5 mr-2 text-emerald-500" />
                 Debt Distribution
               </h3>
               
               {pieChartData.some(item => item.value > 0) ? (
-                <div className="h-48">
+                <div className="h-36 sm:h-48">
                   <ResponsiveContainer width="100%" height="100%">
                     <RechartsPieChart>
                       <Pie
                         data={pieChartData.filter(item => item.value > 0)}
                         cx="50%"
                         cy="50%"
-                        innerRadius={40}
-                        outerRadius={80}
+                        innerRadius={30}
+                        outerRadius={60}
                         dataKey="value"
                       >
                         {pieChartData.map((entry, index) => (
@@ -765,29 +865,29 @@ export default function DebtOverviewPage() {
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-48 text-slate-500">
+                <div className="flex items-center justify-center h-36 sm:h-48 text-slate-500">
                   <div className="text-center">
-                    <PieChart className="w-12 h-12 mx-auto mb-2 text-slate-300" />
-                    <p>No debt data available</p>
+                    <PieChart className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-2 text-slate-300" />
+                    <p className="text-xs sm:text-sm">No debt data available</p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Debt Trend Line Chart */}
-            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4 flex items-center">
                 <LineChart className="w-5 h-5 mr-2 text-emerald-500" />
                 Debt Trends
               </h3>
               
               {lineChartData.length > 0 ? (
-                <div className="h-48">
+                <div className="h-36 sm:h-48">
                   <ResponsiveContainer width="100%" height="100%">
                     <RechartsLineChart data={lineChartData}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" fontSize={12} />
-                      <YAxis fontSize={12} />
+                      <XAxis dataKey="month" fontSize={10} />
+                      <YAxis fontSize={10} />
                       <Tooltip formatter={(value) => formatCurrency(value)} />
                       <Line type="monotone" dataKey="taken" stroke="#ef4444" strokeWidth={2} />
                       <Line type="monotone" dataKey="given" stroke="#22c55e" strokeWidth={2} />
@@ -795,10 +895,10 @@ export default function DebtOverviewPage() {
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-48 text-slate-500">
+                <div className="flex items-center justify-center h-36 sm:h-48 text-slate-500">
                   <div className="text-center">
-                    <LineChart className="w-12 h-12 mx-auto mb-2 text-slate-300" />
-                    <p>No trend data available</p>
+                    <LineChart className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-2 text-slate-300" />
+                    <p className="text-xs sm:text-sm">No trend data available</p>
                   </div>
                 </div>
               )}
@@ -806,30 +906,30 @@ export default function DebtOverviewPage() {
           </div>
 
           {/* AI Recommendations Card */}
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl shadow-lg border border-purple-200 p-6">
-            <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl shadow-lg border border-purple-200 p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4 flex items-center">
               <Brain className="w-5 h-5 mr-2 text-purple-500" />
               AI Debt Recommendations
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="bg-white rounded-lg p-4 border border-purple-100">
-                <h4 className="font-medium text-purple-800 mb-2">Debt Consolidation</h4>
-                <p className="text-sm text-slate-600">
+              <div className="bg-white rounded-lg p-3 sm:p-4 border border-purple-100">
+                <h4 className="font-medium text-purple-800 mb-2 text-sm sm:text-base">Debt Consolidation</h4>
+                <p className="text-xs sm:text-sm text-slate-600">
                   Consider consolidating high-interest debts to reduce monthly payments and save on interest.
                 </p>
               </div>
               
-              <div className="bg-white rounded-lg p-4 border border-purple-100">
-                <h4 className="font-medium text-purple-800 mb-2">Payment Priority</h4>
-                <p className="text-sm text-slate-600">
+              <div className="bg-white rounded-lg p-3 sm:p-4 border border-purple-100">
+                <h4 className="font-medium text-purple-800 mb-2 text-sm sm:text-base">Payment Priority</h4>
+                <p className="text-xs sm:text-sm text-slate-600">
                   Focus on paying off highest interest rate debts first to minimize total interest paid.
                 </p>
               </div>
               
-              <div className="bg-white rounded-lg p-4 border border-purple-100">
-                <h4 className="font-medium text-purple-800 mb-2">Emergency Fund</h4>
-                <p className="text-sm text-slate-600">
+              <div className="bg-white rounded-lg p-3 sm:p-4 border border-purple-100 md:col-span-2 lg:col-span-1">
+                <h4 className="font-medium text-purple-800 mb-2 text-sm sm:text-base">Emergency Fund</h4>
+                <p className="text-xs sm:text-sm text-slate-600">
                   Build an emergency fund to avoid taking on additional debt during unexpected expenses.
                 </p>
               </div>
@@ -850,6 +950,11 @@ export default function DebtOverviewPage() {
         debt={editingDebt}
         type={modalType}
       />
-    </div>
+      </div>
+    </DashboardLayout>
   )
+}
+
+export default function DebtOverviewPage() {
+  return <DebtOverview />
 }

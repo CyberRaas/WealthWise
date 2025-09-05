@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { 
@@ -134,7 +135,7 @@ function EMICalculator({ onCalculate }) {
   return (
     <div className="space-y-6">
       {/* Calculator Form */}
-      <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200">
+      <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200 shadow-lg">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center text-slate-800 text-lg sm:text-xl">
             <Calculator className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-green-600" />
@@ -144,9 +145,9 @@ function EMICalculator({ onCalculate }) {
             Calculate your loan EMI, total interest, and repayment timeline
           </p>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Principal Amount (₹) *
               </label>
@@ -165,7 +166,7 @@ function EMICalculator({ onCalculate }) {
               )}
             </div>
 
-            <div>
+            <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Interest Rate (% per annum) *
               </label>
@@ -186,11 +187,11 @@ function EMICalculator({ onCalculate }) {
               )}
             </div>
 
-            <div>
+            <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Duration *
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 <input
                   type="number"
                   value={formData.duration}
@@ -204,7 +205,7 @@ function EMICalculator({ onCalculate }) {
                 <select
                   value={formData.durationType}
                   onChange={(e) => setFormData({...formData, durationType: e.target.value})}
-                  className="px-3 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
+                  className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white min-w-[100px]"
                 >
                   <option value="months">Months</option>
                   <option value="years">Years</option>
@@ -215,29 +216,34 @@ function EMICalculator({ onCalculate }) {
               )}
             </div>
 
-            <div>
+            <div className="space-y-1">
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Compounding Frequency
               </label>
               <select
                 value={formData.compoundingFrequency}
                 onChange={(e) => setFormData({...formData, compoundingFrequency: e.target.value})}
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
+                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-colors hover:border-green-400"
               >
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
                 <option value="annually">Annually</option>
               </select>
+              <p className="text-xs text-slate-500 mt-1">
+                How often interest is compounded
+              </p>
             </div>
           </div>
 
-          <Button
-            onClick={calculateEMI}
-            className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 text-base sm:text-lg font-medium transition-all duration-200"
-          >
-            <Calculator className="w-5 h-5 mr-2" />
-            Calculate EMI
-          </Button>
+          <div className="pt-4">
+            <Button
+              onClick={calculateEMI}
+              className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 text-base sm:text-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              <Calculator className="w-5 h-5 mr-2" />
+              Calculate EMI
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
@@ -903,64 +909,63 @@ export default function DebtCalculatorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
-        {/* Header */}
-        <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
-            Debt Calculator & Loan Advisor
-          </h1>
-          <p className="text-sm sm:text-base text-slate-600 max-w-3xl mx-auto">
-            Calculate your EMI, explore repayment strategies, and get AI-powered loan advice to make informed financial decisions
-          </p>
-        </div>
-
-        {/* Main Layout */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {/* Left Panel - Calculator */}
-          <div className="space-y-6">
-            <EMICalculator onCalculate={handleCalculation} />
+    <DashboardLayout title="Debt Calculator & Loan Advisor">
+      <div className="min-h-screen bg-slate-50">
+        <div className="max-w-7xl mx-auto space-y-6">
+          {/* Header */}
+          <div className="text-center mb-6 sm:mb-8">
+            <p className="text-sm sm:text-base text-slate-600 max-w-3xl mx-auto">
+              Calculate your EMI, explore repayment strategies, and get AI-powered loan advice to make informed financial decisions
+            </p>
           </div>
 
-          {/* Right Panel - AI Chat & Insights */}
-          <div className="space-y-6">
-            {/* AI Chat */}
-            <div className="min-h-[600px]">
-              <LoanAdvisorChat 
+          {/* Main Layout */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+            {/* Left Panel - Calculator */}
+            <div className="space-y-4 sm:space-y-6">
+              <EMICalculator onCalculate={handleCalculation} />
+            </div>
+
+            {/* Right Panel - AI Chat & Insights */}
+            <div className="space-y-4 sm:space-y-6">
+              {/* AI Chat */}
+              <div className="min-h-[500px] sm:min-h-[600px]">
+                <LoanAdvisorChat 
+                  calculationResults={calculationResults}
+                  onInsightGenerated={handleInsightGenerated}
+                />
+              </div>
+              
+              {/* Smart Insights Card */}
+              <SmartInsightsCard 
+                insights={aiInsights}
                 calculationResults={calculationResults}
-                onInsightGenerated={handleInsightGenerated}
               />
             </div>
-            
-            {/* Smart Insights Card */}
-            <SmartInsightsCard 
-              insights={aiInsights}
-              calculationResults={calculationResults}
-            />
           </div>
-        </div>
 
-        {/* Additional Information */}
-        <Card className="bg-white">
-          <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-slate-800 mb-4">How to Use This Calculator</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-600">
-              <div>
-                <h4 className="font-medium text-slate-800 mb-2">🧮 Calculate EMI</h4>
-                <p>Enter your loan amount, interest rate, and duration to get accurate EMI calculations with detailed breakdowns.</p>
+          {/* Additional Information */}
+          <Card className="bg-white">
+            <CardContent className="p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4">How to Use This Calculator</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-xs sm:text-sm text-slate-600">
+                <div>
+                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">🧮 Calculate EMI</h4>
+                  <p>Enter your loan amount, interest rate, and duration to get accurate EMI calculations with detailed breakdowns.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">🤖 AI Advisor</h4>
+                  <p>Ask questions about loan strategies, bank recommendations, or get personalized advice based on your calculations.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">💡 Smart Insights</h4>
+                  <p>Get automated recommendations for prepayment strategies, interest optimization, and loan management tips.</p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-medium text-slate-800 mb-2">🤖 AI Advisor</h4>
-                <p>Ask questions about loan strategies, bank recommendations, or get personalized advice based on your calculations.</p>
-              </div>
-              <div>
-                <h4 className="font-medium text-slate-800 mb-2">💡 Smart Insights</h4>
-                <p>Get automated recommendations for prepayment strategies, interest optimization, and loan management tips.</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   )
 }

@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
+import Logo from '@/components/ui/Logo'
 import { TrendingUp, Shield, Zap, ArrowRight, BarChart3, PieChart, 
   Target,
   DollarSign,
@@ -157,15 +158,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
-                <TrendingUp className="w-6 h-6 text-white animate-pulse-subtle" />
-              </div>
-              <h1 className="text-2xl font-bold text-slate-900">
-                Wealth<span className="text-2xl font-bold text-cyan-700">Wise</span>
-              </h1>
-              
-            </div>
+            <Logo size="large" textClassName="text-2xl text-slate-900" />
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">

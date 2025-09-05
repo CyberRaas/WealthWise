@@ -22,6 +22,7 @@ import {
   LogOut,
   Calculator
 } from 'lucide-react'
+import Logo from '@/components/ui/Logo'
 
 const navigationItems = [
   {
@@ -93,17 +94,7 @@ export default function Sidebar({ isOpen, onClose }) {
           <div className="relative w-80 max-w-[85vw] h-full bg-white shadow-2xl animate-in slide-in-from-left duration-300">
             {/* Header with close button */}
             <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-white h-16">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold">
-                    <span className="text-slate-800">Wealth</span>
-                    <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">Wise</span>
-                  </h1>
-                </div>
-              </div>
+              <Logo size="medium" textClassName="text-lg" />
               
               {/* Close button - Top right like Codolio */}
               <Button
@@ -192,14 +183,8 @@ export default function Sidebar({ isOpen, onClose }) {
           <div className="flex items-center justify-between w-full">
             {!isCollapsed && (
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white">
-                  <TrendingUp className="w-6 h-6 text-white" />
-                </div>
-                <div className="flex flex-col justify-center">
-                  <h1 className="text-xl font-bold leading-tight">
-                    <span className="text-slate-800">Wealth</span>
-                    <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">Wise</span>
-                  </h1>
+                <Logo size="large" textClassName="text-xl" />
+                <div className="flex flex-col justify-center ml-2">
                   <p className="text-xs text-slate-500 leading-tight">Smart Finance Platform</p>
                 </div>
               </div>
@@ -207,9 +192,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
             {/* Collapsed state - Show just the logo */}
             {isCollapsed && (
-              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white mx-auto">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
+              <Logo iconOnly size="large" className="shadow-lg border-2 border-white mx-auto" />
             )}
             
             {/* Collapse Toggle - Desktop Only */}
