@@ -183,8 +183,14 @@ export default function Sidebar({ isOpen, onClose }) {
           <div className="flex items-center justify-between w-full">
             {!isCollapsed && (
               <div className="flex items-center space-x-3">
-                <Logo size="large" textClassName="text-xl" />
-                <div className="flex flex-col justify-center ml-2">
+                <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex flex-col justify-center">
+                  <h1 className="text-xl font-bold leading-tight">
+                    <span className="text-slate-800">Wealth</span>
+                    <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">Wise</span>
+                  </h1>
                   <p className="text-xs text-slate-500 leading-tight">Smart Finance Platform</p>
                 </div>
               </div>
@@ -192,7 +198,9 @@ export default function Sidebar({ isOpen, onClose }) {
 
             {/* Collapsed state - Show just the logo */}
             {isCollapsed && (
-              <Logo iconOnly size="large" className="shadow-lg border-2 border-white mx-auto" />
+              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white mx-auto">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
             )}
             
             {/* Collapse Toggle - Desktop Only */}
