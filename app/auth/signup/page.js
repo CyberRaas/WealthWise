@@ -757,8 +757,8 @@ export default function SignUpPage() {
         
         <div className="w-full max-w-md relative z-10">
           {/* Company Logo/Brand Area */}
-          <div className="text-center mb-8">
-      <Logo size="xlarge" textClassName="text-2xl flex flex-col items-center" />
+          <div className="text-center mb-8 flex flex-col justify-center items-center">
+      <Logo size="xlarge" textClassName="text-2xl" />
             <p className="text-slate-600 text-sm font-medium mt-2">Join our professional wealth management platform</p>
           </div>
 
