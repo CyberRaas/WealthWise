@@ -4,8 +4,10 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { useTranslation } from 'react-i18next'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -28,6 +30,7 @@ import ExpenseEntryModal from '@/components/expenses/ExpenseEntryModal'
 function DashboardContent() {
   const { data: session } = useSession()
   const router = useRouter()
+  const { t } = useTranslation()
   const [showExpenseEntry, setShowExpenseEntry] = useState(false)
   const [loading, setLoading] = useState(true)
   const [budget, setBudget] = useState(null)
@@ -47,18 +50,18 @@ function DashboardContent() {
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     
     let timeGreeting = ''
-    if (hour < 12) timeGreeting = 'Good morning'
-    else if (hour < 17) timeGreeting = 'Good afternoon'
-    else timeGreeting = 'Good evening'
+    if (hour < 12) timeGreeting = t('greeting.goodMorning')
+    else if (hour < 17) timeGreeting = t('greeting.goodAfternoon')
+    else timeGreeting = t('greeting.goodEvening')
     
     const dayMessages = {
-      0: 'Perfect Sunday to plan your finances!', // Sunday
-      1: 'Let\'s start this Monday with smart money moves!', // Monday
-      2: 'Tuesday motivation: Check your savings progress!', // Tuesday
-      3: 'Midweek check-in: How are your expenses?', // Wednesday
-      4: 'Thursday thoughts: Any investment opportunities?', // Thursday
-      5: 'TGIF! Time to review your week\'s spending!', // Friday
-      6: 'Saturday vibes: Plan your weekend budget!' // Saturday
+      0: t('greeting.sunday'), // Sunday
+      1: t('greeting.monday'), // Monday
+      2: t('greeting.tuesday'), // Tuesday
+      3: t('greeting.wednesday'), // Wednesday
+      4: t('greeting.thursday'), // Thursday
+      5: t('greeting.friday'), // Friday
+      6: t('greeting.saturday') // Saturday
     }
     
     return {
@@ -198,7 +201,7 @@ function DashboardContent() {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <RefreshCw className="h-8 w-8 animate-spin text-emerald-600 mx-auto mb-2" />
-            <p className="text-slate-600">Loading your financial data...</p>
+            <p className="text-slate-600">{t('common.loadingFinancialData')}</p>
           </div>
         </div>
       </DashboardLayout>
@@ -206,14 +209,15 @@ function DashboardContent() {
   }
 
   return (
-    <DashboardLayout title="Dashboard Overview">
+    <DashboardLayout title={t('dashboard.overview')}>
       <div className="space-y-8">
+        
         {/* Welcome Message with Real Data */}
         <div className="bg-gradient-to-r from-emerald-50 via-blue-50 to-purple-50 rounded-2xl p-6 border border-emerald-100">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
-                Welcome back, {session?.user?.name || 'Friend'}! 👋
+                {t('dashboard.welcome')} {session?.user?.name || 'Friend'}! 👋
               </h1>
               <p className="text-slate-600 text-base sm:text-lg mb-3">
                 {greetingData.greeting}
@@ -223,7 +227,7 @@ function DashboardContent() {
               {financialHealthScore >= 75 && (
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm text-emerald-700 font-medium bg-emerald-100 px-3 py-1 rounded-full">
-                    💡 Excellent financial health! Keep up the great work!
+                    {t('health.excellent')}
                   </span>
                 </div>
               )}
@@ -231,7 +235,7 @@ function DashboardContent() {
               {financialHealthScore < 75 && financialHealthScore >= 50 && (
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm text-blue-700 font-medium bg-blue-100 px-3 py-1 rounded-full">
-                    💪 Good progress! Consider optimizing your spending.
+                    {t('health.good')}
                   </span>
                 </div>
               )}
@@ -239,7 +243,7 @@ function DashboardContent() {
               {financialHealthScore < 50 && (
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm text-orange-700 font-medium bg-orange-100 px-3 py-1 rounded-full">
-                    📈 Room for improvement! Let&apos;s work on your budget.
+                    {t('health.needsImprovement')}
                   </span>
                 </div>
               )}
@@ -271,15 +275,15 @@ function DashboardContent() {
                 <div className="text-lg font-bold text-emerald-600">
                   ₹{monthlyData.totalSaved > 0 ? (monthlyData.totalSaved / 100000).toFixed(1) : '0'}L
                 </div>
-                <div className="text-xs text-slate-600">Saved This Month</div>
+                <div className="text-xs text-slate-600">{t('health.savedThisMonth')}</div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-blue-600">{monthlyData.savingsRate}%</div>
-                <div className="text-xs text-slate-600">Savings Rate</div>
+                <div className="text-xs text-slate-600">{t('health.savingsRate')}</div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-purple-600">{goals.filter(g => g.status === 'active').length}</div>
-                <div className="text-xs text-slate-600">Active Goals</div>
+                <div className="text-xs text-slate-600">{t('health.activeGoals')}</div>
               </div>
             </div>
           )}
@@ -287,13 +291,13 @@ function DashboardContent() {
           {/* No data state */}
           {monthlyData.totalIncome === 0 && (
             <div className="mt-4 pt-4 border-t border-emerald-200 text-center">
-              <p className="text-sm text-slate-500 mb-2">No financial data available yet</p>
+              <p className="text-sm text-slate-500 mb-2">{t('health.noDataAvailable')}</p>
               <Button
                 onClick={() => router.push('/dashboard/budget')}
                 size="sm"
                 className="bg-emerald-600 hover:bg-emerald-700"
               >
-                Generate Your Budget
+                {t('health.generateBudget')}
               </Button>
             </div>
           )}
@@ -305,9 +309,9 @@ function DashboardContent() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-emerald-600" />
-                Financial Health Score
+                {t('health.financialHealthScore')}
               </CardTitle>
-              <CardDescription>Your overall financial wellness this month</CardDescription>
+              <CardDescription>{t('health.overallWellness')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">

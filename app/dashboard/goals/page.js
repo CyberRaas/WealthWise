@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import GoalTracker from '@/components/goals/GoalTracker'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
@@ -13,6 +15,7 @@ import {
 } from 'lucide-react'
 
 function GoalsContent() {
+  const { t } = useTranslation()
   const [goalsData, setGoalsData] = useState({
     goals: [],
     totalGoals: 0,
@@ -49,14 +52,14 @@ function GoalsContent() {
   const completedGoals = goalsData.goals.filter(goal => goal.status === 'completed').length
 
   return (
-    <DashboardLayout title="Financial Goals">
+    <DashboardLayout title={t('goals.title')}>
       <div className="space-y-4 sm:space-y-6">
         {/* Goals Overview - Real Data */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <Card className="border-l-4 border-l-emerald-500">
             <CardHeader className="pb-2 sm:pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600">Active Goals</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-600">{t('goals.activeGoals')}</CardTitle>
                 <Target className="h-5 w-5 text-emerald-600" />
               </div>
             </CardHeader>
@@ -64,14 +67,14 @@ function GoalsContent() {
               <div className="text-xl sm:text-2xl font-bold text-slate-800">
                 {loading ? '...' : activeGoals}
               </div>
-              <p className="text-xs text-slate-500">Goals in progress</p>
+              <p className="text-xs text-slate-500">{t('goals.goalsInProgress')}</p>
             </CardContent>
           </Card>
 
           <Card className="border-l-4 border-l-blue-500">
             <CardHeader className="pb-2 sm:pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600">Total Target</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-600">{t('goals.totalTarget')}</CardTitle>
                 <TrendingUp className="h-5 w-5 text-blue-600" />
               </div>
             </CardHeader>
@@ -79,14 +82,14 @@ function GoalsContent() {
               <div className="text-xl sm:text-2xl font-bold text-slate-800">
                 {loading ? '...' : `₹${goalsData.totalTargetAmount.toLocaleString('en-IN')}`}
               </div>
-              <p className="text-xs text-slate-500">Combined goal amount</p>
+              <p className="text-xs text-slate-500">{t('goals.combinedGoalAmount')}</p>
             </CardContent>
           </Card>
 
           <Card className="border-l-4 border-l-purple-500 sm:col-span-2 lg:col-span-1">
             <CardHeader className="pb-2 sm:pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600">Completed</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-600">{t('goals.completedGoals')}</CardTitle>
                 <Trophy className="h-5 w-5 text-purple-600" />
               </div>
             </CardHeader>
@@ -94,7 +97,7 @@ function GoalsContent() {
               <div className="text-xl sm:text-2xl font-bold text-slate-800">
                 {loading ? '...' : completedGoals}
               </div>
-              <p className="text-xs text-slate-500">Goals achieved</p>
+              <p className="text-xs text-slate-500">{t('goals.goalsAchieved')}</p>
             </CardContent>
           </Card>
         </div>
@@ -108,10 +111,10 @@ function GoalsContent() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-blue-600" />
-                Goal Timeline
+                {t('goals.goalTimeline')}
               </CardTitle>
               <CardDescription>
-                Track your progress and milestones
+                {t('goals.trackProgress')}
               </CardDescription>
             </CardHeader>
             <CardContent>

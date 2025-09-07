@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { 
   Home,
@@ -26,56 +27,57 @@ import Logo from '@/components/ui/Logo'
 
 const navigationItems = [
   {
-    name: 'Dashboard',
+    name: 'sidebar.dashboard',
     href: '/dashboard',
     icon: Home,
-    description: 'Overview & Quick Actions'
+    description: 'sidebar.dashboard_desc'
   },
   {
-    name: 'Expenses',
+    name: 'sidebar.expenses',
     href: '/dashboard/expenses',
     icon: Wallet,
-    description: 'Track Your Spending'
+    description: 'sidebar.expenses_desc'
   },
   {
-    name: 'Budget',
+    name: 'sidebar.budget',
     href: '/dashboard/budget',
     icon: PieChart,
-    description: 'Budget Management'
+    description: 'sidebar.budget_desc'
   },
   {
-    name: 'Debt Overview',
+    name: 'sidebar.debt',
     href: '/dashboard/debt',
     icon: CreditCard,
-    description: 'Manage Your Debts'
+    description: 'sidebar.debt_desc'
   },
   {
-    name: 'Debt Calculator',
+    name: 'sidebar.debt_calculator',
     href: '/dashboard/debt-calculator',
     icon: Calculator,
-    description: 'EMI & Loan Advisor'
+    description: 'sidebar.debt_calculator_desc'
   },
   {
-    name: 'Goals',
+    name: 'sidebar.goals',
     href: '/dashboard/goals',
     icon: Target,
-    description: 'Financial Goals'
+    description: 'sidebar.goals_desc'
   },
   {
-    name: 'Analytics',
+    name: 'sidebar.analytics',
     href: '/dashboard/analytics',
     icon: BarChart3,
-    description: 'Financial Insights'
+    description: 'sidebar.analytics_desc'
   },
   {
-    name: 'Profile',
+    name: 'sidebar.profile',
     href: '/dashboard/profile',
     icon: User,
-    description: 'Account Settings'
+    description: 'sidebar.profile_desc'
   }
 ]
 
 export default function Sidebar({ isOpen, onClose }) {
+  const { t } = useTranslation()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const pathname = usePathname()
 
@@ -132,12 +134,12 @@ export default function Sidebar({ isOpen, onClose }) {
                         <p className={`font-medium text-sm ${
                           isActive ? 'text-white' : 'text-slate-700 group-hover:text-emerald-600'
                         }`}>
-                          {item.name}
+                          {t(item.name)}
                         </p>
                         <p className={`text-xs ${
                           isActive ? 'text-emerald-100' : 'text-slate-500 group-hover:text-emerald-500'
                         }`}>
-                          {item.description}
+                          {t(item.description)}
                         </p>
                       </div>
                       
@@ -241,12 +243,12 @@ export default function Sidebar({ isOpen, onClose }) {
                       <p className={`font-semibold text-sm ${
                         isActive ? 'text-white' : 'text-slate-700 group-hover:text-emerald-600'
                       }`}>
-                        {item.name}
+                        {t(item.name)}
                       </p>
                       <p className={`text-xs ${
                         isActive ? 'text-emerald-100' : 'text-slate-500 group-hover:text-emerald-500'
                       }`}>
-                        {item.description}
+                        {t(item.description)}
                       </p>
                     </div>
                   )}

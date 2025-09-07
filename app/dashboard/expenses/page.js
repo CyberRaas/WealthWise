@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -22,6 +24,7 @@ import {
 import toast from 'react-hot-toast'
 
 function ExpensesContent() {
+  const { t } = useTranslation()
   const [expenses, setExpenses] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -167,42 +170,42 @@ function ExpensesContent() {
   }
 
   return (
-    <DashboardLayout title="Expense Management">
+    <DashboardLayout title={t('expenses.title')}>
       <div className="space-y-4 sm:space-y-6">
         {/* Summary Cards - Real Data */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <Card className="border-l-4 border-l-red-500">
             <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="text-sm font-medium text-slate-600">This Month</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-600">{t('expenses.thisMonth')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-xl sm:text-2xl font-bold text-red-600">
                 {loading ? '...' : `₹${thisMonthExpenses.toLocaleString('en-IN')}`}
               </div>
-              <p className="text-xs text-slate-500">Monthly expenses</p>
+              <p className="text-xs text-slate-500">{t('expenses.monthlyExpenses')}</p>
             </CardContent>
           </Card>
 
           <Card className="border-l-4 border-l-blue-500">
             <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="text-sm font-medium text-slate-600">Total Expenses</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-600">{t('expenses.total')} {t('expenses.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-xl sm:text-2xl font-bold text-blue-600">
                 {loading ? '...' : `₹${totalExpenses.toLocaleString('en-IN')}`}
               </div>
-              <p className="text-xs text-slate-500">All time</p>
+              <p className="text-xs text-slate-500">{t('common.allTime')}</p>
             </CardContent>
           </Card>
 
           <Card className="border-l-4 border-l-emerald-500 sm:col-span-2 lg:col-span-1">
             <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="text-sm font-medium text-slate-600">Transactions</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-600">{t('common.transactions')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-xl sm:text-2xl font-bold text-emerald-600">{loading ? '...' : expenses.length}
               </div>
-              <p className="text-xs text-slate-500">Total entries</p>
+              <p className="text-xs text-slate-500">{t('common.totalEntries')}</p>
             </CardContent>
           </Card>
         </div>
@@ -212,8 +215,8 @@ function ExpensesContent() {
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
               <div>
-                <CardTitle className="text-lg sm:text-xl font-bold text-slate-800">Add New Expense</CardTitle>
-                <CardDescription>Record your expenses quickly and easily</CardDescription>
+                <CardTitle className="text-lg sm:text-xl font-bold text-slate-800">{t('expenses.addNewExpense')}</CardTitle>
+                <CardDescription>{t('expenses.subtitle')}</CardDescription>
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button
@@ -221,14 +224,14 @@ function ExpensesContent() {
                   className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
                 >
                   <Mic className="h-4 w-4 mr-2" />
-                  Voice Entry
+                  {t('expenses.voiceEntry')}
                 </Button>
                 <Button
                   onClick={() => setShowForm(!showForm)}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  {showForm ? 'Hide Form' : 'Manual Entry'}
+                  {showForm ? t('common.hide') + ' ' + t('common.form') : t('expenses.manualEntry')}
                 </Button>
               </div>
             </div>
@@ -240,7 +243,7 @@ function ExpensesContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Amount (₹) *
+                      {t('expenses.amount')} (₹) *
                     </label>
                     <div className="relative">
                       <IndianRupee className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -250,7 +253,7 @@ function ExpensesContent() {
                         min="0"
                         value={formData.amount}
                         onChange={(e) => setFormData(prev => ({ ...prev, amount: e.target.value }))}
-                        placeholder="0.00"
+                        placeholder={t('expenses.amountPlaceholder')}
                         className="pl-10"
                         required
                       />
@@ -259,7 +262,7 @@ function ExpensesContent() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Category *
+                      {t('expenses.category')} *
                     </label>
                     <Select 
                       value={formData.category} 
@@ -267,12 +270,12 @@ function ExpensesContent() {
                       required
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
+                        <SelectValue placeholder={t('expenses.categoryPlaceholder')} />
                       </SelectTrigger>
                       <SelectContent>
-                        {categories.map(category => (
-                          <SelectItem key={category} value={category}>
-                            {category}
+                        {['food', 'transportation', 'housing', 'entertainment', 'healthcare', 'shopping', 'utilities', 'other'].map(key => (
+                          <SelectItem key={key} value={t(`expenses.categories.${key}`)}>
+                            {t(`expenses.categories.${key}`)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -281,7 +284,7 @@ function ExpensesContent() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Date *
+                      {t('expenses.date')} *
                     </label>
                     <Input
                       type="date"
@@ -293,12 +296,12 @@ function ExpensesContent() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description
+                      {t('expenses.description')}
                     </label>
                     <Input
                       value={formData.description}
                       onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                      placeholder="What was this expense for?"
+                      placeholder={t('expenses.descriptionPlaceholder')}
                     />
                   </div>
                 </div>
@@ -310,7 +313,7 @@ function ExpensesContent() {
                     onClick={() => setShowForm(false)}
                     className="w-full sm:w-auto"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     type="submit"
@@ -320,12 +323,12 @@ function ExpensesContent() {
                     {submitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                        Adding...
+                        {t('common.adding')}...
                       </>
                     ) : (
                       <>
                         <Plus className="h-4 w-4 mr-2" />
-                        Add Expense
+                        {t('expenses.addExpense')}
                       </>
                     )}
                   </Button>
@@ -343,7 +346,7 @@ function ExpensesContent() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <Input
-                    placeholder="Search transactions..."
+                    placeholder={t('expenses.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10 w-full sm:w-64"
@@ -355,16 +358,18 @@ function ExpensesContent() {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="px-3 py-2 border border-slate-300 rounded-md text-sm min-w-0 sm:min-w-fit"
                 >
-                  <option value="all">All Categories</option>
-                  {categories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                  <option value="all">{t('expenses.allCategories')}</option>
+                  {['food', 'transportation', 'housing', 'entertainment', 'healthcare', 'shopping', 'utilities', 'other'].map(key => (
+                    <option key={key} value={t(`expenses.categories.${key}`)}>
+                      {t(`expenses.categories.${key}`)}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <Button onClick={handleExport} variant="outline" size="sm" className="w-full lg:w-auto">
                 <Download className="h-4 w-4 mr-2" />
-                Export
+                {t('common.export')}
               </Button>
             </div>
           </CardContent>
@@ -374,20 +379,20 @@ function ExpensesContent() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>Recent Expenses</span>
+              <span>{t('expenses.recentExpenses')}</span>
               <Badge variant="secondary">
-                {loading ? 'Loading...' : `${filteredExpenses.length} transactions`}
+                {loading ? t('common.loading') : `${filteredExpenses.length} ${t('common.transactions')}`}
               </Badge>
             </CardTitle>
             <CardDescription>
-              Your latest expense entries with voice recognition details
+              {t('expenses.latestEntries')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
               <div className="flex items-center justify-center p-8">
                 <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-                <span className="ml-3 text-slate-600">Loading expenses...</span>
+                <span className="ml-3 text-slate-600">{t('expenses.loadingExpenses')}</span>
               </div>
             ) : (
               <div className="space-y-3">

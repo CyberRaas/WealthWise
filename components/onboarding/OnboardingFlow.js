@@ -3,12 +3,15 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import { useTranslation } from 'react-i18next'
+import { useLanguage } from '@/components/providers/LanguageProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import { 
   ArrowRight, 
   ArrowLeft, 
@@ -33,13 +36,14 @@ const INDIAN_CITIES = [
 ]
 
 const INCOME_SOURCES = [
-  { value: 'salary', label: 'Salary (Job)', hindi: 'नौकरी' },
-  { value: 'business', label: 'Business', hindi: 'व्यापार' },
-  { value: 'freelance', label: 'Freelancing', hindi: 'फ्रीलांसिंग' },
-  { value: 'other', label: 'Other', hindi: 'अन्य' }
+  { value: 'salary', label: 'Salary (Job)' },
+  { value: 'business', label: 'Business' },
+  { value: 'freelance', label: 'Freelancing' },
+  { value: 'other', label: 'Other' }
 ]
 
 const ONBOARDING_STEPS = [
+  { key: 'language', title: 'Language Selection', hindi: 'भाषा चुनें' },
   { key: 'income', title: 'Income Details', hindi: 'आय की जानकारी' },
   { key: 'demographics', title: 'Personal Details', hindi: 'व्यक्तिगत जानकारी' },
   { key: 'budget_generation', title: 'AI Budget Generation', hindi: 'AI बजट जेनरेशन' },
@@ -48,6 +52,8 @@ const ONBOARDING_STEPS = [
 
 export default function OnboardingFlow() {
   const { data: session, status } = useSession()
+  const { t } = useTranslation()
+  const { currentLanguage, changeLanguage } = useLanguage()
   const router = useRouter()
   
   const [currentStep, setCurrentStep] = useState(0)
@@ -159,9 +165,15 @@ export default function OnboardingFlow() {
     const step = ONBOARDING_STEPS[currentStep]
     
     switch (step.key) {
+      case 'language':
+        // Language selection is handled by the LanguageSelector component
+        // Just move to the next step
+        setCurrentStep(1)
+        break
+
       case 'income':
         if (!profile.monthlyIncome || profile.monthlyIncome < 1000) {
-          toast.error('Please enter a valid monthly income (minimum ₹1,000)')
+          toast.error(t('income.validation'))
           return
         }
         
@@ -171,13 +183,13 @@ export default function OnboardingFlow() {
         })
         
         if (incomeSuccess) {
-          setCurrentStep(1)
+          setCurrentStep(2)
         }
         break
 
       case 'demographics':
         if (!profile.city || !profile.familySize || !profile.age) {
-          toast.error('Please fill all required fields')
+          toast.error(t('demographics.validation'))
           return
         }
         
@@ -189,14 +201,14 @@ export default function OnboardingFlow() {
         })
         
         if (demoSuccess) {
-          setCurrentStep(2)
+          setCurrentStep(3)
         }
         break
 
       case 'budget_generation':
         const budgetSuccess = await generateBudget()
         if (budgetSuccess) {
-          setCurrentStep(3)
+          setCurrentStep(4)
         }
         break
 
@@ -238,10 +250,10 @@ export default function OnboardingFlow() {
         <div className="mb-10">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent">
-              Setup Your Smart Budget
+              {t('onboarding.title')}
             </h1>
             <Badge variant="outline" className="border-emerald-300 text-emerald-700 bg-emerald-50/50 px-4 py-2 text-sm font-semibold rounded-full">
-              Step {currentStep + 1} of {ONBOARDING_STEPS.length}
+              {t('onboarding.step', { current: currentStep + 1, total: ONBOARDING_STEPS.length })}
             </Badge>
           </div>
           
@@ -271,10 +283,11 @@ export default function OnboardingFlow() {
         {/* Step Content */}
         <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl ring-1 ring-slate-200/50 rounded-3xl overflow-hidden">
           <CardContent className="p-10">
-            {currentStep === 0 && <IncomeStep profile={profile} setProfile={setProfile} />}
-            {currentStep === 1 && <DemographicsStep profile={profile} setProfile={setProfile} />}
-            {currentStep === 2 && <BudgetGenerationStep isGenerating={isGeneratingBudget} />}
-            {currentStep === 3 && <ReviewStep profile={profile} budget={generatedBudget} />}
+            {currentStep === 0 && <LanguageStep />}
+            {currentStep === 1 && <IncomeStep profile={profile} setProfile={setProfile} />}
+            {currentStep === 2 && <DemographicsStep profile={profile} setProfile={setProfile} />}
+            {currentStep === 3 && <BudgetGenerationStep isGenerating={isGeneratingBudget} />}
+            {currentStep === 4 && <ReviewStep profile={profile} budget={generatedBudget} />}
           </CardContent>
           
           {/* Navigation */}
@@ -286,7 +299,7 @@ export default function OnboardingFlow() {
               className="border-2 border-slate-200 hover:border-emerald-300 text-slate-600 hover:text-emerald-600 font-semibold px-6 py-3 rounded-xl transition-all duration-300"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              {t('onboarding.back')}
             </Button>
             
             <Button
@@ -297,11 +310,11 @@ export default function OnboardingFlow() {
               {loading || isGeneratingBudget ? (
                 <div className="flex items-center">
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  <span>{isGeneratingBudget ? 'Generating...' : 'Processing...'}</span>
+                  <span>{isGeneratingBudget ? t('onboarding.generating') : t('onboarding.processing')}</span>
                 </div>
               ) : (
                 <>
-                  {currentStep === ONBOARDING_STEPS.length - 1 ? 'Complete Setup' : 'Next'}
+                  {currentStep === ONBOARDING_STEPS.length - 1 ? t('onboarding.complete') : t('onboarding.next')}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </>
               )}
@@ -313,38 +326,45 @@ export default function OnboardingFlow() {
   )
 }
 
+// Language Step Component
+function LanguageStep() {
+  return <LanguageSelector variant="onboarding" />
+}
+
 // Income Step Component
 function IncomeStep({ profile, setProfile }) {
+  const { t } = useTranslation()
+  
   return (
     <div className="space-y-6">
       <div className="text-center mb-6">
         <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Coins className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">आपकी महीने की कमाई कितनी है?</h2>
-        <p className="text-slate-600">Tell us your monthly income to create a personalized budget</p>
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('income.title')}</h2>
+        <p className="text-slate-600">{t('income.subtitle')}</p>
       </div>
 
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Monthly Income (₹) <span className="text-red-500">*</span>
+            {t('income.monthly_income_required')}
           </label>
           <Input
             type="number"
-            placeholder="Enter your monthly income"
+            placeholder={t('income.placeholder')}
             value={profile.monthlyIncome}
             onChange={(e) => setProfile(prev => ({ ...prev, monthlyIncome: e.target.value }))}
             className="h-12 text-lg"
             min="1000"
             step="1000"
           />
-          <p className="text-xs text-slate-500 mt-1">Minimum ₹1,000 required</p>
+          <p className="text-xs text-slate-500 mt-1">{t('income.minimum')}</p>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Income Source
+            {t('income.income_source')}
           </label>
           <Select value={profile.incomeSource} onValueChange={(value) => setProfile(prev => ({ ...prev, incomeSource: value }))}>
             <SelectTrigger className="h-12">
@@ -354,8 +374,7 @@ function IncomeStep({ profile, setProfile }) {
               {INCOME_SOURCES.map(source => (
                 <SelectItem key={source.value} value={source.value}>
                   <div className="flex items-center space-x-2">
-                    <span>{source.label}</span>
-                    <span className="text-slate-500">({source.hindi})</span>
+                    <span>{t(`income.sources.${source.value}`)}</span>
                   </div>
                 </SelectItem>
               ))}
@@ -369,25 +388,27 @@ function IncomeStep({ profile, setProfile }) {
 
 // Demographics Step Component
 function DemographicsStep({ profile, setProfile }) {
+  const { t } = useTranslation()
+  
   return (
     <div className="space-y-6">
       <div className="text-center mb-6">
         <div className="w-16 h-16 bg-gradient-to-r from-teal-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <User className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">व्यक्तिगत जानकारी</h2>
-        <p className="text-slate-600">Help us understand your lifestyle for better budgeting</p>
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('demographics.title')}</h2>
+        <p className="text-slate-600">{t('demographics.subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">
             <MapPin className="w-4 h-4 inline mr-1" />
-            City <span className="text-red-500">*</span>
+            {t('demographics.city_required')}
           </label>
           <Select value={profile.city} onValueChange={(value) => setProfile(prev => ({ ...prev, city: value }))}>
             <SelectTrigger className="h-12">
-              <SelectValue placeholder="Select your city" />
+              <SelectValue placeholder={t('demographics.city_placeholder')} />
             </SelectTrigger>
             <SelectContent>
               {INDIAN_CITIES.map(city => (
@@ -400,11 +421,11 @@ function DemographicsStep({ profile, setProfile }) {
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">
             <Users className="w-4 h-4 inline mr-1" />
-            Family Size <span className="text-red-500">*</span>
+            {t('demographics.family_size_required')}
           </label>
           <Input
             type="number"
-            placeholder="Number of family members"
+            placeholder={t('demographics.family_placeholder')}
             value={profile.familySize}
             onChange={(e) => setProfile(prev => ({ ...prev, familySize: e.target.value }))}
             className="h-12"
@@ -415,11 +436,11 @@ function DemographicsStep({ profile, setProfile }) {
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">
-            Age <span className="text-red-500">*</span>
+            {t('demographics.age_required')}
           </label>
           <Input
             type="number"
-            placeholder="Your age"
+            placeholder={t('demographics.age_placeholder')}
             value={profile.age}
             onChange={(e) => setProfile(prev => ({ ...prev, age: e.target.value }))}
             className="h-12"
@@ -431,11 +452,11 @@ function DemographicsStep({ profile, setProfile }) {
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">
             <Briefcase className="w-4 h-4 inline mr-1" />
-            Occupation (Optional)
+            {t('demographics.occupation')}
           </label>
           <Input
             type="text"
-            placeholder="Your profession"
+            placeholder={t('demographics.occupation_placeholder')}
             value={profile.occupation}
             onChange={(e) => setProfile(prev => ({ ...prev, occupation: e.target.value }))}
             className="h-12"
@@ -448,6 +469,8 @@ function DemographicsStep({ profile, setProfile }) {
 
 // Budget Generation Step Component
 function BudgetGenerationStep({ isGenerating }) {
+  const { t } = useTranslation()
+  
   return (
     <div className="text-center space-y-6">
       <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto">
@@ -459,41 +482,41 @@ function BudgetGenerationStep({ isGenerating }) {
       </div>
       
       <div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">AI Budget Generation</h2>
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('budget.title')}</h2>
         <p className="text-slate-600 mb-6">
           {isGenerating 
-            ? 'Creating your personalized budget based on Indian spending patterns...'
-            : 'Ready to generate your AI-powered budget tailored for your lifestyle'
+            ? t('budget.generating')
+            : t('budget.subtitle')
           }
         </p>
       </div>
 
       {isGenerating && (
         <div className="space-y-3">
-          <div className="text-sm text-slate-500">समझ रहे हैं आपकी जरूरतें...</div>
-          <div className="text-sm text-slate-500">भारतीय डेटा से मिला रहे हैं...</div>
-          <div className="text-sm text-slate-500">आपका स्मार्ट बजट बना रहे हैं...</div>
+          <div className="text-sm text-slate-500">{t('budget.understanding')}</div>
+          <div className="text-sm text-slate-500">{t('budget.matching')}</div>
+          <div className="text-sm text-slate-500">{t('budget.creating')}</div>
         </div>
       )}
 
       <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl p-6">
-        <h3 className="font-semibold text-slate-800 mb-3">What you&apos;ll get:</h3>
+        <h3 className="font-semibold text-slate-800 mb-3">{t('budget.features.title')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-600">
           <div className="flex items-center space-x-2">
             <Target className="w-4 h-4 text-emerald-600" />
-            <span>Personalized categories</span>
+            <span>{t('budget.features.categories')}</span>
           </div>
           <div className="flex items-center space-x-2">
             <PieChart className="w-4 h-4 text-teal-600" />
-            <span>Visual budget breakdown</span>
+            <span>{t('budget.features.breakdown')}</span>
           </div>
           <div className="flex items-center space-x-2">
             <TrendingUp className="w-4 h-4 text-blue-600" />
-            <span>Savings recommendations</span>
+            <span>{t('budget.features.recommendations')}</span>
           </div>
           <div className="flex items-center space-x-2">
             <CheckCircle className="w-4 h-4 text-emerald-600" />
-            <span>Hindi explanations</span>
+            <span>{t('budget.features.explanations')}</span>
           </div>
         </div>
       </div>
@@ -503,6 +526,8 @@ function BudgetGenerationStep({ isGenerating }) {
 
 // Review Step Component  
 function ReviewStep({ profile, budget }) {
+  const { t } = useTranslation()
+  
   if (!budget) {
     return (
       <div className="text-center">
@@ -525,20 +550,20 @@ function ReviewStep({ profile, budget }) {
         <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <CheckCircle className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">Your Smart Budget is Ready! 🎉</h2>
-        <p className="text-slate-600">Review your personalized budget and start your financial journey</p>
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('review.title')}</h2>
+        <p className="text-slate-600">{t('review.subtitle')}</p>
       </div>
 
       {/* Budget Overview */}
       <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">📊 Budget Overview</h3>
+        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('review.overview')}</h3>
         <div className="grid grid-cols-2 gap-4 text-center">
           <div>
-            <p className="text-sm text-slate-600">Total Budget</p>
+            <p className="text-sm text-slate-600">{t('review.total_budget')}</p>
             <p className="text-2xl font-bold text-slate-800">{formatCurrency(budget.totalBudget)}</p>
           </div>
           <div>
-            <p className="text-sm text-slate-600">Monthly Savings</p>
+            <p className="text-sm text-slate-600">{t('review.monthly_savings')}</p>
             <p className="text-2xl font-bold text-emerald-600">
               {formatCurrency(budget.categories?.savings?.amount || 0)}
             </p>
@@ -548,7 +573,7 @@ function ReviewStep({ profile, budget }) {
 
       {/* Category Breakdown */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-slate-800">Category Breakdown</h3>
+        <h3 className="text-lg font-semibold text-slate-800">{t('review.category_breakdown')}</h3>
         {budget.categories && Object.entries(budget.categories).map(([key, category]) => (
           <div key={key} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border">
             <div className="flex items-center space-x-3">
@@ -568,23 +593,26 @@ function ReviewStep({ profile, budget }) {
 
       {/* Profile Summary */}
       <div className="bg-slate-50 rounded-xl p-6 border">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">Profile Summary</h3>
+        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('review.profile_summary')}</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-slate-600">Income:</span>
+            <span className="text-slate-600">{t('review.income')}</span>
             <span className="ml-2 font-medium">{formatCurrency(profile.monthlyIncome)}</span>
           </div>
           <div>
-            <span className="text-slate-600">City:</span>
+            <span className="text-slate-600">{t('review.city')}</span>
             <span className="ml-2 font-medium">{profile.city}</span>
           </div>
           <div>
-            <span className="text-slate-600">Family Size:</span>
-            <span className="ml-2 font-medium">{profile.familySize} member{profile.familySize > 1 ? 's' : ''}</span>
+            <span className="text-slate-600">{t('review.family_size')}</span>
+            <span className="ml-2 font-medium">
+              {t('review.members', { count: profile.familySize })}
+              {profile.familySize > 1 ? t('review.members_plural', { count: profile.familySize }) : ''}
+            </span>
           </div>
           <div>
-            <span className="text-slate-600">Age:</span>
-            <span className="ml-2 font-medium">{profile.age} years</span>
+            <span className="text-slate-600">{t('review.age')}</span>
+            <span className="ml-2 font-medium">{t('review.years', { count: profile.age })}</span>
           </div>
         </div>
       </div>

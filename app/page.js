@@ -4,7 +4,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
+import { useTranslation } from 'react-i18next'
 import Logo from '@/components/ui/Logo'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import { TrendingUp, Shield, Zap, ArrowRight, BarChart3, PieChart, 
   Target,
   DollarSign,
@@ -32,6 +34,7 @@ import { TrendingUp, Shield, Zap, ArrowRight, BarChart3, PieChart,
 
 export default function Home() {
   const { data: session } = useSession()
+  const { t } = useTranslation()
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeFeature, setActiveFeature] = useState(0)
@@ -50,50 +53,50 @@ export default function Home() {
   const features = [
     {
       icon: Brain,
-      title: 'AI-Powered Insights',
-      description: 'Advanced machine learning algorithms analyze your spending patterns and provide personalized financial recommendations.',
+      titleKey: 'features.ai.title',
+      descriptionKey: 'features.ai.description',
       gradient: 'from-purple-500 to-indigo-600',
       bgGradient: 'from-purple-50 to-indigo-50',
       delay: '0ms'
     },
     {
       icon: PiggyBank,
-      title: 'Smart Savings Goals',
-      description: 'Set and achieve savings milestones with automated transfers and intelligent goal tracking.',
+      titleKey: 'features.goals.title',
+      descriptionKey: 'features.goals.description',
       gradient: 'from-emerald-500 to-teal-600',
       bgGradient: 'from-emerald-50 to-teal-50',
       delay: '100ms'
     },
     {
-      icon: Calculator,
-      title: 'Intelligent Budgeting',
-      description: 'Dynamic budget creation that adapts to your lifestyle and automatically categorizes expenses.',
+      icon: BarChart3,
+      titleKey: 'features.budgeting.title',
+      descriptionKey: 'features.budgeting.description',
       gradient: 'from-blue-500 to-cyan-600',
       bgGradient: 'from-blue-50 to-cyan-50',
       delay: '200ms'
     },
     {
       icon: TrendingUp,
-      title: 'Investment Tracking',
-      description: 'Monitor your portfolio performance with real-time market data and growth projections.',
-      gradient: 'from-orange-500 to-red-600',
-      bgGradient: 'from-orange-50 to-red-50',
+      titleKey: 'features.investment.title',
+      descriptionKey: 'features.investment.description',
+      gradient: 'from-green-500 to-emerald-600',
+      bgGradient: 'from-green-50 to-emerald-50',
       delay: '300ms'
     },
     {
-      icon: Lock,
-      title: 'Bank-Grade Security',
-      description: '256-bit encryption, two-factor authentication, and SOC 2 compliance keep your data safe.',
+      icon: Shield,
+      titleKey: 'features.security.title',
+      descriptionKey: 'features.security.description',
       gradient: 'from-gray-600 to-gray-800',
       bgGradient: 'from-gray-50 to-slate-50',
       delay: '400ms'
     },
     {
-      icon: Rocket,
-      title: 'Financial Automation',
-      description: 'Automate bill payments, savings transfers, and investment contributions for effortless wealth building.',
-      gradient: 'from-pink-500 to-rose-600',
-      bgGradient: 'from-pink-50 to-rose-50',
+      icon: Zap,
+      titleKey: 'features.automation.title',
+      descriptionKey: 'features.automation.description',
+      gradient: 'from-orange-500 to-red-600',
+      bgGradient: 'from-orange-50 to-red-50',
       delay: '500ms'
     }
   ]
@@ -161,23 +164,27 @@ export default function Home() {
             <Logo size="large" textClassName="text-2xl text-slate-900" />
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6">
               <a href="#features" className="text-slate-600 hover:text-slate-900 transition-colors font-medium relative group">
-                Features
+                {t('nav.features')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
               </a>
               <a href="#about" className="text-slate-600 hover:text-slate-900 transition-colors font-medium relative group">
-                About
+                {t('nav.about')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
               </a>
               <a href="#contact" className="text-slate-600 hover:text-slate-900 transition-colors font-medium relative group">
-                Contact
+                {t('nav.contact')}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
               </a>
+              
+              {/* Language Selector */}
+              <LanguageSelector variant="nav" />
+              
               {session ? (
                 <Link href="/dashboard">
                   <button className="bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 hover:shadow-lg hover:scale-105">
-                    <span>Dashboard</span>
+                    <span>{t('nav.dashboard')}</span>
                     <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                   </button>
                 </Link>
@@ -185,13 +192,13 @@ export default function Home() {
                 <>
                   <Link href="/auth/signin">
                     <button className="text-slate-600 hover:text-slate-900 px-4 py-2 rounded-lg font-medium transition-colors relative group">
-                      Sign In
+                      {t('nav.signin')}
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
                     </button>
                   </Link>
                   <Link href="/auth/signup">
                     <button className="bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 hover:shadow-lg hover:scale-105">
-                      <span>Get Started</span>
+                      <span>{t('nav.signup')}</span>
                       <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                     </button>
                   </Link>
@@ -212,24 +219,30 @@ export default function Home() {
           {mobileMenuOpen && (
             <div className="md:hidden bg-white rounded-2xl mt-4 p-6 border border-slate-100 shadow-xl">
               <div className="flex flex-col space-y-4">
-                <a href="#features" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">Features</a>
-                <a href="#about" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">About</a>
-                <a href="#contact" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">Contact</a>
+                <a href="#features" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">{t('nav.features')}</a>
+                <a href="#about" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">{t('nav.about')}</a>
+                <a href="#contact" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">{t('nav.contact')}</a>
+                
+                {/* Mobile Language Selector */}
+                <div className="pt-2">
+                  <LanguageSelector variant="mobile" />
+                </div>
+                
                 <hr className="border-slate-200" />
                 {session ? (
                   <Link href="/dashboard">
                     <button className="bg-gradient-to-r from-emerald-600 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold w-full">
-                      Dashboard
+                      {t('nav.dashboard')}
                     </button>
                   </Link>
                 ) : (
                   <>
                     <Link href="/auth/signin">
-                      <button className="text-slate-600 hover:text-slate-900 text-left font-medium">Sign In</button>
+                      <button className="text-slate-600 hover:text-slate-900 text-left font-medium">{t('nav.signin')}</button>
                     </Link>
                     <Link href="/auth/signup">
                       <button className="bg-gradient-to-r from-emerald-600 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold w-full">
-                        Get Started
+                        {t('nav.signup')}
                       </button>
                     </Link>
                   </>
@@ -256,18 +269,18 @@ export default function Home() {
             <div className="space-y-6">
               <div className="inline-flex items-center space-x-2 bg-emerald-50 rounded-full px-6 py-3 border border-emerald-100 animate-bounce-subtle shadow-lg">
                 <Sparkles className="w-5 h-5 text-emerald-600 animate-pulse-slow" />
-                <span className="text-emerald-700 font-semibold text-sm">Smart Financial Planning</span>
+                <span className="text-emerald-700 font-semibold text-sm">{t('hero.badge')}</span>
               </div>
               
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight text-slate-900 animate-reveal-text">
-                Take Control of{' '}
+                {t('hero.title.part1')}{' '}
                 <span className="bg-gradient-to-r from-emerald-600 via-teal-500 to-blue-600 bg-clip-text text-transparent animate-gradient">
-                  Your Money
+                  {t('hero.title.part2')}
                 </span>
               </h1>
               
               <p className="text-xl sm:text-2xl text-slate-600 max-w-4xl mx-auto leading-relaxed animate-fade-in-delay">
-                WealthWise helps you budget smarter, save more, and achieve your financial goals with AI-powered insights and intuitive tools.
+                {t('hero.subtitle')}
               </p>
             </div>
 
@@ -281,7 +294,7 @@ export default function Home() {
                 <Link href="/dashboard">
                   <button className="group relative bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white px-10 py-4 rounded-2xl text-lg font-semibold transition-all duration-500 flex items-center space-x-3 shadow-2xl hover:shadow-emerald-500/25 hover:scale-105 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <span className="relative z-10">Go to Dashboard</span>
+                    <span className="relative z-10">{t('hero.cta.dashboard')}</span>
                     <ArrowRight className="w-5 h-5 relative z-10 transform group-hover:translate-x-1 transition-transform duration-300" />
                   </button>
                 </Link>
@@ -290,7 +303,7 @@ export default function Home() {
                   <Link href="/auth/signup">
                     <button className="group relative bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white px-10 py-4 rounded-2xl text-lg font-semibold transition-all duration-500 flex items-center space-x-3 shadow-2xl hover:shadow-emerald-500/25 hover:scale-105 overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      <span className="relative z-10">Start Free Trial</span>
+                      <span className="relative z-10">{t('hero.cta.start')}</span>
                       <ArrowRight className="w-5 h-5 relative z-10 transform group-hover:translate-x-1 transition-transform duration-300" />
                     </button>
                   </Link>
@@ -310,22 +323,22 @@ export default function Home() {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
                 <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
                   <Shield className="w-8 h-8 text-emerald-600 mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" />
-                  <div className="text-sm font-semibold text-slate-700 group-hover:text-emerald-600 transition-colors duration-300">Bank-Level Security</div>
+                  <div className="text-sm font-semibold text-slate-700 group-hover:text-emerald-600 transition-colors duration-300">{t('trust.bankLevel')}</div>
                 </div>
                 
                 <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
                   <CheckCircle className="w-8 h-8 text-blue-600 mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" />
-                  <div className="text-sm font-semibold text-slate-700 group-hover:text-blue-600 transition-colors duration-300">No Hidden Fees</div>
+                  <div className="text-sm font-semibold text-slate-700 group-hover:text-blue-600 transition-colors duration-300">{t('trust.noFees')}</div>
                 </div>
                 
                 <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
                   <Brain className="w-8 h-8 text-purple-600 mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" />
-                  <div className="text-sm font-semibold text-slate-700 group-hover:text-purple-600 transition-colors duration-300">AI-Powered</div>
+                  <div className="text-sm font-semibold text-slate-700 group-hover:text-purple-600 transition-colors duration-300">{t('trust.aiPowered')}</div>
                 </div>
                 
                 <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer">
                   <Rocket className="w-8 h-8 text-orange-600 mx-auto mb-3 group-hover:scale-110 transition-transform duration-300" />
-                  <div className="text-sm font-semibold text-slate-700 group-hover:text-orange-600 transition-colors duration-300">Fast Setup</div>
+                  <div className="text-sm font-semibold text-slate-700 group-hover:text-orange-600 transition-colors duration-300">{t('trust.fastSetup')}</div>
                 </div>
               </div>
             </div>
@@ -344,13 +357,10 @@ export default function Home() {
               <span className="text-emerald-700 font-semibold">Powerful Features</span>
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
-              Everything you need to{' '}
-              <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 bg-clip-text text-transparent animate-gradient">
-                transform your finances
-              </span>
+              {t('features.title')}
             </h2>
             <p className="text-xl sm:text-2xl text-slate-600 max-w-4xl mx-auto leading-relaxed">
-              Powerful tools designed to simplify your financial life and help you build sustainable wealth with confidence.
+              {t('features.subtitle')}
             </p>
           </div>
 
@@ -376,10 +386,10 @@ export default function Home() {
                       <Icon className={`w-8 h-8 text-white ${isActive ? 'animate-bounce-subtle' : ''}`} />
                     </div>
                     <h3 className="text-xl font-bold text-slate-900 mb-4 group-hover:text-slate-800 transition-colors duration-300">
-                      {feature.title}
+                      {t(feature.titleKey)}
                     </h3>
                     <p className="text-slate-600 leading-relaxed group-hover:text-slate-700 transition-colors duration-300 mb-6">
-                      {feature.description}
+                      {t(feature.descriptionKey)}
                     </p>
                     <div className="h-0 group-hover:h-8 overflow-hidden transition-all duration-500 opacity-0 group-hover:opacity-100 flex items-center text-emerald-600 font-semibold">
                       <span>Explore feature</span>
@@ -401,16 +411,13 @@ export default function Home() {
             <div className="text-center mb-12">
               <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-50 to-pink-50 rounded-full px-6 py-3 border border-purple-100 mb-6">
                 <Award className="w-5 h-5 text-purple-600 animate-pulse-slow" />
-                <span className="text-purple-700 font-semibold">Why Choose WealthWise</span>
+                <span className="text-purple-700 font-semibold">{t('benefits.sectionLabel')}</span>
               </div>
               <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-6">
-                Built for your{' '}
-                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  financial success
-                </span>
+                {t('benefits.title')}
               </h2>
               <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-                Experience the difference with features designed to accelerate your wealth-building journey
+                {t('benefits.subtitle')}
               </p>
             </div>
             
@@ -422,11 +429,11 @@ export default function Home() {
                   </div>
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-400 rounded-full animate-pulse opacity-75"></div>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-emerald-600 transition-colors duration-300">Secure & Private</h3>
-                <p className="text-slate-600 leading-relaxed text-lg">Bank-grade encryption with zero-knowledge architecture ensures your financial data stays completely private</p>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-emerald-600 transition-colors duration-300">{t('benefits.secure.title')}</h3>
+                <p className="text-slate-600 leading-relaxed text-lg">{t('benefits.secure.description')}</p>
                 <div className="mt-6 flex items-center justify-center space-x-2 text-emerald-600 font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300">
                   <Lock className="w-4 h-4" />
-                  <span>256-bit SSL Encryption</span>
+                  <span>{t('benefits.secure.feature')}</span>
                 </div>
               </div>
               
@@ -437,11 +444,11 @@ export default function Home() {
                   </div>
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-400 rounded-full animate-pulse opacity-75"></div>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">AI-Powered Intelligence</h3>
-                <p className="text-slate-600 leading-relaxed text-lg">Advanced machine learning provides personalized insights and predictions to optimize your financial decisions</p>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">{t('benefits.ai.title')}</h3>
+                <p className="text-slate-600 leading-relaxed text-lg">{t('benefits.ai.description')}</p>
                 <div className="mt-6 flex items-center justify-center space-x-2 text-blue-600 font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300">
                   <Sparkles className="w-4 h-4" />
-                  <span>Smart Recommendations</span>
+                  <span>{t('benefits.ai.feature')}</span>
                 </div>
               </div>
               
@@ -452,11 +459,11 @@ export default function Home() {
                   </div>
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-purple-400 rounded-full animate-pulse opacity-75"></div>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-purple-600 transition-colors duration-300">Real-Time Insights</h3>
-                <p className="text-slate-600 leading-relaxed text-lg">Get instant notifications and live updates on your financial health with actionable insights delivered in real-time</p>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-purple-600 transition-colors duration-300">{t('benefits.realtime.title')}</h3>
+                <p className="text-slate-600 leading-relaxed text-lg">{t('benefits.realtime.description')}</p>
                 <div className="mt-6 flex items-center justify-center space-x-2 text-purple-600 font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300">
                   <Zap className="w-4 h-4" />
-                  <span>Live Updates</span>
+                  <span>{t('benefits.realtime.feature')}</span>
                 </div>
               </div>
             </div>
@@ -492,14 +499,14 @@ export default function Home() {
             {/* Headline */}
             <div className="space-y-4">
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
-                Ready to Transform Your{' '}
+                {t('cta.title.part1')}{' '}
                 <span className="bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
-                  Financial Future?
+                  {t('cta.title.part2')}
                 </span>
               </h2>
               
               <p className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-                Join thousands of users who are already taking control of their finances with WealthWise&apos;s smart planning tools.
+                {t('cta.subtitle')}
               </p>
             </div>
 
@@ -509,7 +516,7 @@ export default function Home() {
                 <Link href="/dashboard">
                   <button className="group relative bg-white hover:bg-slate-50 text-slate-900 px-10 py-4 rounded-2xl text-lg font-bold transition-all duration-500 flex items-center space-x-3 shadow-2xl hover:shadow-white/25 hover:scale-105 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-r from-emerald-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <span className="relative z-10">Open Dashboard</span>
+                    <span className="relative z-10">{t('cta.openDashboard')}</span>
                     <ArrowRight className="w-5 h-5 relative z-10 transform group-hover:translate-x-1 transition-transform duration-300" />
                   </button>
                 </Link>
@@ -518,13 +525,13 @@ export default function Home() {
                   <Link href="/auth/signup">
                     <button className="group relative bg-white hover:bg-slate-50 text-slate-900 px-10 py-4 rounded-2xl text-lg font-bold transition-all duration-500 flex items-center space-x-3 shadow-2xl hover:shadow-white/25 hover:scale-105 overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-r from-emerald-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      <span className="relative z-10">Start Your Journey</span>
+                      <span className="relative z-10">{t('cta.startJourney')}</span>
                       <ArrowRight className="w-5 h-5 relative z-10 transform group-hover:translate-x-1 transition-transform duration-300" />
                     </button>
                   </Link>
                   <Link href="/auth/signin">
                     <button className="group bg-transparent hover:bg-white/10 text-white px-10 py-4 rounded-2xl text-lg font-semibold transition-all duration-300 border-2 border-white/30 hover:border-white/50 flex items-center space-x-3 hover:shadow-xl backdrop-blur-sm">
-                      <span>Sign In</span>
+                      <span>{t('cta.signIn')}</span>
                       <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300" />
                     </button>
                   </Link>
@@ -536,17 +543,17 @@ export default function Home() {
             <div className="flex items-center justify-center space-x-8 pt-8 text-slate-400">
               <div className="flex items-center space-x-2">
                 <Shield className="w-4 h-4" />
-                <span className="text-sm font-medium">Secure</span>
+                <span className="text-sm font-medium">{t('cta.trust.secure')}</span>
               </div>
               <div className="w-1 h-1 bg-slate-500 rounded-full"></div>
               <div className="flex items-center space-x-2">
                 <Zap className="w-4 h-4" />
-                <span className="text-sm font-medium">Fast</span>
+                <span className="text-sm font-medium">{t('cta.trust.fast')}</span>
               </div>
               <div className="w-1 h-1 bg-slate-500 rounded-full"></div>
               <div className="flex items-center space-x-2">
                 <Heart className="w-4 h-4" />
-                <span className="text-sm font-medium">Trusted</span>
+                <span className="text-sm font-medium">{t('cta.trust.trusted')}</span>
               </div>
             </div>
           </div>
@@ -573,50 +580,49 @@ export default function Home() {
                   <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent group-hover:from-emerald-600 group-hover:via-teal-600 group-hover:to-blue-600 transition-all duration-500">
                     WealthWise 
                   </h3>
-                  <p className="text-xs text-slate-500 -mt-1">Professional Wealth Management</p>
+                  <p className="text-xs text-slate-500 -mt-1">{t('footer.tagline')}</p>
                 </div>
               </div>
               <p className="text-slate-600 mb-6 max-w-md leading-relaxed font-medium">
-                Empowering your financial journey with AI-powered insights, intelligent budgeting, 
-                and personalized strategies for long-term wealth building.
+                {t('footer.description')}
               </p>
               <div className="flex items-center space-x-6">
                 <div className="flex items-center space-x-2 text-slate-600 hover:text-emerald-600 transition-colors duration-300">
                   <CheckCircle className="w-5 h-5 text-emerald-600" />
-                  <span className="font-medium">Secure & Private</span>
+                  <span className="font-medium">{t('footer.securePrivate')}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-slate-600 hover:text-teal-600 transition-colors duration-300">
                   <CheckCircle className="w-5 h-5 text-teal-600" />
-                  <span className="font-medium">AI-Powered</span>
+                  <span className="font-medium">{t('footer.aiPowered')}</span>
                 </div>
               </div>
             </div>
 
             {/* Quick Links */}
             <div>
-              <h4 className="font-bold text-slate-800 mb-4">Product</h4>
+              <h4 className="font-bold text-slate-800 mb-4">{t('footer.product')}</h4>
               <ul className="space-y-3">
                 <li>
                   <a href="#" className="text-slate-600 hover:text-emerald-700 transition-colors font-medium relative group inline-block">
-                    Features
+                    {t('footer.links.features')}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
                   </a>
                 </li>
                 <li>
                   <a href="#" className="text-slate-600 hover:text-emerald-700 transition-colors font-medium relative group inline-block">
-                    Pricing
+                    {t('footer.links.pricing')}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
                   </a>
                 </li>
                 <li>
                   <a href="#" className="text-slate-600 hover:text-emerald-700 transition-colors font-medium relative group inline-block">
-                    Security
+                    {t('footer.links.security')}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
                   </a>
                 </li>
                 <li>
                   <a href="#" className="text-slate-600 hover:text-emerald-700 transition-colors font-medium relative group inline-block">
-                    API
+                    {t('footer.links.api')}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
                   </a>
                 </li>
@@ -625,29 +631,29 @@ export default function Home() {
 
             {/* Support */}
             <div>
-              <h4 className="font-bold text-slate-800 mb-4">Support</h4>
+              <h4 className="font-bold text-slate-800 mb-4">{t('footer.support')}</h4>
               <ul className="space-y-3">
                 <li>
                   <a href="#" className="text-slate-600 hover:text-emerald-700 transition-colors font-medium relative group inline-block">
-                    Help Center
+                    {t('footer.links.helpCenter')}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
                   </a>
                 </li>
                 <li>
                   <a href="#" className="text-slate-600 hover:text-emerald-700 transition-colors font-medium relative group inline-block">
-                    Contact Us
+                    {t('footer.links.contact')}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
                   </a>
                 </li>
                 <li>
                   <a href="#" className="text-slate-600 hover:text-emerald-700 transition-colors font-medium relative group inline-block">
-                    Privacy Policy
+                    {t('footer.links.privacy')}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
                   </a>
                 </li>
                 <li>
                   <a href="#" className="text-slate-600 hover:text-emerald-700 transition-colors font-medium relative group inline-block">
-                    Terms of Service
+                    {t('footer.links.terms')}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-600 group-hover:w-full transition-all duration-300"></span>
                   </a>
                 </li>
@@ -657,7 +663,7 @@ export default function Home() {
 
           <div className="border-t border-emerald-100/50 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-slate-500 text-sm font-medium hover:text-emerald-600 transition-colors duration-300">
-              © 2024 WealthWise. All rights reserved.
+              {t('footer.copyright')}
             </p>
             <div className="flex items-center space-x-6 mt-4 md:mt-0">
               <span className="text-slate-500 text-sm font-medium relative group hover:text-emerald-600 transition-colors duration-300">

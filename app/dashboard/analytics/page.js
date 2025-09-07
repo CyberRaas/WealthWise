@@ -2,8 +2,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
   BarChart,
@@ -42,6 +44,7 @@ const CATEGORY_COLORS = {
 }
 
 function AnalyticsContent() {
+  const { t } = useTranslation()
   const [expenses, setExpenses] = useState([])
   const [goals, setGoals] = useState([])
   const [loading, setLoading] = useState(true)
@@ -178,12 +181,12 @@ function AnalyticsContent() {
 
   if (loading) {
     return (
-      <DashboardLayout title="Financial Analytics">
+      <DashboardLayout title={t('analytics.title')}>
         <div className="flex items-center justify-center min-h-96">
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin text-emerald-600 mx-auto mb-4" />
-            <p className="text-slate-600 text-lg">Analyzing your financial data...</p>
-            <p className="text-slate-400 text-sm">This may take a moment</p>
+            <p className="text-slate-600 text-lg">{t('analytics.analyzingData')}</p>
+            <p className="text-slate-400 text-sm">{t('common.pleaseWait')}</p>
           </div>
         </div>
       </DashboardLayout>
@@ -193,14 +196,14 @@ function AnalyticsContent() {
   const { keyMetrics, monthlyData, categoryData, savingsGrowth } = analyticsData
 
   return (
-    <DashboardLayout title="Financial Analytics">
+    <DashboardLayout title={t('analytics.title')}>
       <div className="space-y-4 sm:space-y-6">
         {/* Key Metrics - Real Data */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <Card className="border-l-4 border-l-blue-500">
             <CardHeader className="pb-2 sm:pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600">Total Expenses</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-600">{t('analytics.totalExpenses')}</CardTitle>
                 <DollarSign className="h-5 w-5 text-blue-600" />
               </div>
             </CardHeader>
@@ -208,14 +211,14 @@ function AnalyticsContent() {
               <div className="text-xl sm:text-2xl font-bold text-slate-800">
                 ₹{keyMetrics.totalExpenses.toLocaleString('en-IN')}
               </div>
-              <p className="text-xs text-slate-500">All time</p>
+              <p className="text-xs text-slate-500">{t('common.allTime')}</p>
             </CardContent>
           </Card>
 
           <Card className="border-l-4 border-l-red-500">
             <CardHeader className="pb-2 sm:pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600">This Month</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-600">{t('expenses.thisMonth')}</CardTitle>
                 <TrendingDown className="h-5 w-5 text-red-600" />
               </div>
             </CardHeader>
@@ -223,14 +226,14 @@ function AnalyticsContent() {
               <div className="text-xl sm:text-2xl font-bold text-slate-800">
                 ₹{keyMetrics.thisMonthExpenses.toLocaleString('en-IN')}
               </div>
-              <p className="text-xs text-slate-500">Monthly expenses</p>
+              <p className="text-xs text-slate-500">{t('expenses.monthlyExpenses')}</p>
             </CardContent>
           </Card>
 
           <Card className="border-l-4 border-l-emerald-500">
             <CardHeader className="pb-2 sm:pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600">Transactions</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-600">{t('common.transactions')}</CardTitle>
                 <BarChart3 className="h-5 w-5 text-emerald-600" />
               </div>
             </CardHeader>
@@ -238,7 +241,7 @@ function AnalyticsContent() {
               <div className="text-xl sm:text-2xl font-bold text-slate-800">
                 {keyMetrics.totalTransactions}
               </div>
-              <p className="text-xs text-slate-500">Total entries</p>
+              <p className="text-xs text-slate-500">{t('common.totalEntries')}</p>
             </CardContent>
           </Card>
 

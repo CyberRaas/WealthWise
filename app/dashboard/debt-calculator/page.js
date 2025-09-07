@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { 
@@ -25,6 +27,7 @@ import remarkGfm from 'remark-gfm'
 
 // Enhanced EMI Calculator Component
 function EMICalculator({ onCalculate }) {
+  const { t } = useTranslation()
   const [formData, setFormData] = useState({
     principal: '',
     interestRate: '',
@@ -41,15 +44,15 @@ function EMICalculator({ onCalculate }) {
     const newErrors = {}
     
     if (!formData.principal || parseFloat(formData.principal) <= 0) {
-      newErrors.principal = 'Please enter a valid principal amount'
+      newErrors.principal = t('debtCalculator.validPrincipalError')
     }
     
     if (!formData.interestRate || parseFloat(formData.interestRate) < 0) {
-      newErrors.interestRate = 'Please enter a valid interest rate'
+      newErrors.interestRate = t('debtCalculator.validInterestError')
     }
     
     if (!formData.duration || parseInt(formData.duration) <= 0) {
-      newErrors.duration = 'Please enter a valid duration'
+      newErrors.duration = t('debtCalculator.validDurationError')
     }
 
     setErrors(newErrors)
@@ -58,7 +61,7 @@ function EMICalculator({ onCalculate }) {
 
   const calculateEMI = () => {
     if (!validateForm()) {
-      toast.error('Please fix the errors in the form')
+      toast.error(t('debtCalculator.fixFormErrors'))
       return
     }
 
@@ -139,17 +142,18 @@ function EMICalculator({ onCalculate }) {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center text-slate-800 text-lg sm:text-xl">
             <Calculator className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-green-600" />
-            EMI & Compound Interest Calculator
+            {t('debtCalculator.title')}
           </CardTitle>
           <p className="text-xs sm:text-sm text-slate-600">
-            Calculate your loan EMI, total interest, and repayment timeline
+            {t('debtCalculator.subtitle')}
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="space-y-1">
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Principal Amount (₹) *
+            {/* Principal Amount */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-700">
+                {t('debtCalculator.loanAmount')} (₹) *
               </label>
               <input
                 type="number"
@@ -158,7 +162,7 @@ function EMICalculator({ onCalculate }) {
                 className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${
                   errors.principal ? 'border-red-500' : 'border-slate-300'
                 }`}
-                placeholder="Enter loan amount"
+                placeholder={t('debtCalculator.loanAmount')}
                 min="0"
               />
               {errors.principal && (
@@ -166,9 +170,10 @@ function EMICalculator({ onCalculate }) {
               )}
             </div>
 
-            <div className="space-y-1">
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Interest Rate (% per annum) *
+            {/* Interest Rate */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-700">
+                {t('debtCalculator.interestRate')} (% {t('common.perAnnum')}) *
               </label>
               <input
                 type="number"
@@ -177,7 +182,7 @@ function EMICalculator({ onCalculate }) {
                 className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${
                   errors.interestRate ? 'border-red-500' : 'border-slate-300'
                 }`}
-                placeholder="Enter interest rate"
+                placeholder={t('debtCalculator.interestRate')}
                 min="0"
                 max="50"
                 step="0.01"
@@ -186,29 +191,33 @@ function EMICalculator({ onCalculate }) {
                 <p className="text-red-500 text-xs mt-1">{errors.interestRate}</p>
               )}
             </div>
+          </div>
 
-            <div className="space-y-1">
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Duration *
+          {/* Duration and Compounding Frequency Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Duration */}
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-slate-700">
+                {t('debtCalculator.loanTerm')} *
               </label>
-              <div className="flex gap-3">
+              <div className="space-y-3">
                 <input
                   type="number"
                   value={formData.duration}
                   onChange={(e) => setFormData({...formData, duration: e.target.value})}
-                  className={`flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${
+                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${
                     errors.duration ? 'border-red-500' : 'border-slate-300'
                   }`}
-                  placeholder="Duration"
+                  placeholder={t('debtCalculator.enterDuration')}
                   min="1"
                 />
                 <select
                   value={formData.durationType}
                   onChange={(e) => setFormData({...formData, durationType: e.target.value})}
-                  className="px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white min-w-[100px]"
+                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-colors hover:border-green-400"
                 >
-                  <option value="months">Months</option>
-                  <option value="years">Years</option>
+                  <option value="months">{t('common.months')}</option>
+                  <option value="years">{t('common.years')}</option>
                 </select>
               </div>
               {errors.duration && (
@@ -216,22 +225,25 @@ function EMICalculator({ onCalculate }) {
               )}
             </div>
 
-            <div className="space-y-1">
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Compounding Frequency
+            {/* Compounding Frequency */}
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-slate-700">
+                {t('debtCalculator.compoundingFrequency')}
               </label>
-              <select
-                value={formData.compoundingFrequency}
-                onChange={(e) => setFormData({...formData, compoundingFrequency: e.target.value})}
-                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-colors hover:border-green-400"
-              >
-                <option value="monthly">Monthly</option>
-                <option value="quarterly">Quarterly</option>
-                <option value="annually">Annually</option>
-              </select>
-              <p className="text-xs text-slate-500 mt-1">
-                How often interest is compounded
-              </p>
+              <div className="space-y-2">
+                <select
+                  value={formData.compoundingFrequency}
+                  onChange={(e) => setFormData({...formData, compoundingFrequency: e.target.value})}
+                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-colors hover:border-green-400"
+                >
+                  <option value="monthly">{t('common.monthly')}</option>
+                  <option value="quarterly">{t('common.quarterly')}</option>
+                  <option value="annually">{t('common.annually')}</option>
+                </select>
+                <p className="text-xs text-slate-500">
+                  {t('debtCalculator.compoundingDescription')}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -241,7 +253,7 @@ function EMICalculator({ onCalculate }) {
               className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 text-base sm:text-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               <Calculator className="w-5 h-5 mr-2" />
-              Calculate EMI
+              {t('debtCalculator.calculate')} EMI
             </Button>
           </div>
         </CardContent>
@@ -895,6 +907,7 @@ function SmartInsightsCard({ insights, calculationResults }) {
 
 // Main Debt Calculator Page
 export default function DebtCalculatorPage() {
+  const { t } = useTranslation()
   const [calculationResults, setCalculationResults] = useState(null)
   const [aiInsights, setAiInsights] = useState(null)
 
@@ -909,7 +922,7 @@ export default function DebtCalculatorPage() {
   }
 
   return (
-    <DashboardLayout title="Debt Calculator & Loan Advisor">
+    <DashboardLayout title={t('debtCalculator.title')}>
       <div className="min-h-screen bg-slate-50">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Header */}

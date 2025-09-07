@@ -3,9 +3,11 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Sidebar from '@/components/layout/Sidebar'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import { 
   Bell,
   LogOut,
@@ -21,6 +23,7 @@ import {
 
 export default function DashboardLayout({ children, title = "Dashboard" }) {
   const { data: session } = useSession()
+  const { t } = useTranslation()
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const dropdownRef = useRef(null)
@@ -91,6 +94,9 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
 
                 {/* Right Section: Actions */}
                 <div className="flex items-center space-x-2">
+                  {/* Language Selector */}
+                  <LanguageSelector variant="dashboard" />
+                  
                   {/* Notifications - Hidden on small mobile */}
                   <Button 
                     variant="ghost" 

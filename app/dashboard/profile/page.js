@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { useSession, signOut } from 'next-auth/react'
+import { useTranslation } from 'react-i18next'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -25,6 +26,7 @@ import toast from 'react-hot-toast'
 
 function ProfileContent() {
   const { data: session } = useSession()
+  const { t } = useTranslation()
   const [isEditing, setIsEditing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [profileImage, setProfileImage] = useState(session?.user?.image || '')
@@ -44,14 +46,14 @@ function ProfileContent() {
     const file = event.target.files[0]
     if (file) {
       if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        toast.error('Image size should be less than 5MB')
+        toast.error(t('profile.imageSizeError'))
         return
       }
       
       const reader = new FileReader()
       reader.onload = (e) => {
         setProfileImage(e.target.result)
-        toast.success('Profile photo updated!')
+        toast.success(t('profile.photoUpdated'))
       }
       reader.readAsDataURL(file)
     }
@@ -67,7 +69,7 @@ function ProfileContent() {
       await new Promise(resolve => setTimeout(resolve, 1000))
       
       setIsEditing(false)
-      toast.success('Profile updated successfully! 🎉')
+      toast.success(t('profile.profileUpdated'))
     } catch (error) {
       toast.error('Failed to update profile. Please try again.')
     } finally {
@@ -91,7 +93,7 @@ function ProfileContent() {
   }
 
   return (
-    <DashboardLayout title="Profile">
+    <DashboardLayout title={t('dashboard.profile')}>
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Profile Header */}
         <Card>
@@ -100,17 +102,17 @@ function ProfileContent() {
               <div>
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5 text-emerald-600" />
-                  My Profile
+                  {t('profile.myProfile')}
                 </CardTitle>
                 <CardDescription>
-                  Manage your personal information and preferences
+                  {t('profile.managePersonalInfo')}
                 </CardDescription>
               </div>
               
               {!isEditing ? (
                 <Button onClick={() => setIsEditing(true)} className="flex items-center gap-2">
                   <Edit3 className="h-4 w-4" />
-                  Edit Profile
+                  {t('profile.editProfile')}
                 </Button>
               ) : (
                 <div className="flex gap-2">
@@ -124,11 +126,11 @@ function ProfileContent() {
                     ) : (
                       <Save className="h-4 w-4" />
                     )}
-                    {saving ? 'Saving...' : 'Save'}
+                    {saving ? t('profile.saving') : t('common.save')}
                   </Button>
                   <Button variant="outline" onClick={handleCancel}>
                     <X className="h-4 w-4" />
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                 </div>
               )}
@@ -165,7 +167,7 @@ function ProfileContent() {
                     className="flex items-center gap-2"
                   >
                     <Upload className="h-4 w-4" />
-                    Change Photo
+                    {t('profile.changePhoto')}
                   </Button>
                 )}
                 
@@ -183,35 +185,35 @@ function ProfileContent() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Full Name */}
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="name">{t('profile.fullName')}</Label>
                     {isEditing ? (
                       <Input
                         id="name"
                         value={profile.name}
                         onChange={(e) => setProfile({...profile, name: e.target.value})}
-                        placeholder="Enter your full name"
+                        placeholder={t('profile.enterFullName')}
                       />
                     ) : (
                       <div className="flex items-center gap-2 text-slate-800">
                         <User className="h-4 w-4 text-slate-500" />
-                        <span>{profile.name || 'Not provided'}</span>
+                        <span>{profile.name || t('profile.notProvided')}</span>
                       </div>
                     )}
                   </div>
 
                   {/* Email */}
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
+                    <Label htmlFor="email">{t('profile.emailAddress')}</Label>
                     <div className="flex items-center gap-2 text-slate-800">
                       <Mail className="h-4 w-4 text-slate-500" />
                       <span>{profile.email}</span>
-                      <span className="text-xs text-slate-500">(cannot be changed)</span>
+                      <span className="text-xs text-slate-500">{t('profile.cannotBeChanged')}</span>
                     </div>
                   </div>
 
                   {/* Phone */}
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
+                    <Label htmlFor="phone">{t('profile.phoneNumber')}</Label>
                     {isEditing ? (
                       <Input
                         id="phone"
@@ -222,14 +224,14 @@ function ProfileContent() {
                     ) : (
                       <div className="flex items-center gap-2 text-slate-800">
                         <Phone className="h-4 w-4 text-slate-500" />
-                        <span>{profile.phone || 'Not provided'}</span>
+                        <span>{profile.phone || t('profile.notProvided')}</span>
                       </div>
                     )}
                   </div>
 
                   {/* Location */}
                   <div className="space-y-2">
-                    <Label htmlFor="location">Location</Label>
+                    <Label htmlFor="location">{t('profile.location')}</Label>
                     {isEditing ? (
                       <Input
                         id="location"
@@ -240,14 +242,14 @@ function ProfileContent() {
                     ) : (
                       <div className="flex items-center gap-2 text-slate-800">
                         <MapPin className="h-4 w-4 text-slate-500" />
-                        <span>{profile.location || 'Not provided'}</span>
+                        <span>{profile.location || t('profile.notProvided')}</span>
                       </div>
                     )}
                   </div>
 
                   {/* Date of Birth */}
                   <div className="space-y-2">
-                    <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                    <Label htmlFor="dateOfBirth">{t('profile.dateOfBirth')}</Label>
                     {isEditing ? (
                       <Input
                         id="dateOfBirth"
@@ -257,14 +259,14 @@ function ProfileContent() {
                       />
                     ) : (
                       <div className="text-slate-800">
-                        {profile.dateOfBirth ? new Date(profile.dateOfBirth).toLocaleDateString('en-IN') : 'Not provided'}
+                        {profile.dateOfBirth ? new Date(profile.dateOfBirth).toLocaleDateString('en-IN') : t('profile.notProvided')}
                       </div>
                     )}
                   </div>
 
                   {/* Occupation */}
                   <div className="space-y-2">
-                    <Label htmlFor="occupation">Occupation</Label>
+                    <Label htmlFor="occupation">{t('profile.occupation')}</Label>
                     {isEditing ? (
                       <Input
                         id="occupation"
@@ -274,7 +276,7 @@ function ProfileContent() {
                       />
                     ) : (
                       <div className="text-slate-800">
-                        {profile.occupation || 'Not provided'}
+                        {profile.occupation || t('profile.notProvided')}
                       </div>
                     )}
                   </div>
@@ -282,18 +284,18 @@ function ProfileContent() {
 
                 {/* Bio */}
                 <div className="space-y-2">
-                  <Label htmlFor="bio">About Me</Label>
+                  <Label htmlFor="bio">{t('profile.aboutMe')}</Label>
                   {isEditing ? (
                     <Textarea
                       id="bio"
                       value={profile.bio}
                       onChange={(e) => setProfile({...profile, bio: e.target.value})}
-                      placeholder="Tell us a bit about yourself..."
+                      placeholder={t('profile.tellAboutYourself')}
                       rows={3}
                     />
                   ) : (
                     <div className="text-slate-800 bg-slate-50 p-3 rounded-lg min-h-[80px]">
-                      {profile.bio || 'No bio provided'}
+                      {profile.bio || t('profile.noBioProvided')}
                     </div>
                   )}
                 </div>
@@ -305,9 +307,9 @@ function ProfileContent() {
         {/* Account Actions */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-red-600">Account Actions</CardTitle>
+            <CardTitle className="text-red-600">{t('profile.accountActions')}</CardTitle>
             <CardDescription>
-              Manage your account settings
+              {t('profile.manageAccountSettings')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -317,19 +319,19 @@ function ProfileContent() {
                 onClick={() => signOut({ callbackUrl: '/' })}
                 className="flex items-center gap-2"
               >
-                Sign Out
+                {t('profile.signOut')}
               </Button>
               
               <Button 
                 variant="outline" 
                 onClick={() => {
-                  if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-                    toast.error('Account deletion feature will be available soon.')
+                  if (confirm(t('profile.deleteAccountConfirm'))) {
+                    toast.error(t('profile.deleteAccountSoon'))
                   }
                 }}
                 className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50"
               >
-                Delete Account
+                {t('profile.deleteAccount')}
               </Button>
             </div>
           </CardContent>

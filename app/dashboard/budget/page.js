@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import BudgetDisplay from '@/components/dashboard/BudgetDisplay'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -16,6 +18,7 @@ import {
 } from 'lucide-react'
 
 function BudgetContent() {
+  const { t } = useTranslation()
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   
   const handleRefreshBudget = () => {
@@ -23,7 +26,7 @@ function BudgetContent() {
   }
 
   return (
-    <DashboardLayout title="Budget Management">
+    <DashboardLayout title={t('budget.title')}>
       <div className="space-y-6">
         {/* Budget Overview */}
         {/* <div className="flex justify-between items-center">

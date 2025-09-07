@@ -546,40 +546,18 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { UserPlus, Eye, EyeOff, Mail, ArrowLeft, Shield } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 
-// Schema for signup form
-const signupSchema = z.object({
-  name: z.string()
-    .min(2, 'Name must be at least 2 characters')
-    .max(50, 'Name must be less than 50 characters')
-    .regex(/^[a-zA-Z\s]+$/, 'Name can only contain letters and spaces'),
-  email: z.string()
-    .email('Please enter a valid email address')
-    .toLowerCase(),
-  password: z.string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
-  confirmPassword: z.string()
-}).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-})
-
-// Schema for OTP verification
-const otpSchema = z.object({
-  otp: z.string()
-    .length(6, 'OTP must be exactly 6 digits')
-    .regex(/^\d{6}$/, 'OTP must contain only numbers')
-})
-
 export default function SignUpPage() {
+  const { t } = useTranslation()
   const [step, setStep] = useState('signup') // 'signup' or 'otp'
   const [userData, setUserData] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -587,6 +565,31 @@ export default function SignUpPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [otpTimer, setOtpTimer] = useState(0)
   const router = useRouter()
+
+  // Schema for signup form
+  const signupSchema = z.object({
+    name: z.string()
+      .min(2, t('validation.nameMinLength'))
+      .max(50, t('validation.nameMaxLength'))
+      .regex(/^[a-zA-Z\s]+$/, t('validation.nameInvalidChars')),
+    email: z.string()
+      .email(t('validation.emailInvalid'))
+      .toLowerCase(),
+    password: z.string()
+      .min(8, t('validation.passwordMinLength'))
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, t('validation.passwordComplexity')),
+    confirmPassword: z.string()
+  }).refine(data => data.password === data.confirmPassword, {
+    message: t('validation.passwordsNoMatch'),
+    path: ["confirmPassword"],
+  })
+
+  // Schema for OTP verification
+  const otpSchema = z.object({
+    otp: z.string()
+      .length(6, t('validation.otpLength'))
+      .regex(/^\d{6}$/, t('validation.otpNumbers'))
+  })
   
   // Form for signup
   const signupForm = useForm({
@@ -629,14 +632,14 @@ export default function SignUpPage() {
         setOtpTimer(300) // 5 minutes
         startTimer()
         
-        toast.success(`OTP Sent! A 6-digit verification code has been sent to ${data.email}`, {
+        toast.success(`${t('toast.otpSent')} ${data.email}`, {
           duration: 4000
         })
       } else {
-        toast.error(`Failed to send OTP. ${result.message || 'Please try again'}`)
+        toast.error(`${t('toast.otpSendFailed')} ${result.message || t('common.error')}`)
       }
     } catch (error) {
-      toast.error('Network error. Please check your connection and try again')
+      toast.error(t('toast.networkError'))
     } finally {
       setIsLoading(false)
     }
@@ -676,20 +679,20 @@ export default function SignUpPage() {
         const registerResult = await registerResponse.json()
 
         if (registerResponse.ok) {
-          toast.success('🎉 Registration Successful! Your account has been created. Please sign in to continue.', {
+          toast.success(t('toast.registrationSuccess'), {
             duration: 5000
           })
           
           // Redirect to signin page
           router.push(`/auth/signin?email=${encodeURIComponent(userData.email)}&message=registration-complete`)
         } else {
-          toast.error(`Registration failed. ${registerResult.message || 'Please try again'}`)
+          toast.error(`${t('toast.registrationFailed')} ${registerResult.message || ''}`)
         }
       } else {
-        toast.error(`Invalid OTP. ${verifyResult.message || 'Please check the code and try again'}`)
+        toast.error(`${t('toast.invalidOtp')} ${verifyResult.message || ''}`)
       }
     } catch (error) {
-      toast.error('Network error. Please check your connection and try again')
+      toast.error(t('toast.networkError'))
     } finally {
       setIsLoading(false)
     }
@@ -726,12 +729,12 @@ export default function SignUpPage() {
       if (response.ok) {
         setOtpTimer(300)
         startTimer()
-        toast.success('OTP Resent! A new verification code has been sent to your email')
+        toast.success(t('toast.otpResent'))
       } else {
-        toast.error('Failed to resend OTP. Please try again')
+        toast.error(t('toast.otpResendFailed'))
       }
     } catch (error) {
-      toast.error('Network error. Please try again')
+      toast.error(t('toast.networkError'))
     } finally {
       setIsLoading(false)
     }
@@ -758,17 +761,20 @@ export default function SignUpPage() {
         <div className="w-full max-w-md relative z-10">
           {/* Company Logo/Brand Area */}
           <div className="text-center mb-8 flex flex-col justify-center items-center">
-      <Logo size="xlarge" textClassName="text-2xl" />
-            <p className="text-slate-600 text-sm font-medium mt-2">Join our professional wealth management platform</p>
+            <div className="flex items-center space-x-4 mb-2">
+              <Logo size="xlarge" textClassName="text-2xl" />
+              <LanguageSelector variant="dashboard" />
+            </div>
+            <p className="text-slate-600 text-sm font-medium mt-2">{t('auth.signup.tagline')}</p>
           </div>
 
           <Card className="shadow-2xl border border-emerald-100/50 bg-white/90 backdrop-blur-xl ring-1 ring-white/20">
             <CardHeader className="text-center pb-2 bg-gradient-to-b from-emerald-50/30 to-transparent">
               <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-2">
-                Create Your Account
+                {t('auth.signup.title')}
               </CardTitle>
               <CardDescription className="text-slate-600 text-base font-medium">
-                Start your financial planning journey today
+                {t('auth.signup.subtitle')}
               </CardDescription>
             </CardHeader>
             
@@ -780,12 +786,12 @@ export default function SignUpPage() {
                     htmlFor="name" 
                     className="text-sm font-medium text-slate-700 block"
                   >
-                    Full Name
+                    {t('auth.signup.fullName')}
                   </label>
                   <Input
                     id="name"
                     type="text"
-                    placeholder="Enter your full name"
+                    placeholder={t('auth.signup.fullNamePlaceholder')}
                     autoComplete="name"
                     disabled={isLoading}
                     {...signupForm.register('name')}
@@ -802,12 +808,12 @@ export default function SignUpPage() {
                     htmlFor="email" 
                     className="text-sm font-medium text-slate-700 block"
                   >
-                    Email Address
+                    {t('auth.signup.email')}
                   </label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your email address"
+                    placeholder={t('auth.signup.emailPlaceholder')}
                     autoComplete="email"
                     disabled={isLoading}
                     {...signupForm.register('email')}
@@ -824,13 +830,13 @@ export default function SignUpPage() {
                     htmlFor="password" 
                     className="text-sm font-medium text-slate-700 block"
                   >
-                    Password
+                    {t('auth.signup.password')}
                   </label>
                   <div className="relative">
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Create a strong password"
+                      placeholder={t('auth.signup.passwordPlaceholder')}
                       autoComplete="new-password"
                       disabled={isLoading}
                       {...signupForm.register('password')}
@@ -859,13 +865,13 @@ export default function SignUpPage() {
                     htmlFor="confirmPassword" 
                     className="text-sm font-medium text-slate-700 block"
                   >
-                    Confirm Password
+                    {t('auth.signup.confirmPassword')}
                   </label>
                   <div className="relative">
                     <Input
                       id="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Confirm your password"
+                      placeholder={t('auth.signup.confirmPasswordPlaceholder')}
                       autoComplete="new-password"
                       disabled={isLoading}
                       {...signupForm.register('confirmPassword')}
@@ -897,11 +903,11 @@ export default function SignUpPage() {
                   {isLoading ? (
                     <div className="flex items-center justify-center space-x-2">
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Sending verification code...</span>
+                      <span>{t('auth.signup.sendingVerification')}</span>
                     </div>
                   ) : (
                     <div className="flex items-center justify-center space-x-2">
-                      <span>Create Account</span>
+                      <span>{t('auth.signup.createAccount')}</span>
                       <UserPlus className="w-4 h-4" />
                     </div>
                   )}
@@ -913,12 +919,12 @@ export default function SignUpPage() {
           {/* Sign In Link */}
           <div className="text-center mt-6">
             <p className="text-slate-600 font-medium">
-              Already have an account?{' '}
+              {t('auth.signup.alreadyHaveAccount')}{' '}
               <Link 
                 href="/auth/signin" 
                 className="font-bold text-emerald-600 hover:text-emerald-700 transition-colors duration-200 hover:underline"
               >
-                Sign in
+                {t('auth.signup.signIn')}
               </Link>
             </p>
           </div>
@@ -927,7 +933,7 @@ export default function SignUpPage() {
           <div className="text-center mt-8 text-xs text-slate-500">
             <div className="flex items-center justify-center space-x-1">
               <Shield className="w-3 h-3 text-emerald-600" />
-              <p className="font-medium">Your data is protected with enterprise-grade security</p>
+              <p className="font-medium">{t('auth.signup.securityNotice')}</p>
             </div>
           </div>
         </div>
@@ -950,17 +956,17 @@ export default function SignUpPage() {
           {/* Company Logo/Brand Area */}
           <div className="text-center mb-8">
             <Logo size="xlarge" textClassName="text-2xl " />
-            <h2 className="text-xl font-bold text-slate-800 mt-4 mb-2">Email Verification</h2>
-            <p className="text-slate-600 text-sm font-medium">Complete your account setup</p>
+            <h2 className="text-xl font-bold text-slate-800 mt-4 mb-2">{t('auth.otp.emailVerification')}</h2>
+            <p className="text-slate-600 text-sm font-medium">{t('auth.otp.completeSetup')}</p>
           </div>
 
           <Card className="shadow-2xl border border-emerald-100/50 bg-white/90 backdrop-blur-xl ring-1 ring-white/20">
             <CardHeader className="text-center pb-6 bg-gradient-to-b from-emerald-50/30 to-transparent">
               <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-2">
-                Verify Your Email
+                {t('auth.otp.verifyYourEmail')}
               </CardTitle>
               <CardDescription className="text-slate-600 text-base font-medium">
-                Enter the 6-digit code sent to<br />
+                {t('auth.otp.enterCode')}<br />
                 <span className="font-bold text-emerald-700">{userData?.email}</span>
               </CardDescription>
             </CardHeader>
@@ -972,7 +978,7 @@ export default function SignUpPage() {
                     htmlFor="otp" 
                     className="text-sm font-medium text-slate-700 block text-center"
                   >
-                    Verification Code
+                    {t('auth.otp.verificationCode')}
                   </label>
                   <Input
                     id="otp"
@@ -991,7 +997,7 @@ export default function SignUpPage() {
                 {otpTimer > 0 && (
                   <div className="text-center">
                     <p className="text-sm text-slate-600 font-medium">
-                      Resend code in <span className="text-emerald-600 font-bold">{formatTime(otpTimer)}</span>
+                      {t('auth.otp.resendTimer')} <span className="text-emerald-600 font-bold">{formatTime(otpTimer)}</span>
                     </p>
                   </div>
                 )}
@@ -1004,7 +1010,7 @@ export default function SignUpPage() {
                       disabled={isLoading}
                       className="text-sm text-emerald-600 hover:text-emerald-700 font-bold transition-colors duration-200 hover:underline bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-200"
                     >
-                      Resend verification code
+                      {t('auth.otp.resendCode')}
                     </button>
                   </div>
                 )}
@@ -1018,11 +1024,11 @@ export default function SignUpPage() {
                   {isLoading ? (
                     <div className="flex items-center justify-center space-x-2">
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Verifying...</span>
+                      <span>{t('auth.otp.verifying')}</span>
                     </div>
                   ) : (
                     <div className="flex items-center justify-center space-x-2">
-                      <span>Verify & Complete Registration</span>
+                      <span>{t('auth.otp.verifyAndComplete')}</span>
                       <Mail className="w-4 h-4" />
                     </div>
                   )}
@@ -1037,7 +1043,7 @@ export default function SignUpPage() {
                   disabled={isLoading}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to registration
+                  {t('auth.otp.backToRegistration')}
                 </Button>
               </form>
             </CardContent>

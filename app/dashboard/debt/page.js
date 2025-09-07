@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { 
@@ -268,6 +270,7 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
 }
 
 function DebtOverview() {
+  const { t } = useTranslation()
   const [debts, setDebts] = useState([])
   const [summary, setSummary] = useState({ taken: {}, given: {} })
   const [loading, setLoading] = useState(true)
@@ -519,13 +522,13 @@ function DebtOverview() {
   const debtScore = calculateDebtScore()
 
   return (
-    <DashboardLayout title="Debt Overview">
+    <DashboardLayout title={t('debt.title')}>
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <p className="text-slate-600 mt-1">
-              Track your debts taken and given to manage your financial obligations
+              {t('debt.subtitle')}
             </p>
           </div>
         </div>
@@ -543,7 +546,7 @@ function DebtOverview() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <h2 className="text-lg sm:text-xl font-semibold text-red-600 flex items-center">
                     <TrendingDown className="w-5 h-5 mr-2" />
-                    Debt Taken (Liabilities)
+                    {t('debt.debtsTaken')} ({t('debt.liabilities')})
                   </h2>
                   <Button
                     onClick={() => handleAddDebt('taken')}
@@ -551,32 +554,32 @@ function DebtOverview() {
                     size="sm"
                   >
                     <Plus className="w-4 h-4 mr-1" />
-                    Add Debt
+                    {t('debt.addDebt')}
                   </Button>
                 </div>
 
                 <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4">
                   <div className="grid grid-cols-2 gap-3 sm:gap-4 text-sm">
                     <div>
-                      <p className="text-red-600 font-medium">Total Amount</p>
+                      <p className="text-red-600 font-medium">{t('debt.totalAmount')}</p>
                       <p className="text-red-800 font-bold text-base sm:text-lg">
                         {formatCurrency(summary.taken.totalAmount || 0)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-red-600 font-medium">Remaining</p>
+                      <p className="text-red-600 font-medium">{t('debt.remainingAmount')}</p>
                       <p className="text-red-800 font-bold text-base sm:text-lg">
                         {formatCurrency(summary.taken.totalRemaining || 0)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-red-600 font-medium">Monthly Payments</p>
+                      <p className="text-red-600 font-medium">{t('debt.monthlyPayments')}</p>
                       <p className="text-red-800 font-bold text-sm sm:text-base">
                         {formatCurrency(summary.taken.totalMonthlyPayments || 0)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-red-600 font-medium">Active Debts</p>
+                      <p className="text-red-600 font-medium">{t('debt.activeDebts')}</p>
                       <p className="text-red-800 font-bold text-sm sm:text-base">{summary.taken.count || 0}</p>
                     </div>
                   </div>

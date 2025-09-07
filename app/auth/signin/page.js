@@ -283,22 +283,19 @@ import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LogIn, Eye, EyeOff, Shield } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
+import LanguageSelector from '@/components/ui/LanguageSelector'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 
 
-const signinSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
-  rememberMe: z.boolean().optional()
-})
-
 function SignInForm() {
+  const { t } = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
@@ -308,6 +305,12 @@ function SignInForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+
+  const signinSchema = z.object({
+    email: z.string().email(t('auth.signin.emailRequired')),
+    password: z.string().min(1, t('auth.signin.passwordRequired')),
+    rememberMe: z.boolean().optional()
+  })
   
   const {
     register,
@@ -324,12 +327,12 @@ function SignInForm() {
   // Show welcome message if redirected from registration
   useEffect(() => {
     if (message === 'registration-complete') {
-      toast.success('Registration completed successfully! Welcome to WealthWise. Please sign in to continue.', {
+      toast.success(t('auth.signin.registrationComplete'), {
         duration: 5000,
         position: 'top-center',
       })
     }
-  }, [message])
+  }, [message, t])
 
   // Handle form submission
   const onSubmit = async (data) => {
@@ -343,13 +346,13 @@ function SignInForm() {
       })
 
       if (result?.error) {
-        toast.error('Invalid credentials. Please verify your email and password.')
+        toast.error(t('auth.signin.invalidCredentials'))
       } else {
-        toast.success('Welcome back! Successfully signed in to your account.')
+        toast.success(t('auth.signin.welcomeBack'))
         router.push(callbackUrl)
       }
     } catch (error) {
-      toast.error('Unable to connect. Please check your network and try again.')
+      toast.error(t('auth.signin.networkError'))
     } finally {
       setIsLoading(false)
     }
@@ -363,7 +366,7 @@ function SignInForm() {
       await signIn('google', { callbackUrl })
     } catch (error) {
       console.error('Google sign-in error:', error)
-      toast.error('Google authentication failed. Please try again or use email sign-in.')
+      toast.error(t('auth.signin.googleError'))
     } finally {
       // Reset loading state after a short delay to give time for redirect
       setTimeout(() => {
@@ -384,17 +387,20 @@ function SignInForm() {
       <div className="w-full max-w-md relative z-10">
         {/* Company Logo/Brand Area */}
         <div className="text-center mb-2 flex flex-col items-center">
-          <Logo size="xlarge" textClassName="text-2xl " />
-          <p className="text-slate-600 text-sm font-medium mt-2">Professional wealth management platform</p>
+          <div className="flex items-center space-x-4 mb-2">
+            <Logo size="xlarge" textClassName="text-2xl " />
+            <LanguageSelector variant="dashboard" />
+          </div>
+          <p className="text-slate-600 text-sm font-medium mt-2">{t('auth.signin.tagline')}</p>
         </div>
 
         <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl ring-1 ring-slate-200/50 rounded-3xl overflow-hidden">
           <CardHeader className="text-center pb-8 pt-8 bg-gradient-to-b from-slate-50/50 to-transparent">
             <CardTitle className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-3">
-              Welcome Back
+              {t('auth.signin.title')}
             </CardTitle>
             <CardDescription className="text-slate-600 text-lg font-medium">
-              Access your wealth management dashboard
+              {t('auth.signin.subtitle')}
             </CardDescription>
           </CardHeader>
           
@@ -406,12 +412,12 @@ function SignInForm() {
                   htmlFor="email" 
                   className="text-sm font-semibold text-slate-700 block tracking-wide"
                 >
-                  Email Address
+                  {t('auth.signin.email')}
                 </label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="Enter your email address"
+                  placeholder={t('auth.signin.emailPlaceholder')}
                   autoComplete="email"
                   disabled={isLoading}
                   {...register('email')}
@@ -428,13 +434,13 @@ function SignInForm() {
                   htmlFor="password" 
                   className="text-sm font-semibold text-slate-700 block tracking-wide"
                 >
-                  Password
+                  {t('auth.signin.password')}
                 </label>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder={t('auth.signin.passwordPlaceholder')}
                     autoComplete="current-password"
                     disabled={isLoading}
                     {...register('password')}
@@ -467,14 +473,14 @@ function SignInForm() {
                     {...register('rememberMe')}
                   />
                   <label htmlFor="rememberMe" className="ml-2 block text-sm text-slate-700 font-medium">
-                    Remember me
+                    {t('auth.signin.rememberMe')}
                   </label>
                 </div>
                 <Link
                   href="/auth/forgot-password"
                   className="text-sm text-emerald-600 hover:text-emerald-700 font-semibold transition-colors duration-200 hover:underline"
                 >
-                  Forgot password?
+                  {t('auth.signin.forgotPassword')}
                 </Link>
               </div>
 
@@ -487,11 +493,11 @@ function SignInForm() {
                 {isLoading ? (
                   <div className="flex items-center justify-center space-x-3">
                     <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Signing in...</span>
+                    <span>{t('auth.signin.signingIn')}</span>
                   </div>
                 ) : (
                   <div className="flex items-center justify-center space-x-2">
-                    <span>Sign In</span>
+                    <span>{t('auth.signin.signinButton')}</span>
                     <LogIn className="w-4 h-4" />
                   </div>
                 )}
@@ -504,7 +510,7 @@ function SignInForm() {
                 <span className="w-full border-t " />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-4 text-slate-500 font-semibold tracking-wider">Or continue with</span>
+                <span className="bg-white px-4 text-slate-500 font-semibold tracking-wider">{t('auth.signin.orContinue')}</span>
               </div>
             </div>
             
@@ -519,7 +525,7 @@ function SignInForm() {
               {isGoogleLoading ? (
                 <div className="flex items-center justify-center space-x-3">
                   <div className="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-                  <span>Connecting...</span>
+                  <span>{t('auth.signin.connecting')}</span>
                 </div>
               ) : (
                 <>
@@ -529,7 +535,7 @@ function SignInForm() {
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                   </svg>
-                  Continue with Google
+                  {t('auth.signin.googleButton')}
                 </>
               )}
             </Button>
@@ -539,12 +545,12 @@ function SignInForm() {
         {/* Sign Up Link */}
         <div className="text-center mt-2">
           <p className="text-slate-600 font-medium">
-            Don&apos;t have an account?{' '}
+            {t('auth.signin.noAccount')}{' '}
             <Link 
               href="/auth/signup" 
               className="font-bold text-emerald-600 hover:text-emerald-700 transition-colors duration-200 hover:underline"
             >
-              Create account
+              {t('auth.signin.createAccount')}
             </Link>
           </p>
         </div>
@@ -553,7 +559,7 @@ function SignInForm() {
         <div className="text-center mt-2 text-xs text-slate-500">
           <div className="flex items-center justify-center space-x-1">
             <Shield className="w-3 h-3 text-emerald-600" />
-            <p className="font-medium">Bank-level security & encryption</p>
+            <p className="font-medium">{t('auth.signin.security')}</p>
           </div>
         </div>
       </div>
