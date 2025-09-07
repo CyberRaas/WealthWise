@@ -550,6 +550,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { UserPlus, Eye, EyeOff, Mail, ArrowLeft, Shield } from 'lucide-react'
+import Logo from '@/components/ui/Logo'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 
@@ -757,25 +758,22 @@ export default function SignUpPage() {
         <div className="w-full max-w-md relative z-10">
           {/* Company Logo/Brand Area */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 rounded-2xl shadow-xl mb-4 ring-4 ring-white/50">
-              <Shield className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent mb-2">WealthWise </h1>
-            <p className="text-slate-600 text-sm font-medium">Join our professional wealth management platform</p>
+            <Logo size="xlarge" textClassName="text-2xl" />
+            <p className="text-slate-600 text-sm font-medium mt-2">Join our professional wealth management platform</p>
           </div>
 
-          <Card className="shadow-2xl border border-emerald-100/50 bg-white/90 backdrop-blur-xl ring-1 ring-white/20">
-            <CardHeader className="text-center pb-6 bg-gradient-to-b from-emerald-50/30 to-transparent">
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-2">
+          <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl ring-1 ring-slate-200/50 rounded-3xl overflow-hidden">
+            <CardHeader className="text-center pb-8 pt-8 bg-gradient-to-b from-slate-50/50 to-transparent">
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-3">
                 Create Your Account
               </CardTitle>
-              <CardDescription className="text-slate-600 text-base font-medium">
+              <CardDescription className="text-slate-600 text-lg font-medium">
                 Start your financial planning journey today
               </CardDescription>
             </CardHeader>
             
-            <CardContent className="space-y-6">
-              <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-5">
+            <CardContent className="space-y-8 px-8 pb-8">
+              <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-6">
                 {/* Name Field */}
                 <div className="space-y-2">
                   <label 
@@ -951,19 +949,17 @@ export default function SignUpPage() {
         <div className="w-full max-w-md relative z-10">
           {/* Company Logo/Brand Area */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 rounded-2xl shadow-xl mb-4 ring-4 ring-white/50">
-              <Mail className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent mb-2">Email Verification</h1>
+            <Logo size="xlarge" textClassName="text-2xl" />
+            <h2 className="text-xl font-bold text-slate-800 mt-4 mb-2">Email Verification</h2>
             <p className="text-slate-600 text-sm font-medium">Complete your account setup</p>
           </div>
 
-          <Card className="shadow-2xl border border-emerald-100/50 bg-white/90 backdrop-blur-xl ring-1 ring-white/20">
-            <CardHeader className="text-center pb-6 bg-gradient-to-b from-emerald-50/30 to-transparent">
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-2">
+          <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl ring-1 ring-slate-200/50 rounded-3xl overflow-hidden">
+            <CardHeader className="text-center pb-8 pt-8 bg-gradient-to-b from-slate-50/50 to-transparent">
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-3">
                 Verify Your Email
               </CardTitle>
-              <CardDescription className="text-slate-600 text-base font-medium">
+              <CardDescription className="text-slate-600 text-lg font-medium">
                 Enter the 6-digit code sent to<br />
                 <span className="font-bold text-emerald-700">{userData?.email}</span>
               </CardDescription>

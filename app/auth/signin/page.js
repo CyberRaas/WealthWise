@@ -287,6 +287,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LogIn, Eye, EyeOff, Shield } from 'lucide-react'
+import Logo from '@/components/ui/Logo'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 
@@ -383,30 +384,27 @@ function SignInForm() {
       <div className="w-full max-w-md relative z-10">
         {/* Company Logo/Brand Area */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 rounded-2xl shadow-xl mb-4 ring-4 ring-white/50">
-            <Shield className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent mb-2">WealthWise </h1>
-          <p className="text-slate-600 text-sm font-medium">Professional wealth management platform</p>
+          <Logo size="xlarge" textClassName="text-2xl" />
+          <p className="text-slate-600 text-sm font-medium mt-2">Professional wealth management platform</p>
         </div>
 
-        <Card className="shadow-2xl border border-emerald-100/50 bg-white/90 backdrop-blur-xl ring-1 ring-white/20">
-          <CardHeader className="text-center pb-6 bg-gradient-to-b from-emerald-50/30 to-transparent">
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-2">
+        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl ring-1 ring-slate-200/50 rounded-3xl overflow-hidden">
+          <CardHeader className="text-center pb-8 pt-8 bg-gradient-to-b from-slate-50/50 to-transparent">
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-3">
               Welcome Back
             </CardTitle>
-            <CardDescription className="text-slate-600 text-base font-medium">
+            <CardDescription className="text-slate-600 text-lg font-medium">
               Access your wealth management dashboard
             </CardDescription>
           </CardHeader>
           
-          <CardContent className="space-y-6">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <CardContent className="space-y-8 px-8 pb-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Email Field */}
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <label 
                   htmlFor="email" 
-                  className="text-sm font-medium text-slate-700 block"
+                  className="text-sm font-semibold text-slate-700 block tracking-wide"
                 >
                   Email Address
                 </label>
@@ -417,18 +415,18 @@ function SignInForm() {
                   autoComplete="email"
                   disabled={isLoading}
                   {...register('email')}
-                  className="h-12 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/30 focus:ring-4 bg-white/80 backdrop-blur-sm text-slate-900 placeholder:text-slate-400 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md"
+                  className="h-14 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 bg-white text-slate-900 placeholder:text-slate-400 rounded-2xl text-base transition-all duration-300 shadow-sm hover:shadow-md hover:border-slate-300"
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
+                  <p className="text-sm text-red-600 mt-2 font-medium">{errors.email.message}</p>
                 )}
               </div>
 
               {/* Password Field */}
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <label 
                   htmlFor="password" 
-                  className="text-sm font-medium text-slate-700 block"
+                  className="text-sm font-semibold text-slate-700 block tracking-wide"
                 >
                   Password
                 </label>
@@ -440,11 +438,11 @@ function SignInForm() {
                     autoComplete="current-password"
                     disabled={isLoading}
                     {...register('password')}
-                    className="h-12 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/30 focus:ring-4 bg-white/80 backdrop-blur-sm text-slate-900 placeholder:text-slate-400 rounded-xl pr-12 transition-all duration-300 shadow-sm hover:shadow-md"
+                    className="h-14 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 bg-white text-slate-900 placeholder:text-slate-400 rounded-2xl pr-14 text-base transition-all duration-300 shadow-sm hover:shadow-md hover:border-slate-300"
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-emerald-600 transition-colors duration-200"
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-emerald-600 transition-colors duration-200"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -483,12 +481,12 @@ function SignInForm() {
               {/* Sign In Button */}
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] focus:ring-4 focus:ring-emerald-500/30 border border-white/20" 
+                className="w-full h-14 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus:ring-4 focus:ring-emerald-500/30 border border-white/20" 
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
                     <span>Signing in...</span>
                   </div>
                 ) : (
@@ -514,18 +512,18 @@ function SignInForm() {
             <Button
               type="button"
               variant="outline"
-              className="w-full h-12 border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/50 text-slate-700 font-semibold rounded-xl transition-all duration-300 focus:ring-4 focus:ring-emerald-500/20 shadow-sm hover:shadow-md"
+              className="w-full h-14 border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/50 text-slate-700 font-bold text-base rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus:ring-4 focus:ring-emerald-500/20 shadow-sm hover:shadow-md"
               onClick={handleGoogleSignIn}
               disabled={isGoogleLoading}
             >
               {isGoogleLoading ? (
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+                <div className="flex items-center justify-center space-x-3">
+                  <div className="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
                   <span>Connecting...</span>
                 </div>
               ) : (
                 <>
-                  <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 mr-3" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>

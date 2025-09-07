@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow'
+import Logo from '@/components/ui/Logo'
 import { Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -83,15 +84,10 @@ export default function OnboardingPage() {
       <div className="bg-white/80 backdrop-blur-sm border-b border-emerald-100">
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">W</span>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
-                  WealthWise
-                </h1>
-                <p className="text-sm text-slate-600">Smart Financial Planning</p>
+            <div className="flex items-center space-x-4">
+              <Logo size="xlarge" />
+              <div className="hidden sm:block ml-2">
+                <p className="text-sm text-slate-500 font-medium">Smart Financial Planning</p>
               </div>
             </div>
             <div className="text-right">
