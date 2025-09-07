@@ -235,19 +235,19 @@ export default function OnboardingFlow() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-blue-50 py-8">
       <div className="max-w-2xl mx-auto px-4">
         {/* Progress Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent">
+        <div className="mb-10">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent">
               Setup Your Smart Budget
             </h1>
-            <Badge variant="outline" className="border-emerald-200 text-emerald-700">
+            <Badge variant="outline" className="border-emerald-300 text-emerald-700 bg-emerald-50/50 px-4 py-2 text-sm font-semibold rounded-full">
               Step {currentStep + 1} of {ONBOARDING_STEPS.length}
             </Badge>
           </div>
           
-          <Progress value={progressPercentage} className="h-3 bg-emerald-100">
+          <Progress value={progressPercentage} className="h-4 bg-emerald-100 rounded-full shadow-inner">
             <div 
-              className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500 rounded-full"
+              className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-700 ease-out rounded-full shadow-sm"
               style={{ width: `${progressPercentage}%` }}
             />
           </Progress>
@@ -265,8 +265,8 @@ export default function OnboardingFlow() {
         </div>
 
         {/* Step Content */}
-        <Card className="shadow-xl border border-emerald-100/50 bg-white/90 backdrop-blur-xl">
-          <CardContent className="p-8">
+        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl ring-1 ring-slate-200/50 rounded-3xl overflow-hidden">
+          <CardContent className="p-10">
             {currentStep === 0 && <IncomeStep profile={profile} setProfile={setProfile} />}
             {currentStep === 1 && <DemographicsStep profile={profile} setProfile={setProfile} />}
             {currentStep === 2 && <BudgetGenerationStep isGenerating={isGeneratingBudget} />}
