@@ -1,4 +1,4 @@
-# Smart Financial Planner - MVP-Focused App Flow Document
+# Smart Financial Planner - MVP-Focused App Flow Document of  Version -1
 
 **Version:** 2.0 (MVP-Focused)  
 **Date:** August 5, 2025  
