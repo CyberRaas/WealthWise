@@ -758,22 +758,22 @@ export default function SignUpPage() {
         <div className="w-full max-w-md relative z-10">
           {/* Company Logo/Brand Area */}
           <div className="text-center mb-8">
-            <Logo size="xlarge" textClassName="text-2xl" />
+      <Logo size="xlarge" textClassName="text-2xl flex flex-col items-center" />
             <p className="text-slate-600 text-sm font-medium mt-2">Join our professional wealth management platform</p>
           </div>
 
-          <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl ring-1 ring-slate-200/50 rounded-3xl overflow-hidden">
-            <CardHeader className="text-center pb-8 pt-8 bg-gradient-to-b from-slate-50/50 to-transparent">
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-3">
+          <Card className="shadow-2xl border border-emerald-100/50 bg-white/90 backdrop-blur-xl ring-1 ring-white/20">
+            <CardHeader className="text-center pb-2 bg-gradient-to-b from-emerald-50/30 to-transparent">
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-2">
                 Create Your Account
               </CardTitle>
-              <CardDescription className="text-slate-600 text-lg font-medium">
+              <CardDescription className="text-slate-600 text-base font-medium">
                 Start your financial planning journey today
               </CardDescription>
             </CardHeader>
             
-            <CardContent className="space-y-8 px-8 pb-8">
-              <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-6">
+            <CardContent className="space-y-6">
+              <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-5">
                 {/* Name Field */}
                 <div className="space-y-2">
                   <label 
@@ -949,17 +949,17 @@ export default function SignUpPage() {
         <div className="w-full max-w-md relative z-10">
           {/* Company Logo/Brand Area */}
           <div className="text-center mb-8">
-            <Logo size="xlarge" textClassName="text-2xl" />
+            <Logo size="xlarge" textClassName="text-2xl " />
             <h2 className="text-xl font-bold text-slate-800 mt-4 mb-2">Email Verification</h2>
             <p className="text-slate-600 text-sm font-medium">Complete your account setup</p>
           </div>
 
-          <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl ring-1 ring-slate-200/50 rounded-3xl overflow-hidden">
-            <CardHeader className="text-center pb-8 pt-8 bg-gradient-to-b from-slate-50/50 to-transparent">
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-3">
+          <Card className="shadow-2xl border border-emerald-100/50 bg-white/90 backdrop-blur-xl ring-1 ring-white/20">
+            <CardHeader className="text-center pb-6 bg-gradient-to-b from-emerald-50/30 to-transparent">
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent mb-2">
                 Verify Your Email
               </CardTitle>
-              <CardDescription className="text-slate-600 text-lg font-medium">
+              <CardDescription className="text-slate-600 text-base font-medium">
                 Enter the 6-digit code sent to<br />
                 <span className="font-bold text-emerald-700">{userData?.email}</span>
               </CardDescription>

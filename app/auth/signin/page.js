@@ -383,8 +383,8 @@ function SignInForm() {
       
       <div className="w-full max-w-md relative z-10">
         {/* Company Logo/Brand Area */}
-        <div className="text-center mb-8">
-          <Logo size="xlarge" textClassName="text-2xl" />
+        <div className="text-center mb-2 flex flex-col items-center">
+          <Logo size="xlarge" textClassName="text-2xl " />
           <p className="text-slate-600 text-sm font-medium mt-2">Professional wealth management platform</p>
         </div>
 
@@ -398,10 +398,10 @@ function SignInForm() {
             </CardDescription>
           </CardHeader>
           
-          <CardContent className="space-y-8 px-8 pb-8">
+          <CardContent className="space-y-2 px-8 pb-8">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Email Field */}
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <label 
                   htmlFor="email" 
                   className="text-sm font-semibold text-slate-700 block tracking-wide"
@@ -423,7 +423,7 @@ function SignInForm() {
               </div>
 
               {/* Password Field */}
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <label 
                   htmlFor="password" 
                   className="text-sm font-semibold text-slate-700 block tracking-wide"
@@ -501,7 +501,7 @@ function SignInForm() {
             {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-slate-200" />
+                <span className="w-full border-t " />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-white px-4 text-slate-500 font-semibold tracking-wider">Or continue with</span>
@@ -537,7 +537,7 @@ function SignInForm() {
         </Card>
         
         {/* Sign Up Link */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-2">
           <p className="text-slate-600 font-medium">
             Don&apos;t have an account?{' '}
             <Link 
@@ -550,7 +550,7 @@ function SignInForm() {
         </div>
 
         {/* Security Notice */}
-        <div className="text-center mt-8 text-xs text-slate-500">
+        <div className="text-center mt-2 text-xs text-slate-500">
           <div className="flex items-center justify-center space-x-1">
             <Shield className="w-3 h-3 text-emerald-600" />
             <p className="font-medium">Bank-level security & encryption</p>
