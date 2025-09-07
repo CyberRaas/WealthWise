@@ -948,6 +948,7 @@ export default function SignUpPage() {
 
         <div className="w-full max-w-md relative z-10">
           {/* Company Logo/Brand Area */}
+          {/* Company Logo/Brand Area */}
           <div className="text-center mb-8">
             <Logo size="xlarge" textClassName="text-2xl " />
             <h2 className="text-xl font-bold text-slate-800 mt-4 mb-2">Email Verification</h2>
