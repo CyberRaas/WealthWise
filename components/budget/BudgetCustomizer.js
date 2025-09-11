@@ -25,8 +25,10 @@ import {
   RotateCcw
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 export default function BudgetCustomizer({ budget, onSave, onCancel }) {
+  const { t } = useTranslation()
   const [customBudget, setCustomBudget] = useState(null)
   const [totalAllocated, setTotalAllocated] = useState(0)
   const [showPercentages, setShowPercentages] = useState(false)
@@ -128,7 +130,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
     console.log('Auto-balancing:', { totalBudget, totalAllocated, difference })
     
     if (Math.abs(difference) <= 1000) {
-      toast.info('Budget is already balanced!')
+      toast.info(t('budget.alreadyBalanced'))
       return
     }
 
@@ -156,14 +158,14 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
 
     setCustomBudget({ ...customBudget, categories })
     calculateTotals(categories)
-    toast.success('Budget automatically balanced!')
+    toast.success(t('budget.autoBalanced'))
   }
 
   const resetToOriginal = () => {
     if (originalBudget) {
       setCustomBudget(JSON.parse(JSON.stringify(originalBudget)))
       calculateTotals(originalBudget.categories)
-      toast.info('Budget reset to original AI recommendation')
+      toast.info(t('budget.resetToOriginal'))
     }
   }
 
@@ -176,14 +178,14 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
     })
     
     if (!customBudget) {
-      toast.error('No budget data to save')
+      toast.error(t('budget.noBudgetData'))
       return
     }
     
     if (!isBalanced) {
       const totalBudget = budget?.totalBudget || budget?.monthlyIncome || 50000
       const difference = Math.abs(totalBudget - totalAllocated)
-      toast.error(`Please balance your budget first. Difference: ₹${difference.toLocaleString('en-IN')}`)
+      toast.error(t('budget.balanceFirst', { difference: difference.toLocaleString('en-IN') }))
       return
     }
 
@@ -201,10 +203,10 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
       console.log('Calling onSave with:', customizedBudget)
       await onSave(customizedBudget)
       console.log('onSave completed successfully')
-      toast.success('Custom budget saved successfully! 🎉')
+      toast.success(t('budget.savedSuccessfully'))
     } catch (error) {
       console.error('Save error:', error)
-      toast.error(`Failed to save custom budget: ${error.message}`)
+      toast.error(t('budget.saveFailed', { error: error.message }))
     } finally {
       setSaving(false)
     }
@@ -222,7 +224,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
     if (savingsPercentage < 10) {
       return { 
         status: 'warning', 
-        message: 'Consider increasing savings to at least 10%', 
+        message: t('budget.health.increaseSavings'), 
         color: 'orange' 
       }
     }
@@ -230,7 +232,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
     if (essentialPercentage < 50) {
       return { 
         status: 'good', 
-        message: 'Great balance between essentials and lifestyle', 
+        message: t('budget.health.greatBalance'), 
         color: 'green' 
       }
     }
@@ -238,14 +240,14 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
     if (essentialPercentage > 80) {
       return { 
         status: 'concern', 
-        message: 'High essential expenses - consider optimization', 
+        message: t('budget.health.highEssentials'), 
         color: 'red' 
       }
     }
 
     return { 
       status: 'good', 
-      message: 'Well-balanced budget allocation', 
+      message: t('budget.health.wellBalanced'), 
       color: 'green' 
     }
   }
@@ -255,7 +257,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
       <Card>
         <CardContent className="p-6 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500 mx-auto"></div>
-          <p className="mt-2 text-gray-500">Loading budget customizer...</p>
+          <p className="mt-2 text-gray-500">{t('budget.loadingCustomizer')}</p>
           <div className="mt-4 text-xs text-gray-400">
             Debug: Budget={!!budget}, Categories={!!budget?.categories}, TotalBudget={budget?.totalBudget}
           </div>
@@ -276,10 +278,10 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <CardTitle className="text-xl font-bold text-slate-800">
-                🎯 Customize Your Budget
+                🎯 {t('budget.customizeTitle')}
               </CardTitle>
               <CardDescription>
-                Adjust your budget categories according to your priorities and lifestyle
+                {t('budget.customizeDescription')}
               </CardDescription>
             </div>
             <div className="flex gap-2">
@@ -289,7 +291,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                 onClick={() => setShowPercentages(!showPercentages)}
               >
                 {showPercentages ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
-                {showPercentages ? 'Show Amounts' : 'Show %'}
+                {showPercentages ? t('budget.showAmounts') : t('budget.showPercentages')}
               </Button>
             </div>
           </div>
@@ -299,19 +301,19 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
           <div className="bg-gradient-to-r from-slate-50 to-emerald-50 rounded-lg p-4 mb-4">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
-                <p className="text-sm text-slate-600">Monthly Income</p>
+                <p className="text-sm text-slate-600">{t('budget.monthlyIncome')}</p>
                 <p className="text-2xl font-bold text-slate-800">
                   ₹{totalBudget.toLocaleString('en-IN')}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-600">Total Allocated</p>
+                <p className="text-sm text-slate-600">{t('budget.totalAllocated')}</p>
                 <p className={`text-2xl font-bold ${isBalanced ? 'text-emerald-600' : 'text-red-600'}`}>
                   ₹{totalAllocated.toLocaleString('en-IN')}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-600">Difference</p>
+                <p className="text-sm text-slate-600">{t('budget.difference')}</p>
                 <p className={`text-lg font-bold ${Math.abs(difference) <= 500 ? 'text-emerald-600' : 'text-red-600'}`}>
                   {difference > 0 ? '+' : ''}₹{difference.toLocaleString('en-IN')}
                 </p>
@@ -323,15 +325,18 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                 <div className="flex items-center gap-2 text-orange-600">
                   <AlertTriangle className="h-4 w-4" />
                   <span className="text-sm">
-                    Budget needs balancing (difference: ₹{Math.abs(difference).toLocaleString('en-IN')})
+                    {t('budget.needsBalancing', { difference: Math.abs(difference).toLocaleString('en-IN') })}
                     <br />
                     <span className="text-xs text-gray-500">
-                      Total: ₹{totalAllocated.toLocaleString('en-IN')} vs Budget: ₹{totalBudget.toLocaleString('en-IN')}
+                      {t('budget.totalVsBudget', { 
+                        total: totalAllocated.toLocaleString('en-IN'),
+                        budget: totalBudget.toLocaleString('en-IN')
+                      })}
                     </span>
                   </span>
                 </div>
                 <Button onClick={autoBalance} size="sm" variant="outline">
-                  Auto Balance
+                  {t('budget.autoBalance')}
                 </Button>
               </div>
             )}
@@ -353,10 +358,10 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg font-bold text-slate-800">
-            Adjust Category Allocations
+            {t('budget.adjustCategories')}
           </CardTitle>
           <CardDescription>
-            Modify amounts or percentages to match your spending priorities
+            {t('budget.modifyAmounts')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -382,7 +387,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                           ) : (
                             <TrendingDown className="h-3 w-3 mr-1" />
                           )}
-                          {currentAmount > originalAmount ? 'Increased' : 'Decreased'}
+                          {currentAmount > originalAmount ? t('budget.increased') : t('budget.decreased')}
                         </Badge>
                       )}
                     </div>
@@ -398,7 +403,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <label className="text-sm font-medium text-slate-700">
-                        {showPercentages ? 'Percentage' : 'Amount'}
+                        {showPercentages ? t('budget.percentage') : t('budget.amount')}
                       </label>
                       <div className="flex items-center gap-2">
                         {showPercentages ? (
@@ -453,9 +458,11 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                   {/* Original vs Current Comparison */}
                   {isChanged && (
                     <div className="text-xs text-slate-500 bg-slate-50 p-2 rounded">
-                      Original: ₹{originalAmount.toLocaleString('en-IN')} 
-                      ({Math.round((originalAmount / totalBudget) * 100)}%) 
-                      → Changed by ₹{Math.abs(currentAmount - originalAmount).toLocaleString('en-IN')}
+                      {t('budget.originalVsChanged', {
+                        original: originalAmount.toLocaleString('en-IN'),
+                        percentage: Math.round((originalAmount / totalBudget) * 100),
+                        changed: Math.abs(currentAmount - originalAmount).toLocaleString('en-IN')
+                      })}
                     </div>
                   )}
                 </div>
@@ -468,11 +475,11 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 justify-end">
         <Button variant="outline" onClick={onCancel}>
-          Cancel
+          {t('budget.cancel')}
         </Button>
         <Button variant="outline" onClick={resetToOriginal}>
           <RotateCcw className="h-4 w-4 mr-2" />
-          Reset to Original
+          {t('budget.resetToOriginal')}
         </Button>
         <Button 
           onClick={handleSave}
@@ -482,12 +489,12 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
           {saving ? (
             <>
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-              Saving...
+              {t('budget.saving')}
             </>
           ) : (
             <>
               <Save className="h-4 w-4 mr-2" />
-              Save Custom Budget
+              {t('budget.saveCustomBudget')}
             </>
           )}
         </Button>

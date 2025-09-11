@@ -1,8 +1,6 @@
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import { SessionProvider } from 'next-auth/react'
-import ToastProvider from '@/components/providers/ToastProvider'
-import { LanguageProvider } from '@/components/providers/LanguageProvider'
+import ClientProviders from '@/components/providers/ClientProviders'
 
 // Poppins font - clean, modern, highly readable for financial apps
 const poppins = Poppins({
@@ -23,12 +21,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${poppins.variable} font-poppins antialiased`}
       >
-        <SessionProvider>
-          <LanguageProvider>
-            {children}
-            <ToastProvider />
-          </LanguageProvider>
-        </SessionProvider>
+        <ClientProviders>
+          {children}
+        </ClientProviders>
       </body>
     </html>
   );

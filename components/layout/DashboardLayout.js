@@ -4,6 +4,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useTranslation } from 'react-i18next'
+import { useProfile } from '@/contexts/ProfileContext'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Sidebar from '@/components/layout/Sidebar'
@@ -23,6 +24,7 @@ import {
 
 export default function DashboardLayout({ children, title = "Dashboard" }) {
   const { data: session } = useSession()
+  const { profileImage } = useProfile()
   const { t } = useTranslation()
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -115,7 +117,7 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
                       onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                     >
                       <Avatar className="h-7 w-7 sm:h-8 sm:w-8">
-                        <AvatarImage src={session?.user?.image} />
+                        <AvatarImage src={profileImage} />
                         <AvatarFallback className="text-sm bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold">
                           {session?.user?.name?.[0] || 'A'}
                         </AvatarFallback>
@@ -135,7 +137,7 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
                         <div className="px-4 py-3 border-b border-slate-100">
                           <div className="flex items-center space-x-3">
                             <Avatar className="h-12 w-12">
-                              <AvatarImage src={session?.user?.image} />
+                              <AvatarImage src={profileImage} />
                               <AvatarFallback className="text-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold">
                                 {session?.user?.name?.[0] || 'A'}
                               </AvatarFallback>

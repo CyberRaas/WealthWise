@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { useProfile } from '@/contexts/ProfileContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -29,6 +30,7 @@ import toast from 'react-hot-toast'
 
 function DashboardContent() {
   const { data: session, status } = useSession()
+  const { profileImage } = useProfile()
   const router = useRouter()
   const [user, setUser] = useState(null)
   const [onboardingStatus, setOnboardingStatus] = useState(null)
@@ -52,7 +54,7 @@ function DashboardContent() {
           setOnboardingStatus(data.profile)
           
           if (!data.profile.onboardingCompleted || data.profile.onboardingProgress < 100) {
-            toast.info('Please complete your profile setup first')
+            toast.info(t('common.completeProfileFirst'))
             router.replace('/onboarding')
             return
           }
@@ -104,7 +106,7 @@ function DashboardContent() {
 
   const handleExpenseAdded = (expense) => {
     console.log('Expense added:', expense)
-    toast.success('Expense added successfully!')
+    toast.success(t('common.expenseAddedSuccess'))
     setExpenses(prev => [expense, ...prev])
     setRefreshBudget(prev => prev + 1)
     setShowExpenseEntry(false)
@@ -144,7 +146,7 @@ function DashboardContent() {
     }
     
     setSimulatedInvestments(prev => [newInvestment, ...prev])
-    toast.success('Investment simulated successfully! 🎉')
+    toast.success(t('common.investmentSimulatedSuccess'))
     
     // Show wealth tracker after first investment
     if (simulatedInvestments.length === 0) {
@@ -165,7 +167,7 @@ function DashboardContent() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-emerald-50">
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
+          <p className="text-gray-600">{t('common.loadingDashboard')}</p>
         </div>
       </div>
     )
@@ -216,14 +218,14 @@ function DashboardContent() {
               
               <div className="flex items-center space-x-3 bg-white/60 backdrop-blur-sm rounded-2xl px-4 py-2 border border-emerald-100/50 shadow-sm">
                 <Avatar className="h-8 w-8 ring-2 ring-emerald-200">
-                  <AvatarImage src={user?.image} />
+                  <AvatarImage src={profileImage || user?.image} />
                   <AvatarFallback className="text-sm bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold">
                     {user?.name?.[0] || 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="text-sm font-semibold text-slate-700">{user?.name?.split(' ')[0] || 'User'}</p>
-                  <p className="text-xs text-slate-500">Premium Member</p>
+                  <p className="text-xs text-slate-500">{t('common.premiumMember')}</p>
                 </div>
               </div>
 
@@ -247,7 +249,7 @@ function DashboardContent() {
           <div className="text-center mb-8">
             <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-xl rounded-full px-6 py-3 border border-emerald-200/50 mb-6 shadow-lg">
               <Star className="w-5 h-5 text-emerald-600" />
-              <span className="text-slate-700 font-medium">Financial Command Center</span>
+              <span className="text-slate-700 font-medium">{t('common.financialCommandCenter')}</span>
             </div>
             <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
               <span className="block bg-gradient-to-r from-slate-800 via-emerald-700 to-slate-800 bg-clip-text text-transparent">
@@ -276,7 +278,7 @@ function DashboardContent() {
               className="group bg-white/80 backdrop-blur-xl hover:bg-white/90 text-emerald-700 hover:text-emerald-800 border-2 border-emerald-200 hover:border-emerald-300 px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-lg font-bold"
             >
               <Plus className="h-6 w-6 mr-3 group-hover:rotate-90 transition-transform duration-300" />
-              Add Expense
+              {t('common.addExpense')}
               <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
@@ -315,7 +317,7 @@ function DashboardContent() {
               <div className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-100 via-teal-100 to-blue-100 rounded-xl border border-emerald-200/50 hover:shadow-lg transition-all duration-300">
                 <div className="flex items-center space-x-3">
                   <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
-                  <span className="text-lg font-bold text-slate-800">Budget generated successfully</span>
+                  <span className="text-lg font-bold text-slate-800">{t('common.budgetGenerated')}</span>
                 </div>
                 <span className="text-sm text-slate-500 font-medium">Just now</span>
               </div>

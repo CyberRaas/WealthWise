@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -24,64 +25,65 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-const GOAL_TEMPLATES = [
+const getGoalTemplates = (t) => [
   {
     id: 'emergency_fund',
-    name: 'Emergency Fund',
+    name: t('goals.templates.emergencyFund.name'),
     icon: '🛡️',
-    description: 'Build 6 months of expenses as emergency fund',
-    category: 'Safety',
+    description: t('goals.templates.emergencyFund.description'),
+    category: t('goals.categories.safety'),
     color: 'bg-blue-500',
     defaultMonths: 12
   },
   {
     id: 'home_purchase',
-    name: 'Home Purchase',
+    name: t('goals.templates.homePurchase.name'),
     icon: '🏠',
-    description: 'Save for down payment on house',
-    category: 'Property',
+    description: t('goals.templates.homePurchase.description'),
+    category: t('goals.categories.property'),
     color: 'bg-green-500',
     defaultMonths: 36
   },
   {
     id: 'car_purchase',
-    name: 'Car Purchase',
+    name: t('goals.templates.carPurchase.name'),
     icon: '🚗',
-    description: 'Buy a new car',
-    category: 'Vehicle',
+    description: t('goals.templates.carPurchase.description'),
+    category: t('goals.categories.vehicle'),
     color: 'bg-yellow-500',
     defaultMonths: 24
   },
   {
     id: 'vacation',
-    name: 'Dream Vacation',
+    name: t('goals.templates.vacation.name'),
     icon: '✈️',
-    description: 'Plan an amazing vacation',
-    category: 'Travel',
+    description: t('goals.templates.vacation.description'),
+    category: t('goals.categories.travel'),
     color: 'bg-purple-500',
     defaultMonths: 12
   },
   {
     id: 'education',
-    name: 'Education Fund',
+    name: t('goals.templates.education.name'),
     icon: '🎓',
-    description: 'Fund higher education or courses',
-    category: 'Education',
+    description: t('goals.templates.education.description'),
+    category: t('goals.categories.education'),
     color: 'bg-indigo-500',
     defaultMonths: 18
   },
   {
     id: 'wedding',
-    name: 'Wedding Fund',
+    name: t('goals.templates.wedding.name'),
     icon: '💍',
-    description: 'Save for wedding expenses',
-    category: 'Life Event',
+    description: t('goals.templates.wedding.description'),
+    category: t('goals.categories.lifeEvent'),
     color: 'bg-pink-500',
     defaultMonths: 24
   }
 ]
 
 export default function GoalTracker({ userSavings = 0 }) {
+  const { t } = useTranslation()
   const [goals, setGoals] = useState([])
   const [showCreateGoal, setShowCreateGoal] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -157,7 +159,7 @@ export default function GoalTracker({ userSavings = 0 }) {
         <CardContent className="flex items-center justify-center p-8">
           <div className="text-center">
             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading goals...</p>
+            <p className="text-gray-600">{t('goals.loading')}</p>
           </div>
         </CardContent>
       </Card>
@@ -173,11 +175,11 @@ export default function GoalTracker({ userSavings = 0 }) {
             <div>
               <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-xl rounded-full px-4 py-2 mb-4">
                 <Target className="w-4 h-4 text-white" />
-                <span className="text-white font-medium text-sm">Goal Progress</span>
+                <span className="text-white font-medium text-sm">{t('goals.goalProgress')}</span>
               </div>
-              <h2 className="text-3xl lg:text-4xl font-bold mb-3">🎯 Financial Goals</h2>
+              <h2 className="text-3xl lg:text-4xl font-bold mb-3">🎯 {t('goals.financialGoals')}</h2>
               <p className="text-emerald-100 text-lg font-medium">
-                {goals.length} active goals • Total target: ₹{goals.reduce((sum, goal) => sum + goal.targetAmount, 0).toLocaleString('en-IN')}
+                {goals.length} {t('goals.activeGoals')} • {t('goals.totalTarget')}: ₹{goals.reduce((sum, goal) => sum + goal.targetAmount, 0).toLocaleString('en-IN')}
               </p>
             </div>
             <Button
@@ -185,7 +187,7 @@ export default function GoalTracker({ userSavings = 0 }) {
               className="group bg-white/20 hover:bg-white/30 text-white border-white/30 px-6 py-3 rounded-2xl backdrop-blur-xl font-bold transition-all duration-300 hover:scale-105"
             >
               <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-              Add Goal
+              {t('goals.addGoal')}
             </Button>
           </div>
         </CardContent>
@@ -196,16 +198,16 @@ export default function GoalTracker({ userSavings = 0 }) {
         <Card className="group bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 hover:from-white hover:via-emerald-50/50 hover:to-teal-50/50 border-2 border-emerald-200/40 hover:border-emerald-300/60 shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-xl rounded-2xl ring-1 ring-white/50">
           <CardContent className="text-center p-12">
             <Target className="w-20 h-20 text-emerald-300 mx-auto mb-6" />
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-slate-800 bg-clip-text text-transparent mb-4">No Goals Set Yet</h3>
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-slate-800 bg-clip-text text-transparent mb-4">{t('goals.noGoalsYet')}</h3>
             <p className="text-slate-600 mb-8 text-lg">
-              Start your financial journey by setting your first savings goal
+              {t('goals.startJourney')}
             </p>
             <Button
               onClick={() => setShowCreateGoal(true)}
               className="group bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 ring-2 ring-white/20 text-lg font-bold"
             >
               <Plus className="w-6 mr-3 group-hover:rotate-90 transition-transform duration-300" />
-              Create Your First Goal
+              {t('goals.createFirstGoal')}
             </Button>
           </CardContent>
         </Card>
@@ -213,7 +215,7 @@ export default function GoalTracker({ userSavings = 0 }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {goals.map((goal) => {
             const analysis = calculateGoalProgress(goal)
-            const template = GOAL_TEMPLATES.find(t => t.id === goal.templateId)
+            const template = getGoalTemplates(t).find(tmpl => tmpl.id === goal.templateId)
             
             return (
               <Card key={goal.id} className="group bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 hover:from-white hover:via-emerald-50/50 hover:to-teal-50/50 border-2 border-emerald-200/40 hover:border-emerald-300/60 shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-xl rounded-2xl ring-1 ring-white/50">
@@ -232,8 +234,8 @@ export default function GoalTracker({ userSavings = 0 }) {
                       analysis.status === 'completed' ? 'default' :
                       analysis.status === 'on_track' ? 'secondary' : 'destructive'
                     }>
-                      {analysis.status === 'completed' ? 'Completed' :
-                       analysis.status === 'on_track' ? 'On Track' : 'Behind'}
+                      {analysis.status === 'completed' ? t('goals.status.completed') :
+                       analysis.status === 'on_track' ? t('goals.status.onTrack') : t('goals.status.behind')}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -243,7 +245,7 @@ export default function GoalTracker({ userSavings = 0 }) {
                     {/* Progress */}
                     <div>
                       <div className="flex justify-between text-sm mb-2">
-                        <span>Progress</span>
+                        <span>{t('goals.progress')}</span>
                         <span>{analysis.progress.toFixed(1)}%</span>
                       </div>
                       <Progress value={analysis.progress} className="h-3" />
@@ -256,13 +258,13 @@ export default function GoalTracker({ userSavings = 0 }) {
                     {/* Timeline */}
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <p className="text-gray-600">Target Date</p>
+                        <p className="text-gray-600">{t('goals.targetDate')}</p>
                         <p className="font-medium">
                           {new Date(goal.targetDate).toLocaleDateString('en-IN')}
                         </p>
                       </div>
                       <div>
-                        <p className="text-gray-600">Monthly Target</p>
+                        <p className="text-gray-600">{t('goals.monthlyTarget')}</p>
                         <p className="font-medium">
                           ₹{analysis.monthlySavingRequired.toLocaleString('en-IN')}
                         </p>
@@ -280,9 +282,9 @@ export default function GoalTracker({ userSavings = 0 }) {
                          analysis.status === 'on_track' ? <TrendingUp className="w-4 h-4 mr-2" /> :
                          <Clock className="w-4 h-4 mr-2" />}
                         <p className="text-sm">
-                          {analysis.status === 'completed' ? 'Goal achieved! 🎉' :
-                           analysis.status === 'on_track' ? `${analysis.monthsRemaining.toFixed(1)} months remaining` :
-                           'Need to increase monthly savings'}
+                          {analysis.status === 'completed' ? t('goals.goalAchieved') :
+                           analysis.status === 'on_track' ? t('goals.monthsRemaining', { months: analysis.monthsRemaining.toFixed(1) }) :
+                           t('goals.increaseSavings')}
                         </p>
                       </div>
                     </div>

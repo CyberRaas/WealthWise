@@ -104,7 +104,7 @@
 //   const getHealthScoreBadge = (score) => {
 //     if (score >= 80) return { text: 'Excellent', variant: 'default', color: 'bg-green-100 text-green-800' }
 //     if (score >= 60) return { text: 'Good', variant: 'secondary', color: 'bg-yellow-100 text-yellow-800' }
-//     return { text: 'Needs Improvement', variant: 'destructive', color: 'bg-red-100 text-red-800' }
+//     return { text: t('budget.needsImprovement'), variant: 'destructive', color: 'bg-red-100 text-red-800' }
 //   }
 
 //   const handleCustomizeBudget = () => {
@@ -393,7 +393,7 @@
 //             <div>
 //               <CardTitle className="flex items-center">
 //                 <DollarSign className="w-5 h-5 mr-2 text-green-600" />
-//                 Budget Categories
+//                 {t('budget.budgetCategories')}
 //                 {budget.isCustomized && (
 //       <Badge className="bg-emerald-100 text-emerald-700 ml-2">
 //                     <Edit3 className="w-3 h-3 mr-1" />
@@ -404,7 +404,7 @@
 //               <CardDescription>
 //                 {budget.isCustomized 
 //                   ? 'Your personalized budget allocation based on your preferences'
-//                   : 'AI-recommended breakdown of your monthly budget allocation'
+//                   : t('budget.aiRecommendedBreakdown')
 //                 }
 //               </CardDescription>
 //             </div>
@@ -469,7 +469,7 @@
 //           <CardHeader>
 //             <CardTitle className="flex items-center">
 //               <Lightbulb className="w-5 h-5 mr-2 text-yellow-600" />
-//               AI-Powered Financial Tips
+//               {t('budget.aiPoweredTips')}
 //             </CardTitle>
 //             <CardDescription>Personalized recommendations to improve your financial health</CardDescription>
 //           </CardHeader>
@@ -492,7 +492,7 @@
 //           <CardHeader>
 //             <CardTitle className="flex items-center">
 //               <Target className="w-5 h-5 mr-2 text-purple-600" />
-//               Investment Recommendations
+//               {t('budget.investmentRecommendations')}
 //             </CardTitle>
 //             <CardDescription>Smart investment suggestions based on your profile</CardDescription>
 //           </CardHeader>
@@ -944,7 +944,7 @@
 //             <div>
 //               <CardTitle className="flex items-center">
 //                 <DollarSign className="w-5 h-5 mr-2 text-green-600" />
-//                 Budget Categories
+//                 {t('budget.budgetCategories')}
 //                 {budget.isCustomized && (
 //                   <Badge className="bg-blue-100 text-blue-800 ml-2">
 //                     <Edit3 className="w-3 h-3 mr-1" />
@@ -1107,6 +1107,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -1176,6 +1177,7 @@ const GRADIENT_COLORS = [
 ]
 
 export default function BudgetDisplay({ refreshTrigger }) {
+  const { t } = useTranslation()
   const [budget, setBudget] = useState(null)
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
@@ -1354,7 +1356,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
             <div className="w-20 h-20 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <Sparkles className="w-10 h-10 text-emerald-600" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Create Your Smart Budget</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">{t('budget.createSmartBudget')}</h1>
             <p className="text-lg text-gray-600 mb-8">
               Get AI-powered financial planning tailored to your lifestyle and goals
             </p>
@@ -1371,7 +1373,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
               ) : (
                 <>
                   <Zap className="w-5 h-5 mr-2" />
-                  Generate Smart Budget
+                  {t('budget.generateSmartBudget')}
                 </>
               )}
             </Button>
@@ -1429,17 +1431,17 @@ export default function BudgetDisplay({ refreshTrigger }) {
                   <div className="inline-flex items-center space-x-2 bg-emerald-50 text-emerald-700 rounded-full px-3 py-1">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                     <span className="font-medium text-xs sm:text-sm">
-                      {budget.isCustomized ? 'Custom Budget' : 'Smart Budget'}
+                      {budget.isCustomized ? t('budget.customBudget') : t('budget.smartBudget')}
                     </span>
                   </div>
                   {budget.isCustomized && (
                     <Badge className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1">
-                      Personalized
+                      {t('budget.personalized')}
                     </Badge>
                   )}
                 </div>
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                  Budget Overview
+                  {t('budget.budgetOverview')}
                 </h1>
                 <div className="space-y-1">
                   <p className="text-lg sm:text-xl font-semibold text-gray-700">
@@ -1477,8 +1479,8 @@ export default function BudgetDisplay({ refreshTrigger }) {
                     className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg font-medium text-xs sm:text-sm"
                   >
                     <Settings className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                    <span className="hidden sm:inline">Customize</span>
-                    <span className="sm:hidden">Edit</span>
+                    <span className="hidden sm:inline">{t('budget.customize')}</span>
+                    <span className="sm:hidden">{t('budget.edit')}</span>
                   </Button>
                   <Button
                     onClick={handleShowGuide}
@@ -1487,8 +1489,8 @@ export default function BudgetDisplay({ refreshTrigger }) {
                     className="border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-lg text-xs sm:text-sm"
                   >
                     <Lightbulb className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                    <span className="hidden sm:inline">Learn</span>
-                    <span className="sm:hidden">Info</span>
+                    <span className="hidden sm:inline">{t('budget.learn')}</span>
+                    <span className="sm:hidden">{t('budget.info')}</span>
                   </Button>
                 </div>
               </div>
@@ -1562,18 +1564,18 @@ export default function BudgetDisplay({ refreshTrigger }) {
                     <div>
                       <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
                         <Wallet className="w-6 h-6 mr-3 text-indigo-600" />
-                        Budget Categories
+                        {t('budget.budgetCategories')}
                         {budget.isCustomized && (
                           <Badge className=" bg-emerald-100 rounded-full text-emerald-700 ml-3">
                             <Edit3 className="w-3 h-3 mr-1" />
-                            Customized
+                            {t('budget.customized')}
                           </Badge>
                         )}
                       </CardTitle>
                       <CardDescription className="text-gray-600 mt-2">
                         {budget.isCustomized 
-                          ? 'Your personalized budget allocation based on your preferences'
-                          : 'AI-recommended breakdown of your monthly budget allocation'
+                          ? t('budget.personalizedAllocation')
+                          : t('budget.aiRecommendedBreakdown')
                         }
                       </CardDescription>
                     </div>
@@ -1582,7 +1584,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                       className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg font-medium text-xs sm:text-sm not-[]:rounded-2xl  transform hover:scale-105 transition-all duration-300 shadow-lg"
                     >
                       <Settings className="w-5 h-5 mr-2" />
-                      {budget.isCustomized ? 'Modify Budget' : 'Customize Budget'}
+                      {budget.isCustomized ? t('budget.modifyBudget') : t('budget.customizeBudget')}
                     </Button>
                   </div>
                 </CardHeader>
@@ -1680,7 +1682,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                         ))}
                       </Pie>
                       <Tooltip 
-                        formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Amount']}
+                        formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, t('budget.amount')]}
                         contentStyle={{
                           backgroundColor: 'rgba(255, 255, 255, 0.95)',
                           backdropFilter: 'blur(20px)',
@@ -1699,7 +1701,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                 <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6">
                   <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
                     <BarChart3 className="w-6 h-6 mr-3 text-emerald-600" />
-                    Category Breakdown
+                    {t('budget.categoryBreakdown')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -1719,7 +1721,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                         stroke="#64748b" 
                       />
                       <Tooltip 
-                        formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Amount']}
+                        formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, t('budget.amount')]}
                         contentStyle={{
                           backgroundColor: 'rgba(255, 255, 255, 0.95)',
                           backdropFilter: 'blur(20px)',
@@ -1751,7 +1753,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                 <CardHeader className="bg-gradient-to-r from-violet-50 to-purple-50 p-6">
                   <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
                     <Activity className="w-6 h-6 mr-3 text-violet-600" />
-                    Budget Allocation Trend
+                    {t('budget.budgetAllocationTrend')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -1798,10 +1800,10 @@ export default function BudgetDisplay({ refreshTrigger }) {
             <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 p-6">
               <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
                 <Lightbulb className="w-7 h-7 mr-3 text-amber-600" />
-                AI-Powered Financial Tips
+                {t('budget.aiPoweredTips')}
               </CardTitle>
               <CardDescription className="text-gray-600 text-lg">
-                Personalized recommendations to boost your financial health
+                {t('budget.personalizedRecommendations')}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-4">
@@ -1820,7 +1822,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                     </div>
                     <div className="mt-4 flex items-center text-amber-600">
                       <ChevronRight className="w-4 h-4 mr-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-                      <span className="text-sm font-medium">Apply this tip</span>
+                      <span className="text-sm font-medium">{t('budget.applyThisTip')}</span>
                     </div>
                   </div>
                 ))}
@@ -1835,10 +1837,10 @@ export default function BudgetDisplay({ refreshTrigger }) {
             <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 p-6">
               <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
                 <Target className="w-7 h-7 mr-3 text-purple-600" />
-                Investment Recommendations
+                {t('budget.investmentRecommendations')}
               </CardTitle>
               <CardDescription className="text-gray-600 text-lg">
-                Smart investment opportunities tailored to your financial profile
+                {t('budget.smartInvestmentOpportunities')}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-2">
@@ -1862,7 +1864,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                             : 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white'
                         } px-3 py-1 font-semibold`}
                       >
-                        {rec.priority}
+                        {t(`budget.${rec.priority.toLowerCase()}`)}
                       </Badge>
                     </div>
                     <p className="text-gray-600 mb-4 leading-relaxed">{rec.description}</p>
@@ -1873,7 +1875,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                     )}
                     <div className="flex items-center text-purple-600">
                       <ArrowRight className="w-4 h-4 mr-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-                      <span className="text-sm font-medium">Learn more</span>
+                      <span className="text-sm font-medium">{t('budget.learnMore')}</span>
                     </div>
                   </div>
                 ))}
@@ -1886,10 +1888,10 @@ export default function BudgetDisplay({ refreshTrigger }) {
         <Card className="bg-gradient-to-r from-slate-800 via-gray-800 to-slate-800 text-white border-0 shadow-2xl rounded-3xl overflow-hidden">
           <CardContent className="p-8 text-center">
             <div className="max-w-2xl mx-auto">
-              <h3 className="text-2xl font-bold mb-4">Ready to Update Your Budget?</h3>
+              <h3 className="text-2xl font-bold mb-4">{t('budget.readyToUpdate')}</h3>
               <p className="text-slate-300 mb-6 text-lg">
-                Budget generated on {new Date(budget.generatedAt).toLocaleDateString('en-IN')}. 
-                Keep your financial plan fresh with the latest AI insights.
+                {t('budget.budgetGeneratedOn', { date: new Date(budget.generatedAt).toLocaleDateString('en-IN') })}. 
+                {t('budget.keepPlanFresh')}.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
@@ -1900,12 +1902,12 @@ export default function BudgetDisplay({ refreshTrigger }) {
                   {generating ? (
                     <>
                       <RefreshCw className="w-5 h-5 mr-3 animate-spin" />
-                      Regenerating Budget...
+                      {t('budget.regeneratingBudget')}
                     </>
                   ) : (
                     <>
                       <RefreshCw className="w-5 h-5 mr-3" />
-                      Regenerate Smart Budget
+                      {t('budget.regenerateSmartBudget')}
                     </>
                   )}
                 </Button>
@@ -1915,7 +1917,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                   className="border-2 border-white text-slate-800 hover:bg-gray-100  px-8 py-4 text-lg font-semibold rounded-2xl transform hover:scale-105 transition-all duration-300"
                 >
                   <Settings className="w-5 h-5 mr-3" />
-                  Customize Instead
+                  {t('budget.customizeInstead')}
                 </Button>
               </div>
             </div>

@@ -377,7 +377,6 @@ function EMICalculator({ onCalculate }) {
   )
 }
 
-// Enhanced Chat Component with React Markdown
 function LoanAdvisorChat({ calculationResults, onInsightGenerated }) {
   const [messages, setMessages] = useState([
     {

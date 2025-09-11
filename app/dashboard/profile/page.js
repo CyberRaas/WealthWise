@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useTranslation } from 'react-i18next'
+import { useProfile } from '@/contexts/ProfileContext'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -25,11 +26,12 @@ import {
 import toast from 'react-hot-toast'
 
 function ProfileContent() {
-  const { data: session } = useSession()
+  const { data: session, update } = useSession()
+  const { profileImage, profileData, updateProfileImage, updateProfileData } = useProfile()
   const { t } = useTranslation()
   const [isEditing, setIsEditing] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [profileImage, setProfileImage] = useState(session?.user?.image || '')
+  const [localProfileImage, setLocalProfileImage] = useState(profileImage)
   const fileInputRef = useRef(null)
   
   const [profile, setProfile] = useState({
@@ -42,6 +44,32 @@ function ProfileContent() {
     occupation: ''
   })
 
+  // Update local state when profileData changes
+  useEffect(() => {
+    if (profileData) {
+      setProfile(profileData)
+    }
+    setLocalProfileImage(profileImage)
+  }, [profileData, profileImage])
+
+  // Load existing profile data
+  useEffect(() => {
+    if (!profileData && session?.user?.email) {
+      // Profile data will be loaded by ProfileContext
+      // Just set session fallback data
+      setProfile({
+        name: session?.user?.name || '',
+        email: session?.user?.email || '',
+        phone: '',
+        location: '',
+        bio: '',
+        dateOfBirth: '',
+        occupation: ''
+      })
+      setLocalProfileImage(session?.user?.image || '')
+    }
+  }, [session, profileData])
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0]
     if (file) {
@@ -52,7 +80,7 @@ function ProfileContent() {
       
       const reader = new FileReader()
       reader.onload = (e) => {
-        setProfileImage(e.target.result)
+        setLocalProfileImage(e.target.result)
         toast.success(t('profile.photoUpdated'))
       }
       reader.readAsDataURL(file)
@@ -62,15 +90,40 @@ function ProfileContent() {
   const handleSaveProfile = async () => {
     setSaving(true)
     try {
-      // Here you would typically make an API call to save the profile
-      // await fetch('/api/profile', { method: 'PUT', body: JSON.stringify(profile) })
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setIsEditing(false)
-      toast.success(t('profile.profileUpdated'))
+      const response = await fetch('/api/profile', { 
+        method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...profile,
+          image: localProfileImage
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setIsEditing(false)
+        toast.success(t('profile.profileUpdated'))
+        
+        // Update the profile context with new data
+        updateProfileData(data.profile)
+        
+        // Update the NextAuth session with new profile image
+        await update({
+          ...session,
+          user: {
+            ...session.user,
+            image: data.profile.image,
+            name: data.profile.name
+          }
+        })
+      } else {
+        throw new Error(data.error || 'Failed to update profile')
+      }
     } catch (error) {
+      console.error('Profile update error:', error)
       toast.error('Failed to update profile. Please try again.')
     } finally {
       setSaving(false)
@@ -79,7 +132,7 @@ function ProfileContent() {
 
   const handleCancel = () => {
     // Reset to original values
-    setProfile({
+    setProfile(profileData || {
       name: session?.user?.name || '',
       email: session?.user?.email || '',
       phone: '',
@@ -88,7 +141,7 @@ function ProfileContent() {
       dateOfBirth: '',
       occupation: ''
     })
-    setProfileImage(session?.user?.image || '')
+    setLocalProfileImage(profileImage)
     setIsEditing(false)
   }
 
@@ -143,7 +196,7 @@ function ProfileContent() {
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative">
                   <Avatar className="h-32 w-32">
-                    <AvatarImage src={profileImage} />
+                    <AvatarImage src={localProfileImage} />
                     <AvatarFallback className="text-3xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold">
                       {profile.name ? profile.name[0]?.toUpperCase() : session?.user?.name?.[0]?.toUpperCase() || 'U'}
                     </AvatarFallback>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { useTranslation } from 'react-i18next'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -22,6 +23,7 @@ import {
 import toast from 'react-hot-toast'
 
 function DashboardContent() {
+  const { t } = useTranslation()
   const { data: session } = useSession()
   const router = useRouter()
   const [stats, setStats] = useState({
@@ -49,13 +51,13 @@ function DashboardContent() {
   }
 
   return (
-    <DashboardLayout title="Dashboard Overview">
+    <DashboardLayout title={t('dashboard.overview')}>
       <div className="space-y-8">
         {/* Welcome Section */}
         <div className="text-center">
           <div className="inline-flex items-center space-x-2 bg-emerald-100 rounded-full px-4 py-2 mb-4">
             <TrendingUp className="w-4 h-4 text-emerald-600" />
-            <span className="text-emerald-700 font-medium text-sm">Financial Command Center</span>
+            <span className="text-emerald-700 font-medium text-sm">{t('common.financialCommandCenter')}</span>
           </div>
           <h2 className="text-3xl font-bold text-slate-800 mb-2">
             Welcome back! 👋
@@ -109,7 +111,7 @@ function DashboardContent() {
           <Card className="hover:shadow-lg transition-all duration-200 border-l-4 border-l-purple-500">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600">Goal Progress</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-600">{t('goals.goalProgress')}</CardTitle>
                 <Target className="h-5 w-5 text-purple-600" />
               </div>
             </CardHeader>
@@ -134,7 +136,7 @@ function DashboardContent() {
               >
                 <Mic className="h-8 w-8 mb-2" />
                 <span className="font-bold">Voice Entry</span>
-                <span className="text-xs opacity-90">Add expenses by voice</span>
+                <span className="text-xs opacity-90">{t('common.addExpensesByVoice')}</span>
               </Button>
 
               <Button
@@ -143,7 +145,7 @@ function DashboardContent() {
                 className="flex flex-col items-center p-6 h-auto border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 rounded-xl"
               >
                 <Plus className="h-8 w-8 mb-2 text-slate-600" />
-                <span className="font-bold text-slate-700">Add Expense</span>
+                <span className="font-bold text-slate-700">{t('common.addExpense')}</span>
                 <span className="text-xs text-slate-500">Manual entry</span>
               </Button>
 
@@ -154,7 +156,7 @@ function DashboardContent() {
               >
                 <BarChart3 className="h-8 w-8 mb-2 text-slate-600" />
                 <span className="font-bold text-slate-700">View Budget</span>
-                <span className="text-xs text-slate-500">Budget overview</span>
+                <span className="text-xs text-slate-500">{t('budget.budgetOverview')}</span>
               </Button>
 
               <Button
@@ -205,7 +207,7 @@ function DashboardContent() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg font-bold text-slate-800">Budget Summary</CardTitle>
+              <CardTitle className="text-lg font-bold text-slate-800">{t('budget.budgetSummary')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
