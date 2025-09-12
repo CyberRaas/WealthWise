@@ -311,19 +311,19 @@ export default function SignUpPage() {
           </div>
 
           <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl ring-1 ring-slate-200/50 rounded-3xl overflow-hidden">
-            <CardHeader className="space-y-6 pb-8 pt-12 px-8 bg-gradient-to-b from-slate-50/50 to-transparent">
-              <CardTitle className="text-4xl text-center font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent leading-tight">
+            <CardHeader className="space-y-3 pb-6 pt-8 px-8 bg-gradient-to-b from-slate-50/50 to-transparent">
+              <CardTitle className="text-3xl text-center font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-teal-700 bg-clip-text text-transparent leading-tight">
                 {t('auth.createAccount', 'Create Account')}
               </CardTitle>
-              <CardDescription className="text-center text-lg text-slate-600 font-medium">
+              <CardDescription className="text-center text-base text-slate-600 font-medium">
                 {t('auth.joinWealthWise', 'Join WealthWise and start your journey')}
               </CardDescription>
             </CardHeader>
 
             <form onSubmit={signupForm.handleSubmit(onSignupSubmit)}>
-              <CardContent className="space-y-6 px-8">
+              <CardContent className="space-y-4 px-8">
                 {/* Name Field */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <label htmlFor="name" className="text-sm font-semibold text-slate-700 block tracking-wide">
                     {t('auth.fullName', 'Full Name')}
                   </label>
@@ -334,15 +334,15 @@ export default function SignUpPage() {
                     autoComplete="name"
                     disabled={isLoading}
                     {...signupForm.register('name')}
-                    className="h-14 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 bg-white text-slate-900 placeholder:text-slate-400 rounded-2xl text-base transition-all duration-300 shadow-sm hover:shadow-md hover:border-slate-300"
+                    className="h-12 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 bg-white text-slate-900 placeholder:text-slate-400 rounded-xl text-base transition-all duration-300 shadow-sm hover:shadow-md hover:border-slate-300"
                   />
                   {signupForm.formState.errors.name && (
-                    <p className="text-sm text-red-600 font-medium mt-2">{signupForm.formState.errors.name.message}</p>
+                    <p className="text-sm text-red-600 font-medium mt-1">{signupForm.formState.errors.name.message}</p>
                   )}
                 </div>
 
                 {/* Email Field */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <label htmlFor="email" className="text-sm font-semibold text-slate-700 block tracking-wide">
                     {t('auth.emailAddress', 'Email Address')}
                   </label>
@@ -353,15 +353,15 @@ export default function SignUpPage() {
                     autoComplete="email"
                     disabled={isLoading}
                     {...signupForm.register('email')}
-                    className="h-14 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 bg-white text-slate-900 placeholder:text-slate-400 rounded-2xl text-base transition-all duration-300 shadow-sm hover:shadow-md hover:border-slate-300"
+                    className="h-12 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 bg-white text-slate-900 placeholder:text-slate-400 rounded-xl text-base transition-all duration-300 shadow-sm hover:shadow-md hover:border-slate-300"
                   />
                   {signupForm.formState.errors.email && (
-                    <p className="text-sm text-red-600 font-medium mt-2">{signupForm.formState.errors.email.message}</p>
+                    <p className="text-sm text-red-600 font-medium mt-1">{signupForm.formState.errors.email.message}</p>
                   )}
                 </div>
 
                 {/* Password Field */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <label htmlFor="password" className="text-sm font-semibold text-slate-700 block tracking-wide">
                     {t('auth.password', 'Password')}
                   </label>
@@ -373,27 +373,27 @@ export default function SignUpPage() {
                       autoComplete="new-password"
                       disabled={isLoading}
                       {...signupForm.register('password')}
-                      className="h-14 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 bg-white text-slate-900 placeholder:text-slate-400 rounded-2xl text-base pr-14 transition-all duration-300 shadow-sm hover:shadow-md hover:border-slate-300"
+                      className="h-12 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 bg-white text-slate-900 placeholder:text-slate-400 rounded-xl text-base pr-12 transition-all duration-300 shadow-sm hover:shadow-md hover:border-slate-300"
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-emerald-600 transition-colors duration-200"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-emerald-600 transition-colors duration-200"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-6 w-6" />
+                        <EyeOff className="h-5 w-5" />
                       ) : (
-                        <Eye className="h-6 w-6" />
+                        <Eye className="h-5 w-5" />
                       )}
                     </button>
                   </div>
                   {signupForm.formState.errors.password && (
-                    <p className="text-sm text-red-600 font-medium mt-2">{signupForm.formState.errors.password.message}</p>
+                    <p className="text-sm text-red-600 font-medium mt-1">{signupForm.formState.errors.password.message}</p>
                   )}
                 </div>
 
                 {/* Confirm Password Field */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <label htmlFor="confirmPassword" className="text-sm font-semibold text-slate-700 block tracking-wide">
                     {t('auth.confirmPassword', 'Confirm Password')}
                   </label>
@@ -405,27 +405,27 @@ export default function SignUpPage() {
                       autoComplete="new-password"
                       disabled={isLoading}
                       {...signupForm.register('confirmPassword')}
-                      className="h-14 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 bg-white text-slate-900 placeholder:text-slate-400 rounded-2xl text-base pr-14 transition-all duration-300 shadow-sm hover:shadow-md hover:border-slate-300"
+                      className="h-12 border-2 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 focus:ring-4 bg-white text-slate-900 placeholder:text-slate-400 rounded-xl text-base pr-12 transition-all duration-300 shadow-sm hover:shadow-md hover:border-slate-300"
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-emerald-600 transition-colors duration-200"
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-emerald-600 transition-colors duration-200"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
                       {showConfirmPassword ? (
-                        <EyeOff className="h-6 w-6" />
+                        <EyeOff className="h-5 w-5" />
                       ) : (
-                        <Eye className="h-6 w-6" />
+                        <Eye className="h-5 w-5" />
                       )}
                     </button>
                   </div>
                   {signupForm.formState.errors.confirmPassword && (
-                    <p className="text-sm text-red-600 font-medium mt-2">{signupForm.formState.errors.confirmPassword.message}</p>
+                    <p className="text-sm text-red-600 font-medium mt-1">{signupForm.formState.errors.confirmPassword.message}</p>
                   )}
                 </div>
 
                 {/* reCAPTCHA */}
-                <div className="flex justify-center py-4">
+                <div className="flex justify-center py-2">
                   <ReCaptcha
                     ref={recaptchaRef}
                     onChange={handleRecaptchaChange}
@@ -435,21 +435,21 @@ export default function SignUpPage() {
               </CardContent>
 
               {/* Create Account Button */}
-              <div className="px-8 pb-8 space-y-6">
+              <div className="px-8 pb-6 space-y-4">
                 <Button
                   type="submit"
-                  className="w-full h-14 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus:ring-4 focus:ring-emerald-500/30 border border-white/20"
+                  className="w-full h-12 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white font-bold text-base rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus:ring-4 focus:ring-emerald-500/30 border border-white/20"
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    <div className="flex items-center justify-center space-x-3">
-                      <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                       <span>{t('auth.sendingOtp', 'Sending OTP...')}</span>
                     </div>
                   ) : (
                     <span className="flex items-center justify-center space-x-2">
                       <span>{t('auth.createAccount', 'Create Account')}</span>
-                      <UserPlus className="w-5 h-5" />
+                      <UserPlus className="w-4 h-4" />
                     </span>
                   )}
                 </Button>
@@ -457,10 +457,10 @@ export default function SignUpPage() {
                 {/* Divider */}
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t " />
+                    <span className="w-full border-t border-slate-200" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-4 text-slate-500 font-semibold tracking-wider">{t('auth.orContinue', 'Or continue with')}</span>
+                    <span className="bg-white px-3 text-slate-500 font-medium tracking-wide">{t('auth.orContinue', 'Or continue with')}</span>
                   </div>
                 </div>
                 
@@ -468,18 +468,18 @@ export default function SignUpPage() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-14 border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/50 text-slate-700 font-bold text-base rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus:ring-4 focus:ring-emerald-500/20 shadow-sm hover:shadow-md"
+                  className="w-full h-12 border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/50 text-slate-700 font-semibold text-base rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus:ring-4 focus:ring-emerald-500/20 shadow-sm hover:shadow-md"
                   onClick={handleGoogleSignUp}
                   disabled={isLoading || isGoogleLoading}
                 >
                   {isGoogleLoading ? (
-                    <div className="flex items-center justify-center space-x-3">
-                      <div className="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
                       <span>{t('auth.signin.connecting', 'Connecting...')}</span>
                     </div>
                   ) : (
                     <>
-                      <svg className="w-6 h-6 mr-3" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -494,10 +494,10 @@ export default function SignUpPage() {
           </Card>
           
           {/* Sign In Link */}
-          <div className="text-center mt-2">
-            <p className="text-slate-600 font-medium">
+          <div className="text-center mt-4">
+            <p className="text-slate-600 font-medium text-sm">
               {t('auth.alreadyHaveAccount', 'Already have an account?')}{' '}
-              <Link href="/auth/signin" className="font-bold text-emerald-600 hover:text-emerald-700 transition-colors duration-200 hover:underline">
+              <Link href="/auth/signin" className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors duration-200 hover:underline">
                 {t('auth.signIn', 'Sign in')}
               </Link>
             </p>
