@@ -96,7 +96,7 @@ function EMICalculator({ onCalculate }) {
     setResults(calculationResults)
     generateChartData(calculationResults)
     onCalculate(calculationResults)
-    toast.success('EMI calculated successfully!')
+    toast.success(t('debtCalculator.emiCalculatedSuccess'))
   }
 
   const generateChartData = (results) => {
@@ -132,7 +132,7 @@ function EMICalculator({ onCalculate }) {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text)
-    toast.success('Copied to clipboard!')
+    toast.success(t('debtCalculator.copiedToClipboard'))
   }
 
   return (
@@ -265,7 +265,7 @@ function EMICalculator({ onCalculate }) {
           <Card className="bg-white border-blue-200 hover:shadow-lg transition-shadow">
             <CardContent className="p-4 sm:p-6 text-center">
               <DollarSign className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 text-blue-600" />
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1">Monthly EMI</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1">{t('debtCalculator.monthlyEmi')}</h3>
               <p className="text-xl sm:text-2xl font-bold text-blue-600 mb-2">{formatCurrency(results.emi)}</p>
               <Button
                 variant="ghost"
@@ -274,7 +274,7 @@ function EMICalculator({ onCalculate }) {
                 className="text-xs text-slate-500 hover:text-slate-700"
               >
                 <Copy className="w-3 h-3 mr-1" />
-                Copy
+                {t('debtCalculator.copy')}
               </Button>
             </CardContent>
           </Card>
@@ -282,7 +282,7 @@ function EMICalculator({ onCalculate }) {
           <Card className="bg-white border-green-200 hover:shadow-lg transition-shadow">
             <CardContent className="p-4 sm:p-6 text-center">
               <TrendingUp className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 text-green-600" />
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1">Total Payable</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1">{t('debtCalculator.totalPayable')}</h3>
               <p className="text-xl sm:text-2xl font-bold text-green-600 mb-2">{formatCurrency(results.totalPayable)}</p>
               <Button
                 variant="ghost"
@@ -291,7 +291,7 @@ function EMICalculator({ onCalculate }) {
                 className="text-xs text-slate-500 hover:text-slate-700"
               >
                 <Copy className="w-3 h-3 mr-1" />
-                Copy
+                {t('debtCalculator.copy')}
               </Button>
             </CardContent>
           </Card>
@@ -299,7 +299,7 @@ function EMICalculator({ onCalculate }) {
           <Card className="bg-white border-red-200 hover:shadow-lg transition-shadow">
             <CardContent className="p-4 sm:p-6 text-center">
               <PieChart className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 text-red-600" />
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1">Total Interest</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1">{t('debtCalculator.totalInterest')}</h3>
               <p className="text-xl sm:text-2xl font-bold text-red-600 mb-2">{formatCurrency(results.totalInterest)}</p>
               <Button
                 variant="ghost"
@@ -308,7 +308,7 @@ function EMICalculator({ onCalculate }) {
                 className="text-xs text-slate-500 hover:text-slate-700"
               >
                 <Copy className="w-3 h-3 mr-1" />
-                Copy
+                {t('debtCalculator.copy')}
               </Button>
             </CardContent>
           </Card>
@@ -321,7 +321,7 @@ function EMICalculator({ onCalculate }) {
           <CardHeader>
             <CardTitle className="flex items-center text-slate-800 text-base sm:text-lg">
               <Calendar className="w-5 h-5 mr-2 text-purple-600" />
-              Repayment Timeline
+              {t('debtCalculator.repaymentTimeline')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -356,7 +356,7 @@ function EMICalculator({ onCalculate }) {
                     dataKey="remainingPrincipal" 
                     stroke="#3b82f6" 
                     strokeWidth={2}
-                    name="Remaining Principal"
+                    name={t('debtCalculator.remainingPrincipal')}
                     dot={false}
                   />
                   <Line 
@@ -364,7 +364,7 @@ function EMICalculator({ onCalculate }) {
                     dataKey="cumulativeInterest" 
                     stroke="#ef4444" 
                     strokeWidth={2}
-                    name="Cumulative Interest"
+                    name={t('debtCalculator.cumulativeInterest')}
                     dot={false}
                   />
                 </LineChart>
@@ -378,6 +378,7 @@ function EMICalculator({ onCalculate }) {
 }
 
 function LoanAdvisorChat({ calculationResults, onInsightGenerated }) {
+  const { t } = useTranslation()
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -504,10 +505,10 @@ What would you like to know?`,
     try {
       await navigator.clipboard.writeText(content)
       setCopiedId(messageId)
-      toast.success('Message copied!')
+      toast.success(t('debtCalculator.messageCopied'))
       setTimeout(() => setCopiedId(null), 2000)
     } catch (error) {
-      toast.error('Failed to copy message')
+      toast.error(t('debtCalculator.failedToCopyMessage'))
     }
   }
 
@@ -520,10 +521,10 @@ What would you like to know?`,
 
   // Quick action buttons for common queries
   const quickActions = [
-    "Calculate EMI for ₹10L at 12% for 5 years",
-    "Best repayment strategy for multiple loans?",
-    "How to improve my credit score?",
-    "Which banks offer lowest interest rates?"
+    t('debtCalculator.quickAction1'),
+    t('debtCalculator.quickAction2'),
+    t('debtCalculator.quickAction3'),
+    t('debtCalculator.quickAction4')
   ]
 
   const handleQuickAction = (action) => {
@@ -535,10 +536,10 @@ What would you like to know?`,
       <CardHeader className="pb-4 border-b border-blue-100">
         <CardTitle className="flex items-center text-slate-800 text-lg sm:text-xl">
           <Bot className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" />
-          AI Loan Advisor
+          {t('debtCalculator.aiLoanAdvisor')}
         </CardTitle>
         <p className="text-xs sm:text-sm text-slate-600">
-          Get personalized loan advice and strategies
+          {t('debtCalculator.personalizedAdvice')}
         </p>
       </CardHeader>
       
@@ -546,7 +547,7 @@ What would you like to know?`,
         {/* Quick Actions */}
         {messages.length <= 1 && (
           <div className="mb-4">
-            <p className="text-xs text-slate-500 mb-2">Quick questions:</p>
+            <p className="text-xs text-slate-500 mb-2">{t('debtCalculator.quickQuestions')}:</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {quickActions.map((action, index) => (
                 <Button
@@ -682,7 +683,7 @@ What would you like to know?`,
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask about loans, EMI, strategies..."
+                placeholder={t('debtCalculator.chatPlaceholder')}
                 className="w-full p-3 pr-12 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-colors text-sm"
                 disabled={isLoading}
                 rows={1}
@@ -715,7 +716,7 @@ What would you like to know?`,
           </div>
           
           <p className="text-xs text-slate-500 mt-2">
-            Press Enter to send, Shift+Enter for new line
+            {t('debtCalculator.pressEnterToSend')}
           </p>
         </div>
       </CardContent>
@@ -725,6 +726,7 @@ What would you like to know?`,
 
 // Enhanced Smart Insights Card
 function SmartInsightsCard({ insights, calculationResults }) {
+  const { t } = useTranslation()
   const [copiedInsight, setCopiedInsight] = useState(null)
 
   const generateInsights = () => {
@@ -740,8 +742,8 @@ function SmartInsightsCard({ insights, calculationResults }) {
     insights.push({
       type: 'tip',
       icon: '💡',
-      title: 'Extra Payment Strategy',
-      content: `Paying an extra ₹${extraPayment.toLocaleString()}/month could save you ${savedMonths} months and approximately ₹${savedInterest.toLocaleString()} in interest.`
+      title: t('debtCalculator.extraPaymentStrategy'),
+      content: t('debtCalculator.extraPaymentContent', { extraPayment: extraPayment.toLocaleString(), savedMonths, savedInterest: savedInterest.toLocaleString() })
     })
 
     // Interest comparison
@@ -750,15 +752,15 @@ function SmartInsightsCard({ insights, calculationResults }) {
       insights.push({
         type: 'warning',
         icon: '⚠️',
-        title: 'High Interest Burden',
-        content: `Your total interest (${interestPercentage}% of principal) is quite high. Consider shorter tenure or prepayment to reduce costs.`
+        title: t('debtCalculator.highInterestBurden'),
+        content: t('debtCalculator.highInterestContent', { interestPercentage })
       })
     } else {
       insights.push({
         type: 'success',
         icon: '✅',
-        title: 'Reasonable Interest',
-        content: `Your interest burden (${interestPercentage}% of principal) is reasonable for this loan type.`
+        title: t('debtCalculator.reasonableInterest'),
+        content: t('debtCalculator.reasonableInterestContent', { interestPercentage })
       })
     }
 
@@ -766,8 +768,8 @@ function SmartInsightsCard({ insights, calculationResults }) {
     insights.push({
       type: 'info',
       icon: '📊',
-      title: 'EMI Guidelines',
-      content: `Ensure your total EMIs don't exceed 40% of your monthly income. Current EMI: ₹${emi.toFixed(0)}/month.`
+      title: t('debtCalculator.emiGuidelines'),
+      content: t('debtCalculator.emiGuidelinesContent', { emi: emi.toFixed(0) })
     })
 
     // Prepayment strategy
@@ -777,8 +779,8 @@ function SmartInsightsCard({ insights, calculationResults }) {
       insights.push({
         type: 'strategy',
         icon: '🎯',
-        title: 'Prepayment Option',
-        content: `A prepayment of ₹${prepaymentAmount.toLocaleString()} could reduce your tenure by approximately ${months - newMonths} months.`
+        title: t('debtCalculator.prepaymentOption'),
+        content: t('debtCalculator.prepaymentContent', { prepaymentAmount: prepaymentAmount.toLocaleString(), monthsReduced: months - newMonths })
       })
     }
 
@@ -789,10 +791,10 @@ function SmartInsightsCard({ insights, calculationResults }) {
     try {
       await navigator.clipboard.writeText(content)
       setCopiedInsight(index)
-      toast.success('Insight copied!')
+      toast.success(t('debtCalculator.insightCopied'))
       setTimeout(() => setCopiedInsight(null), 2000)
     } catch (error) {
-      toast.error('Failed to copy insight')
+      toast.error(t('debtCalculator.failedToCopyInsight'))
     }
   }
 
@@ -813,10 +815,10 @@ function SmartInsightsCard({ insights, calculationResults }) {
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center text-slate-800 text-lg sm:text-xl">
           <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-purple-600" />
-          Smart Loan Insights
+          {t('debtCalculator.smartLoanInsights')}
         </CardTitle>
         <p className="text-xs sm:text-sm text-slate-600">
-          AI-powered recommendations based on your calculations
+          {t('debtCalculator.aiPoweredRecommendations')}
         </p>
       </CardHeader>
       <CardContent>
@@ -859,7 +861,7 @@ function SmartInsightsCard({ insights, calculationResults }) {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <Bot className="w-4 h-4 text-indigo-600" />
-                    <h4 className="font-semibold text-slate-800 text-sm">AI Recommendation</h4>
+                    <h4 className="font-semibold text-slate-800 text-sm">{t('debtCalculator.aiRecommendation')}</h4>
                   </div>
                   <div className="prose prose-sm max-w-none">
                     <ReactMarkdown
@@ -926,8 +928,11 @@ export default function DebtCalculatorPage() {
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Header */}
           <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+              {t('debtCalculator.pageTitle')}
+            </h1>
             <p className="text-sm sm:text-base text-slate-600 max-w-3xl mx-auto">
-              Calculate your EMI, explore repayment strategies, and get AI-powered loan advice to make informed financial decisions
+              {t('debtCalculator.pageSubtitle')}
             </p>
           </div>
 
@@ -959,19 +964,19 @@ export default function DebtCalculatorPage() {
           {/* Additional Information */}
           <Card className="bg-white">
             <CardContent className="p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4">How to Use This Calculator</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4">{t('debtCalculator.howToUse')}</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-xs sm:text-sm text-slate-600">
                 <div>
-                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">🧮 Calculate EMI</h4>
-                  <p>Enter your loan amount, interest rate, and duration to get accurate EMI calculations with detailed breakdowns.</p>
+                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">🧮 {t('debtCalculator.calculateEmi')}</h4>
+                  <p>{t('debtCalculator.calculateEmiDescription')}</p>
                 </div>
                 <div>
-                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">🤖 AI Advisor</h4>
-                  <p>Ask questions about loan strategies, bank recommendations, or get personalized advice based on your calculations.</p>
+                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">🤖 {t('debtCalculator.aiAdvisor')}</h4>
+                  <p>{t('debtCalculator.aiAdvisorDescription')}</p>
                 </div>
                 <div>
-                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">💡 Smart Insights</h4>
-                  <p>Get automated recommendations for prepayment strategies, interest optimization, and loan management tips.</p>
+                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">💡 {t('debtCalculator.smartInsights')}</h4>
+                  <p>{t('debtCalculator.smartInsightsDescription')}</p>
                 </div>
               </div>
             </CardContent>

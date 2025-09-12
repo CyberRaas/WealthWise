@@ -65,7 +65,7 @@ function ExpensesContent() {
   const handleExpenseAdded = (expense) => {
     console.log('Expense added:', expense)
     setExpenses(prev => [expense, ...prev])
-    toast.success('Expense added successfully!')
+    toast.success(t('common.expenseAddedSuccess'))
     setShowVoiceEntry(false)
     setShowForm(false)
   }
@@ -101,10 +101,10 @@ function ExpensesContent() {
           date: new Date().toISOString().split('T')[0]
         })
       } else {
-        toast.error(data.error || 'Failed to add expense')
+        toast.error(data.error || t('common.failedToAddExpense'))
       }
     } catch (error) {
-      toast.error('Failed to add expense')
+      toast.error(t('common.failedToAddExpense'))
       console.error('Add expense error:', error)
     } finally {
       setSubmitting(false)
@@ -127,7 +127,7 @@ function ExpensesContent() {
 
   const handleExport = async () => {
     if (expenses.length === 0) {
-      toast.error('No expenses to export')
+      toast.error(t('common.noExpensesToExport'))
       return
     }
     try {
@@ -162,10 +162,10 @@ function ExpensesContent() {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-      toast.success('Exported expenses to Excel')
+      toast.success(t('common.exportedToExcel'))
     } catch (err) {
       console.error('Export failed', err)
-      toast.error('Export failed')
+      toast.error(t('common.exportFailed'))
     }
   }
 

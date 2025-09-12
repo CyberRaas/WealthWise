@@ -277,7 +277,7 @@
 
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
@@ -290,6 +290,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { LogIn, Eye, EyeOff, Shield } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 import LanguageSelector from '@/components/ui/LanguageSelector'
+import ReCaptcha from '@/components/ui/ReCaptcha'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 
@@ -305,6 +306,8 @@ function SignInForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [recaptchaToken, setRecaptchaToken] = useState(null)
+  const recaptchaRef = useRef(null)
 
   const signinSchema = z.object({
     email: z.string().email(t('auth.signin.emailRequired')),
@@ -334,11 +337,44 @@ function SignInForm() {
     }
   }, [message, t])
 
+  // Handle reCAPTCHA verification
+  const handleRecaptchaChange = (token) => {
+    setRecaptchaToken(token)
+  }
+
+  const handleRecaptchaExpired = () => {
+    setRecaptchaToken(null)
+  }
+
   // Handle form submission
   const onSubmit = async (data) => {
+    if (!recaptchaToken) {
+      toast.error(t('validation.recaptchaRequired') || 'Please complete the reCAPTCHA verification')
+      return
+    }
+
     setIsLoading(true)
 
     try {
+      // First verify reCAPTCHA
+      const recaptchaResponse = await fetch('/api/auth/verify-recaptcha', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: recaptchaToken })
+      })
+
+      const recaptchaResult = await recaptchaResponse.json()
+
+      if (!recaptchaResult.success) {
+        toast.error(t('validation.recaptchaFailed') || 'reCAPTCHA verification failed. Please try again.')
+        if (recaptchaRef.current) {
+          recaptchaRef.current.reset()
+        }
+        setRecaptchaToken(null)
+        return
+      }
+
+      // If reCAPTCHA is valid, proceed with sign in
       const result = await signIn('credentials', {
         email: data.email,
         password: data.password,
@@ -482,6 +518,16 @@ function SignInForm() {
                 >
                   {t('auth.signin.forgotPassword')}
                 </Link>
+              </div>
+
+              {/* reCAPTCHA */}
+              <div className="mt-4">
+                <ReCaptcha
+                  ref={recaptchaRef}
+                  onVerify={handleRecaptchaChange}
+                  onExpired={handleRecaptchaExpired}
+                  theme="light"
+                />
               </div>
 
               {/* Sign In Button */}

@@ -142,7 +142,7 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">
-          {debt ? 'Edit' : 'Add'} {type === 'taken' ? 'Debt Taken' : 'Debt Given'}
+          {debt ? t('common.edit') : t('common.add')} {type === 'taken' ? t('debt.debtTaken') : t('debt.debtGiven')}
         </h2>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -175,13 +175,13 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Interest Rate (% per annum)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('debt.interestRate')}</label>
             <input
               type="number"
               value={formData.interestRate}
               onChange={(e) => setFormData({...formData, interestRate: e.target.value})}
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="Enter interest rate"
+              placeholder={t('debt.enterInterestRate')}
               min="0"
               max="100"
               step="0.01"
@@ -189,13 +189,13 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Duration (months) *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('debt.duration')} *</label>
             <input
               type="number"
               value={formData.duration}
               onChange={(e) => setFormData({...formData, duration: e.target.value})}
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="Enter duration in months"
+              placeholder={t('debt.enterDuration')}
               min="1"
               max="600"
               required
@@ -206,22 +206,22 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Installment (Calculated)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('debt.monthlyInstallment')}</label>
             <input
               type="number"
               value={formData.monthlyInstallment}
               className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
-              placeholder="Auto-calculated"
+              placeholder={t('debt.autoCalculated')}
               disabled
               step="0.01"
             />
             <p className="text-xs text-gray-500 mt-1">
-              This is automatically calculated based on amount, interest rate, and duration
+              {t('debt.autoCalculatedNote')}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Final Due Date (Calculated)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('debt.finalDueDate')}</label>
             <input
               type="date"
               value={formData.dueDate}
@@ -229,7 +229,7 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
               disabled
             />
             <p className="text-xs text-gray-500 mt-1">
-              Final payment due date based on duration
+              {t('debt.finalDueDateNote')}
             </p>
           </div>
 
@@ -251,7 +251,7 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
               onClick={onClose}
               className="flex-1"
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
@@ -260,7 +260,7 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
                 : 'bg-green-500 hover:bg-green-600'
               } text-white`}
             >
-              {debt ? 'Update' : 'Add'} Debt
+              {debt ? t('common.update') : t('common.add')} {t('debt.debt')}
             </Button>
           </div>
         </form>
@@ -344,7 +344,7 @@ function DebtOverview() {
       const data = await response.json()
 
       if (response.ok) {
-        toast.success(editingDebt ? 'Debt updated successfully' : 'Debt added successfully')
+        toast.success(editingDebt ? t('debt.debtUpdatedSuccess') : t('debt.debtAddedSuccess'))
         setShowModal(false)
         setEditingDebt(null)
         fetchDebts()
@@ -358,7 +358,7 @@ function DebtOverview() {
   }
 
   const handleDeleteDebt = async (debtId) => {
-    if (!confirm('Are you sure you want to delete this debt?')) return
+    if (!confirm(t('debt.confirmDelete'))) return
 
     try {
       const response = await fetch(`/api/debt/${debtId}`, {
@@ -368,7 +368,7 @@ function DebtOverview() {
       const data = await response.json()
 
       if (response.ok) {
-        toast.success('Debt deleted successfully')
+        toast.success(t('debt.debtDeletedSuccess'))
         fetchDebts()
       } else {
         toast.error(data.error || 'Failed to delete debt')
@@ -660,7 +660,7 @@ function DebtOverview() {
                     size="sm"
                   >
                     <Plus className="w-4 h-4 mr-1" />
-                    Add Debt
+                    {t('debt.addDebt')}
                   </Button>
                 </div>
 
@@ -813,7 +813,7 @@ function DebtOverview() {
               <div className="mt-4 pt-4 border-t border-slate-200">
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-slate-600">Total Debts:</span>
+                    <span className="text-slate-600">{t('debt.totalDebts')}:</span>
                     <span className="font-medium">{debts.length}</span>
                   </div>
                   <div className="flex justify-between">
@@ -926,7 +926,7 @@ function DebtOverview() {
               <div className="bg-white rounded-lg p-3 sm:p-4 border border-purple-100">
                 <h4 className="font-medium text-purple-800 mb-2 text-sm sm:text-base">Payment Priority</h4>
                 <p className="text-xs sm:text-sm text-slate-600">
-                  Focus on paying off highest interest rate debts first to minimize total interest paid.
+                  {t('debt.payoffStrategy')}
                 </p>
               </div>
               
