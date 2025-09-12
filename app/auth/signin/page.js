@@ -310,8 +310,8 @@ function SignInForm() {
   const recaptchaRef = useRef(null)
 
   const signinSchema = z.object({
-    email: z.string().email(t('auth.signin.emailRequired')),
-    password: z.string().min(1, t('auth.signin.passwordRequired')),
+    email: z.string().email(t('Email Required')),
+    password: z.string().min(1, t('Password Required')),
     rememberMe: z.boolean().optional()
   })
   
@@ -330,7 +330,7 @@ function SignInForm() {
   // Show welcome message if redirected from registration
   useEffect(() => {
     if (message === 'registration-complete') {
-      toast.success(t('auth.signin.registrationComplete'), {
+      toast.success(t('Registration completed Successfully🎉'), {
         duration: 5000,
         position: 'top-center',
       })
@@ -349,7 +349,7 @@ function SignInForm() {
   // Handle form submission
   const onSubmit = async (data) => {
     if (!recaptchaToken) {
-      toast.error(t('validation.recaptchaRequired') || 'Please complete the reCAPTCHA verification')
+      toast.error(t('Please complete the reCAPTCHA verification'))
       return
     }
 
@@ -366,7 +366,7 @@ function SignInForm() {
       const recaptchaResult = await recaptchaResponse.json()
 
       if (!recaptchaResult.success) {
-        toast.error(t('validation.recaptchaFailed') || 'reCAPTCHA verification failed. Please try again.')
+        toast.error('reCAPTCHA verification failed. Please try again.')
         if (recaptchaRef.current) {
           recaptchaRef.current.reset()
         }
@@ -382,13 +382,13 @@ function SignInForm() {
       })
 
       if (result?.error) {
-        toast.error(t('auth.signin.invalidCredentials'))
+        toast.error('Invalid email or password. Please check your credentials and try again.')
       } else {
-        toast.success(t('auth.signin.welcomeBack'))
+        toast.success('Welcome back!')
         router.push(callbackUrl)
       }
     } catch (error) {
-      toast.error(t('auth.signin.networkError'))
+      toast.error('Network error. Please try again later.')
     } finally {
       setIsLoading(false)
     }
@@ -402,7 +402,7 @@ function SignInForm() {
       await signIn('google', { callbackUrl })
     } catch (error) {
       console.error('Google sign-in error:', error)
-      toast.error(t('auth.signin.googleError'))
+      toast.error('An error occurred during Google sign-in. Please try again.')
     } finally {
       // Reset loading state after a short delay to give time for redirect
       setTimeout(() => {
