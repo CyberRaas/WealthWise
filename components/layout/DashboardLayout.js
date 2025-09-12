@@ -3,6 +3,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { useProfile } from '@/contexts/ProfileContext'
 import { Button } from '@/components/ui/button'
@@ -26,6 +27,7 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
   const { data: session } = useSession()
   const { profileImage } = useProfile()
   const { t } = useTranslation()
+  const router = useRouter()
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const dropdownRef = useRef(null)
@@ -158,12 +160,10 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
                           <MenuItem 
                             icon={User} 
                             label="Profile" 
-                            onClick={() => setShowProfileDropdown(false)}
-                          />
-                          <MenuItem 
-                            icon={Settings} 
-                            label="Edit Profile" 
-                            onClick={() => setShowProfileDropdown(false)}
+                            onClick={() => {
+                              setShowProfileDropdown(false)
+                              router.push('/dashboard/profile')
+                            }}
                           />
                           {/* <MenuItem 
                             icon={CreditCard} 
@@ -181,7 +181,10 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
                           <MenuItem 
                             icon={HelpCircle} 
                             label="Help & Support" 
-                            onClick={() => setShowProfileDropdown(false)}
+                            onClick={() => {
+                              setShowProfileDropdown(false)
+                              window.location.href = 'mailto:team@mywealthwise.tech'
+                            }}
                           />
                           <MenuItem 
                             icon={LogOut} 
