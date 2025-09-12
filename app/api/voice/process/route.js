@@ -4,8 +4,6 @@ import dbConnect from '@/lib/dbConnect'
 import UserProfile from '@/models/UserProfile'
 import { voiceProcessor } from '@/lib/voiceProcessor'
 
-
-
 // POST - Process voice input for expense entry
 export async function POST(request) {
   try {
