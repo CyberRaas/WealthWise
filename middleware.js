@@ -1,68 +1,71 @@
 import { NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
 
-export default async function middleware(request) {
-  const { pathname } = request.nextUrl
-  
-  // Public routes that don't require authentication
-  const publicRoutes = [
-    "/",
+export default auth((req) => {
+  const { nextUrl } = req
+  const isLoggedIn = !!req.auth
+
+  // Define route categories
+  const authRoutes = [
     "/auth/signin",
     "/auth/signup", 
-    "/auth/forgot-password",
-    "/auth/reset-password",
-    "/auth/verify-email",
     "/auth/error",
+    "/auth/verify-request"
+  ]
+
+  const publicRoutes = [
+    "/",
     "/about",
-    "/contact",
+    "/contact", 
     "/privacy",
-    "/terms"
+    "/terms",
+    "/support"
   ]
 
-  // API routes that don't require authentication
-  const publicApiRoutes = [
-    "/api/auth",
-    "/api/health"
+  const protectedRoutes = [
+    "/dashboard",
+    "/onboarding",
+    "/profile",
+    "/settings"
   ]
 
-  // Check if current path is public
-  const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(route))
-  const isPublicApiRoute = publicApiRoutes.some(route => pathname.startsWith(route))
+  const isAuthRoute = authRoutes.some(route => nextUrl.pathname.startsWith(route))
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
+  const isProtectedRoute = protectedRoutes.some(route => nextUrl.pathname.startsWith(route))
+  const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth")
 
-  // Allow public routes
-  if (isPublicRoute || isPublicApiRoute) {
+  // Allow all auth API routes
+  if (isApiAuthRoute) {
     return NextResponse.next()
   }
 
-  // For protected routes, check if user has session cookie
-  const sessionToken = request.cookies.get('next-auth.session-token') || request.cookies.get('__Secure-next-auth.session-token')
-  
-  if (!sessionToken) {
-    // Redirect to signin for protected routes
-    if (pathname.startsWith('/api/')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-    const signInUrl = new URL("/auth/signin", request.url)
-    signInUrl.searchParams.set("callbackUrl", pathname)
+  // Redirect logged-in users away from auth pages
+  if (isAuthRoute && isLoggedIn) {
+    return NextResponse.redirect(new URL("/onboarding", nextUrl))
+  }
+
+  // Allow access to public routes
+  if (isPublicRoute) {
+    return NextResponse.next()
+  }
+
+  // Redirect non-logged-in users to signin for protected routes
+  if (!isLoggedIn && isProtectedRoute) {
+    const callbackUrl = nextUrl.pathname + nextUrl.search
+    const signInUrl = new URL("/auth/signin", nextUrl)
+    signInUrl.searchParams.set("callbackUrl", callbackUrl)
     return NextResponse.redirect(signInUrl)
   }
 
-  // Redirect authenticated users away from auth pages to onboarding
-  if (sessionToken && pathname.startsWith("/auth/") && !pathname.includes("/signout") && !pathname.includes("/verify")) {
-    return NextResponse.redirect(new URL("/onboarding", request.url))
-  }
-
-  // For dashboard routes, redirect to onboarding first (let client-side handle completion check)
-  if (sessionToken && (pathname === "/dashboard" || pathname.startsWith("/dashboard/"))) {
-    // Simple redirect to onboarding - let client-side OnboardingGuard handle the completion check
-    // This prevents users from directly accessing dashboard and ensures they go through onboarding flow
-    const response = NextResponse.redirect(new URL("/onboarding", request.url))
-    // Add a header to indicate this was a middleware redirect
-    response.headers.set('x-middleware-redirect', 'onboarding')
-    return response
+  // Handle dashboard access - let onboarding flow manage redirection
+  if (isLoggedIn && nextUrl.pathname.startsWith("/dashboard")) {
+    // Check if user has completed onboarding (this is optional middleware check)
+    // The OnboardingGuard component will handle the detailed validation
+    return NextResponse.next()
   }
 
   return NextResponse.next()
-}
+})
 
 export const config = {
   matcher: [
@@ -73,6 +76,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public folder
      */
-    "/((?!_next/static|_next/image|favicon.ico|public).*)",
+    "/((?!_next/static|_next/image|favicon.ico|public|.*\\..*|_vercel).*)",
   ]
 }
