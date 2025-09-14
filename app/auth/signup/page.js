@@ -428,7 +428,7 @@ export default function SignUpPage() {
                 <div className="flex justify-center py-2">
                   <ReCaptcha
                     ref={recaptchaRef}
-                    onChange={handleRecaptchaChange}
+                    onVerify={handleRecaptchaChange}
                     onExpired={handleRecaptchaExpired}
                   />
                 </div>

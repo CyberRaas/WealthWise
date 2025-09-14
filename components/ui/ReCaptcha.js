@@ -3,7 +3,7 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
 
-const ReCaptcha = forwardRef(({ onVerify, onExpired, onError, theme = 'light', size = 'normal' }, ref) => {
+const ReCaptcha = forwardRef(({ onVerify, onChange, onExpired, onError, theme = 'light', size = 'normal' }, ref) => {
   const recaptchaRef = useRef(null)
 
   useImperativeHandle(ref, () => ({
@@ -21,8 +21,12 @@ const ReCaptcha = forwardRef(({ onVerify, onExpired, onError, theme = 'light', s
   }))
 
   const handleChange = (token) => {
+    // Support both onVerify and onChange for backward compatibility
     if (onVerify) {
       onVerify(token)
+    }
+    if (onChange) {
+      onChange(token)
     }
   }
 
