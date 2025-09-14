@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { UserPlus, Eye, EyeOff, Mail, ArrowLeft } from 'lucide-react'
+import { UserPlus, Eye, EyeOff, Mail, ArrowLeft, AlertCircle } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 import LanguageSelector from '@/components/ui/LanguageSelector'
 import ReCaptcha from '@/components/ui/ReCaptcha'
@@ -535,13 +535,18 @@ export default function SignUpPage() {
 
   // OTP verification UI
   if (step === 'otp') {
+    // Check if OTP field has 6 digits to enable/disable button
+    const otpValue = otpForm.watch('otp') || ''
+    const isOtpComplete = otpValue.trim().length === 6
+
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-slate-900 to-slate-900"></div>
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-emerald-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-emerald-50 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute top-40 left-40 w-80 h-80 bg-indigo-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+        </div>
 
         <div className="max-w-md w-full space-y-8 relative z-10">
           {/* Language Selector */}
@@ -549,55 +554,61 @@ export default function SignUpPage() {
             <LanguageSelector />
           </div>
 
-          <Card className="w-full shadow-2xl border border-slate-700/50 bg-slate-800/90 backdrop-blur-xl ring-1 ring-slate-700/50 rounded-3xl overflow-hidden">
-            <CardHeader className="space-y-6 pb-8 pt-12 px-8 bg-gradient-to-b from-slate-800/50 to-transparent">
-              <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6">
-                <Logo className="w-16 h-16" />
+          <Card className="w-full shadow-2xl border border-emerald-200/50 bg-white/90 backdrop-blur-xl ring-1 ring-emerald-200/30 rounded-3xl overflow-hidden">
+            <CardHeader className="space-y-6 pb-8 pt-12 px-8 bg-gradient-to-b from-emerald-50/50 to-transparent">
+              <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500 rounded-3xl shadow-2xl ring-4 ring-emerald-200/30">
+                <Mail className="w-10 h-10 text-white" />
               </div>
-              <CardTitle className="text-4xl text-center font-bold bg-gradient-to-r from-white via-slate-200 to-white bg-clip-text text-transparent leading-tight">
+              <CardTitle className="text-4xl text-center font-bold bg-gradient-to-r from-emerald-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
                 {t('auth.verifyEmail', 'Verify Your Email')}
               </CardTitle>
-              <CardDescription className="text-center text-lg text-slate-400 font-medium">
+              <CardDescription className="text-center text-lg text-slate-600 font-medium">
                 {t('auth.enterCodeSent', 'Enter the 6-digit code sent to')}<br />
-                <span className="font-bold text-slate-200">{userData?.email}</span>
+                <span className="font-bold text-emerald-600">{userData?.email}</span>
               </CardDescription>
             </CardHeader>
 
             <form onSubmit={otpForm.handleSubmit(onOtpSubmit)}>
-              <CardContent className="space-y-8 px-8">
-                <div className="space-y-4">
-                  <label htmlFor="otp" className="text-sm font-semibold text-slate-300 uppercase tracking-wider text-center block">
+              <CardContent className="space-y-6 px-8">
+                <div className="space-y-3">
+                  <label htmlFor="otp" className="text-sm font-semibold text-slate-700 uppercase tracking-wider">
                     {t('auth.verificationCode', 'Verification Code')}
                   </label>
                   <Input
                     id="otp"
                     type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength="6"
                     placeholder={t('auth.enterSixDigitCode', 'Enter 6-digit code')}
-                    maxLength={6}
-                    className="text-center text-3xl font-bold tracking-[0.5em] h-16 border-2 border-slate-600 focus:border-emerald-500 focus:ring-emerald-500/30 focus:ring-4 bg-slate-700/50 backdrop-blur-sm text-white placeholder:text-slate-400 rounded-2xl transition-all duration-300 shadow-inner"
+                    autoComplete="one-time-code"
                     disabled={isLoading}
                     {...otpForm.register('otp')}
+                    className="h-14 border-2 border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500/30 focus:ring-4 bg-white backdrop-blur-sm text-slate-700 placeholder:text-slate-400 rounded-2xl text-xl text-center font-mono tracking-widest transition-all duration-300 shadow-sm"
                   />
                   {otpForm.formState.errors.otp && (
-                    <p className="text-sm text-rose-400 font-medium text-center">{otpForm.formState.errors.otp.message}</p>
+                    <p className="text-sm text-red-500 font-medium mt-2 flex items-center space-x-2">
+                      <AlertCircle className="w-4 h-4" />
+                      <span>{otpForm.formState.errors.otp.message}</span>
+                    </p>
                   )}
                 </div>
 
                 {otpTimer > 0 && (
-                  <div className="text-center">
-                    <p className="text-sm text-slate-400 font-medium">
-                      {t('auth.resendCodeIn', 'Resend code in')} <span className="text-emerald-400 font-bold">{formatTime(otpTimer)}</span>
+                  <div className="text-center py-3">
+                    <p className="text-sm text-slate-600 font-medium">
+                      {t('auth.resendCodeIn', 'Resend code in')} <span className="text-emerald-600 font-bold">{formatTime(otpTimer)}</span>
                     </p>
                   </div>
                 )}
 
                 {otpTimer === 0 && (
-                  <div className="text-center">
+                  <div className="text-center py-3">
                     <button
                       type="button"
                       onClick={handleResendOtp}
                       disabled={isLoading}
-                      className="text-sm text-emerald-400 hover:text-emerald-300 font-bold transition-colors duration-200 hover:underline bg-slate-700/30 px-4 py-2 rounded-lg"
+                      className="text-sm text-emerald-600 hover:text-emerald-700 font-bold transition-colors duration-200 hover:underline bg-emerald-50 hover:bg-emerald-100 px-4 py-2 rounded-lg border border-emerald-200"
                     >
                       {t('auth.resendVerificationCode', 'Resend verification code')}
                     </button>
@@ -608,8 +619,12 @@ export default function SignUpPage() {
               <div className="px-8 pb-8 space-y-6">
                 <Button
                   type="submit"
-                  className="w-full h-14 text-lg font-bold bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500 hover:from-emerald-600 hover:via-indigo-600 hover:to-purple-600 text-white shadow-2xl hover:shadow-emerald-500/25 transition-all duration-300 transform hover:scale-[1.02] focus:ring-4 focus:ring-emerald-500/30 rounded-2xl border border-white/10"
-                  disabled={isLoading}
+                  className={`w-full h-14 text-lg font-bold transition-all duration-300 transform focus:ring-4 focus:ring-emerald-500/30 rounded-2xl border border-white/10 ${
+                    isOtpComplete && !isLoading
+                      ? 'bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-500 hover:from-emerald-600 hover:via-indigo-600 hover:to-purple-600 text-white shadow-2xl hover:shadow-emerald-500/25 hover:scale-[1.02]'
+                      : 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                  }`}
+                  disabled={isLoading || !isOtpComplete}
                 >
                   {isLoading ? (
                     <div className="flex items-center space-x-3">
@@ -627,7 +642,7 @@ export default function SignUpPage() {
                 <button
                   type="button"
                   onClick={() => setStep('signup')}
-                  className="w-full flex items-center justify-center space-x-2 text-slate-400 hover:text-slate-300 transition-colors duration-200 py-3"
+                  className="w-full flex items-center justify-center space-x-2 text-slate-600 hover:text-slate-700 transition-colors duration-200 py-3"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>{t('auth.backToSignup', 'Back to signup')}</span>
