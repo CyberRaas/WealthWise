@@ -31,7 +31,7 @@ function BudgetContent() {
         {/* Budget Overview */}
         {/* <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800">{t('budget.budgetOverview')}</h2>
+            <h2 className="text-2xl font-bold text-slate-800">Budget Overview</h2>
             <p className="text-slate-600">Monitor your spending and stay on track</p>
           </div>
           <Button 
@@ -63,24 +63,24 @@ function BudgetContent() {
               <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-lg">
                 <CheckCircle className="h-5 w-5 text-emerald-600 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-emerald-800">{t('budget.greatJobSavings')}</h4>
-                  <p className="text-sm text-emerald-700">{t('budget.aheadOfGoal')}</p>
+                  <h4 className="font-medium text-emerald-800">Great job on savings!</h4>
+                  <p className="text-sm text-emerald-700">You&apos;re 12% ahead of your savings goal this month.</p>
                 </div>
               </div>
               
               <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-lg">
                 <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-amber-800">{t('budget.watchDiningExpenses')}</h4>
-                  <p className="text-sm text-amber-700">{t('budget.foodBudgetWarning')}</p>
+                  <h4 className="font-medium text-amber-800">Watch your dining expenses</h4>
+                  <p className="text-sm text-amber-700">You&apos;ve spent 80% of your food budget. Consider cooking more meals at home.</p>
                 </div>
               </div>
               
               <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg">
                 <TrendingUp className="h-5 w-5 text-blue-600 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-blue-800">{t('budget.investmentOpportunity')}</h4>
-                  <p className="text-sm text-blue-700">{t('budget.extraSavingsAdvice')}</p>
+                  <h4 className="font-medium text-blue-800">Investment opportunity</h4>
+                  <p className="text-sm text-blue-700">You have extra savings. Consider investing in a diversified portfolio.</p>
                 </div>
               </div>
             </div>

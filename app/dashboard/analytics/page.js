@@ -84,7 +84,7 @@ function AnalyticsContent() {
         processAnalyticsData(expensesData.expenses || [], goalsData.goals || [])
 
       } catch (error) {
-        console.error(t('common.failedToFetchAnalytics'), error)
+        console.error('Failed to fetch analytics data:', error)
       } finally {
         setLoading(false)
       }
@@ -248,7 +248,7 @@ function AnalyticsContent() {
           <Card className="border-l-4 border-l-purple-500">
             <CardHeader className="pb-2 sm:pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium text-slate-600">{t('analytics.dailyAverage')}</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-600">Daily Average</CardTitle>
                 <Calendar className="h-5 w-5 text-purple-600" />
               </div>
             </CardHeader>
@@ -256,7 +256,7 @@ function AnalyticsContent() {
               <div className="text-xl sm:text-2xl font-bold text-slate-800">
                 ₹{Math.round(keyMetrics.avgDailySpend).toLocaleString('en-IN')}
               </div>
-              <p className="text-xs text-slate-500">{t('analytics.averagePerDay')}</p>
+              <p className="text-xs text-slate-500">Average per day</p>
             </CardContent>
           </Card>
         </div>
@@ -297,8 +297,8 @@ function AnalyticsContent() {
                 <div className="flex items-center justify-center h-72">
                   <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                    <p className="text-slate-500">{t('analytics.noMonthlyData')}</p>
-                    <p className="text-sm text-slate-400">{t('common.startAddingExpenses')}</p>
+                    <p className="text-slate-500">No monthly data available</p>
+                    <p className="text-sm text-slate-400">Start adding expenses to see trends</p>
                   </div>
                 </div>
               )}
@@ -363,7 +363,7 @@ function AnalyticsContent() {
                   <div className="text-center">
                     <AlertCircle className="h-12 w-12 text-slate-300 mx-auto mb-4" />
                     <p className="text-slate-500">No category data available</p>
-                    <p className="text-sm text-slate-400">{t('common.addExpensesToSee')}</p>
+                    <p className="text-sm text-slate-400">Add expenses to see category breakdown</p>
                   </div>
                 </div>
               )}
@@ -417,7 +417,7 @@ function AnalyticsContent() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-emerald-700">📊 {t('analytics.yourFinancialInsights')}</CardTitle>
+              <CardTitle className="text-emerald-700">📊 Your Financial Insights</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {expenses.length > 0 ? (
@@ -454,22 +454,22 @@ function AnalyticsContent() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-blue-700">💡 {t('analytics.smartRecommendations')}</CardTitle>
+              <CardTitle className="text-blue-700">💡 Smart Recommendations</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {expenses.length === 0 ? (
                 <>
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                    <p className="text-sm text-slate-700">{t('analytics.addFirstExpense')}</p>
+                    <p className="text-sm text-slate-700">Add your first expense to get started</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                    <p className="text-sm text-slate-700">{t('analytics.setupGoals')}</p>
+                    <p className="text-sm text-slate-700">Set up financial goals for better tracking</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                    <p className="text-sm text-slate-700">{t('analytics.createBudget')}</p>
+                    <p className="text-sm text-slate-700">Create a budget to manage spending</p>
                   </div>
                 </>
               ) : (
@@ -479,7 +479,7 @@ function AnalyticsContent() {
                     <p className="text-sm text-slate-700">
                       {categoryData.length > 0 ? 
                         `Consider setting a budget for ${categoryData[0]?.name}` :
-                        t('analytics.setCategoryBudgets')
+                        'Set category-wise budgets for better control'
                       }
                     </p>
                   </div>

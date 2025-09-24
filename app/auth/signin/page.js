@@ -277,7 +277,7 @@
 
 'use client'
 
-import { useState, useEffect, useRef, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
@@ -290,7 +290,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { LogIn, Eye, EyeOff, Shield } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 import LanguageSelector from '@/components/ui/LanguageSelector'
-import ReCaptcha from '@/components/ui/ReCaptcha'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 
@@ -306,12 +305,10 @@ function SignInForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [recaptchaToken, setRecaptchaToken] = useState(null)
-  const recaptchaRef = useRef(null)
 
   const signinSchema = z.object({
-    email: z.string().email(t('Email Required')),
-    password: z.string().min(1, t('Password Required')),
+    email: z.string().email(t('auth.signin.emailRequired')),
+    password: z.string().min(1, t('auth.signin.passwordRequired')),
     rememberMe: z.boolean().optional()
   })
   
@@ -330,51 +327,18 @@ function SignInForm() {
   // Show welcome message if redirected from registration
   useEffect(() => {
     if (message === 'registration-complete') {
-      toast.success(t('Registration completed Successfully🎉'), {
+      toast.success(t('auth.signin.registrationComplete'), {
         duration: 5000,
         position: 'top-center',
       })
     }
   }, [message, t])
 
-  // Handle reCAPTCHA verification
-  const handleRecaptchaChange = (token) => {
-    setRecaptchaToken(token)
-  }
-
-  const handleRecaptchaExpired = () => {
-    setRecaptchaToken(null)
-  }
-
   // Handle form submission
   const onSubmit = async (data) => {
-    if (!recaptchaToken) {
-      toast.error(t('Please complete the reCAPTCHA verification'))
-      return
-    }
-
     setIsLoading(true)
 
     try {
-      // First verify reCAPTCHA
-      const recaptchaResponse = await fetch('/api/auth/verify-recaptcha', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: recaptchaToken })
-      })
-
-      const recaptchaResult = await recaptchaResponse.json()
-
-      if (!recaptchaResult.success) {
-        toast.error('reCAPTCHA verification failed. Please try again.')
-        if (recaptchaRef.current) {
-          recaptchaRef.current.reset()
-        }
-        setRecaptchaToken(null)
-        return
-      }
-
-      // If reCAPTCHA is valid, proceed with sign in
       const result = await signIn('credentials', {
         email: data.email,
         password: data.password,
@@ -382,13 +346,13 @@ function SignInForm() {
       })
 
       if (result?.error) {
-        toast.error('Invalid email or password. Please check your credentials and try again.')
+        toast.error(t('auth.signin.invalidCredentials'))
       } else {
-        toast.success('Welcome back!')
+        toast.success(t('auth.signin.welcomeBack'))
         router.push(callbackUrl)
       }
     } catch (error) {
-      toast.error('Network error. Please try again later.')
+      toast.error(t('auth.signin.networkError'))
     } finally {
       setIsLoading(false)
     }
@@ -402,7 +366,7 @@ function SignInForm() {
       await signIn('google', { callbackUrl })
     } catch (error) {
       console.error('Google sign-in error:', error)
-      toast.error('An error occurred during Google sign-in. Please try again.')
+      toast.error(t('auth.signin.googleError'))
     } finally {
       // Reset loading state after a short delay to give time for redirect
       setTimeout(() => {
@@ -518,16 +482,6 @@ function SignInForm() {
                 >
                   {t('auth.signin.forgotPassword')}
                 </Link>
-              </div>
-
-              {/* reCAPTCHA */}
-              <div className="mt-4">
-                <ReCaptcha
-                  ref={recaptchaRef}
-                  onVerify={handleRecaptchaChange}
-                  onExpired={handleRecaptchaExpired}
-                  theme="light"
-                />
               </div>
 
               {/* Sign In Button */}

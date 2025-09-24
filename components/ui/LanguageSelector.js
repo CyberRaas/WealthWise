@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button'
 import { Globe, Check, ChevronDown } from 'lucide-react'
 
 const languages = [
-    { code: 'en', name: 'English', nativeName: 'English'},
-    { code: 'hi', name: 'Hindi', nativeName: 'हिंदी'},
-  ]
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'hi', name: 'Hindi', nativeName: 'हिंदी' }
+]
 
 export default function LanguageSelector({ variant = 'nav' }) {
   const { t } = useTranslation()
@@ -68,7 +68,6 @@ export default function LanguageSelector({ variant = 'nav' }) {
                     <Check className="w-2 h-2 text-white m-0.5" />
                   )}
                 </div>
-                <span className="text-xl">{language.flag}</span>
                 <div className="text-left">
                   <p className="font-medium">{language.nativeName}</p>
                   <p className="text-sm text-slate-500">{language.name}</p>
@@ -97,7 +96,6 @@ export default function LanguageSelector({ variant = 'nav' }) {
               }`}
             >
               <div className="text-center">
-                <div className="text-lg mb-1">{language.flag}</div>
                 <p className="text-sm font-medium">{language.nativeName}</p>
               </div>
             </button>
@@ -138,12 +136,9 @@ export default function LanguageSelector({ variant = 'nav' }) {
               }}
               className="w-full px-3 py-2 text-left hover:bg-slate-50 transition-colors duration-150 flex items-center justify-between"
             >
-              <div className="flex items-center space-x-3">
-                <span className="text-lg">{language.flag}</span>
-                <div>
-                  <p className="font-medium text-slate-700">{language.nativeName}</p>
-                  <p className="text-xs text-slate-500">{language.name}</p>
-                </div>
+              <div>
+                <p className="font-medium text-slate-700">{language.nativeName}</p>
+                <p className="text-xs text-slate-500">{language.name}</p>
               </div>
               {currentLanguage === language.code && (
                 <Check className="w-4 h-4 text-emerald-600" />

@@ -42,7 +42,7 @@ function GoalsContent() {
         })
       }
     } catch (error) {
-      console.error(t('common.failedToFetchGoals'), error)
+      console.error('Failed to fetch goals data:', error)
     } finally {
       setLoading(false)
     }
@@ -151,8 +151,8 @@ function GoalsContent() {
                               ? 'text-blue-800' 
                               : 'text-slate-700'
                           }`}>
-                            {goal.name} {isCompleted && `- ${t('goals.completed')} 🎉`}
-                            {!isCompleted && ` - ${progress.toFixed(0)}% ${t('goals.complete')}`}
+                            {goal.name} {isCompleted && '- Completed! 🎉'}
+                            {!isCompleted && ` - ${progress.toFixed(0)}% Complete`}
                           </p>
                           <p className={`text-sm ${
                             isCompleted 
@@ -161,8 +161,8 @@ function GoalsContent() {
                               ? 'text-blue-600' 
                               : 'text-slate-500'
                           }`}>
-                            {t('goals.target')}: {new Date(goal.targetDate).toLocaleDateString('en-IN')} • 
-                            ₹{goal.currentAmount.toLocaleString('en-IN')} {t('goals.of')} ₹{goal.targetAmount.toLocaleString('en-IN')}
+                            Target: {new Date(goal.targetDate).toLocaleDateString('en-IN')} • 
+                            ₹{goal.currentAmount.toLocaleString('en-IN')} of ₹{goal.targetAmount.toLocaleString('en-IN')}
                           </p>
                         </div>
                         {isCompleted ? (

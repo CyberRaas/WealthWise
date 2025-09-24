@@ -109,16 +109,6 @@ function ProfileContent() {
         
         // Update the profile context with new data
         updateProfileData(data.profile)
-        
-        // Update the NextAuth session with new profile image
-        await update({
-          ...session,
-          user: {
-            ...session.user,
-            image: data.profile.image,
-            name: data.profile.name
-          }
-        })
       } else {
         throw new Error(data.error || 'Failed to update profile')
       }
