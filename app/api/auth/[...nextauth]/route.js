@@ -20,7 +20,7 @@ export async function OPTIONS(request) {
   return new Response(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': process.env.NEXTAUTH_URL || 'https://mywealthwise.tech',
+      'Access-Control-Allow-Origin': process.env.NEXTAUTH_URL || 'https://wealthwise-cyan.vercel.app',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       'Access-Control-Allow-Credentials': 'true',
