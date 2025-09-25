@@ -410,7 +410,7 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
         <div className="mb-6">
           <h3 className="text-lg font-semibold mb-3">Choose a Goal Template</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {GOAL_TEMPLATES.map((template) => (
+            {getGoalTemplates(t).map((template) => (
               <button
                 key={template.id}
                 onClick={() => handleTemplateSelect(template)}
