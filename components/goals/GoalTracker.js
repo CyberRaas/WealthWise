@@ -83,7 +83,7 @@ const getGoalTemplates = (t) => [
 ]
 
 export default function GoalTracker({ userSavings = 0 }) {
-  const { t } = useTranslation()
+  const { t, ready } = useTranslation()
   const [goals, setGoals] = useState([])
   const [showCreateGoal, setShowCreateGoal] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -215,7 +215,7 @@ export default function GoalTracker({ userSavings = 0 }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {goals.map((goal) => {
             const analysis = calculateGoalProgress(goal)
-            const template = getGoalTemplates(t).find(tmpl => tmpl.id === goal.templateId)
+            const template = ready ? getGoalTemplates(t).find(tmpl => tmpl.id === goal.templateId) : null
             
             return (
               <Card key={goal.id} className="group bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 hover:from-white hover:via-emerald-50/50 hover:to-teal-50/50 border-2 border-emerald-200/40 hover:border-emerald-300/60 shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-xl rounded-2xl ring-1 ring-white/50">
@@ -410,7 +410,7 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
         <div className="mb-6">
           <h3 className="text-lg font-semibold mb-3">Choose a Goal Template</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {getGoalTemplates(t).map((template) => (
+            {ready && getGoalTemplates(t).map((template) => (
               <button
                 key={template.id}
                 onClick={() => handleTemplateSelect(template)}
