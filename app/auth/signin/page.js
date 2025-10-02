@@ -326,23 +326,27 @@ import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 
-// Dynamically import Logo with fallback
-const Logo = dynamic(() => import('@/components/ui/Logo').catch(() => {
-  // Fallback if Logo component fails to load
-  return () => (
+// Fallback components with display names
+const LogoFallback = function LogoFallback() {
+  return (
     <div className="flex items-center space-x-2">
       <DollarSign className="w-8 h-8 text-emerald-600" />
       <span className="text-2xl font-bold text-slate-800">WealthWise</span>
     </div>
   )
-}), {
+}
+
+const LanguageSelectorFallback = function LanguageSelectorFallback() {
+  return null
+}
+
+// Dynamically import Logo with fallback
+const Logo = dynamic(() => import('@/components/ui/Logo').catch(() => LogoFallback), {
   loading: () => <div className="w-32 h-8 bg-slate-200 animate-pulse rounded"></div>,
   ssr: false
 })
 
-const LanguageSelector = dynamic(() => import('@/components/ui/LanguageSelector').catch(() => {
-  return () => null
-}), {
+const LanguageSelector = dynamic(() => import('@/components/ui/LanguageSelector').catch(() => LanguageSelectorFallback), {
   ssr: false
 })
 
@@ -414,18 +418,10 @@ function SignInForm() {
     setIsGoogleLoading(true)
     
     try {
-      const result = await signIn('google', { 
+      await signIn('google', { 
         callbackUrl,
         redirect: true 
       })
-      
-      // If redirect: true, this code won't execute
-      // If redirect: false and there's an error:
-      if (result?.error) {
-        console.error('Google sign-in error:', result.error)
-        toast.error(t('auth.signin.googleError') || 'Google sign-in failed')
-        setIsGoogleLoading(false)
-      }
     } catch (error) {
       console.error('Google sign-in exception:', error)
       toast.error(t('auth.signin.googleError') || 'Google sign-in failed')
@@ -614,6 +610,8 @@ function SignInForm() {
     </div>
   )
 }
+
+SignInForm.displayName = 'SignInForm'
 
 export default function SignInPage() {
   return (
