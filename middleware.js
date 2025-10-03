@@ -2,12 +2,17 @@ import { NextResponse } from "next/server"
 
 export default async function middleware(request) {
   const { pathname } = request.nextUrl
-  
+
+  // Always allow NextAuth API routes - CRITICAL for OAuth to work
+  if (pathname.startsWith("/api/auth")) {
+    return NextResponse.next()
+  }
+
   // Public routes that don't require authentication
   const publicRoutes = [
     "/",
     "/auth/signin",
-    "/auth/signup", 
+    "/auth/signup",
     "/auth/forgot-password",
     "/auth/reset-password",
     "/auth/verify-email",
@@ -20,7 +25,6 @@ export default async function middleware(request) {
 
   // API routes that don't require authentication
   const publicApiRoutes = [
-    "/api/auth",
     "/api/health"
   ]
 
@@ -35,7 +39,7 @@ export default async function middleware(request) {
 
   // For protected routes, check if user has session cookie
   const sessionToken = request.cookies.get('next-auth.session-token') || request.cookies.get('__Secure-next-auth.session-token')
-  
+
   if (!sessionToken) {
     // Redirect to signin for protected routes
     if (pathname.startsWith('/api/')) {
@@ -47,7 +51,8 @@ export default async function middleware(request) {
   }
 
   // Redirect authenticated users away from auth pages to onboarding
-  if (sessionToken && pathname.startsWith("/auth/") && !pathname.includes("/signout") && !pathname.includes("/verify")) {
+  // IMPORTANT: Exclude /auth/error to avoid redirect loops during OAuth errors
+  if (sessionToken && pathname.startsWith("/auth/signin")) {
     return NextResponse.redirect(new URL("/onboarding", request.url))
   }
 
