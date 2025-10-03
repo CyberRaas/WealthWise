@@ -1,18 +1,7 @@
 // Temporary diagnostic endpoint - REMOVE AFTER TESTING
-export async function GET(request) {
-  // Clean the URL
-  const rawUrl = process.env.NEXTAUTH_URL || 'NOT SET'
-  const cleanedUrl = rawUrl.trim().replace(/[\s\n]+$/, '').replace(/\/$/, '')
-
-  // Get the current request URL
-  const requestUrl = new URL(request.url)
-  const currentHost = `${requestUrl.protocol}//${requestUrl.host}`
-
+export async function GET() {
   const envCheck = {
-    raw_nextAuthUrl: rawUrl,
-    cleaned_nextAuthUrl: cleanedUrl,
-    current_request_host: currentHost,
-    url_match: cleanedUrl === currentHost,
+    nextAuthUrl: process.env.NEXTAUTH_URL || 'NOT SET',
     hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
     hasGoogleClientId: !!process.env.GOOGLE_CLIENT_ID,
     hasGoogleClientSecret: !!process.env.GOOGLE_CLIENT_SECRET,
@@ -29,13 +18,9 @@ export async function GET(request) {
       process.env.MONGODB_URI
     ) ? '✅ All Required Variables Present' : '❌ Missing Required Variables',
 
-    expectedGoogleRedirectUri: cleanedUrl !== 'NOT SET'
-      ? `${cleanedUrl}/api/auth/callback/google`
-      : 'NEXTAUTH_URL not set',
-
-    warning: cleanedUrl !== currentHost
-      ? `⚠️ NEXTAUTH_URL (${cleanedUrl}) does not match current host (${currentHost})`
-      : null
+    expectedGoogleRedirectUri: process.env.NEXTAUTH_URL
+      ? `${process.env.NEXTAUTH_URL}/api/auth/callback/google`
+      : 'NEXTAUTH_URL not set'
   }
 
   return Response.json(envCheck, {
