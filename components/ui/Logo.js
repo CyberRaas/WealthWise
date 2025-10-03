@@ -1,3 +1,5 @@
+// components/ui/Logo.js
+
 import { TrendingUp } from 'lucide-react'
 
 const Logo = ({ 
