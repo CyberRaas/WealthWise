@@ -515,10 +515,10 @@ export default function GoalTracker({ userSavings = 0 }) {
                                 <>
                                   <p className="text-green-700 flex items-center gap-2">
                                     <ArrowUp className="w-4 h-4" />
-                                    You're ahead by ₹{(goal.currentAmount - (goal.targetAmount * analysis.expectedProgress / 100)).toLocaleString('en-IN')}!
+                                    You&apos;re ahead by ₹{(goal.currentAmount - (goal.targetAmount * analysis.expectedProgress / 100)).toLocaleString('en-IN')}!
                                   </p>
                                   <p className="text-slate-600">
-                                    At current pace, you'll complete this <span className="font-semibold text-green-600">{Math.ceil((new Date(goal.targetDate) - analysis.predictedDate) / (1000 * 60 * 60 * 24))} days early</span>
+                                    At current pace, you&apos;ll complete this <span className="font-semibold text-green-600">{Math.ceil((new Date(goal.targetDate) - analysis.predictedDate) / (1000 * 60 * 60 * 24))} days early</span>
                                   </p>
                                 </>
                               ) : (
