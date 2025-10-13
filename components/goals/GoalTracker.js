@@ -333,6 +333,7 @@ export default function GoalTracker({ userSavings = 0 }) {
 
 // Create Goal Modal Component
 function CreateGoalModal({ onClose, onGoalCreated }) {
+  const { t } = useTranslation()
   const [selectedTemplate, setSelectedTemplate] = useState(null)
   const [formData, setFormData] = useState({
     name: '',
@@ -410,7 +411,7 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
         <div className="mb-6">
           <h3 className="text-lg font-semibold mb-3">Choose a Goal Template</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {ready && getGoalTemplates(t).map((template) => (
+            {getGoalTemplates(t).map((template) => (
               <button
                 key={template.id}
                 onClick={() => handleTemplateSelect(template)}
