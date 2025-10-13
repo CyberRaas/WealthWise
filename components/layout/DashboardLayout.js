@@ -1,33 +1,39 @@
-// components/layout/DashboardLayout.js
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useTranslation } from 'react-i18next'
 import { useProfile } from '@/contexts/ProfileContext'
+import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Sidebar from '@/components/layout/Sidebar'
+import MobileBottomNav from '@/components/mobile/MobileBottomNav'
+import FABMenu from '@/components/mobile/FABMenu'
+import HamburgerMenu from '@/components/mobile/HamburgerMenu'
+import SwipeGestureHandler from '@/components/mobile/SwipeGestureHandler'
+import PullToRefresh from '@/components/mobile/PullToRefresh'
 import LanguageSelector from '@/components/ui/LanguageSelector'
-import { 
+import { motion, AnimatePresence } from 'framer-motion'
+import {
   Bell,
   LogOut,
   User,
-  Search,
   Settings,
-  CreditCard,
-  FileText,
   HelpCircle,
   ChevronDown,
   Menu
 } from 'lucide-react'
 
-export default function DashboardLayout({ children, title = "Dashboard" }) {
+export default function DashboardLayout({ children, title = "Dashboard", onRefresh }) {
   const { data: session } = useSession()
   const { profileImage } = useProfile()
   const { t } = useTranslation()
+  const pathname = usePathname()
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [fabMenuOpen, setFABMenuOpen] = useState(false)
+  const [hamburgerMenuOpen, setHamburgerMenuOpen] = useState(false)
   const dropdownRef = useRef(null)
 
   // Close dropdown when clicking outside
@@ -44,6 +50,30 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
     }
   }, [])
 
+  // Handle refresh
+  const handleRefresh = async () => {
+    if (onRefresh) {
+      await onRefresh()
+    } else {
+      // Default refresh behavior
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          window.location.reload()
+          resolve()
+        }, 1000)
+      })
+    }
+  }
+
+  // Determine if current page should show mobile nav
+  const showMobileNav = [
+    '/dashboard',
+    '/dashboard/expenses',
+    '/dashboard/goals',
+    '/dashboard/analytics',
+    '/dashboard/budget'
+  ].some(path => pathname === path)
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50">
       <div className="flex">
@@ -53,15 +83,27 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
             <Sidebar />
           </div>
         </div>
-        
+
         {/* Mobile Sidebar Overlay - Only show when sidebarOpen is true */}
         {sidebarOpen && (
-          <Sidebar 
+          <Sidebar
             isOpen={sidebarOpen}
             onClose={() => setSidebarOpen(false)}
           />
         )}
-        
+
+        {/* Hamburger Menu */}
+        <HamburgerMenu
+          isOpen={hamburgerMenuOpen}
+          onClose={() => setHamburgerMenuOpen(false)}
+        />
+
+        {/* FAB Menu */}
+        <FABMenu
+          isOpen={fabMenuOpen}
+          onClose={() => setFABMenuOpen(false)}
+        />
+
         {/* Main Content */}
         <div className="flex-1 min-w-0">
           {/* Fixed Header with Consistent Height */}
@@ -70,23 +112,29 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
               <div className="flex items-center justify-between h-full">
                 {/* Left Section: Mobile Menu + Title */}
                 <div className="flex items-center space-x-3 min-w-0 flex-1">
-                  {/* Mobile Menu Button */}
-                  <button 
-                    className="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all duration-200 shadow-sm hover:shadow-md"
-                    onClick={() => setSidebarOpen(true)}
+                  {/* Mobile Hamburger Button - LG+ shows sidebar menu */}
+                  <button
+                    className="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md"
+                    onClick={() => setHamburgerMenuOpen(true)}
                   >
                     <Menu className="w-5 h-5 text-slate-600" />
                   </button>
 
                   {/* Title Section */}
                   <div className="min-w-0 flex-1">
-                    <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-800 truncate">
+                    <motion.h1
+                      key={pathname}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-800 truncate"
+                    >
                       {title}
-                    </h1>
+                    </motion.h1>
                     <p className="text-xs sm:text-sm text-slate-500 hidden sm:block truncate">
-                      {new Date().toLocaleDateString('en-US', { 
-                        weekday: 'long', 
-                        month: 'long', 
+                      {new Date().toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
                         day: 'numeric',
                         year: 'numeric'
                       })}
@@ -98,25 +146,25 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
                 <div className="flex items-center space-x-2">
                   {/* Language Selector */}
                   <LanguageSelector variant="dashboard" />
-                  
+
                   {/* Notifications - Hidden on small mobile */}
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-slate-500 hover:text-slate-700 relative hover:bg-slate-100 rounded-xl w-10 h-10 p-0 hidden sm:flex"
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-slate-500 hover:text-slate-700 relative hover:bg-slate-100 rounded-xl w-10 h-10 p-0 hidden sm:flex active:scale-95 transition-all"
                   >
                     <Bell className="h-5 w-5" />
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full border-2 border-white"></div>
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full border-2 border-white animate-pulse"></div>
                   </Button>
-                  
+
                   {/* User Profile Dropdown */}
                   <div className="relative" ref={dropdownRef}>
                     <Button
                       variant="ghost"
-                      className="flex items-center space-x-2 bg-slate-100/50 hover:bg-slate-200/50 rounded-xl px-3 py-2 h-10 transition-all duration-200"
+                      className="flex items-center space-x-2 bg-slate-100/50 hover:bg-slate-200/50 rounded-xl px-3 py-2 h-10 transition-all duration-200 active:scale-95"
                       onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                     >
-                      <Avatar className="h-7 w-7 sm:h-8 sm:w-8">
+                      <Avatar className="h-7 w-7 sm:h-8 sm:w-8 ring-2 ring-emerald-100">
                         <AvatarImage src={profileImage} />
                         <AvatarFallback className="text-sm bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold">
                           {session?.user?.name?.[0] || 'A'}
@@ -124,87 +172,103 @@ export default function DashboardLayout({ children, title = "Dashboard" }) {
                       </Avatar>
                       <div className="hidden sm:block text-left">
                         <p className="text-sm font-semibold text-slate-700 truncate max-w-24 lg:max-w-none">
-                          {session?.user?.name?.split(' ')[0] || 'AKASH'}
+                          {session?.user?.name?.split(' ')[0] || 'User'}
                         </p>
                       </div>
                       <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${showProfileDropdown ? 'rotate-180' : ''} hidden sm:block`} />
                     </Button>
 
                     {/* Profile Dropdown Menu */}
-                    {showProfileDropdown && (
-                      <div className="absolute right-0 mt-2 w-64 sm:w-72 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-50 animate-in slide-in-from-top-2 duration-200">
-                        {/* User Info Header */}
-                        <div className="px-4 py-3 border-b border-slate-100">
-                          <div className="flex items-center space-x-3">
-                            <Avatar className="h-12 w-12">
-                              <AvatarImage src={profileImage} />
-                              <AvatarFallback className="text-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold">
-                                {session?.user?.name?.[0] || 'A'}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-lg font-bold text-slate-900 truncate">
-                                {session?.user?.name || 'AKASH'}
-                              </p>
-                              <p className="text-sm text-slate-500 truncate">
-                                {session?.user?.email || 'vishwakarmaakashavi7@gmail.com'}
-                              </p>
+                    <AnimatePresence>
+                      {showProfileDropdown && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute right-0 mt-2 w-64 sm:w-72 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-50"
+                        >
+                          {/* User Info Header */}
+                          <div className="px-4 py-3 border-b border-slate-100">
+                            <div className="flex items-center space-x-3">
+                              <Avatar className="h-12 w-12 ring-2 ring-emerald-100">
+                                <AvatarImage src={profileImage} />
+                                <AvatarFallback className="text-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold">
+                                  {session?.user?.name?.[0] || 'A'}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-lg font-bold text-slate-900 truncate">
+                                  {session?.user?.name || 'User'}
+                                </p>
+                                <p className="text-sm text-slate-500 truncate">
+                                  {session?.user?.email || 'user@example.com'}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        {/* Menu Items */}
-                        <div className="py-2">
-                          <MenuItem 
-                            icon={User} 
-                            label="Profile" 
-                            onClick={() => setShowProfileDropdown(false)}
-                          />
-                          <MenuItem 
-                            icon={Settings} 
-                            label="Edit Profile" 
-                            onClick={() => setShowProfileDropdown(false)}
-                          />
-                          {/* <MenuItem 
-                            icon={CreditCard} 
-                            label="Profile Card" 
-                            onClick={() => setShowProfileDropdown(false)}
-                          /> */}
-                          {/* <MenuItem 
-                            icon={FileText} 
-                            label="My Sheets" 
-                            onClick={() => setShowProfileDropdown(false)}
-                          />
-                           */}
-                          <div className="border-t border-slate-100 my-2"></div>
-                          
-                          <MenuItem 
-                            icon={HelpCircle} 
-                            label="Help & Support" 
-                            onClick={() => setShowProfileDropdown(false)}
-                          />
-                          <MenuItem 
-                            icon={LogOut} 
-                            label="Sign Out" 
-                            onClick={() => {
-                              setShowProfileDropdown(false)
-                              signOut({ callbackUrl: window.location.origin })
-                            }}
-                            className="text-red-600 hover:bg-red-50"
-                          />
-                        </div>
-                      </div>
-                    )}
+                          {/* Menu Items */}
+                          <div className="py-2">
+                            <MenuItem
+                              icon={User}
+                              label="Profile"
+                              onClick={() => setShowProfileDropdown(false)}
+                            />
+                            <MenuItem
+                              icon={Settings}
+                              label="Settings"
+                              onClick={() => setShowProfileDropdown(false)}
+                            />
+                            <div className="border-t border-slate-100 my-2"></div>
+
+                            <MenuItem
+                              icon={HelpCircle}
+                              label="Help & Support"
+                              onClick={() => setShowProfileDropdown(false)}
+                            />
+                            <MenuItem
+                              icon={LogOut}
+                              label="Sign Out"
+                              onClick={() => {
+                                setShowProfileDropdown(false)
+                                signOut({ callbackUrl: window.location.origin })
+                              }}
+                              className="text-red-600 hover:bg-red-50"
+                            />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>
             </div>
           </header>
 
-          {/* Page Content */}
-          <main className="p-3 sm:p-4 lg:p-6">
-            {children}
+          {/* Page Content with Swipe Gestures & Pull to Refresh */}
+          <main className="relative">
+            <SwipeGestureHandler>
+              <PullToRefresh onRefresh={handleRefresh}>
+                <motion.div
+                  key={pathname}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="p-3 sm:p-4 lg:p-6"
+                  data-scrollable="true"
+                >
+                  {children}
+                </motion.div>
+              </PullToRefresh>
+            </SwipeGestureHandler>
           </main>
+
+          {/* Mobile Bottom Navigation */}
+          {showMobileNav && (
+            <MobileBottomNav onFABClick={() => setFABMenuOpen(true)} />
+          )}
         </div>
       </div>
     </div>
@@ -216,7 +280,7 @@ function MenuItem({ icon: Icon, label, onClick, className = "" }) {
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center space-x-3 px-4 py-3 text-left text-slate-700 hover:bg-slate-50 transition-colors duration-150 ${className}`}
+      className={`w-full flex items-center space-x-3 px-4 py-3 text-left text-slate-700 hover:bg-slate-50 active:bg-slate-100 transition-colors duration-150 ${className}`}
     >
       <Icon className="h-5 w-5 text-slate-500" />
       <span className="font-medium">{label}</span>
