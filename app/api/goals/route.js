@@ -224,3 +224,68 @@ export async function PUT(request) {
     )
   }
 }
+
+// DELETE - Delete a goal
+export async function DELETE(request) {
+  try {
+    const session = await auth()
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+
+    const { goalId } = await request.json()
+
+    if (!goalId) {
+      return NextResponse.json(
+        { error: 'Goal ID is required' },
+        { status: 400 }
+      )
+    }
+
+    await dbConnect()
+
+    const userProfile = await UserProfile.findOne({ userId: session.user.id })
+
+    if (!userProfile || !userProfile.goals) {
+      return NextResponse.json(
+        { error: 'User profile or goals not found' },
+        { status: 404 }
+      )
+    }
+
+    // Find and remove the goal
+    const goalIndex = userProfile.goals.findIndex(goal => goal.id === goalId)
+
+    if (goalIndex === -1) {
+      return NextResponse.json(
+        { error: 'Goal not found' },
+        { status: 404 }
+      )
+    }
+
+    // Remove the goal
+    userProfile.goals.splice(goalIndex, 1)
+
+    // Update user profile
+    userProfile.markModified('goals')
+    await userProfile.save()
+
+    console.log('Goal deleted successfully:', goalId)
+
+    return NextResponse.json({
+      success: true,
+      message: 'Goal deleted successfully'
+    })
+
+  } catch (error) {
+    console.error('Delete goal error:', error)
+    return NextResponse.json(
+      { error: 'Failed to delete goal', details: error.message },
+      { status: 500 }
+    )
+  }
+}
