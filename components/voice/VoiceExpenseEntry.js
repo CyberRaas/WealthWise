@@ -15,7 +15,7 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
   const [audioQuality, setAudioQuality] = useState('good') // 'good', 'moderate', 'poor'
   const [transcriptAlternatives, setTranscriptAlternatives] = useState([])
   const [retryCount, setRetryCount] = useState(0)
-  
+
   const recognitionRef = useRef(null)
   const timeoutRef = useRef(null)
 
@@ -24,13 +24,13 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
     if (typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
       recognitionRef.current = new SpeechRecognition()
-      
+
       // Enhanced configuration for better accuracy
       recognitionRef.current.continuous = false
       recognitionRef.current.interimResults = true
       recognitionRef.current.maxAlternatives = 5 // Get multiple transcription alternatives
       recognitionRef.current.lang = 'hi-IN' // Hindi first, but handles English too
-      
+
       // Event handlers
       recognitionRef.current.onstart = () => {
         console.log('Speech recognition started')
@@ -38,16 +38,16 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
         setError('')
         setAudioQuality('good') // Reset quality indicator
       }
-      
+
       recognitionRef.current.onresult = (event) => {
         let finalTranscript = ''
         let interimTranscript = ''
         const alternatives = []
-        
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const result = event.results[i]
           const transcriptPart = result[0].transcript
-          
+
           // Collect alternatives for better accuracy
           for (let j = 0; j < Math.min(result.length, 3); j++) {
             alternatives.push({
@@ -55,10 +55,10 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
               confidence: result[j].confidence
             })
           }
-          
+
           if (result.isFinal) {
             finalTranscript += transcriptPart
-            
+
             // Assess audio quality based on confidence
             const avgConfidence = alternatives.reduce((sum, alt) => sum + alt.confidence, 0) / alternatives.length
             if (avgConfidence < 0.5) {
@@ -72,10 +72,10 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
             interimTranscript += transcriptPart
           }
         }
-        
+
         setTranscript(finalTranscript || interimTranscript)
         setTranscriptAlternatives(alternatives)
-        
+
         // Process final transcript
         if (finalTranscript) {
           console.log('Final transcript:', finalTranscript)
@@ -83,10 +83,10 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
           processVoiceInput(finalTranscript, alternatives)
         }
       }
-      
+
       recognitionRef.current.onerror = (event) => {
         console.error('Speech recognition error:', event.error)
-        
+
         // Provide specific error messages
         let errorMessage = 'Voice recognition error'
         if (event.error === 'no-speech') {
@@ -98,12 +98,12 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
         } else if (event.error === 'aborted') {
           errorMessage = 'Recording stopped unexpectedly. Please try again.'
         }
-        
+
         setError(errorMessage)
         setIsListening(false)
         setIsProcessing(false)
       }
-      
+
       recognitionRef.current.onend = () => {
         console.log('Speech recognition ended')
         setIsListening(false)
@@ -127,10 +127,10 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
       setError('')
       setShowConfirmation(false)
       setTranscriptAlternatives([])
-      
+
       try {
         recognitionRef.current.start()
-        
+
         // Auto stop after 15 seconds (increased for noisy environments)
         timeoutRef.current = setTimeout(() => {
           stopListening()
@@ -158,14 +158,14 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
   // Process voice input through our API with retry logic
   const processVoiceInput = async (voiceText, alternatives = []) => {
     setIsProcessing(true)
-    
+
     try {
       const response = await fetch('/api/voice/process', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           voiceText,
           alternatives: alternatives.map(alt => alt.transcript),
           audioQuality: audioQuality
@@ -185,7 +185,7 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
         if (data.confidence && data.confidence < 0.6 && retryCount < 2) {
           setRetryCount(retryCount + 1)
           setError(`Low confidence (${Math.round(data.confidence * 100)}%). Please speak more clearly. Retry ${retryCount + 1}/2`)
-          
+
           // Auto-retry after 2 seconds
           setTimeout(() => {
             if (!isListening) {
@@ -257,7 +257,7 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl max-w-md w-full p-6 space-y-6">
-        
+
         {/* Header */}
         <div className="text-center">
           <h2 className="text-xl font-bold text-gray-900 mb-2">
@@ -271,24 +271,23 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
         {/* Voice Input Section */}
         {!showConfirmation && (
           <div className="space-y-4">
-            
+
             {/* Microphone Button */}
             <div className="flex justify-center">
               <button
                 onClick={isListening ? stopListening : startListening}
                 disabled={isProcessing}
-                className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all ${
-                  isListening
+                className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all ${isListening
                     ? 'bg-red-500 hover:bg-red-600 animate-pulse'
                     : 'bg-blue-500 hover:bg-blue-600'
-                } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {isListening ? (
                   <MicOff className="w-8 h-8 text-white" />
                 ) : (
                   <Mic className="w-8 h-8 text-white" />
                 )}
-                
+
                 {/* Recording indicator */}
                 {isListening && (
                   <div className="absolute inset-0 rounded-full border-4 border-red-300 animate-ping"></div>
@@ -303,23 +302,21 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
                   <p className="text-red-500 font-medium">
                     🎤 Listening... Speak now
                   </p>
-                  
+
                   {/* Audio Quality Indicator */}
                   <div className="flex items-center justify-center space-x-2">
-                    <div className={`w-2 h-2 rounded-full ${
-                      audioQuality === 'good' ? 'bg-green-500' :
-                      audioQuality === 'moderate' ? 'bg-yellow-500' :
-                      'bg-red-500'
-                    }`}></div>
-                    <span className={`text-xs ${
-                      audioQuality === 'good' ? 'text-green-600' :
-                      audioQuality === 'moderate' ? 'text-yellow-600' :
-                      'text-red-600'
-                    }`}>
+                    <div className={`w-2 h-2 rounded-full ${audioQuality === 'good' ? 'bg-green-500' :
+                        audioQuality === 'moderate' ? 'bg-yellow-500' :
+                          'bg-red-500'
+                      }`}></div>
+                    <span className={`text-xs ${audioQuality === 'good' ? 'text-green-600' :
+                        audioQuality === 'moderate' ? 'text-yellow-600' :
+                          'text-red-600'
+                      }`}>
                       Audio: {audioQuality === 'good' ? 'Clear' : audioQuality === 'moderate' ? 'Moderate' : 'Noisy'}
                     </span>
                   </div>
-                  
+
                   {audioQuality === 'poor' && (
                     <p className="text-xs text-red-500">
                       ⚠️ Try moving to a quieter area
@@ -373,7 +370,7 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
         {/* Confirmation Section */}
         {showConfirmation && processedExpense && (
           <div className="space-y-4">
-            
+
             {/* Expense Card */}
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
               <div className="flex items-center justify-between mb-3">
@@ -383,13 +380,13 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
                   <span className="font-medium">{Math.round(confidence * 100)}%</span>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Amount:</span>
                   <span className="font-bold text-green-700">₹{processedExpense.amount}</span>
                 </div>
-                
+
                 <div className="flex justify-between">
                   <span className="text-gray-600">Category:</span>
                   <div className="flex items-center">
@@ -397,14 +394,14 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
                     <span className="font-medium">{processedExpense.categoryInfo?.englishName}</span>
                   </div>
                 </div>
-                
+
                 {processedExpense.merchant && (
                   <div className="flex justify-between">
                     <span className="text-gray-600">Merchant:</span>
                     <span className="font-medium">{processedExpense.merchant}</span>
                   </div>
                 )}
-                
+
                 <div className="flex justify-between">
                   <span className="text-gray-600">Description:</span>
                   <span className="font-medium">{processedExpense.description}</span>
@@ -423,9 +420,8 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
               <button
                 onClick={confirmExpense}
                 disabled={isSaving}
-                className={`flex-1 py-3 px-4 rounded-lg font-medium flex items-center justify-center text-white ${
-                  isSaving ? 'bg-green-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
-                }`}
+                className={`flex-1 py-3 px-4 rounded-lg font-medium flex items-center justify-center text-white ${isSaving ? 'bg-green-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
+                  }`}
               >
                 {isSaving ? (
                   <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -434,7 +430,7 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
                 )}
                 {isSaving ? 'Saving...' : 'Confirm & Add'}
               </button>
-              
+
               <button
                 onClick={editExpense}
                 className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg font-medium flex items-center justify-center"

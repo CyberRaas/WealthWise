@@ -3,6 +3,7 @@
 ## For Better Speech-to-Text APIs (Future Migration)
 
 ### Option 1: Google Cloud Speech-to-Text ⭐ Recommended
+
 ```javascript
 // Installation
 npm install @google-cloud/speech
@@ -48,6 +49,7 @@ const transcription = response.results
 ```
 
 **Pros:**
+
 - 🎯 Best accuracy (95%+ for English, 90%+ for Hindi)
 - 🔇 Built-in noise suppression
 - 🌍 120+ languages with automatic detection
@@ -56,6 +58,7 @@ const transcription = response.results
 - 💰 Free tier: 60 minutes/month
 
 **Cons:**
+
 - 💵 Paid beyond free tier ($0.006/15 seconds)
 - 🔑 Requires API key management
 - 🌐 Needs internet connection
@@ -65,6 +68,7 @@ const transcription = response.results
 ---
 
 ### Option 2: Azure Speech Service
+
 ```javascript
 // Installation
 npm install microsoft-cognitiveservices-speech-sdk
@@ -98,6 +102,7 @@ recognizer.recognizeOnceAsync(result => {
 ```
 
 **Pros:**
+
 - 🎯 Excellent accuracy (94%+)
 - 🔇 Advanced noise cancellation
 - 🗣️ Speaker recognition
@@ -106,6 +111,7 @@ recognizer.recognizeOnceAsync(result => {
 - 💰 Free tier: 5 audio hours/month
 
 **Cons:**
+
 - 💵 Expensive beyond free tier ($1/hour)
 - 🏢 Microsoft ecosystem
 - 📚 Complex setup
@@ -115,6 +121,7 @@ recognizer.recognizeOnceAsync(result => {
 ---
 
 ### Option 3: Deepgram ⭐ Best Value
+
 ```javascript
 // Installation
 npm install @deepgram/sdk
@@ -143,6 +150,7 @@ const confidence = response.results.channels[0].alternatives[0].confidence
 ```
 
 **Pros:**
+
 - ⚡ Fastest processing (< 1 second)
 - 🎯 Good accuracy (90%+)
 - 💰 Most affordable ($0.0043/minute)
@@ -151,6 +159,7 @@ const confidence = response.results.channels[0].alternatives[0].confidence
 - 🆓 $200 free credit
 
 **Cons:**
+
 - 🆕 Newer service (less mature)
 - 📚 Smaller ecosystem
 - 🌍 Fewer languages than Google
@@ -160,6 +169,7 @@ const confidence = response.results.channels[0].alternatives[0].confidence
 ---
 
 ### Option 4: AssemblyAI
+
 ```javascript
 // Installation
 npm install assemblyai
@@ -189,6 +199,7 @@ console.log(transcript.confidence)
 ```
 
 **Pros:**
+
 - 🎯 High accuracy (92%+)
 - 🤖 Built-in NLP features
 - 🏷️ Auto-categorization
@@ -196,6 +207,7 @@ console.log(transcript.confidence)
 - 💰 Simple pricing ($0.00025/second)
 
 **Cons:**
+
 - 🌍 Limited Indian language support
 - 💵 No free tier (pay per use)
 - 🐌 Slower processing
@@ -207,42 +219,45 @@ console.log(transcript.confidence)
 ## Noise Filtering Techniques
 
 ### 1. Web Audio API Preprocessing (Current Implementation)
+
 ```javascript
 // Client-side noise reduction
-const audioContext = new AudioContext()
-const source = audioContext.createMediaStreamSource(stream)
+const audioContext = new AudioContext();
+const source = audioContext.createMediaStreamSource(stream);
 
 // High-pass filter (remove low-frequency noise)
-const highPassFilter = audioContext.createBiquadFilter()
-highPassFilter.type = 'highpass'
-highPassFilter.frequency.value = 200 // Hz
+const highPassFilter = audioContext.createBiquadFilter();
+highPassFilter.type = "highpass";
+highPassFilter.frequency.value = 200; // Hz
 
 // Compressor (normalize volume)
-const compressor = audioContext.createDynamicsCompressor()
-compressor.threshold.value = -50 // dB
-compressor.knee.value = 40
-compressor.ratio.value = 12
-compressor.attack.value = 0
-compressor.release.value = 0.25
+const compressor = audioContext.createDynamicsCompressor();
+compressor.threshold.value = -50; // dB
+compressor.knee.value = 40;
+compressor.ratio.value = 12;
+compressor.attack.value = 0;
+compressor.release.value = 0.25;
 
 // Noise gate (remove background noise)
-const noiseGate = audioContext.createGain()
-noiseGate.gain.value = 0
+const noiseGate = audioContext.createGain();
+noiseGate.gain.value = 0;
 
 // Connect: source → filter → compressor → gate → destination
-source.connect(highPassFilter)
-highPassFilter.connect(compressor)
-compressor.connect(noiseGate)
-noiseGate.connect(audioContext.destination)
+source.connect(highPassFilter);
+highPassFilter.connect(compressor);
+compressor.connect(noiseGate);
+noiseGate.connect(audioContext.destination);
 ```
 
 **Pros:**
+
 - ✅ Client-side (privacy)
 - ✅ Real-time
 - ✅ No server load
 - ✅ Free
 
 **Cons:**
+
 - ⚠️ Limited effectiveness
 - ⚠️ Browser-dependent
 - ⚠️ CPU intensive on mobile
@@ -250,38 +265,41 @@ noiseGate.connect(audioContext.destination)
 ---
 
 ### 2. Server-side Processing with FFmpeg
+
 ```javascript
 // Backend noise reduction
-import ffmpeg from 'fluent-ffmpeg'
+import ffmpeg from "fluent-ffmpeg";
 
 function reduceNoise(inputFile, outputFile) {
   return new Promise((resolve, reject) => {
     ffmpeg(inputFile)
       // High-pass filter
-      .audioFilters('highpass=f=200')
+      .audioFilters("highpass=f=200")
       // Noise reduction
-      .audioFilters('anlmdn=s=0.01')
+      .audioFilters("anlmdn=s=0.01")
       // Normalize audio
-      .audioFilters('loudnorm=I=-16:LRA=11:TP=-1.5')
+      .audioFilters("loudnorm=I=-16:LRA=11:TP=-1.5")
       // Compress dynamic range
-      .audioFilters('acompressor=threshold=-20dB:ratio=4:attack=5:release=50')
+      .audioFilters("acompressor=threshold=-20dB:ratio=4:attack=5:release=50")
       .output(outputFile)
-      .on('end', resolve)
-      .on('error', reject)
-      .run()
-  })
+      .on("end", resolve)
+      .on("error", reject)
+      .run();
+  });
 }
 
 // Usage
-await reduceNoise('noisy-audio.wav', 'clean-audio.wav')
+await reduceNoise("noisy-audio.wav", "clean-audio.wav");
 ```
 
 **Pros:**
+
 - ✅ Very effective
 - ✅ Professional quality
 - ✅ Customizable
 
 **Cons:**
+
 - ⚠️ Server load
 - ⚠️ Processing time
 - ⚠️ Storage needed
@@ -289,6 +307,7 @@ await reduceNoise('noisy-audio.wav', 'clean-audio.wav')
 ---
 
 ### 3. RNNoise (Deep Learning)
+
 ```javascript
 // Installation
 npm install rnnoise-wasm
@@ -298,20 +317,22 @@ import { RNNoise } from 'rnnoise-wasm'
 
 async function cleanAudio(audioBuffer) {
   const rnnoise = await RNNoise.load()
-  
+
   // Process audio in chunks
   const cleanBuffer = rnnoise.process(audioBuffer)
-  
+
   return cleanBuffer
 }
 ```
 
 **Pros:**
+
 - ✅ ML-powered (very effective)
 - ✅ Real-time capable
 - ✅ Open-source
 
 **Cons:**
+
 - ⚠️ WebAssembly required
 - ⚠️ CPU intensive
 - ⚠️ Setup complexity
@@ -321,27 +342,31 @@ async function cleanAudio(audioBuffer) {
 ## Implementation Roadmap
 
 ### Phase 1: Immediate (No Code Change) ✅
+
 - [x] User guidance (speak clearly, quiet place)
 - [x] Visual feedback (audio quality indicator)
 - [x] Retry mechanism
 - [x] Better error messages
 
 ### Phase 2: Short-term (1-2 weeks)
+
 - [ ] Basic Web Audio API filters
   ```javascript
   // Add to VoiceExpenseEntry.js
   const applyNoiseReduction = (stream) => {
     // Implementation from above
-  }
+  };
   ```
 
 ### Phase 3: Medium-term (1-2 months)
+
 - [ ] Migrate to Deepgram or Google Cloud
   - Cost: ~$50-100/month for 1000 users
   - Benefit: 20-30% accuracy improvement
   - Setup: 2-3 days
 
 ### Phase 4: Long-term (3-6 months)
+
 - [ ] Implement RNNoise for client-side preprocessing
 - [ ] Add FFmpeg for server-side batch processing
 - [ ] Train custom model on user corrections
@@ -350,13 +375,13 @@ async function cleanAudio(audioBuffer) {
 
 ## Cost Comparison (1000 users, 5 voice entries/day)
 
-| Service | Free Tier | Cost/Month | Accuracy | Noise Handling |
-|---------|-----------|------------|----------|----------------|
-| **Web Speech API** (Current) | ✅ Unlimited | $0 | 80-85% | ⚠️ Poor |
-| **Deepgram** | $200 credit | ~$60 | 90-92% | ✅ Good |
-| **Google Cloud** | 60 min/month | ~$150 | 93-95% | ✅ Excellent |
-| **Azure Speech** | 5 hours/month | ~$200 | 92-94% | ✅ Excellent |
-| **AssemblyAI** | None | ~$75 | 90-92% | ✅ Good |
+| Service                      | Free Tier     | Cost/Month | Accuracy | Noise Handling |
+| ---------------------------- | ------------- | ---------- | -------- | -------------- |
+| **Web Speech API** (Current) | ✅ Unlimited  | $0         | 80-85%   | ⚠️ Poor        |
+| **Deepgram**                 | $200 credit   | ~$60       | 90-92%   | ✅ Good        |
+| **Google Cloud**             | 60 min/month  | ~$150      | 93-95%   | ✅ Excellent   |
+| **Azure Speech**             | 5 hours/month | ~$200      | 92-94%   | ✅ Excellent   |
+| **AssemblyAI**               | None          | ~$75       | 90-92%   | ✅ Good        |
 
 **Calculation:** 1000 users × 5 entries/day × 10 seconds/entry × 30 days = 41,667 minutes/month
 
@@ -365,6 +390,7 @@ async function cleanAudio(audioBuffer) {
 ## Recommendation
 
 ### For MVP/Testing (Current) ✅
+
 ```
 Web Speech API + Enhanced Logic
 - Cost: $0
@@ -373,6 +399,7 @@ Web Speech API + Enhanced Logic
 ```
 
 ### For Production (Next 2 months) ⭐
+
 ```
 Deepgram API
 - Cost: $60/month
@@ -382,6 +409,7 @@ Deepgram API
 ```
 
 ### For Scale (6+ months)
+
 ```
 Google Cloud Speech-to-Text
 - Cost: $150/month
@@ -395,58 +423,65 @@ Google Cloud Speech-to-Text
 ## Migration Guide: Web Speech → Deepgram
 
 ### Step 1: Install SDK
+
 ```bash
 npm install @deepgram/sdk
 ```
 
 ### Step 2: Update Environment
+
 ```bash
 # .env.local
 DEEPGRAM_API_KEY=your_api_key_here
 ```
 
 ### Step 3: Update API Route
+
 ```javascript
 // app/api/voice/transcribe/route.js
-import { Deepgram } from '@deepgram/sdk'
+import { Deepgram } from "@deepgram/sdk";
 
 export async function POST(request) {
-  const { audioBlob } = await request.json()
-  
-  const deepgram = new Deepgram(process.env.DEEPGRAM_API_KEY)
-  
-  const response = await deepgram.transcription.preRecorded({
-    buffer: Buffer.from(audioBlob),
-    mimetype: 'audio/webm'
-  }, {
-    punctuate: true,
-    language: 'hi',
-    model: 'nova-2',
-    smart_format: true
-  })
-  
-  const transcript = response.results.channels[0].alternatives[0].transcript
-  const confidence = response.results.channels[0].alternatives[0].confidence
-  
-  return Response.json({ transcript, confidence })
+  const { audioBlob } = await request.json();
+
+  const deepgram = new Deepgram(process.env.DEEPGRAM_API_KEY);
+
+  const response = await deepgram.transcription.preRecorded(
+    {
+      buffer: Buffer.from(audioBlob),
+      mimetype: "audio/webm",
+    },
+    {
+      punctuate: true,
+      language: "hi",
+      model: "nova-2",
+      smart_format: true,
+    }
+  );
+
+  const transcript = response.results.channels[0].alternatives[0].transcript;
+  const confidence = response.results.channels[0].alternatives[0].confidence;
+
+  return Response.json({ transcript, confidence });
 }
 ```
 
 ### Step 4: Update Frontend
+
 ```javascript
 // components/voice/VoiceExpenseEntry.js
 const processAudio = async (audioBlob) => {
   // Send to new API
-  const response = await fetch('/api/voice/transcribe', {
-    method: 'POST',
-    body: JSON.stringify({ audioBlob })
-  })
-  
-  const { transcript, confidence } = await response.json()
-  
+  const response = await fetch("/api/voice/transcribe", {
+    method: "POST",
+    body: JSON.stringify({ audioBlob }),
+  });
+
+  const { transcript, confidence } = await response.json();
+
   // Continue with existing logic
-  processVoiceInput(transcript)
-}
+  processVoiceInput(transcript);
+};
 ```
 
 **Estimated Migration Time:** 4-6 hours  
@@ -458,18 +493,21 @@ const processAudio = async (audioBlob) => {
 ## Testing Checklist
 
 ### Before Migration
+
 - [ ] Test current accuracy (baseline)
 - [ ] Document common failure cases
 - [ ] Measure latency
 - [ ] Calculate costs
 
 ### After Migration
+
 - [ ] A/B test accuracy improvement
 - [ ] Monitor latency changes
 - [ ] Track user satisfaction
 - [ ] Verify cost predictions
 
 ### Success Criteria
+
 - ✅ Accuracy > 90%
 - ✅ Latency < 3 seconds
 - ✅ Cost < $100/month

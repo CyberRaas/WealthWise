@@ -1,6 +1,7 @@
 # 🎤 Voice Processor Enhancements - Complete Guide
 
 ## Overview
+
 This document details the comprehensive improvements made to the voice-based expense categorization and recognition system to address accuracy and noise-handling issues.
 
 ---
@@ -8,9 +9,11 @@ This document details the comprehensive improvements made to the voice-based exp
 ## 🎯 Problem Statement
 
 ### Issue 1: Categorization Accuracy
+
 **Problem:** Phrases like "200 ka dosa khaya" were being miscategorized instead of correctly identifying as "Food & Dining".
 
 **Root Causes:**
+
 - Limited keyword dictionary (missing common Indian food items)
 - No action verb detection (खाया, पिया, etc.)
 - Simple keyword matching without context
@@ -18,9 +21,11 @@ This document details the comprehensive improvements made to the voice-based exp
 - Insufficient AI training examples
 
 ### Issue 2: Noise Handling
+
 **Problem:** Voice recognition failed significantly in noisy environments.
 
 **Root Causes:**
+
 - Basic Web Speech API configuration
 - No audio quality monitoring
 - No retry mechanism for low confidence
@@ -36,21 +41,24 @@ This document details the comprehensive improvements made to the voice-based exp
 #### A. Expanded Financial Terms Dictionary
 
 **Before:**
+
 ```javascript
-food: ['खाना', 'चाय', 'coffee', 'lunch', 'breakfast', 'dosa', 'biryani']
+food: ["खाना", "चाय", "coffee", "lunch", "breakfast", "dosa", "biryani"];
 ```
 
 **After:**
+
 ```javascript
 food: [
   // General: 'खाना', 'भोजन', 'food', 'lunch', 'breakfast', 'dinner', 'snack'
   // Drinks: 'चाय', 'tea', 'coffee', 'कॉफी', 'chai', 'juice', 'lassi', 'milk'
   // Indian dishes: 'dosa', 'डोसा', 'idli', 'vada', 'biryani', 'paratha', 'roti'
   // 50+ food-related terms
-]
+];
 ```
 
-**Impact:** 
+**Impact:**
+
 - Coverage increased from ~10 terms to 60+ terms per category
 - Includes Hindi, English, and transliterated words
 - Covers regional Indian food items
@@ -68,16 +76,19 @@ actionVerbs: {
 ```
 
 **How it works:**
+
 - Verbs carry stronger categorization signal (1.5x weight)
 - Detects consumption/purchase intent
 - Works across languages
 
 **Example:**
+
 - "dosa khaya" → "dosa" (food) + "khaya" (food action) = HIGH confidence food
 
 #### C. Weighted Scoring System
 
 **New Algorithm:**
+
 ```javascript
 detectCategory(text) {
   // 1. Score keywords (weight: 1.0)
@@ -89,6 +100,7 @@ detectCategory(text) {
 ```
 
 **Scoring Example:**
+
 ```
 Input: "200 ka dosa khaya"
 
@@ -115,6 +127,7 @@ Result: FOOD (100% confidence)
 #### E. Context-Aware Processing
 
 **Time-based hints:**
+
 ```javascript
 7-10 AM  → +0.3 to food (breakfast time)
 12-2 PM  → +0.3 to food (lunch time)
@@ -122,6 +135,7 @@ Result: FOOD (100% confidence)
 ```
 
 **Future Enhancements:**
+
 - Location-based hints (near restaurant → food boost)
 - Historical pattern learning
 - User preference adaptation
@@ -137,7 +151,8 @@ fuzzyMatch("matro", transport_keywords) → "metro" (similarity: 0.80)
 
 **Algorithm:** Levenshtein distance with 70% threshold
 
-**Impact:** 
+**Impact:**
+
 - Handles speech recognition errors
 - Accepts variations (metro/matro, dosa/doza)
 - 15% improvement in edge cases
@@ -145,12 +160,14 @@ fuzzyMatch("matro", transport_keywords) → "metro" (similarity: 0.80)
 #### G. Enhanced AI Prompts
 
 **Before:**
+
 ```
 Categories mapping:
 - food: खाना, चाय, coffee, lunch, dinner, dosa, restaurants
 ```
 
 **After:**
+
 ```
 CATEGORIZATION RULES (STRICTLY FOLLOW):
 1. food: Any edible item, drinks, restaurants, food delivery
@@ -165,6 +182,7 @@ EXAMPLES (LEARN FROM THESE):
 ```
 
 **Key Improvements:**
+
 - Explicit rules with priority
 - More diverse examples (10+ per category)
 - Hinglish pattern emphasis
@@ -177,21 +195,24 @@ EXAMPLES (LEARN FROM THESE):
 #### A. Enhanced Web Speech API Configuration
 
 **Before:**
+
 ```javascript
-recognition.continuous = false
-recognition.interimResults = true
-recognition.lang = 'hi-IN'
+recognition.continuous = false;
+recognition.interimResults = true;
+recognition.lang = "hi-IN";
 ```
 
 **After:**
+
 ```javascript
-recognition.continuous = false
-recognition.interimResults = true
-recognition.maxAlternatives = 5  // Get multiple options
-recognition.lang = 'hi-IN'
+recognition.continuous = false;
+recognition.interimResults = true;
+recognition.maxAlternatives = 5; // Get multiple options
+recognition.lang = "hi-IN";
 ```
 
 **Impact:**
+
 - Receives 5 alternative transcriptions
 - Better accuracy through comparison
 - Confidence scoring per alternative
@@ -208,6 +229,7 @@ avgConfidence >= 0.7 → audioQuality = 'good'
 ```
 
 **Visual Feedback:**
+
 ```
 ● Clear (green)   - Good recording quality
 ● Moderate (yellow) - Acceptable quality
@@ -215,6 +237,7 @@ avgConfidence >= 0.7 → audioQuality = 'good'
 ```
 
 **User Guidance:**
+
 - Real-time quality indicator
 - Warning when audio is poor
 - Suggestion to move to quieter area
@@ -225,13 +248,14 @@ avgConfidence >= 0.7 → audioQuality = 'good'
 
 ```javascript
 if (confidence < 0.6 && retryCount < 2) {
-  retryCount++
-  showError("Low confidence. Please speak more clearly.")
-  setTimeout(() => startListening(), 2000) // Auto retry
+  retryCount++;
+  showError("Low confidence. Please speak more clearly.");
+  setTimeout(() => startListening(), 2000); // Auto retry
 }
 ```
 
 **Benefits:**
+
 - Automatic recovery from unclear audio
 - Max 2 retries to avoid frustration
 - Clear user feedback
@@ -244,11 +268,12 @@ if (confidence < 0.6 && retryCount < 2) {
 alternatives = [
   { transcript: "200 ka dosa khaya", confidence: 0.85 },
   { transcript: "200 ka doza khaya", confidence: 0.75 },
-  { transcript: "200 ka dosha khaya", confidence: 0.65 }
-]
+  { transcript: "200 ka dosha khaya", confidence: 0.65 },
+];
 ```
 
 **Processing:**
+
 1. Try highest confidence first
 2. If fails, try next alternative
 3. Use fuzzy matching to correct errors
@@ -257,30 +282,33 @@ alternatives = [
 #### E. Enhanced Error Handling
 
 **Before:**
+
 ```javascript
 onerror = (event) => {
-  setError(`Voice recognition error: ${event.error}`)
-}
+  setError(`Voice recognition error: ${event.error}`);
+};
 ```
 
 **After:**
+
 ```javascript
 onerror = (event) => {
-  let message = 'Voice recognition error'
-  
-  if (event.error === 'no-speech') {
-    message = 'No speech detected. Please speak clearly and try again.'
-  } else if (event.error === 'audio-capture') {
-    message = 'Microphone not accessible. Please check permissions.'
-  } else if (event.error === 'network') {
-    message = 'Network error. Please check your connection.'
+  let message = "Voice recognition error";
+
+  if (event.error === "no-speech") {
+    message = "No speech detected. Please speak clearly and try again.";
+  } else if (event.error === "audio-capture") {
+    message = "Microphone not accessible. Please check permissions.";
+  } else if (event.error === "network") {
+    message = "Network error. Please check your connection.";
   }
-  
-  setError(message)
-}
+
+  setError(message);
+};
 ```
 
 **Impact:**
+
 - Clear, actionable error messages
 - User understands what went wrong
 - Guidance on how to fix
@@ -288,10 +316,12 @@ onerror = (event) => {
 #### F. Extended Recording Time
 
 **Change:**
+
 - Before: 10 seconds timeout
 - After: 15 seconds timeout
 
-**Reason:** 
+**Reason:**
+
 - Users in noisy environments may need to repeat
 - Allows for natural pauses
 - Better for complex phrases
@@ -299,6 +329,7 @@ onerror = (event) => {
 #### G. User Guidance System
 
 **New Tips Section:**
+
 ```
 💡 Pro Tips for Better Accuracy:
 • Speak clearly in a quiet environment
@@ -308,6 +339,7 @@ onerror = (event) => {
 ```
 
 **Contextual Tips:**
+
 - Shows after failed attempt
 - Adapts based on error type
 - Improves user learning
@@ -318,29 +350,31 @@ onerror = (event) => {
 
 ### Categorization Accuracy
 
-| Scenario | Before | After | Improvement |
-|----------|--------|-------|-------------|
-| "200 ka dosa khaya" | ❌ Other | ✅ Food | Fixed |
-| "Metro me 45 spend" | ✅ Transport | ✅ Transport | Maintained |
-| "50 rupees chai pi" | ⚠️ 60% accuracy | ✅ 95% accuracy | +58% |
-| "Swiggy biryani order" | ✅ Food | ✅ Food | Maintained |
-| Complex Hinglish | ⚠️ 50% accuracy | ✅ 85% accuracy | +70% |
+| Scenario               | Before          | After           | Improvement |
+| ---------------------- | --------------- | --------------- | ----------- |
+| "200 ka dosa khaya"    | ❌ Other        | ✅ Food         | Fixed       |
+| "Metro me 45 spend"    | ✅ Transport    | ✅ Transport    | Maintained  |
+| "50 rupees chai pi"    | ⚠️ 60% accuracy | ✅ 95% accuracy | +58%        |
+| "Swiggy biryani order" | ✅ Food         | ✅ Food         | Maintained  |
+| Complex Hinglish       | ⚠️ 50% accuracy | ✅ 85% accuracy | +70%        |
 
-**Overall:** 
+**Overall:**
+
 - Simple phrases: 95%+ accuracy (was 80%)
 - Complex phrases: 85%+ accuracy (was 50%)
 - Edge cases: 75%+ accuracy (was 40%)
 
 ### Noise Handling
 
-| Environment | Before | After | Improvement |
-|-------------|--------|-------|-------------|
-| Quiet room | ✅ 90% | ✅ 95% | +5% |
-| Office (moderate) | ⚠️ 60% | ✅ 85% | +42% |
-| Cafe (noisy) | ❌ 30% | ⚠️ 65% | +117% |
-| Street (very noisy) | ❌ 10% | ⚠️ 40% | +300% |
+| Environment         | Before | After  | Improvement |
+| ------------------- | ------ | ------ | ----------- |
+| Quiet room          | ✅ 90% | ✅ 95% | +5%         |
+| Office (moderate)   | ⚠️ 60% | ✅ 85% | +42%        |
+| Cafe (noisy)        | ❌ 30% | ⚠️ 65% | +117%       |
+| Street (very noisy) | ❌ 10% | ⚠️ 40% | +300%       |
 
 **Key Metrics:**
+
 - Recognition success rate increased by 40% average
 - User retry rate decreased by 60%
 - Error rate decreased by 55%
@@ -352,6 +386,7 @@ onerror = (event) => {
 ### Files Modified
 
 1. **lib/voiceProcessor.js**
+
    - Expanded `financialTerms` dictionary (+200 lines)
    - New `detectCategory()` with weighted scoring
    - New `fuzzyMatch()` and `calculateSimilarity()` functions
@@ -380,9 +415,9 @@ levenshteinDistance(str1, str2) → number  // Edit distance
 
 ```javascript
 // VoiceExpenseEntry.js
-const [audioQuality, setAudioQuality] = useState('good')
-const [transcriptAlternatives, setTranscriptAlternatives] = useState([])
-const [retryCount, setRetryCount] = useState(0)
+const [audioQuality, setAudioQuality] = useState("good");
+const [transcriptAlternatives, setTranscriptAlternatives] = useState([]);
+const [retryCount, setRetryCount] = useState(0);
 ```
 
 ---
@@ -392,6 +427,7 @@ const [retryCount, setRetryCount] = useState(0)
 ### Test Cases for Categorization
 
 #### Food Category
+
 ```javascript
 ✅ "200 ka dosa khaya"          → food
 ✅ "50 rupees chai pi"          → food
@@ -402,6 +438,7 @@ const [retryCount, setRetryCount] = useState(0)
 ```
 
 #### Transport Category
+
 ```javascript
 ✅ "Metro me 45 spend"          → transport
 ✅ "Ola me gaya 150"            → transport
@@ -410,6 +447,7 @@ const [retryCount, setRetryCount] = useState(0)
 ```
 
 #### Shopping Category
+
 ```javascript
 ✅ "Shirt kharida 1200"         → shopping
 ✅ "Amazon se mobile order"     → shopping
@@ -419,6 +457,7 @@ const [retryCount, setRetryCount] = useState(0)
 ### Test Cases for Noise Handling
 
 #### Scenario 1: Quiet Environment
+
 ```
 1. Start recording
 2. Say: "200 ka dosa khaya"
@@ -426,6 +465,7 @@ const [retryCount, setRetryCount] = useState(0)
 ```
 
 #### Scenario 2: Moderate Noise
+
 ```
 1. Start recording (with background TV)
 2. Say: "Metro me 45 spend"
@@ -433,6 +473,7 @@ const [retryCount, setRetryCount] = useState(0)
 ```
 
 #### Scenario 3: High Noise
+
 ```
 1. Start recording (near traffic)
 2. Say any phrase
@@ -441,6 +482,7 @@ const [retryCount, setRetryCount] = useState(0)
 ```
 
 #### Scenario 4: No Speech
+
 ```
 1. Start recording
 2. Stay silent for 5 seconds
@@ -454,11 +496,13 @@ const [retryCount, setRetryCount] = useState(0)
 ### 1. Weighted Scoring Algorithm
 
 **Why weighted?**
+
 - Not all signals are equal
 - Action verbs are stronger indicators than keywords
 - Compound phrases are most reliable
 
 **Weights:**
+
 ```
 Keyword match:        1.0 (base signal)
 Action verb match:    1.5 (stronger signal)
@@ -467,6 +511,7 @@ Time-based context:   +0.3 (subtle hint)
 ```
 
 **Example Calculation:**
+
 ```javascript
 Input: "dosa khaya shaam ko"
 Time: 7:30 PM (dinner time)
@@ -489,6 +534,7 @@ Winner: FOOD (confidence: 96%)
 **Purpose:** Handle speech recognition errors
 
 **How it works:**
+
 ```
 Target: "dosa"
 Input:  "doza"
@@ -502,6 +548,7 @@ Edit operations:
 ```
 
 **Real Examples:**
+
 ```
 "matro" → "metro" (similarity: 0.80) ✓
 "idly"  → "idli"  (similarity: 0.75) ✓
@@ -512,6 +559,7 @@ Edit operations:
 ### 3. Multi-Alternative Processing
 
 **Web Speech API provides multiple transcriptions:**
+
 ```javascript
 Result 1: "200 ka dosa khaya"    (confidence: 0.85) ← Use this
 Result 2: "200 ka doza khaya"    (confidence: 0.75)
@@ -521,6 +569,7 @@ Result 5: "to soka dosa khaya"   (confidence: 0.20)
 ```
 
 **Processing Strategy:**
+
 1. Try highest confidence first
 2. If categorization fails/unclear, try next
 3. Use fuzzy matching on alternatives
@@ -529,20 +578,22 @@ Result 5: "to soka dosa khaya"   (confidence: 0.20)
 ### 4. Context-Aware Categorization
 
 **Time-based Context:**
+
 ```javascript
 getCurrentContext() {
   const hour = new Date().getHours()
-  
+
   if (hour >= 7 && hour <= 10) return { hint: 'breakfast', boost: 'food' }
   if (hour >= 12 && hour <= 14) return { hint: 'lunch', boost: 'food' }
   if (hour >= 19 && hour <= 22) return { hint: 'dinner', boost: 'food' }
   if (hour >= 6 && hour <= 9) return { hint: 'commute', boost: 'transport' }
-  
+
   return { hint: null, boost: null }
 }
 ```
 
 **Future Context Enhancements:**
+
 - Location: Near restaurant → boost food
 - Day of week: Weekend → boost entertainment
 - Historical patterns: User often orders food at 8 PM
@@ -553,6 +604,7 @@ getCurrentContext() {
 ## 🎯 Best Practices for Users
 
 ### For Best Categorization:
+
 1. ✅ Use action verbs: "dosa **khaya**", "metro **gaya**"
 2. ✅ Mention amount clearly: "**200** ka dosa", "**50** rupees"
 3. ✅ Use natural phrases: "Swiggy se biryani order kiya 350 ka"
@@ -560,6 +612,7 @@ getCurrentContext() {
 5. ❌ Avoid: Very complex sentences, multiple expenses at once
 
 ### For Best Voice Recognition:
+
 1. ✅ **Quiet environment**: Find a quiet spot
 2. ✅ **Distance**: Keep phone/mic 15-30 cm from mouth
 3. ✅ **Clarity**: Speak clearly, not too fast or slow
@@ -568,6 +621,7 @@ getCurrentContext() {
 6. ❌ **Avoid**: Very noisy places, holding mic too close/far
 
 ### Troubleshooting:
+
 - **"No speech detected"** → Speak louder, check mic permissions
 - **"Audio: Noisy"** → Move to quieter area
 - **Wrong category** → Try rephrasing with action verb
@@ -579,18 +633,22 @@ getCurrentContext() {
 ## 🔮 Future Enhancements
 
 ### Short-term (Next Sprint)
+
 1. **Batch Voice Entry:** Record multiple expenses in one go
 2. **Voice Edit:** "Change last expense to 250"
 3. **Voice Search:** "Show all food expenses"
 4. **Custom Keywords:** User can add their own category keywords
 
 ### Medium-term (2-3 Months)
+
 1. **Advanced Speech APIs:**
+
    - Google Cloud Speech-to-Text (better accuracy)
    - Azure Speech Service (noise suppression)
    - Deepgram (real-time processing)
 
 2. **Audio Preprocessing:**
+
    - Noise filtering using Web Audio API
    - Automatic gain control
    - Echo cancellation
@@ -601,6 +659,7 @@ getCurrentContext() {
    - Continuous learning from corrections
 
 ### Long-term (6+ Months)
+
 1. **Multi-language Support:** Tamil, Telugu, Bengali, Marathi
 2. **Voice Commands:** "Show budget", "What's my balance"
 3. **Conversational AI:** Natural dialogue for clarifications
@@ -614,6 +673,7 @@ getCurrentContext() {
 ### Key Metrics to Track
 
 1. **Accuracy Metrics:**
+
    ```
    - Correct categorization rate (target: >85%)
    - Confidence score distribution
@@ -622,6 +682,7 @@ getCurrentContext() {
    ```
 
 2. **Performance Metrics:**
+
    ```
    - Processing time (target: <2s)
    - API response time
@@ -630,6 +691,7 @@ getCurrentContext() {
    ```
 
 3. **User Experience Metrics:**
+
    ```
    - Retry rate (target: <20%)
    - Completion rate (target: >80%)
@@ -688,10 +750,10 @@ actionVerbs: {
 
 // 4. Add emoji mapping
 getCategoryInfo(category) {
-  newCategory: { 
-    emoji: '🆕', 
-    englishName: 'New Category', 
-    hindiName: 'नया श्रेणी' 
+  newCategory: {
+    emoji: '🆕',
+    englishName: 'New Category',
+    hindiName: 'नया श्रेणी'
   }
 }
 ```
@@ -700,26 +762,23 @@ getCategoryInfo(category) {
 
 ```javascript
 // Quick test script
-const testPhrases = [
-  "new keyword test phrase 1",
-  "new keyword test phrase 2"
-]
+const testPhrases = ["new keyword test phrase 1", "new keyword test phrase 2"];
 
-testPhrases.forEach(phrase => {
-  const category = voiceProcessor.detectCategory(phrase)
-  console.log(`"${phrase}" → ${category}`)
-})
+testPhrases.forEach((phrase) => {
+  const category = voiceProcessor.detectCategory(phrase);
+  console.log(`"${phrase}" → ${category}`);
+});
 ```
 
 ### Debugging Tips
 
 ```javascript
 // Enable verbose logging
-console.log('Processing:', voiceText)
-console.log('Category scores:', categoryScores)
-console.log('Action verbs found:', foundVerbs)
-console.log('Compound phrases:', compoundMatches)
-console.log('Final category:', category, 'confidence:', confidence)
+console.log("Processing:", voiceText);
+console.log("Category scores:", categoryScores);
+console.log("Action verbs found:", foundVerbs);
+console.log("Compound phrases:", compoundMatches);
+console.log("Final category:", category, "confidence:", confidence);
 ```
 
 ---
@@ -729,16 +788,19 @@ console.log('Final category:', category, 'confidence:', confidence)
 ### Speech Recognition APIs
 
 1. **Web Speech API** (Current)
+
    - Pros: Built-in, free, no API key
    - Cons: Browser-dependent, noise sensitivity
    - Docs: https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API
 
 2. **Google Cloud Speech-to-Text**
+
    - Pros: Best accuracy, noise filtering, 120+ languages
    - Cons: Paid service, requires API key
    - Docs: https://cloud.google.com/speech-to-text
 
 3. **Azure Speech Service**
+
    - Pros: Real-time, custom models, speaker recognition
    - Cons: Paid service, Microsoft ecosystem
    - Docs: https://azure.microsoft.com/en-us/services/cognitive-services/speech-to-text/
@@ -751,10 +813,12 @@ console.log('Final category:', category, 'confidence:', confidence)
 ### NLP & Categorization
 
 1. **Levenshtein Distance**
+
    - Paper: https://en.wikipedia.org/wiki/Levenshtein_distance
    - Implementation: Our custom function
 
 2. **TF-IDF for Category Matching**
+
    - Future enhancement
    - Docs: https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html
 
@@ -773,9 +837,11 @@ console.log('Final category:', category, 'confidence:', confidence)
 ## 📝 Changelog
 
 ### Version 2.0.0 (Current)
+
 **Date:** October 16, 2025
 
 **New Features:**
+
 - ✅ Enhanced financial terms dictionary (60+ food terms)
 - ✅ Action verb detection with weighted scoring
 - ✅ Compound phrase detection
@@ -789,20 +855,24 @@ console.log('Final category:', category, 'confidence:', confidence)
 - ✅ User guidance system
 
 **Performance Improvements:**
+
 - ✅ Categorization accuracy: 50% → 85% (complex phrases)
 - ✅ Noise handling: 60% → 85% (moderate noise)
 - ✅ User retry rate: -60%
 - ✅ Error rate: -55%
 
 **Bug Fixes:**
+
 - ✅ "200 ka dosa khaya" now correctly categorizes as food
 - ✅ No more false positives for common phrases
 - ✅ Better handling of speech recognition timeouts
 
 ### Version 1.0.0 (Original)
+
 **Date:** October 1, 2025
 
 **Initial Features:**
+
 - Basic voice recognition (Web Speech API)
 - Simple keyword matching
 - AI fallback with Gemini
@@ -823,6 +893,7 @@ The voice processor has been significantly enhanced with:
 The system is now production-ready for real-world usage across diverse Indian environments and speech patterns.
 
 **Next Steps:**
+
 1. Deploy to production
 2. Monitor metrics for 2 weeks
 3. Gather user feedback
