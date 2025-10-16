@@ -48,11 +48,9 @@ const nextConfig = {
         formats: ['image/avif', 'image/webp'],
     },
 
-    // Experimental features for better performance
-    experimental: {
-        optimizeCss: true,
-        optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-    },
-};
-
-export default nextConfig;
+  // Experimental features for better performance
+  experimental: {
+    // optimizeCss: true, // Disabled - requires critters package
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+  },
+};export default nextConfig;

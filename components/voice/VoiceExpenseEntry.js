@@ -133,6 +133,7 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
         clearTimeout(timeoutRef.current)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Start voice recognition with quality checks
