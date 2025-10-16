@@ -56,9 +56,9 @@
 //       console.log('Fetching budget data...')
 //       const response = await fetch('/api/budget/generate')
 //       const data = await response.json()
-      
+
 //       console.log('Budget API response:', { success: data.success, hasBudget: !!data.budget, hasCategories: !!data.budget?.categories })
-      
+
 //       if (data.success) {
 //         setBudget(data.budget)
 //       } else {
@@ -80,7 +80,7 @@
 //         method: 'POST'
 //       })
 //       const data = await response.json()
-      
+
 //       if (data.success) {
 //         setBudget(data.budget)
 //         toast.success('🎉 Your personalized budget has been generated!')
@@ -122,7 +122,7 @@
 //       })
 
 //       const data = await response.json()
-      
+
 //       if (data.success) {
 //         setBudget(customizedBudget)
 //         setShowCustomizer(false)
@@ -441,7 +441,7 @@
 //               </div>
 //             ))}
 //           </div>
-          
+
 //           {budget.isCustomized && (
 //             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
 //               <div className="flex items-start gap-3">
@@ -612,9 +612,9 @@
 //       console.log('Fetching budget data...')
 //       const response = await fetch('/api/budget/generate')
 //       const data = await response.json()
-      
+
 //       console.log('Budget API response:', { success: data.success, hasBudget: !!data.budget, hasCategories: !!data.budget?.categories })
-      
+
 //       if (data.success) {
 //         setBudget(data.budget)
 //       } else {
@@ -636,7 +636,7 @@
 //         method: 'POST'
 //       })
 //       const data = await response.json()
-      
+
 //       if (data.success) {
 //         setBudget(data.budget)
 //         toast.success('🎉 Your personalized budget has been generated!')
@@ -678,7 +678,7 @@
 //       })
 
 //       const data = await response.json()
-      
+
 //       if (data.success) {
 //         setBudget(customizedBudget)
 //         setShowCustomizer(false)
@@ -992,7 +992,7 @@
 //               </div>
 //             ))}
 //           </div>
-          
+
 //           {budget.isCustomized && (
 //             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
 //               <div className="flex items-start gap-3">
@@ -1112,10 +1112,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { 
-  PieChart, 
-  Pie, 
-  Cell, 
+import {
+  PieChart,
+  Pie,
+  Cell,
   ResponsiveContainer,
   BarChart,
   Bar,
@@ -1127,10 +1127,10 @@ import {
   Area,
   AreaChart
 } from 'recharts'
-import { 
-  TrendingUp, 
-  DollarSign, 
-  PiggyBank, 
+import {
+  TrendingUp,
+  DollarSign,
+  PiggyBank,
   Target,
   Lightbulb,
   Star,
@@ -1195,9 +1195,9 @@ export default function BudgetDisplay({ refreshTrigger }) {
       console.log('Fetching budget data...')
       const response = await fetch('/api/budget/generate')
       const data = await response.json()
-      
+
       console.log('Budget API response:', { success: data.success, hasBudget: !!data.budget, hasCategories: !!data.budget?.categories })
-      
+
       if (data.success) {
         setBudget(data.budget)
       } else {
@@ -1218,7 +1218,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
         method: 'POST'
       })
       const data = await response.json()
-      
+
       if (data.success) {
         setBudget(data.budget)
         toast.success('🎉 Your personalized budget has been generated!')
@@ -1240,20 +1240,20 @@ export default function BudgetDisplay({ refreshTrigger }) {
   }
 
   const getHealthScoreBadge = (score) => {
-    if (score >= 80) return { 
-      text: 'Excellent', 
+    if (score >= 80) return {
+      text: 'Excellent',
       color: 'bg-gradient-to-r from-emerald-500 to-green-500 text-white',
-      icon: Award 
+      icon: Award
     }
-    if (score >= 60) return { 
-      text: 'Good', 
+    if (score >= 60) return {
+      text: 'Good',
       color: 'bg-gradient-to-r from-amber-500 to-orange-500 text-white',
-      icon: Star 
+      icon: Star
     }
-    return { 
-      text: 'Needs Improvement', 
+    return {
+      text: 'Needs Improvement',
       color: 'bg-gradient-to-r from-red-500 to-pink-500 text-white',
-      icon: Activity 
+      icon: Activity
     }
   }
 
@@ -1300,7 +1300,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
       })
 
       const data = await response.json()
-      
+
       if (data.success) {
         setBudget(customizedBudget)
         setShowCustomizer(false)
@@ -1360,7 +1360,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
             <p className="text-lg text-gray-600 mb-8">
               Get AI-powered financial planning tailored to your lifestyle and goals
             </p>
-            <Button 
+            <Button
               onClick={generateBudget}
               disabled={generating}
               className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 text-lg font-semibold rounded-xl"
@@ -1421,7 +1421,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
   return (
     <div className="min-h-screen bg-gray-50  ">
       <div className="max-w-7xl mx-auto space-y-4">
-        
+
         {/* Compact Budget Header */}
         <Card className="bg-white border border-gray-200 shadow-sm rounded-2xl">
           <CardContent className="p-4 sm:p-6">
@@ -1452,20 +1452,19 @@ export default function BudgetDisplay({ refreshTrigger }) {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex flex-row sm:flex-col lg:flex-row items-center gap-3 w-full sm:w-auto">
                 {/* Health Score Display */}
                 <div className="bg-gray-50 rounded-xl p-3 sm:p-4 text-center flex-1 sm:flex-none min-w-[100px] sm:min-w-[120px]">
                   <HealthIcon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 mx-auto mb-1 sm:mb-2" />
                   <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">{budget.healthScore}%</div>
-                  <Badge 
-                    className={`text-xs px-2 py-1 ${
-                      budget.healthScore >= 80 
-                        ? 'bg-green-100 text-green-800' 
-                        : budget.healthScore >= 60 
-                        ? 'bg-yellow-100 text-yellow-800' 
+                  <Badge
+                    className={`text-xs px-2 py-1 ${budget.healthScore >= 80
+                      ? 'bg-green-100 text-green-800'
+                      : budget.healthScore >= 60
+                        ? 'bg-yellow-100 text-yellow-800'
                         : 'bg-red-100 text-red-800'
-                    }`}
+                      }`}
                   >
                     {healthBadge.text}
                   </Badge>
@@ -1510,11 +1509,10 @@ export default function BudgetDisplay({ refreshTrigger }) {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
-                  activeTab === tab.id
-                    ? 'bg-white text-emerald-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                }`}
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0 ${activeTab === tab.id
+                  ? 'bg-white text-emerald-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}
               >
                 <Icon className="w-4 h-4" />
                 <span className="text-sm">{tab.label}</span>
@@ -1573,7 +1571,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                         )}
                       </CardTitle>
                       <CardDescription className="text-gray-600 mt-2">
-                        {budget.isCustomized 
+                        {budget.isCustomized
                           ? t('budget.personalizedAllocation')
                           : t('budget.aiRecommendedBreakdown')
                         }
@@ -1591,7 +1589,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                 <CardContent className="p-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-4 lg:gap-2">
                     {Object.entries(budget.categories).map(([key, category], index) => (
-                      <div 
+                      <div
                         key={key}
                         className="bg-white border border-gray-200 rounded-xl p-3 sm:p-4 lg:p-6 hover:shadow-md transition-shadow duration-200"
                         onMouseEnter={() => setHoveredCategory(key)}
@@ -1604,8 +1602,8 @@ export default function BudgetDisplay({ refreshTrigger }) {
                               {category.englishName}
                             </span>
                           </div>
-                          <Badge 
-                            variant="outline" 
+                          <Badge
+                            variant="outline"
                             className="border-gray-300 text-gray-700 font-medium text-xs flex-shrink-0"
                           >
                             {category.percentage}%
@@ -1623,7 +1621,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                       </div>
                     ))}
                   </div>
-                  
+
                   {budget.isCustomized && (
                     <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
                       <div className="flex items-start gap-4">
@@ -1673,15 +1671,15 @@ export default function BudgetDisplay({ refreshTrigger }) {
                         animationDuration={1000}
                       >
                         {chartData.pieData.map((entry, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
+                          <Cell
+                            key={`cell-${index}`}
                             fill={entry.color}
                             stroke={hoveredCategory ? 'rgba(255,255,255,0.8)' : 'transparent'}
                             strokeWidth={2}
                           />
                         ))}
                       </Pie>
-                      <Tooltip 
+                      <Tooltip
                         formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, t('budget.amount')]}
                         contentStyle={{
                           backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -1701,26 +1699,26 @@ export default function BudgetDisplay({ refreshTrigger }) {
                 <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6">
                   <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
                     <BarChart3 className="w-6 h-6 mr-3 text-emerald-600" />
-                    {t('budget.categoryBreakdown')}
+                    {t('Category Breakdown')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
                   <ResponsiveContainer width="100%" height={350}>
                     <BarChart data={chartData.barData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.2)" />
-                      <XAxis 
-                        dataKey="name" 
+                      <XAxis
+                        dataKey="name"
                         angle={-45}
                         textAnchor="end"
                         height={80}
                         fontSize={12}
                         stroke="#64748b"
                       />
-                      <YAxis 
-                        formatter={(value) => `₹${(value/1000).toFixed(0)}k`} 
-                        stroke="#64748b" 
+                      <YAxis
+                        formatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
+                        stroke="#64748b"
                       />
-                      <Tooltip 
+                      <Tooltip
                         formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, t('budget.amount')]}
                         contentStyle={{
                           backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -1730,8 +1728,8 @@ export default function BudgetDisplay({ refreshTrigger }) {
                           boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)'
                         }}
                       />
-                      <Bar 
-                        dataKey="amount" 
+                      <Bar
+                        dataKey="amount"
                         fill="url(#colorGradient)"
                         radius={[8, 8, 0, 0]}
                         animationDuration={1000}
@@ -1753,7 +1751,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                 <CardHeader className="bg-gradient-to-r from-violet-50 to-purple-50 p-6">
                   <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
                     <Activity className="w-6 h-6 mr-3 text-violet-600" />
-                    {t('budget.budgetAllocationTrend')}
+                    {t('Budget Allocation Trend')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -1761,8 +1759,8 @@ export default function BudgetDisplay({ refreshTrigger }) {
                     <AreaChart data={chartData.areaData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.2)" />
                       <XAxis dataKey="name" stroke="#64748b" />
-                      <YAxis formatter={(value) => `₹${(value/1000).toFixed(0)}k`} stroke="#64748b" />
-                      <Tooltip 
+                      <YAxis formatter={(value) => `₹${(value / 1000).toFixed(0)}k`} stroke="#64748b" />
+                      <Tooltip
                         formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Amount']}
                         contentStyle={{
                           backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -1772,10 +1770,10 @@ export default function BudgetDisplay({ refreshTrigger }) {
                           boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)'
                         }}
                       />
-                      <Area 
-                        type="monotone" 
-                        dataKey="amount" 
-                        stroke="rgb(139, 92, 246)" 
+                      <Area
+                        type="monotone"
+                        dataKey="amount"
+                        stroke="rgb(139, 92, 246)"
                         strokeWidth={3}
                         fill="url(#areaGradient)"
                         animationDuration={1500}
@@ -1800,17 +1798,17 @@ export default function BudgetDisplay({ refreshTrigger }) {
             <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 p-6">
               <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
                 <Lightbulb className="w-7 h-7 mr-3 text-amber-600" />
-                {t('budget.aiPoweredTips')}
+                {t('AIPowered Tips')}
               </CardTitle>
               <CardDescription className="text-gray-600 text-lg">
-                {t('budget.personalizedRecommendations')}
+                {t('Personalized Recommendations')}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {budget.tips.map((tip, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className="group relative overflow-hidden bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-6 hover:shadow-lg transform hover:scale-105 transition-all duration-300"
                   >
                     <div className="absolute top-4 right-4 w-8 h-8 bg-amber-200 rounded-full flex items-center justify-center text-amber-600 font-bold text-sm">
@@ -1837,17 +1835,17 @@ export default function BudgetDisplay({ refreshTrigger }) {
             <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 p-6">
               <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
                 <Target className="w-7 h-7 mr-3 text-purple-600" />
-                {t('budget.investmentRecommendations')}
+                {t('Investment Recommendations')}
               </CardTitle>
               <CardDescription className="text-gray-600 text-lg">
-                {t('budget.smartInvestmentOpportunities')}
+                {t('Smart Investment Opportunities')}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-2">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {budget.recommendations.map((rec, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className="group relative overflow-hidden bg-gradient-to-br from-white to-purple-50 border border-purple-200 rounded-2xl p-6 hover:shadow-lg transform hover:scale-105 transition-all duration-300"
                   >
                     <div className="flex items-start justify-between mb-4">
@@ -1855,14 +1853,13 @@ export default function BudgetDisplay({ refreshTrigger }) {
                         <div className="text-3xl">{rec.icon}</div>
                         <h3 className="font-bold text-gray-900 text-lg">{rec.type}</h3>
                       </div>
-                      <Badge 
-                        className={`${
-                          rec.priority === 'Critical' 
-                            ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white' 
-                            : rec.priority === 'High' 
-                            ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white' 
+                      <Badge
+                        className={`${rec.priority === 'Critical'
+                          ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white'
+                          : rec.priority === 'High'
+                            ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white'
                             : 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white'
-                        } px-3 py-1 font-semibold`}
+                          } px-3 py-1 font-semibold`}
                       >
                         {t(`budget.${rec.priority.toLowerCase()}`)}
                       </Badge>
@@ -1875,7 +1872,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                     )}
                     <div className="flex items-center text-purple-600">
                       <ArrowRight className="w-4 h-4 mr-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-                      <span className="text-sm font-medium">{t('budget.learnMore')}</span>
+                      <span className="text-sm font-medium">{t('Learn More')}</span>
                     </div>
                   </div>
                 ))}
@@ -1888,13 +1885,13 @@ export default function BudgetDisplay({ refreshTrigger }) {
         <Card className="bg-gradient-to-r from-slate-800 via-gray-800 to-slate-800 text-white border-0 shadow-2xl rounded-3xl overflow-hidden">
           <CardContent className="p-8 text-center">
             <div className="max-w-2xl mx-auto">
-              <h3 className="text-2xl font-bold mb-4">{t('budget.readyToUpdate')}</h3>
+              <h3 className="text-2xl font-bold mb-4">{t('Ready To Update')}</h3>
               <p className="text-slate-300 mb-6 text-lg">
-                {t('budget.budgetGeneratedOn', { date: new Date(budget.generatedAt).toLocaleDateString('en-IN') })}. 
-                {t('budget.keepPlanFresh')}.
+                {t('Budget Generated On', { date: new Date(budget.generatedAt).toLocaleDateString('en-IN') })}.
+                {t('Keep Plan Fresh')}.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
+                <Button
                   onClick={generateBudget}
                   disabled={generating}
                   className="bg-white text-slate-800 hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-2xl transform hover:scale-105 transition-all duration-300 shadow-lg"
@@ -1902,12 +1899,12 @@ export default function BudgetDisplay({ refreshTrigger }) {
                   {generating ? (
                     <>
                       <RefreshCw className="w-5 h-5 mr-3 animate-spin" />
-                      {t('budget.regeneratingBudget')}
+                      {t('Regenerating Budget')}
                     </>
                   ) : (
                     <>
                       <RefreshCw className="w-5 h-5 mr-3" />
-                      {t('budget.regenerateSmartBudget')}
+                      {t('Regenerate Smart Budget')}
                     </>
                   )}
                 </Button>
@@ -1917,7 +1914,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                   className="border-2 border-white text-slate-800 hover:bg-gray-100  px-8 py-4 text-lg font-semibold rounded-2xl transform hover:scale-105 transition-all duration-300"
                 >
                   <Settings className="w-5 h-5 mr-3" />
-                  {t('budget.customizeInstead')}
+                  {t('Customize Instead')}
                 </Button>
               </div>
             </div>
