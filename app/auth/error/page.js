@@ -156,7 +156,7 @@ function ErrorContent() {
             <p className="text-sm text-slate-500 italic">
               {errorInfo.suggestion}
             </p>
-            
+
             {/* Show technical error for debugging (only in dev) */}
             {process.env.NODE_ENV === 'development' && error && (
               <div className="mt-4 p-3 bg-slate-100 rounded-lg border border-slate-200">
@@ -169,7 +169,7 @@ function ErrorContent() {
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            <Link 
+            <Link
               href="/auth/signin"
               className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02]"
             >
@@ -177,7 +177,7 @@ function ErrorContent() {
               Back to Sign In
             </Link>
 
-            <Link 
+            <Link
               href="/"
               className="w-full flex items-center justify-center gap-2 bg-slate-100 text-slate-700 py-3 px-4 rounded-xl font-semibold hover:bg-slate-200 transition-all duration-200 transform hover:scale-[1.02]"
             >
@@ -190,8 +190,8 @@ function ErrorContent() {
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-500">
               Need help?{' '}
-              <a 
-                href="mailto:support@mywealthwise.tech" 
+              <a
+                href="mailto:support@mywealthwise.tech"
                 className="text-emerald-600 hover:text-emerald-700 font-semibold"
               >
                 Contact Support

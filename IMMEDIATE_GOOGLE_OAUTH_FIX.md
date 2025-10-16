@@ -14,25 +14,30 @@
 1. **Go to Google Cloud Console**: https://console.cloud.google.com
 
 2. **Navigate to Credentials**:
+
    - Select your project
    - Click "APIs & Services" → "Credentials"
 
 3. **Edit OAuth 2.0 Client ID**:
+
    - Click on your OAuth 2.0 Client ID: `1057396927164-pbuul9j0frem2b5lo6lq86nj0hr4q4db.apps.googleusercontent.com`
 
 4. **Add Authorized Redirect URIs** (EXACT MATCHES REQUIRED):
+
    ```
    https://www.mywealthwise.tech/api/auth/callback/google
    https://mywealthwise.tech/api/auth/callback/google
    http://localhost:3000/api/auth/callback/google
    ```
-   
-   ⚠️ **IMPORTANT**: 
+
+   ⚠️ **IMPORTANT**:
+
    - No trailing slashes
    - Exact case match
    - All three URLs must be added
 
 5. **Add Authorized JavaScript Origins**:
+
    ```
    https://www.mywealthwise.tech
    https://mywealthwise.tech
@@ -71,12 +76,15 @@ npm run dev
 ## 📊 What Was Fixed
 
 ### 1. Contact Link (404 Error)
+
 **Before**:
+
 ```javascript
 <Link href="/contact">Contact Support</Link>
 ```
 
 **After**:
+
 ```javascript
 <a href="mailto:support@mywealthwise.tech">Contact Support</a>
 ```
@@ -84,6 +92,7 @@ npm run dev
 ### 2. Enhanced Auth Configuration
 
 Added to `lib/auth.js`:
+
 - ✅ Environment variable validation
 - ✅ Comprehensive error logging
 - ✅ Proper redirect callback handling
@@ -94,6 +103,7 @@ Added to `lib/auth.js`:
 ### 3. Configuration Verification Script
 
 Created:
+
 - `scripts/verify-auth.bat` - Quick Windows check
 - `scripts/verify-auth-config.js` - Detailed validation
 - `GOOGLE_AUTH_TROUBLESHOOTING_FIX.md` - Complete guide
@@ -103,11 +113,13 @@ Created:
 ### If You Still See "Configuration Error"
 
 1. **Check Google Console**:
+
    - Verify all 3 redirect URIs are added
    - Verify OAuth client is enabled
    - Check for any quotas/limits
 
 2. **Check Browser Console**:
+
    - Open DevTools → Console tab
    - Look for specific error messages
    - Share error details if needed
@@ -119,12 +131,12 @@ Created:
 
 ### Common Errors & Solutions
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| "Configuration" | Missing redirect URI | Add to Google Console |
-| "Callback" | URI mismatch | Check exact URL match |
-| "AccessDenied" | User cancelled | Try again |
-| "OAuthAccountNotLinked" | Email exists | Already handled |
+| Error                   | Cause                | Solution              |
+| ----------------------- | -------------------- | --------------------- |
+| "Configuration"         | Missing redirect URI | Add to Google Console |
+| "Callback"              | URI mismatch         | Check exact URL match |
+| "AccessDenied"          | User cancelled       | Try again             |
+| "OAuthAccountNotLinked" | Email exists         | Already handled       |
 
 ## 📝 Environment Variables (Verified ✅)
 
@@ -140,16 +152,19 @@ Created:
 ## 🎯 Expected Behavior After Fix
 
 1. **Sign In Page**:
+
    - Google button clickable
    - Opens Google OAuth popup
    - No console errors
 
 2. **OAuth Flow**:
+
    - Select Google account
    - Grant permissions
    - Redirect back to app
 
 3. **After Auth**:
+
    - New users → `/onboarding`
    - Existing users → `/dashboard`
    - Session persists
@@ -209,6 +224,7 @@ The most common issue is **missing or incorrect redirect URIs** in Google Cloud 
 ## 🎉 Once Working
 
 After successful authentication:
+
 1. User will be redirected to onboarding (new users) or dashboard
 2. Profile will be created in MongoDB
 3. Session will persist across page reloads

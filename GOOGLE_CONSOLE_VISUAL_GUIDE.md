@@ -60,6 +60,7 @@ Click "+ ADD URI" under "Authorized JavaScript origins" and add:
 3. `http://localhost:3000`
 
 **IMPORTANT NOTES**:
+
 - ❌ NO trailing slash: `https://www.mywealthwise.tech/` (WRONG)
 - ✅ Correct format: `https://www.mywealthwise.tech` (RIGHT)
 - ❌ NO path: `https://www.mywealthwise.tech/home` (WRONG)
@@ -74,6 +75,7 @@ Click "+ ADD URI" under "Authorized redirect URIs" and add:
 3. `http://localhost:3000/api/auth/callback/google`
 
 **IMPORTANT NOTES**:
+
 - ✅ MUST include full path: `/api/auth/callback/google`
 - ✅ MUST match exactly (case-sensitive)
 - ❌ NO trailing slash: `...callback/google/` (WRONG)
@@ -153,6 +155,7 @@ Before clicking SAVE, verify:
 ## ⏱️ Propagation Time
 
 After saving:
+
 - ⚡ Immediate: Changes saved in console
 - 🕐 2-5 minutes: Changes active globally
 - 🧪 Test: Try authentication after 5 minutes
@@ -160,6 +163,7 @@ After saving:
 ## 🧪 Testing After Configuration
 
 ### Test 1: Local Development
+
 ```bash
 # Start server
 npm run dev
@@ -172,6 +176,7 @@ http://localhost:3000/auth/signin
 ```
 
 ### Test 2: Production
+
 ```bash
 # Visit
 https://www.mywealthwise.tech/auth/signin
@@ -186,6 +191,7 @@ https://www.mywealthwise.tech/auth/signin
 If authentication still fails, check:
 
 1. **Browser Console** (F12 → Console):
+
    ```javascript
    // Look for:
    Failed to load resource: the server responded with a status of 400
@@ -194,15 +200,16 @@ If authentication still fails, check:
    ```
 
 2. **Error Message**:
+
    ```
    Error: redirect_uri_mismatch
-   
-   The redirect URI in the request: 
+
+   The redirect URI in the request:
    https://www.mywealthwise.tech/api/auth/callback/google
-   
+
    does not match the ones authorized for the OAuth client.
    ```
-   
+
    **Solution**: The exact URI shown in error must be in Google Console
 
 3. **Network Tab** (F12 → Network):

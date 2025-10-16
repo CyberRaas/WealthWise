@@ -3,23 +3,27 @@
 ## 🔍 Issues Identified
 
 ### 1. **404 Error on `/contact` Route**
+
 - **Error**: `GET https://www.mywealthwise.tech/contact?_rsc=13k66 404 (Not Found)`
 - **Root Cause**: Error page was linking to non-existent `/contact` route
 - **Fix Applied**: Changed to `mailto:support@mywealthwise.tech` link
 
 ### 2. **Cloudflare Insights Blocked**
+
 - **Error**: `GET https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe… net::ERR_BLOCKED_BY_CLIENT`
 - **Root Cause**: Ad blocker/browser extension blocking Cloudflare analytics
 - **Impact**: Non-critical, doesn't affect authentication
 - **Solution**: Can be ignored or disable ad blocker for testing
 
 ### 3. **Google OAuth Configuration Error**
+
 - **Error**: "Configuration Error - There is a problem with the authentication configuration"
 - **Root Cause**: Missing or misconfigured Google OAuth redirect URIs
 
 ## ✅ Fixes Applied
 
 ### 1. Fixed Contact Link in Error Page
+
 ```javascript
 // Before:
 <Link href="/contact" className="...">Contact Support</Link>
@@ -29,6 +33,7 @@
 ```
 
 ### 2. Enhanced Auth Configuration
+
 - Added comprehensive error logging
 - Added environment variable validation
 - Added proper redirect callbacks
@@ -109,6 +114,7 @@ CNAME: www.mywealthwise.tech → cname.vercel-dns.com
 ### Step 5: Test Authentication Flow
 
 1. **Local Testing**:
+
    ```bash
    npm run dev
    # Visit http://localhost:3000/auth/signin
@@ -126,11 +132,13 @@ CNAME: www.mywealthwise.tech → cname.vercel-dns.com
 ### Check Server Logs
 
 If deployed on Vercel:
+
 ```bash
 vercel logs <your-deployment-url> --follow
 ```
 
 Look for these log messages:
+
 - ✅ All required environment variables are set
 - ✅ MongoDB Adapter created successfully
 - 🔐 Google OAuth profile received
@@ -139,25 +147,32 @@ Look for these log messages:
 ### Common Error Messages & Solutions
 
 #### Error: "Configuration"
+
 **Cause**: Missing environment variables or invalid Google credentials
-**Solution**: 
+**Solution**:
+
 1. Verify `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
 2. Check `NEXTAUTH_URL` matches your domain exactly
 3. Ensure `NEXTAUTH_SECRET` is set
 
 #### Error: "Callback"
+
 **Cause**: Redirect URI mismatch
 **Solution**:
+
 1. Add exact callback URL to Google Console
 2. Format: `https://YOUR_DOMAIN/api/auth/callback/google`
 3. No trailing slashes
 
 #### Error: "OAuthAccountNotLinked"
+
 **Cause**: Email already exists with different provider
-**Solution**: 
+**Solution**:
+
 - Already handled with `allowDangerousEmailAccountLinking: true`
 
 #### Error: "AccessDenied"
+
 **Cause**: User cancelled OAuth flow or insufficient permissions
 **Solution**: Try again with proper Google account
 
@@ -166,6 +181,7 @@ Look for these log messages:
 The auth configuration now includes:
 
 ### Enhanced Error Logging
+
 ```javascript
 logger: {
   error(code, ...message) {
@@ -176,6 +192,7 @@ logger: {
 ```
 
 ### Proper Redirect Handling
+
 ```javascript
 async redirect({ url, baseUrl }) {
   // Allows relative callback URLs
@@ -187,11 +204,12 @@ async redirect({ url, baseUrl }) {
 ```
 
 ### Production-Ready Cookies
+
 ```javascript
 cookies: {
   sessionToken: {
-    name: process.env.NODE_ENV === 'production' 
-      ? `__Secure-next-auth.session-token` 
+    name: process.env.NODE_ENV === 'production'
+      ? `__Secure-next-auth.session-token`
       : `next-auth.session-token`,
     options: {
       httpOnly: true,
@@ -205,18 +223,22 @@ cookies: {
 ```
 
 ### Environment Variable Validation
+
 ```javascript
 const requiredEnvVars = [
-  'NEXTAUTH_SECRET',
-  'NEXTAUTH_URL',
-  'MONGODB_URI',
-  'GOOGLE_CLIENT_ID',
-  'GOOGLE_CLIENT_SECRET'
-]
+  "NEXTAUTH_SECRET",
+  "NEXTAUTH_URL",
+  "MONGODB_URI",
+  "GOOGLE_CLIENT_ID",
+  "GOOGLE_CLIENT_SECRET",
+];
 
-const missingVars = requiredEnvVars.filter(varName => !process.env[varName])
+const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);
 if (missingVars.length > 0) {
-  console.error('❌ Missing required environment variables:', missingVars.join(', '))
+  console.error(
+    "❌ Missing required environment variables:",
+    missingVars.join(", ")
+  );
 }
 ```
 
@@ -234,12 +256,14 @@ if (missingVars.length > 0) {
 ## 🧪 Testing Checklist
 
 ### Local Development
+
 - [ ] Sign in with Google works on localhost
 - [ ] User created in MongoDB
 - [ ] Session created correctly
 - [ ] Redirected to onboarding (new users) or dashboard
 
 ### Production
+
 - [ ] Sign in with Google works on production domain
 - [ ] HTTPS certificate valid
 - [ ] Cookies set correctly
@@ -252,6 +276,7 @@ if (missingVars.length > 0) {
 ### For Vercel Deployment:
 
 1. **Set Environment Variables in Vercel**:
+
    ```bash
    vercel env add NEXTAUTH_SECRET production
    vercel env add NEXTAUTH_URL production
@@ -261,6 +286,7 @@ if (missingVars.length > 0) {
    ```
 
 2. **Redeploy**:
+
    ```bash
    git add .
    git commit -m "fix: Google OAuth configuration"
@@ -306,11 +332,13 @@ User signed in: user@example.com
 ### For Debugging on Production
 
 1. **Enable debug mode temporarily**:
+
    ```javascript
-   debug: true // In auth.js (already enabled)
+   debug: true; // In auth.js (already enabled)
    ```
 
 2. **Check browser console**:
+
    - Look for redirect URL mismatches
    - Check for CORS errors
    - Verify cookie settings
@@ -341,6 +369,7 @@ If issues persist after following this guide:
 ## ✨ Success Indicators
 
 You'll know it's working when:
+
 - ✅ No "Configuration Error" message
 - ✅ Google OAuth popup opens successfully
 - ✅ User can select Google account
