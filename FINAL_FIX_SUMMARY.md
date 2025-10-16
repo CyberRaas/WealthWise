@@ -3,6 +3,7 @@
 ## 🎯 Problem Summary
 
 You're seeing "Configuration Error" when trying to sign in with Google on production:
+
 - URL: `https://www.mywealthwise.tech/auth/error?error=Configuration`
 - Also seeing: Cloudflare beacon error (this is harmless, just ad blocker)
 
@@ -17,21 +18,25 @@ Your `.env.local` file works locally, but production deployments can't access lo
 ### What I Fixed in Your Code:
 
 1. ✅ **Enhanced Authentication Error Logging** (`lib/auth.js`)
+
    - Now shows detailed error messages about missing variables
    - Logs which variables are SET vs MISSING
    - Better debugging for production issues
 
 2. ✅ **Added NextAuth v5 Compatibility** (`lib/auth.js`)
+
    - Supports both `AUTH_URL` and `NEXTAUTH_URL`
    - Fallback mechanism for better reliability
 
 3. ✅ **Production-Ready Configuration** (`next.config.mjs`)
+
    - Added security headers (HSTS, X-Frame-Options, etc.)
    - Optimized for production performance
    - Image optimization for Google avatars
    - Disabled unnecessary headers
 
 4. ✅ **Created Health Check Endpoint** (`app/api/health-check/route.js`)
+
    - Visit: https://www.mywealthwise.tech/api/health-check
    - Shows which environment variables are missing
    - Helps diagnose configuration issues
@@ -47,6 +52,7 @@ Your `.env.local` file works locally, but production deployments can't access lo
 Go to your deployment platform (Vercel or Netlify) and add these variables:
 
 #### Required Variables:
+
 ```bash
 NEXTAUTH_URL=https://www.mywealthwise.tech
 AUTH_URL=https://www.mywealthwise.tech
@@ -68,6 +74,7 @@ NODE_ENV=production
 ### Step 2: Redeploy
 
 After adding variables:
+
 - **Vercel**: Click "Redeploy" in Deployments tab
 - **Netlify**: Click "Trigger deploy" in Deploys tab
 
@@ -81,6 +88,7 @@ After adding variables:
 ## 📊 How to Verify It's Working
 
 ### Before Fix:
+
 ```
 ❌ Configuration Error page
 ❌ Google OAuth doesn't work
@@ -89,6 +97,7 @@ After adding variables:
 ```
 
 ### After Fix:
+
 ```
 ✅ No configuration errors
 ✅ Google OAuth works perfectly
@@ -100,18 +109,22 @@ After adding variables:
 ## 🐛 Understanding the Errors
 
 ### Error 1: Cloudflare Beacon (IGNORE THIS)
+
 ```
 GET https://static.cloudflareinsights.com/beacon.min.js
 net::ERR_BLOCKED_BY_CLIENT
 ```
+
 - **What**: Ad blocker blocking Cloudflare analytics
 - **Impact**: ZERO - Completely harmless
 - **Fix**: None needed, or disable ad blocker
 
 ### Error 2: Configuration Error (THE REAL PROBLEM)
+
 ```
 https://www.mywealthwise.tech/auth/error?error=Configuration
 ```
+
 - **What**: NextAuth can't find environment variables
 - **Impact**: Authentication completely broken
 - **Fix**: Add environment variables in deployment platform
@@ -127,6 +140,7 @@ I've created comprehensive guides for you:
 ## 🎯 Action Plan
 
 ### Immediate (DO THIS NOW):
+
 1. [ ] Go to Vercel/Netlify dashboard
 2. [ ] Add ALL environment variables listed above
 3. [ ] Select "Production" environment for each
@@ -134,12 +148,14 @@ I've created comprehensive guides for you:
 5. [ ] Wait 3 minutes
 
 ### Verification:
+
 1. [ ] Visit health check endpoint
 2. [ ] Verify all variables show "SET"
 3. [ ] Test Google Sign In
 4. [ ] Confirm no configuration errors
 
 ### Success Criteria:
+
 - ✅ Health check returns "HEALTHY"
 - ✅ Google OAuth popup opens
 - ✅ Can select Google account
@@ -149,11 +165,13 @@ I've created comprehensive guides for you:
 ## 💡 Key Insights
 
 1. **Local vs Production**:
+
    - Local: Uses `.env.local` file
    - Production: Uses platform environment variables
    - Files are NOT deployed to production
 
 2. **Environment Variables**:
+
    - Must be configured in hosting platform UI
    - Can't just exist in local files
    - Need to be set explicitly
@@ -169,11 +187,13 @@ I've created comprehensive guides for you:
 After you add the environment variables and redeploy:
 
 1. **Build Process**:
+
    - Next.js reads environment variables from platform
    - Auth configuration initializes correctly
    - No more "Configuration Error"
 
 2. **User Flow**:
+
    - User clicks "Sign in with Google"
    - Google OAuth popup opens
    - User selects account
@@ -188,11 +208,13 @@ After you add the environment variables and redeploy:
 ## 🔍 Debugging Tools
 
 ### Health Check Endpoint:
+
 ```
 https://www.mywealthwise.tech/api/health-check
 ```
 
 Returns:
+
 ```json
 {
   "status": "HEALTHY" or "UNHEALTHY",
@@ -205,6 +227,7 @@ Returns:
 ```
 
 ### Deployment Logs:
+
 - Check for: `✅ All required environment variables are set`
 - Or: `❌ Missing required environment variables: [list]`
 
@@ -222,7 +245,7 @@ If you're still having issues after adding environment variables:
 **Problem**: Production deployment missing environment variables  
 **Solution**: Add variables in Vercel/Netlify dashboard  
 **Time**: 10 minutes to add + 3 minutes deployment  
-**Result**: Fully working Google OAuth authentication  
+**Result**: Fully working Google OAuth authentication
 
 ---
 

@@ -7,6 +7,7 @@ Your production error is caused by **missing environment variables** in your dep
 ### Step 1: Check Current Status
 
 Visit this URL to see what's missing:
+
 ```
 https://www.mywealthwise.tech/api/health-check
 ```
@@ -16,6 +17,7 @@ You should see which variables are SET vs MISSING.
 ### Step 2: Add Environment Variables
 
 #### If Using Vercel:
+
 1. Go to: https://vercel.com/dashboard
 2. Select your project: `wealthwise`
 3. Click: **Settings → Environment Variables**
@@ -43,6 +45,7 @@ NODE_ENV=production
 6. Click **Save** after each one
 
 #### If Using Netlify:
+
 1. Go to: https://app.netlify.com
 2. Select your site
 3. Click: **Site Settings → Build & Deploy → Environment**
@@ -52,11 +55,13 @@ NODE_ENV=production
 
 ### Step 3: Redeploy
 
-**Vercel**: 
+**Vercel**:
+
 - Go to Deployments tab
 - Click "Redeploy" on latest deployment
 
 **Netlify**:
+
 - Go to Deploys tab
 - Click "Trigger deploy"
 
@@ -70,17 +75,20 @@ NODE_ENV=production
 ## ✅ What Was Fixed
 
 ### Files Changed:
+
 1. **lib/auth.js** - Enhanced error logging, added AUTH_URL support
 2. **next.config.mjs** - Security headers, production optimization
 3. **.env.production** - Added AUTH_URL variable
 4. **app/api/health-check/route.js** - NEW: Health check endpoint
 
 ### Why It Failed:
+
 - Your `.env.local` file is **only for local development**
 - Production deployments **don't have access** to local files
 - You must configure environment variables in your **hosting platform**
 
 ### The Cloudflare Error:
+
 - That's just your ad blocker blocking Cloudflare analytics
 - It's **NOT** causing the authentication issue
 - Completely harmless and can be ignored
@@ -90,10 +98,12 @@ NODE_ENV=production
 After redeploying with environment variables:
 
 1. **Health Check**: https://www.mywealthwise.tech/api/health-check
+
    - Should show all variables as "SET"
    - Status: "HEALTHY"
 
 2. **Sign In**: https://www.mywealthwise.tech/auth/signin
+
    - Click "Sign in with Google"
    - Should open OAuth popup
    - Select account
@@ -118,20 +128,24 @@ After redeploying with environment variables:
 ### Check Deployment Logs
 
 **Vercel**:
+
 ```bash
 vercel logs --follow
 ```
 
 Look for:
+
 ```
 ✅ All required environment variables are set
 📍 Auth URL: https://www.mywealthwise.tech
 ```
 
 If you see:
+
 ```
 ❌ Missing required environment variables
 ```
+
 → Variables not configured correctly in platform
 
 ### Quick Debug
