@@ -375,154 +375,163 @@ function ExpensesContent() {
           </CardContent>
         </Card>
 
-        {/* Recent Expenses - Real Data with Enhanced Voice Entry Display */}
+        {/* Recent Expenses - Minimal Clean Design */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>{t('expenses.recentExpenses')}</span>
-              <Badge variant="secondary">
-                {loading ? t('common.loading') : `${filteredExpenses.length} ${t('common.transactions')}`}
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg font-semibold">Recent Expenses</CardTitle>
+                <CardDescription className="text-sm mt-1">
+                  Your latest expense entries with voice recognition details
+                </CardDescription>
+              </div>
+              <Badge variant="secondary" className="text-xs font-medium">
+                {loading ? 'Loading...' : `${filteredExpenses.length} Transactions`}
               </Badge>
-            </CardTitle>
-            <CardDescription>
-              {t('expenses.latestEntries')}
-            </CardDescription>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-0">
             {loading ? (
-              <div className="flex items-center justify-center p-8">
-                <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-                <span className="ml-3 text-slate-600">{t('expenses.loadingExpenses')}</span>
+              <div className="flex items-center justify-center py-12">
+                <div className="w-8 h-8 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                <span className="ml-3 text-sm text-slate-600">Loading expenses...</span>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="max-h-[600px] overflow-y-auto">
                 {filteredExpenses.length > 0 ? (
-                  filteredExpenses.map((expense) => (
-                    <div key={expense.id} className={`p-4 rounded-lg transition-colors border group ${
-                      expense.entryMethod === 'voice' 
-                        ? 'bg-blue-50 border-blue-200 hover:bg-blue-100' 
-                        : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
-                    }`}>
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-4 flex-1">
-                          <div className={`w-3 h-3 rounded-full mt-2 ${
-                            expense.entryMethod === 'voice' ? 'bg-blue-500' : 'bg-red-500'
-                          }`}></div>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="font-medium text-slate-800 flex items-center gap-2">
+                  <div className="divide-y divide-slate-100">
+                    {filteredExpenses.map((expense) => (
+                      <div 
+                        key={expense.id} 
+                        className="group px-6 py-4 hover:bg-slate-50 transition-all duration-150 relative"
+                      >
+                        {/* Main Content Row */}
+                        <div className="flex items-center justify-between gap-4">
+                          {/* Left: Description & Details */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <h4 className="font-medium text-slate-900 truncate">
                                 {expense.description || `${expense.category} expense`}
-                                <button
-                                  onClick={async () => {
-                                    try {
-                                      const res = await fetch(`/api/expenses?id=${expense.id}`, { method: 'DELETE' })
-                                      const data = await res.json()
-                                      if (data.success) {
-                                        setExpenses(prev => prev.filter(e => e.id !== expense.id))
-                                        toast.success('Expense deleted')
-                                      } else {
-                                        toast.error(data.error || 'Delete failed')
-                                      }
-                                    } catch (err) {
-                                      console.error('Delete failed', err)
-                                      toast.error('Delete failed')
-                                    }
-                                  }}
-                                  className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 text-xs transition-opacity"
-                                  title="Delete expense"
-                                >
-                                  ✕
-                                </button>
-                              </p>
+                              </h4>
                               {expense.entryMethod === 'voice' && (
-                                <Badge variant="default" className="text-xs bg-blue-500">
+                                <Badge variant="default" className="text-[10px] px-1.5 py-0 h-5 bg-blue-500 hover:bg-blue-600">
                                   🎤 Voice
-                                </Badge>
-                              )}
-                              {expense.entryMethod === 'manual' && (
-                                <Badge variant="outline" className="text-xs">
-                                  ✍️ Manual
                                 </Badge>
                               )}
                             </div>
                             
-                            {/* Enhanced details for voice entries */}
+                            {/* Voice Input Details - Collapsible */}
                             {expense.entryMethod === 'voice' && expense.originalText && (
-                              <div className="mb-2 p-2 bg-blue-100 rounded border-l-4 border-blue-400">
-                                <p className="text-xs text-blue-600 font-medium mb-1">
+                              <div className="mb-2 p-2.5 bg-blue-50 rounded-md border border-blue-100">
+                                <p className="text-[11px] text-blue-600 font-medium mb-1">
                                   Original voice input:
                                 </p>
-                                <p className="text-sm text-blue-800 italic">
+                                <p className="text-sm text-blue-800 italic leading-relaxed">
                                   &quot;{expense.originalText}&quot;
                                 </p>
                                 {expense.confidence && (
-                                  <p className="text-xs text-blue-600 mt-1">
+                                  <p className="text-[11px] text-blue-500 mt-1.5">
                                     Confidence: {Math.round(expense.confidence * 100)}%
                                   </p>
                                 )}
                               </div>
                             )}
 
-                            {/* Merchant information */}
-                            {expense.merchant && (
-                              <div className="flex items-center gap-1 mb-2">
-                                <span className="text-xs text-slate-500">at</span>
-                                <Badge variant="secondary" className="text-xs">
-                                  🏪 {expense.merchant}
-                                </Badge>
-                              </div>
-                            )}
-
-                            <div className="flex items-center space-x-3 mt-2">
-                              <Badge variant="secondary" className="text-xs">
-                                {expense.category}
-                              </Badge>
-                              <span className="text-xs text-slate-500">
-                                {new Date(expense.date).toLocaleDateString('en-IN')}
-                              </span>
+                            <div className="flex items-center gap-2 text-xs text-slate-500">
+                              <span className="font-medium text-slate-700">{expense.category}</span>
+                              <span className="text-slate-300">•</span>
+                              <span>{new Date(expense.date).toLocaleDateString('en-IN', { 
+                                day: 'numeric', 
+                                month: 'short', 
+                                year: 'numeric' 
+                              })}</span>
+                              <span className="text-slate-300">•</span>
+                              <span>{new Date(expense.timestamp || expense.date).toLocaleTimeString('en-IN', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}</span>
+                              {expense.merchant && (
+                                <>
+                                  <span className="text-slate-300">•</span>
+                                  <span>🏪 {expense.merchant}</span>
+                                </>
+                              )}
                             </div>
                           </div>
-                        </div>
-                        <div className="text-right ml-4">
-                          <p className={`font-bold text-lg ${
-                            expense.entryMethod === 'voice' ? 'text-blue-600' : 'text-red-600'
-                          }`}>
-                            -₹{expense.amount.toLocaleString('en-IN')}
-                          </p>
-                          <p className="text-xs text-slate-400">
-                            {new Date(expense.timestamp || expense.date).toLocaleTimeString('en-IN', {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </p>
+
+                          {/* Right: Amount & Delete */}
+                          <div className="flex items-center gap-3">
+                            <div className="text-right">
+                              <p className="font-semibold text-lg text-red-600">
+                                -₹{expense.amount.toLocaleString('en-IN')}
+                              </p>
+                            </div>
+                            
+                            {/* Delete Button */}
+                            <button
+                              onClick={async () => {
+                                if (!confirm('Are you sure you want to delete this expense?')) return
+                                try {
+                                  const res = await fetch(`/api/expenses?id=${expense.id}`, { method: 'DELETE' })
+                                  const data = await res.json()
+                                  if (data.success) {
+                                    setExpenses(prev => prev.filter(e => e.id !== expense.id))
+                                    toast.success('Expense deleted successfully')
+                                  } else {
+                                    toast.error(data.error || 'Failed to delete expense')
+                                  }
+                                } catch (err) {
+                                  console.error('Delete failed:', err)
+                                  toast.error('Failed to delete expense')
+                                }
+                              }}
+                              className="opacity-0 group-hover:opacity-100 p-2 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 transition-all duration-150"
+                              title="Delete expense"
+                              aria-label="Delete expense"
+                            >
+                              <svg 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                className="h-4 w-4" 
+                                fill="none" 
+                                viewBox="0 0 24 24" 
+                                stroke="currentColor"
+                              >
+                                <path 
+                                  strokeLinecap="round" 
+                                  strokeLinejoin="round" 
+                                  strokeWidth={2} 
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
+                                />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    ))}
+                  </div>
                 ) : (
-                  <div className="text-center py-8">
-                    <Wallet className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                    <p className="text-slate-500">
+                  <div className="text-center py-12 px-6">
+                    <Wallet className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                    <p className="text-slate-600 font-medium mb-1">
                       {expenses.length === 0 
                         ? 'No expenses recorded yet' 
-                        : 'No transactions found matching your filters'
+                        : 'No transactions found'
                       }
                     </p>
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-slate-400 mb-4">
                       {expenses.length === 0 
                         ? 'Start by adding your first expense above' 
                         : 'Try adjusting your search or filters'
                       }
                     </p>
                     {expenses.length === 0 && (
-                      <div className="mt-4 space-y-2">
-                        <Button
-                          onClick={() => setShowForm(true)}
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white mr-2"
-                        >
-                          Add Manual Expense
-                        </Button>
-                      </div>
+                      <Button
+                        onClick={() => setShowForm(true)}
+                        size="sm"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                      >
+                        Add Manual Expense
+                      </Button>
                     )}
                   </div>
                 )}

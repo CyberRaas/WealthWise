@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Mic, MicOff, Volume2, Check, X, Edit3 } from 'lucide-react'
 
 export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
@@ -16,13 +17,22 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
   const [transcriptAlternatives, setTranscriptAlternatives] = useState([])
   const [retryCount, setRetryCount] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
 
   const recognitionRef = useRef(null)
   const timeoutRef = useRef(null)
 
   // Entrance animation
   useEffect(() => {
+    setIsMounted(true)
     setIsVisible(true)
+
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
   }, [])
 
   // Initialize speech recognition with enhanced noise handling
@@ -260,10 +270,14 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
     if (onClose) onClose()
   }
 
-  return (
+  // Don't render on server side
+  if (!isMounted) return null
+
+  const modalContent = (
     <div
-      className={`fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'
+      className={`fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-[9999] p-4 overflow-y-auto transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'
         }`}
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
       onClick={(e) => {
         // Close modal when clicking backdrop
         if (e.target === e.currentTarget && !isListening && !isProcessing) {
@@ -300,8 +314,8 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
                 onClick={isListening ? stopListening : startListening}
                 disabled={isProcessing}
                 className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${isListening
-                    ? 'bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 animate-pulse shadow-red-300'
-                    : 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:scale-110 shadow-blue-300'
+                  ? 'bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 animate-pulse shadow-red-300'
+                  : 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:scale-110 shadow-blue-300'
                   } ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl'}`}
               >
                 {isListening ? (
@@ -502,4 +516,7 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
       </div>
     </div>
   )
+
+  // Use portal to render at document body level
+  return createPortal(modalContent, document.body)
 }
