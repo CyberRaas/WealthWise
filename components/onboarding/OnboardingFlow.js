@@ -12,13 +12,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import LanguageSelector from '@/components/ui/LanguageSelector'
-import { 
-  ArrowRight, 
-  ArrowLeft, 
-  Coins, 
-  MapPin, 
-  Users, 
-  User, 
+import {
+  ArrowRight,
+  ArrowLeft,
+  Coins,
+  MapPin,
+  Users,
+  User,
   Briefcase,
   Loader2,
   CheckCircle,
@@ -30,8 +30,8 @@ import toast from 'react-hot-toast'
 
 // Indian cities for autocomplete
 const INDIAN_CITIES = [
-  'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Pune', 'Ahmedabad', 
-  'Kolkata', 'Jaipur', 'Lucknow', 'Kanpur', 'Nagpur', 'Indore', 'Thane', 
+  'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Pune', 'Ahmedabad',
+  'Kolkata', 'Jaipur', 'Lucknow', 'Kanpur', 'Nagpur', 'Indore', 'Thane',
   'Bhopal', 'Visakhapatnam', 'Pimpri-Chinchwad', 'Patna', 'Vadodara', 'Ghaziabad'
 ]
 
@@ -55,7 +55,7 @@ export default function OnboardingFlow() {
   const { t } = useTranslation()
   const { currentLanguage, changeLanguage } = useLanguage()
   const router = useRouter()
-  
+
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [profile, setProfile] = useState({
@@ -163,7 +163,7 @@ export default function OnboardingFlow() {
 
   const handleNext = async () => {
     const step = ONBOARDING_STEPS[currentStep]
-    
+
     switch (step.key) {
       case 'language':
         // Language selection is handled by the LanguageSelector component
@@ -176,12 +176,12 @@ export default function OnboardingFlow() {
           toast.error(t('income.validation'))
           return
         }
-        
+
         const incomeSuccess = await updateProfile('income', {
           monthlyIncome: parseInt(profile.monthlyIncome),
           incomeSource: profile.incomeSource
         })
-        
+
         if (incomeSuccess) {
           setCurrentStep(2)
         }
@@ -192,14 +192,14 @@ export default function OnboardingFlow() {
           toast.error(t('demographics.validation'))
           return
         }
-        
+
         const demoSuccess = await updateProfile('demographics', {
           city: profile.city,
           familySize: parseInt(profile.familySize),
           age: parseInt(profile.age),
           occupation: profile.occupation
         })
-        
+
         if (demoSuccess) {
           setCurrentStep(3)
         }
@@ -263,24 +263,24 @@ export default function OnboardingFlow() {
               </Badge>
             </div>
           </div>
-          
+
           {/* Interactive Step Indicator */}
           <div className="relative">
             {/* Progress Bar Background */}
             <div className="absolute top-6 left-0 right-0 h-1 bg-slate-200 rounded-full"></div>
             {/* Animated Progress Bar */}
-            <div 
+            <div
               className="absolute top-6 left-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 rounded-full transition-all duration-700 ease-out shadow-lg"
               style={{ width: `${progressPercentage}%` }}
             ></div>
-            
+
             {/* Step Nodes */}
             <div className="relative flex justify-between">
               {ONBOARDING_STEPS.map((step, index) => {
                 const isCompleted = index < currentStep
                 const isCurrent = index === currentStep
                 const isUpcoming = index > currentStep
-                
+
                 return (
                   <div key={step.key} className="flex flex-col items-center group">
                     {/* Step Circle */}
@@ -289,11 +289,11 @@ export default function OnboardingFlow() {
                         relative w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold
                         transition-all duration-500 transform
                         ${isCurrent ? 'scale-125 shadow-2xl' : 'scale-100'}
-                        ${isCompleted 
-                          ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-xl ring-4 ring-emerald-100' 
+                        ${isCompleted
+                          ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-xl ring-4 ring-emerald-100'
                           : isCurrent
-                          ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-2xl ring-4 ring-blue-200 animate-pulse'
-                          : 'bg-white border-2 border-slate-300 text-slate-400'
+                            ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-2xl ring-4 ring-blue-200 animate-pulse'
+                            : 'bg-white border-2 border-slate-300 text-slate-400'
                         }
                       `}
                     >
@@ -302,23 +302,23 @@ export default function OnboardingFlow() {
                       ) : (
                         <span>{step.icon}</span>
                       )}
-                      
+
                       {/* Pulse Animation for Current Step */}
                       {isCurrent && (
                         <span className="absolute inset-0 rounded-full bg-blue-400 opacity-75 animate-ping"></span>
                       )}
                     </div>
-                    
+
                     {/* Step Label */}
                     <div className="mt-3 text-center">
                       <p
                         className={`
                           text-xs sm:text-sm font-semibold transition-all duration-300
-                          ${isCurrent 
-                            ? 'text-blue-600 scale-105' 
+                          ${isCurrent
+                            ? 'text-blue-600 scale-105'
                             : isCompleted
-                            ? 'text-emerald-600'
-                            : 'text-slate-400'
+                              ? 'text-emerald-600'
+                              : 'text-slate-400'
                           }
                         `}
                       >
@@ -347,7 +347,7 @@ export default function OnboardingFlow() {
               {currentStep === 4 && <ReviewStep profile={profile} budget={generatedBudget} />}
             </div>
           </CardContent>
-          
+
           {/* Navigation Buttons */}
           <div className="flex justify-between items-center px-8 sm:px-12 pb-8 sm:pb-10 border-t border-slate-100 pt-6">
             <Button
@@ -359,7 +359,7 @@ export default function OnboardingFlow() {
               <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-300" />
               Back
             </Button>
-            
+
             <Button
               onClick={handleNext}
               disabled={loading || isGeneratingBudget}
@@ -392,7 +392,7 @@ function LanguageStep() {
 // Income Step Component
 function IncomeStep({ profile, setProfile }) {
   const { t } = useTranslation()
-  
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -441,8 +441,8 @@ function IncomeStep({ profile, setProfile }) {
             </SelectTrigger>
             <SelectContent className="rounded-xl">
               {INCOME_SOURCES.map(source => (
-                <SelectItem 
-                  key={source.value} 
+                <SelectItem
+                  key={source.value}
                   value={source.value}
                   className="cursor-pointer hover:bg-emerald-50 rounded-lg"
                 >
@@ -473,7 +473,7 @@ function IncomeStep({ profile, setProfile }) {
 // Demographics Step Component
 function DemographicsStep({ profile, setProfile }) {
   const { t } = useTranslation()
-  
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -503,8 +503,8 @@ function DemographicsStep({ profile, setProfile }) {
               </SelectTrigger>
               <SelectContent className="rounded-xl max-h-[300px]">
                 {INDIAN_CITIES.map(city => (
-                  <SelectItem 
-                    key={city} 
+                  <SelectItem
+                    key={city}
                     value={city}
                     className="cursor-pointer hover:bg-teal-50 rounded-lg"
                   >
@@ -584,7 +584,7 @@ function DemographicsStep({ profile, setProfile }) {
 // Budget Generation Step Component
 function BudgetGenerationStep({ isGenerating }) {
   const { t } = useTranslation()
-  
+
   return (
     <div className="text-center space-y-6">
       <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto">
@@ -594,11 +594,11 @@ function BudgetGenerationStep({ isGenerating }) {
           <PieChart className="w-10 h-10 text-white" />
         )}
       </div>
-      
+
       <div>
         <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('budget.title')}</h2>
         <p className="text-slate-600 mb-6">
-          {isGenerating 
+          {isGenerating
             ? t('budget.generating')
             : t('budget.subtitle')
           }
@@ -641,7 +641,7 @@ function BudgetGenerationStep({ isGenerating }) {
 // Review Step Component  
 function ReviewStep({ profile, budget }) {
   const { t } = useTranslation()
-  
+
   if (!budget) {
     return (
       <div className="text-center">

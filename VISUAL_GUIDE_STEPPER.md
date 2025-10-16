@@ -4,13 +4,13 @@
 
 ### Complete Mapping:
 
-| Step # | Previous (Hindi) | Current (English) | Icon |
-|--------|------------------|-------------------|------|
-| 1 | भाषा चुनें | Language | 🌐 |
-| 2 | आय की जानकारी | Income | 💰 |
-| 3 | व्यक्तिगत जानकारी | Personal | 👤 |
-| 4 | AI बजट जेनरेशन | Budget | 🤖 |
-| 5 | समीक्षा और पूर्ण करें | Review | ✓ |
+| Step # | Previous (Hindi)      | Current (English) | Icon |
+| ------ | --------------------- | ----------------- | ---- |
+| 1      | भाषा चुनें            | Language          | 🌐   |
+| 2      | आय की जानकारी         | Income            | 💰   |
+| 3      | व्यक्तिगत जानकारी     | Personal          | 👤   |
+| 4      | AI बजट जेनरेशन        | Budget            | 🤖   |
+| 5      | समीक्षा और पूर्ण करें | Review            | ✓    |
 
 ---
 
@@ -59,6 +59,7 @@
 ## Step Node States
 
 ### 1. Completed Step (✓)
+
 ```
   ╔═══════╗
   ║   ✓   ║  ← Checkmark icon
@@ -66,11 +67,12 @@
   ┌───────┐
   │ ████  │  ← Emerald ring
   └───────┘
-  
+
   Language   ← Green text
 ```
 
 ### 2. Current/Active Step (●)
+
 ```
   ╔═══════╗
   ║  🌐   ║  ← Step icon
@@ -78,17 +80,18 @@
   ┌───────┐
   │ ████  │  ← Blue ring + pulse
   └───────┘
-  
+
   Language   ← Blue text
       ●      ← Bouncing dot
 ```
 
 ### 3. Upcoming Step (○)
+
 ```
   ╔═══════╗
   ║  💰   ║  ← Step icon (gray)
   ╚═══════╝
-  
+
   Income     ← Gray text
 ```
 
@@ -97,6 +100,7 @@
 ## Progress Bar Evolution
 
 ### Step 1 (0%):
+
 ```
 Language | Income | Personal | Budget | Review
    ●        ○         ○          ○        ○
@@ -104,6 +108,7 @@ Language | Income | Personal | Budget | Review
 ```
 
 ### Step 2 (25%):
+
 ```
 Language | Income | Personal | Budget | Review
    ✓        ●         ○          ○        ○
@@ -111,6 +116,7 @@ Language | Income | Personal | Budget | Review
 ```
 
 ### Step 3 (50%):
+
 ```
 Language | Income | Personal | Budget | Review
    ✓        ✓         ●          ○        ○
@@ -118,6 +124,7 @@ Language | Income | Personal | Budget | Review
 ```
 
 ### Step 4 (75%):
+
 ```
 Language | Income | Personal | Budget | Review
    ✓        ✓         ✓          ●        ○
@@ -125,6 +132,7 @@ Language | Income | Personal | Budget | Review
 ```
 
 ### Step 5 (100%):
+
 ```
 Language | Income | Personal | Budget | Review
    ✓        ✓         ✓          ✓        ●
@@ -136,6 +144,7 @@ Language | Income | Personal | Budget | Review
 ## Step Content Examples
 
 ### Step 1: Language Selection
+
 ```
 ┌─────────────────────────────────────────┐
 │                                         │
@@ -158,6 +167,7 @@ Language | Income | Personal | Budget | Review
 ```
 
 ### Step 2: Income Details
+
 ```
 ┌─────────────────────────────────────────┐
 │                                         │
@@ -187,6 +197,7 @@ Language | Income | Personal | Budget | Review
 ```
 
 ### Step 3: Personal Info
+
 ```
 ┌──────────────────────────────────────────┐
 │                                          │
@@ -218,6 +229,7 @@ Language | Income | Personal | Budget | Review
 ## Color Scheme
 
 ### Completed Step Colors:
+
 ```
 Background: #10B981 (emerald-500)
 Ring: #D1FAE5 (emerald-100)
@@ -226,6 +238,7 @@ Icon: #FFFFFF (white)
 ```
 
 ### Active Step Colors:
+
 ```
 Background: #3B82F6 (blue-500)
 Ring: #DBEAFE (blue-200)
@@ -234,6 +247,7 @@ Pulse: #60A5FA (blue-400)
 ```
 
 ### Upcoming Step Colors:
+
 ```
 Background: #FFFFFF (white)
 Border: #CBD5E1 (slate-300)
@@ -242,6 +256,7 @@ Icon: #CBD5E1 (slate-300)
 ```
 
 ### Progress Bar:
+
 ```
 Background: #E2E8F0 (slate-200)
 Fill: Linear Gradient
@@ -255,6 +270,7 @@ Fill: Linear Gradient
 ## Animation Timings
 
 ### Step Transitions:
+
 ```
 Duration: 500ms
 Easing: ease-out
@@ -262,6 +278,7 @@ Properties: scale, colors, opacity
 ```
 
 ### Progress Bar:
+
 ```
 Duration: 700ms
 Easing: ease-out
@@ -269,6 +286,7 @@ Property: width
 ```
 
 ### Button Hover:
+
 ```
 Duration: 300ms
 Easing: ease-in-out
@@ -276,6 +294,7 @@ Properties: scale, shadow, colors
 ```
 
 ### Pulse Effect:
+
 ```
 Duration: 2s
 Iteration: infinite
@@ -283,6 +302,7 @@ Animation: ping
 ```
 
 ### Bounce Effect:
+
 ```
 Duration: 1s
 Iteration: infinite
@@ -294,6 +314,7 @@ Animation: bounce
 ## Responsive Behavior
 
 ### Mobile (< 640px):
+
 ```
 ┌───────────────────────┐
 │    Language           │
@@ -311,6 +332,7 @@ Animation: bounce
 ```
 
 ### Tablet (768px):
+
 ```
 ┌──────────────────────────────────┐
 │  Language              Step 1/5  │
@@ -327,6 +349,7 @@ Animation: bounce
 ```
 
 ### Desktop (1024px+):
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │  Language                            🎯 Step 1 of 5 │
@@ -351,6 +374,7 @@ Animation: bounce
 ### Button States:
 
 #### Back Button:
+
 ```
 Default:  [← Back]  (Gray border)
 Hover:    [← Back]  (Emerald border + icon slides left)
@@ -358,6 +382,7 @@ Disabled: [← Back]  (50% opacity, cursor not-allowed)
 ```
 
 #### Next Button:
+
 ```
 Default:  [Next Step →]  (Gradient background)
 Hover:    [Next Step →]  (Darker gradient + scale 105%)
@@ -366,6 +391,7 @@ Loading:  [◐ Processing...]  (Spinner animation)
 ```
 
 ### Input States:
+
 ```
 Default: ┌─────────────┐  (Border: slate-200)
          │ Placeholder │
@@ -385,18 +411,21 @@ Focus:   ┌═════════════┐  (Border: emerald-500)
 ## Accessibility Features
 
 ### Keyboard Navigation:
+
 - Tab: Move to next interactive element
 - Shift+Tab: Move to previous element
 - Enter: Submit form / Activate button
 - Escape: Close dropdowns
 
 ### Screen Reader:
+
 - Step progress announced
 - Form labels properly associated
 - Error messages clear
 - Loading states communicated
 
 ### Visual Clarity:
+
 - High contrast text
 - Large touch targets (h-14)
 - Clear focus indicators
@@ -407,6 +436,7 @@ Focus:   ┌═════════════┐  (Border: emerald-500)
 ## Testing Checklist
 
 ### Visual Tests:
+
 - [ ] All 5 step labels in English
 - [ ] Icons display correctly (🌐💰👤🤖✓)
 - [ ] Progress bar animates smoothly
@@ -415,6 +445,7 @@ Focus:   ┌═════════════┐  (Border: emerald-500)
 - [ ] Colors match design spec
 
 ### Functional Tests:
+
 - [ ] Next button advances step
 - [ ] Back button works (disabled on step 1)
 - [ ] Progress bar updates
@@ -423,6 +454,7 @@ Focus:   ┌═════════════┐  (Border: emerald-500)
 - [ ] Loading states display
 
 ### Responsive Tests:
+
 - [ ] Mobile (375px): Single column
 - [ ] Tablet (768px): 2-column forms
 - [ ] Desktop (1920px): Full layout
