@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import ExpenseEntryModal from '@/components/expenses/ExpenseEntryModal'
-import { 
+import {
   Wallet,
   Plus,
   Search,
@@ -29,7 +29,7 @@ function ExpensesContent() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
-  
+
   // Form state
   const [showForm, setShowForm] = useState(false)
   const [showVoiceEntry, setShowVoiceEntry] = useState(false)
@@ -42,7 +42,7 @@ function ExpensesContent() {
   const [submitting, setSubmitting] = useState(false)
 
   const categories = ['Food & Dining', 'Transportation', 'Housing', 'Entertainment', 'Healthcare', 'Shopping', 'Utilities', 'Other']
-  
+
   useEffect(() => {
     fetchExpenses()
   }, [])
@@ -51,7 +51,7 @@ function ExpensesContent() {
     try {
       const response = await fetch('/api/expenses')
       const data = await response.json()
-      
+
       if (data.success) {
         setExpenses(data.expenses || [])
       }
@@ -71,7 +71,7 @@ function ExpensesContent() {
   }
   const handleFormSubmit = async (e) => {
     e.preventDefault()
-    
+
     if (!formData.amount || !formData.category) {
       toast.error('Please fill in all required fields')
       return
@@ -113,7 +113,7 @@ function ExpensesContent() {
 
   const filteredExpenses = expenses.filter(expense => {
     const matchesSearch = expense.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         expense.category.toLowerCase().includes(searchTerm.toLowerCase())
+      expense.category.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === 'all' || expense.category === selectedCategory
     return matchesSearch && matchesCategory
   })
@@ -236,7 +236,7 @@ function ExpensesContent() {
               </div>
             </div>
           </CardHeader>
-          
+
           {showForm && (
             <CardContent className="pt-0">
               <form onSubmit={handleFormSubmit} className="space-y-4">
@@ -264,8 +264,8 @@ function ExpensesContent() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       {t('expenses.category')} *
                     </label>
-                    <Select 
-                      value={formData.category} 
+                    <Select
+                      value={formData.category}
                       onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
                       required
                     >
@@ -352,7 +352,7 @@ function ExpensesContent() {
                     className="pl-10 w-full sm:w-64"
                   />
                 </div>
-                
+
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
@@ -401,8 +401,8 @@ function ExpensesContent() {
                 {filteredExpenses.length > 0 ? (
                   <div className="divide-y divide-slate-100">
                     {filteredExpenses.map((expense) => (
-                      <div 
-                        key={expense.id} 
+                      <div
+                        key={expense.id}
                         className="group px-6 py-4 hover:bg-slate-50 transition-all duration-150 relative"
                       >
                         {/* Main Content Row */}
@@ -419,7 +419,7 @@ function ExpensesContent() {
                                 </Badge>
                               )}
                             </div>
-                            
+
                             {/* Voice Input Details - Collapsible */}
                             {expense.entryMethod === 'voice' && expense.originalText && (
                               <div className="mb-2 p-2.5 bg-blue-50 rounded-md border border-blue-100">
@@ -440,10 +440,10 @@ function ExpensesContent() {
                             <div className="flex items-center gap-2 text-xs text-slate-500">
                               <span className="font-medium text-slate-700">{expense.category}</span>
                               <span className="text-slate-300">•</span>
-                              <span>{new Date(expense.date).toLocaleDateString('en-IN', { 
-                                day: 'numeric', 
-                                month: 'short', 
-                                year: 'numeric' 
+                              <span>{new Date(expense.date).toLocaleDateString('en-IN', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
                               })}</span>
                               <span className="text-slate-300">•</span>
                               <span>{new Date(expense.timestamp || expense.date).toLocaleTimeString('en-IN', {
@@ -466,7 +466,7 @@ function ExpensesContent() {
                                 -₹{expense.amount.toLocaleString('en-IN')}
                               </p>
                             </div>
-                            
+
                             {/* Delete Button */}
                             <button
                               onClick={async () => {
@@ -489,18 +489,18 @@ function ExpensesContent() {
                               title="Delete expense"
                               aria-label="Delete expense"
                             >
-                              <svg 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                className="h-4 w-4" 
-                                fill="none" 
-                                viewBox="0 0 24 24" 
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
                                 stroke="currentColor"
                               >
-                                <path 
-                                  strokeLinecap="round" 
-                                  strokeLinejoin="round" 
-                                  strokeWidth={2} 
-                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                 />
                               </svg>
                             </button>
@@ -513,14 +513,14 @@ function ExpensesContent() {
                   <div className="text-center py-12 px-6">
                     <Wallet className="h-12 w-12 text-slate-300 mx-auto mb-3" />
                     <p className="text-slate-600 font-medium mb-1">
-                      {expenses.length === 0 
-                        ? 'No expenses recorded yet' 
+                      {expenses.length === 0
+                        ? 'No expenses recorded yet'
                         : 'No transactions found'
                       }
                     </p>
                     <p className="text-sm text-slate-400 mb-4">
-                      {expenses.length === 0 
-                        ? 'Start by adding your first expense above' 
+                      {expenses.length === 0
+                        ? 'Start by adding your first expense above'
                         : 'Try adjusting your search or filters'
                       }
                     </p>
