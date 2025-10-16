@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "verify-auth": "node scripts/verify-auth-config.js"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.10.0",

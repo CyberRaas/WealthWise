@@ -190,12 +190,12 @@ function ErrorContent() {
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-500">
               Need help?{' '}
-              <Link 
-                href="/contact" 
+              <a 
+                href="mailto:support@mywealthwise.tech" 
                 className="text-emerald-600 hover:text-emerald-700 font-semibold"
               >
                 Contact Support
-              </Link>
+              </a>
             </p>
           </div>
         </div>
