@@ -1432,7 +1432,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                 Generate Your Personalized Budget
               </h2>
               <p className="text-base sm:text-lg text-gray-600 mb-8 sm:mb-10 text-center max-w-xl mx-auto">
-                Based on your income, location, and lifestyle, we'll create a custom budget plan in seconds.
+                Based on your income, location, and lifestyle, we&apos;ll create a custom budget plan in seconds.
               </p>
 
               {/* CTA Button */}

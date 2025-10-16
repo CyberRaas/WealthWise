@@ -119,7 +119,7 @@ export default function OnboardingPage() {
         <div className="text-center mb-8 sm:mb-12">
           <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-100 to-blue-100 text-emerald-700 rounded-full px-4 sm:px-6 py-2 sm:py-2.5 mb-4 sm:mb-6 shadow-sm">
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-            <span className="text-xs sm:text-sm font-semibold">Let's Get Started</span>
+            <span className="text-xs sm:text-sm font-semibold">Let&apos;s Get Started</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6">
