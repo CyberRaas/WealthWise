@@ -43,11 +43,11 @@ const INCOME_SOURCES = [
 ]
 
 const ONBOARDING_STEPS = [
-  { key: 'language', title: 'Language Selection', hindi: 'भाषा चुनें' },
-  { key: 'income', title: 'Income Details', hindi: 'आय की जानकारी' },
-  { key: 'demographics', title: 'Personal Details', hindi: 'व्यक्तिगत जानकारी' },
-  { key: 'budget_generation', title: 'AI Budget Generation', hindi: 'AI बजट जेनरेशन' },
-  { key: 'review', title: 'Review & Complete', hindi: 'समीक्षा और पूर्ण करें' }
+  { key: 'language', title: 'Language', shortTitle: 'Language', icon: '🌐' },
+  { key: 'income', title: 'Income Details', shortTitle: 'Income', icon: '💰' },
+  { key: 'demographics', title: 'Personal Info', shortTitle: 'Personal', icon: '👤' },
+  { key: 'budget_generation', title: 'AI Budget', shortTitle: 'Budget', icon: '🤖' },
+  { key: 'review', title: 'Review', shortTitle: 'Review', icon: '✓' }
 ]
 
 export default function OnboardingFlow() {
@@ -247,75 +247,133 @@ export default function OnboardingFlow() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-blue-50 py-8">
       <div className="max-w-2xl mx-auto px-4">
         {/* Progress Header */}
-        <div className="mb-10">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-blue-800 bg-clip-text text-transparent">
-              {t('onboarding.title')}
-            </h1>
-            <Badge variant="outline" className="border-emerald-300 text-emerald-700 bg-emerald-50/50 px-4 py-2 text-sm font-semibold rounded-full">
-              {t('onboarding.step', { current: currentStep + 1, total: ONBOARDING_STEPS.length })}
-            </Badge>
+        {/* Modern Progress Stepper */}
+        <div className="mb-12">
+          {/* Header with Step Counter */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                {ONBOARDING_STEPS[currentStep].title}
+              </h1>
+              <p className="text-slate-600 text-sm sm:text-base">Complete your profile in just a few steps</p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 text-sm font-bold rounded-full shadow-lg">
+                Step {currentStep + 1} of {ONBOARDING_STEPS.length}
+              </Badge>
+            </div>
           </div>
           
-          <Progress value={progressPercentage} className="h-4 bg-emerald-100 rounded-full shadow-inner">
+          {/* Interactive Step Indicator */}
+          <div className="relative">
+            {/* Progress Bar Background */}
+            <div className="absolute top-6 left-0 right-0 h-1 bg-slate-200 rounded-full"></div>
+            {/* Animated Progress Bar */}
             <div 
-              className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-700 ease-out rounded-full shadow-sm"
+              className="absolute top-6 left-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 rounded-full transition-all duration-700 ease-out shadow-lg"
               style={{ width: `${progressPercentage}%` }}
-            />
-          </Progress>
-          
-          <div className="flex justify-between mt-4 text-sm">
-            {ONBOARDING_STEPS.map((step, index) => (
-              <span 
-                key={step.key}
-                className={`transition-all duration-300 ${
-                  index <= currentStep 
-                    ? 'text-emerald-600 font-semibold' 
-                    : 'text-slate-400 font-medium'
-                }`}
-              >
-                {step.hindi}
-              </span>
-            ))}
+            ></div>
+            
+            {/* Step Nodes */}
+            <div className="relative flex justify-between">
+              {ONBOARDING_STEPS.map((step, index) => {
+                const isCompleted = index < currentStep
+                const isCurrent = index === currentStep
+                const isUpcoming = index > currentStep
+                
+                return (
+                  <div key={step.key} className="flex flex-col items-center group">
+                    {/* Step Circle */}
+                    <div
+                      className={`
+                        relative w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold
+                        transition-all duration-500 transform
+                        ${isCurrent ? 'scale-125 shadow-2xl' : 'scale-100'}
+                        ${isCompleted 
+                          ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-xl ring-4 ring-emerald-100' 
+                          : isCurrent
+                          ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-2xl ring-4 ring-blue-200 animate-pulse'
+                          : 'bg-white border-2 border-slate-300 text-slate-400'
+                        }
+                      `}
+                    >
+                      {isCompleted ? (
+                        <CheckCircle className="w-6 h-6" />
+                      ) : (
+                        <span>{step.icon}</span>
+                      )}
+                      
+                      {/* Pulse Animation for Current Step */}
+                      {isCurrent && (
+                        <span className="absolute inset-0 rounded-full bg-blue-400 opacity-75 animate-ping"></span>
+                      )}
+                    </div>
+                    
+                    {/* Step Label */}
+                    <div className="mt-3 text-center">
+                      <p
+                        className={`
+                          text-xs sm:text-sm font-semibold transition-all duration-300
+                          ${isCurrent 
+                            ? 'text-blue-600 scale-105' 
+                            : isCompleted
+                            ? 'text-emerald-600'
+                            : 'text-slate-400'
+                          }
+                        `}
+                      >
+                        {step.shortTitle}
+                      </p>
+                      {/* Active Indicator */}
+                      {isCurrent && (
+                        <div className="mt-1 w-1 h-1 bg-blue-500 rounded-full mx-auto animate-bounce"></div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
 
-        {/* Step Content */}
-        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl ring-1 ring-slate-200/50 rounded-3xl overflow-hidden">
-          <CardContent className="p-10">
-            {currentStep === 0 && <LanguageStep />}
-            {currentStep === 1 && <IncomeStep profile={profile} setProfile={setProfile} />}
-            {currentStep === 2 && <DemographicsStep profile={profile} setProfile={setProfile} />}
-            {currentStep === 3 && <BudgetGenerationStep isGenerating={isGeneratingBudget} />}
-            {currentStep === 4 && <ReviewStep profile={profile} budget={generatedBudget} />}
+        {/* Step Content Card */}
+        <Card className="shadow-2xl border-0 bg-white backdrop-blur-xl rounded-3xl overflow-hidden transform transition-all duration-300 hover:shadow-3xl">
+          <CardContent className="p-8 sm:p-12">
+            <div className="min-h-[400px]">
+              {currentStep === 0 && <LanguageStep />}
+              {currentStep === 1 && <IncomeStep profile={profile} setProfile={setProfile} />}
+              {currentStep === 2 && <DemographicsStep profile={profile} setProfile={setProfile} />}
+              {currentStep === 3 && <BudgetGenerationStep isGenerating={isGeneratingBudget} />}
+              {currentStep === 4 && <ReviewStep profile={profile} budget={generatedBudget} />}
+            </div>
           </CardContent>
           
-          {/* Navigation */}
-          <div className="flex justify-between items-center px-10 pb-10">
+          {/* Navigation Buttons */}
+          <div className="flex justify-between items-center px-8 sm:px-12 pb-8 sm:pb-10 border-t border-slate-100 pt-6">
             <Button
               onClick={handleBack}
               disabled={currentStep === 0 || loading}
               variant="outline"
-              className="border-2 border-slate-200 hover:border-emerald-300 text-slate-600 hover:text-emerald-600 font-semibold px-6 py-3 rounded-xl transition-all duration-300"
+              className="group border-2 border-slate-300 hover:border-emerald-500 text-slate-700 hover:text-emerald-600 font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              {t('onboarding.back')}
+              <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-300" />
+              Back
             </Button>
             
             <Button
               onClick={handleNext}
               disabled={loading || isGeneratingBudget}
-              className="bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white font-bold px-8 py-3 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+              className="group bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white font-bold px-8 py-3 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {loading || isGeneratingBudget ? (
                 <div className="flex items-center">
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  <span>{isGeneratingBudget ? t('onboarding.generating') : t('onboarding.processing')}</span>
+                  <span>{isGeneratingBudget ? 'Generating...' : 'Processing...'}</span>
                 </div>
               ) : (
                 <>
-                  {currentStep === ONBOARDING_STEPS.length - 1 ? t('onboarding.complete') : t('onboarding.next')}
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <span>{currentStep === ONBOARDING_STEPS.length - 1 ? 'Complete Setup' : 'Next Step'}</span>
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                 </>
               )}
             </Button>
@@ -336,50 +394,76 @@ function IncomeStep({ profile, setProfile }) {
   const { t } = useTranslation()
   
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Coins className="w-8 h-8 text-white" />
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="text-center">
+        <div className="relative w-20 h-20 mx-auto mb-6">
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl blur-lg opacity-50 animate-pulse"></div>
+          <div className="relative w-full h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-xl">
+            <Coins className="w-10 h-10 text-white" />
+          </div>
         </div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('income.title')}</h2>
-        <p className="text-slate-600">{t('income.subtitle')}</p>
+        <h2 className="text-3xl font-bold text-slate-800 mb-3">Income Details</h2>
+        <p className="text-slate-600 text-lg">Tell us about your monthly earnings</p>
       </div>
 
-      <div className="space-y-4">
+      {/* Form Fields */}
+      <div className="space-y-6 max-w-2xl mx-auto">
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            {t('income.monthly_income_required')}
+          <label className="block text-sm font-semibold text-slate-700 mb-3">
+            💰 Monthly Income (Required)
           </label>
-          <Input
-            type="number"
-            placeholder={t('income.placeholder')}
-            value={profile.monthlyIncome}
-            onChange={(e) => setProfile(prev => ({ ...prev, monthlyIncome: e.target.value }))}
-            className="h-12 text-lg"
-            min="1000"
-            step="1000"
-          />
-          <p className="text-xs text-slate-500 mt-1">{t('income.minimum')}</p>
+          <div className="relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg font-semibold">₹</span>
+            <Input
+              type="number"
+              placeholder="50,000"
+              value={profile.monthlyIncome}
+              onChange={(e) => setProfile(prev => ({ ...prev, monthlyIncome: e.target.value }))}
+              className="h-14 pl-10 text-lg font-medium border-2 border-slate-200 focus:border-emerald-500 rounded-xl transition-all duration-300 hover:border-slate-300"
+              min="1000"
+              step="1000"
+            />
+          </div>
+          <p className="text-xs text-slate-500 mt-2 flex items-center">
+            <span className="w-1 h-1 bg-slate-400 rounded-full mr-2"></span>
+            Minimum ₹1,000 required
+          </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            {t('income.income_source')}
+          <label className="block text-sm font-semibold text-slate-700 mb-3">
+            💼 Income Source
           </label>
           <Select value={profile.incomeSource} onValueChange={(value) => setProfile(prev => ({ ...prev, incomeSource: value }))}>
-            <SelectTrigger className="h-12">
+            <SelectTrigger className="h-14 border-2 border-slate-200 hover:border-slate-300 focus:border-emerald-500 rounded-xl transition-all duration-300">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="rounded-xl">
               {INCOME_SOURCES.map(source => (
-                <SelectItem key={source.value} value={source.value}>
-                  <div className="flex items-center space-x-2">
-                    <span>{t(`income.sources.${source.value}`)}</span>
-                  </div>
+                <SelectItem 
+                  key={source.value} 
+                  value={source.value}
+                  className="cursor-pointer hover:bg-emerald-50 rounded-lg"
+                >
+                  {source.label}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        {/* Info Card */}
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4">
+          <div className="flex items-start space-x-3">
+            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span className="text-white text-sm">ℹ️</span>
+            </div>
+            <div>
+              <p className="text-sm text-emerald-900 font-medium mb-1">Why we need this?</p>
+              <p className="text-xs text-emerald-700">Your income helps us create a personalized budget that matches your financial situation and goals.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -391,76 +475,106 @@ function DemographicsStep({ profile, setProfile }) {
   const { t } = useTranslation()
   
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-gradient-to-r from-teal-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <User className="w-8 h-8 text-white" />
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="text-center">
+        <div className="relative w-20 h-20 mx-auto mb-6">
+          <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-blue-500 rounded-2xl blur-lg opacity-50 animate-pulse"></div>
+          <div className="relative w-full h-full bg-gradient-to-r from-teal-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-xl">
+            <User className="w-10 h-10 text-white" />
+          </div>
         </div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('demographics.title')}</h2>
-        <p className="text-slate-600">{t('demographics.subtitle')}</p>
+        <h2 className="text-3xl font-bold text-slate-800 mb-3">Personal Information</h2>
+        <p className="text-slate-600 text-lg">Help us personalize your experience</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            <MapPin className="w-4 h-4 inline mr-1" />
-            {t('demographics.city_required')}
-          </label>
-          <Select value={profile.city} onValueChange={(value) => setProfile(prev => ({ ...prev, city: value }))}>
-            <SelectTrigger className="h-12">
-              <SelectValue placeholder={t('demographics.city_placeholder')} />
-            </SelectTrigger>
-            <SelectContent>
-              {INDIAN_CITIES.map(city => (
-                <SelectItem key={city} value={city}>{city}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      {/* Form Fields */}
+      <div className="space-y-6 max-w-3xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* City */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-3">
+              <MapPin className="w-4 h-4 inline mr-1" />
+              City (Required)
+            </label>
+            <Select value={profile.city} onValueChange={(value) => setProfile(prev => ({ ...prev, city: value }))}>
+              <SelectTrigger className="h-14 border-2 border-slate-200 hover:border-slate-300 focus:border-teal-500 rounded-xl transition-all duration-300">
+                <SelectValue placeholder="Select your city" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl max-h-[300px]">
+                {INDIAN_CITIES.map(city => (
+                  <SelectItem 
+                    key={city} 
+                    value={city}
+                    className="cursor-pointer hover:bg-teal-50 rounded-lg"
+                  >
+                    {city}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Family Size */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-3">
+              <Users className="w-4 h-4 inline mr-1" />
+              Family Size (Required)
+            </label>
+            <Input
+              type="number"
+              placeholder="e.g., 4"
+              value={profile.familySize}
+              onChange={(e) => setProfile(prev => ({ ...prev, familySize: e.target.value }))}
+              className="h-14 text-lg font-medium border-2 border-slate-200 focus:border-teal-500 rounded-xl transition-all duration-300 hover:border-slate-300"
+              min="1"
+              max="20"
+            />
+          </div>
+
+          {/* Age */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-3">
+              📅 Age (Required)
+            </label>
+            <Input
+              type="number"
+              placeholder="e.g., 30"
+              value={profile.age}
+              onChange={(e) => setProfile(prev => ({ ...prev, age: e.target.value }))}
+              className="h-14 text-lg font-medium border-2 border-slate-200 focus:border-teal-500 rounded-xl transition-all duration-300 hover:border-slate-300"
+              min="18"
+              max="100"
+            />
+          </div>
+
+          {/* Occupation */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-3">
+              <Briefcase className="w-4 h-4 inline mr-1" />
+              Occupation (Optional)
+            </label>
+            <Input
+              type="text"
+              placeholder="e.g., Software Engineer"
+              value={profile.occupation}
+              onChange={(e) => setProfile(prev => ({ ...prev, occupation: e.target.value }))}
+              className="h-14 text-lg font-medium border-2 border-slate-200 focus:border-teal-500 rounded-xl transition-all duration-300 hover:border-slate-300"
+            />
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            <Users className="w-4 h-4 inline mr-1" />
-            {t('demographics.family_size_required')}
-          </label>
-          <Input
-            type="number"
-            placeholder={t('demographics.family_placeholder')}
-            value={profile.familySize}
-            onChange={(e) => setProfile(prev => ({ ...prev, familySize: e.target.value }))}
-            className="h-12"
-            min="1"
-            max="20"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            {t('demographics.age_required')}
-          </label>
-          <Input
-            type="number"
-            placeholder={t('demographics.age_placeholder')}
-            value={profile.age}
-            onChange={(e) => setProfile(prev => ({ ...prev, age: e.target.value }))}
-            className="h-12"
-            min="18"
-            max="100"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
-            <Briefcase className="w-4 h-4 inline mr-1" />
-            {t('demographics.occupation')}
-          </label>
-          <Input
-            type="text"
-            placeholder={t('demographics.occupation_placeholder')}
-            value={profile.occupation}
-            onChange={(e) => setProfile(prev => ({ ...prev, occupation: e.target.value }))}
-            className="h-12"
-          />
+        {/* Info Card */}
+        <div className="bg-gradient-to-r from-teal-50 to-blue-50 border border-teal-200 rounded-2xl p-4 mt-6">
+          <div className="flex items-start space-x-3">
+            <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <span className="text-white text-sm">🔒</span>
+            </div>
+            <div>
+              <p className="text-sm text-teal-900 font-medium mb-1">Your data is secure</p>
+              <p className="text-xs text-teal-700">We use this information only to create accurate financial recommendations tailored to your location and lifestyle.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
