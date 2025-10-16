@@ -158,6 +158,7 @@
 ## Responsive Behavior
 
 ### Mobile (< 640px)
+
 ```
 ┌─────────────┐
 │   HEADER    │
@@ -198,6 +199,7 @@
 ```
 
 ### Tablet (640px - 1023px)
+
 ```
 ┌──────────────────────────┐
 │      HEADER (Expanded)   │
@@ -227,6 +229,7 @@
 ```
 
 ### Desktop (1024px+)
+
 ```
 ┌────────────────────────────────────────┐
 │       HEADER (Full Width)              │
@@ -258,6 +261,7 @@
 ## Animation Flow
 
 ### Onboarding Page Load Sequence
+
 ```
 1. Header appears        (0ms, immediate)
 2. Badge fades in        (300ms delay)
@@ -268,6 +272,7 @@
 ```
 
 ### Budget Display Load Sequence
+
 ```
 Empty State:
 1. Badge pulses          (continuous)
@@ -287,13 +292,14 @@ Loading State:
 ## Color Usage Map
 
 ### Gradients
+
 ```
 Primary Gradient:
   from-emerald-500 → to-blue-500
-  
+
 Secondary Gradient:
   from-blue-600 → to-indigo-600
-  
+
 Tertiary Gradient:
   from-violet-500 → to-purple-500
 
@@ -302,6 +308,7 @@ Background Gradient:
 ```
 
 ### Text Colors
+
 ```
 Headings:     text-gray-900 (or gradient)
 Body:         text-gray-600
@@ -311,6 +318,7 @@ Links:        text-blue-600
 ```
 
 ### Background Colors
+
 ```
 Cards:        bg-white/60 (with backdrop-blur)
 Badges:       bg-emerald-100
@@ -323,6 +331,7 @@ Skeleton:     bg-gray-200/300 (animated)
 ## Accessibility Features
 
 ### Keyboard Navigation
+
 ```
 [Tab]        → Move between interactive elements
 [Enter]      → Activate buttons/links
@@ -331,6 +340,7 @@ Skeleton:     bg-gray-200/300 (animated)
 ```
 
 ### Screen Reader
+
 ```
 <button aria-label="Generate budget">
 <div role="status" aria-live="polite">Loading...</div>
@@ -338,6 +348,7 @@ Skeleton:     bg-gray-200/300 (animated)
 ```
 
 ### Color Contrast
+
 ```
 ✅ Text on white: 4.5:1 minimum
 ✅ Buttons: Clear focus states
@@ -350,6 +361,7 @@ Skeleton:     bg-gray-200/300 (animated)
 ## Performance Metrics
 
 ### Animation Performance
+
 ```
 FPS Target:        60 FPS
 Animation Duration: 200-500ms (interactions)
@@ -359,6 +371,7 @@ Reflow Triggers:   ❌ None (optimized)
 ```
 
 ### Bundle Impact
+
 ```
 CSS Added:     ~500 bytes (animations)
 JS Added:      0 bytes (pure CSS)
@@ -367,6 +380,7 @@ Total Impact:  <1KB
 ```
 
 ### Loading Times
+
 ```
 Initial Paint:      <100ms
 First Interaction:  <200ms
@@ -379,6 +393,7 @@ Content Load:       Depends on API
 ## Component Props & State
 
 ### OnboardingPage
+
 ```javascript
 Props:
   - session: NextAuth session object
@@ -393,6 +408,7 @@ Children:
 ```
 
 ### BudgetDisplay
+
 ```javascript
 Props:
   - refreshTrigger: number (trigger re-fetch)

@@ -7,6 +7,7 @@
 ## 🚀 Quick Start
 
 1. **Start Development Server**
+
    ```bash
    npm run dev
    ```
@@ -23,6 +24,7 @@
 ### 1️⃣ Onboarding Page (`/onboarding`)
 
 #### Header Section
+
 - [ ] Logo appears with gradient background
 - [ ] "WealthWise" text is visible
 - [ ] User avatar shows with first letter of name
@@ -30,6 +32,7 @@
 - [ ] Glass effect (backdrop blur) is visible
 
 #### Hero Section
+
 - [ ] "Let's Get Started" badge appears with pulse animation
 - [ ] Large gradient title "Your Financial Journey Starts Here" is visible
 - [ ] Subtitle text is readable and centered
@@ -37,11 +40,13 @@
 - [ ] Progress bar shows 0% initially
 
 #### Responsive Test
+
 - [ ] On mobile (375px): Elements stack vertically
 - [ ] On tablet (768px): Layout adjusts properly
 - [ ] On desktop (1920px): All elements have proper spacing
 
 #### Animation Test
+
 - [ ] Badge has pulse animation
 - [ ] Progress bar gradient is visible
 - [ ] Elements fade in smoothly on load
@@ -53,12 +58,14 @@
 **Note:** This appears when no budget exists yet
 
 #### Hero Section
+
 - [ ] "AI-Powered Budget Generator" badge appears
 - [ ] Large title "Create Your Smart Financial Budget" is visible
 - [ ] Subtitle explains the feature clearly
 - [ ] All text is in English
 
 #### Main CTA Card
+
 - [ ] Large sparkle icon appears with gradient background
 - [ ] Icon has glow effect around it
 - [ ] "Generate Your Personalized Budget" heading is visible
@@ -66,22 +73,26 @@
 - [ ] "Takes less than 10 seconds" text appears below button
 
 #### Features Grid
+
 - [ ] Three feature cards are displayed
 - [ ] Each card has an icon (Target, Sparkles, TrendingUp)
 - [ ] Cards have hover effect (scale up slightly)
 - [ ] Cards lift with shadow on hover
 
 #### Trust Indicators
+
 - [ ] Three stats are displayed: "100%", "AI-Powered", "<10s"
 - [ ] Stats have gradient text
 - [ ] Section has light background
 
 #### Button Functionality
+
 - [ ] Click "Generate My Smart Budget" button
 - [ ] Button shows loading state with spinner
 - [ ] Budget generates successfully
 
 #### Responsive Test (Empty State)
+
 - [ ] Mobile: Single column, full width cards
 - [ ] Tablet: 2-column feature grid
 - [ ] Desktop: 3-column feature grid
@@ -93,6 +104,7 @@
 **Note:** This appears while budget is being fetched
 
 #### Skeleton Components
+
 - [ ] Header skeleton appears with shimmer effect
 - [ ] Tab skeletons show three placeholders
 - [ ] Content skeletons show 6 cards in grid
@@ -100,11 +112,13 @@
 - [ ] Spinner icon rotates continuously
 
 #### Shimmer Animation
+
 - [ ] Shimmer effect slides from left to right
 - [ ] Animation loops continuously (2s cycle)
 - [ ] Shimmer is visible on all skeleton elements
 
 #### Responsive Test (Loading)
+
 - [ ] Mobile: Single column skeletons
 - [ ] Tablet: 2-column grid
 - [ ] Desktop: 3-column grid
@@ -116,6 +130,7 @@
 **Note:** This appears when budget data exists
 
 #### Budget Overview
+
 - [ ] Compact header shows budget status
 - [ ] Health score badge displays (Excellent/Good/Needs Improvement)
 - [ ] Total budget amount is visible
@@ -123,12 +138,14 @@
 - [ ] Tab navigation works (Overview, Tracking, Analytics)
 
 #### Categories Display
+
 - [ ] All budget categories show with icons
 - [ ] Each category shows percentage and amount
 - [ ] Progress bars are visible
 - [ ] Cards have hover effects
 
 #### Responsive Test (Loaded)
+
 - [ ] Mobile: Single column categories
 - [ ] Tablet: 2-column grid
 - [ ] Desktop: 3-column grid
@@ -138,24 +155,28 @@
 ## 🎨 Visual Quality Checks
 
 ### Colors
+
 - [ ] Gradient backgrounds are smooth (no banding)
 - [ ] Text is readable on all backgrounds
 - [ ] Colors match the design (emerald, blue, indigo)
 - [ ] Glass effects (backdrop blur) work properly
 
 ### Typography
+
 - [ ] Headings are large and bold
 - [ ] Body text is readable (not too small)
 - [ ] Font weights are appropriate
 - [ ] Line spacing is comfortable
 
 ### Spacing
+
 - [ ] Elements have breathing room
 - [ ] No overlapping content
 - [ ] Consistent padding across cards
 - [ ] Margins between sections are adequate
 
 ### Animations
+
 - [ ] Animations are smooth (60 FPS)
 - [ ] No janky movements
 - [ ] Hover effects work on all interactive elements
@@ -166,6 +187,7 @@
 ## 📱 Device Testing
 
 ### Mobile Devices (< 640px)
+
 ```
 Test on:
 - iPhone SE (375x667)
@@ -180,6 +202,7 @@ Expected:
 ```
 
 ### Tablet Devices (640px - 1023px)
+
 ```
 Test on:
 - iPad Mini (768x1024)
@@ -194,6 +217,7 @@ Expected:
 ```
 
 ### Desktop Devices (1024px+)
+
 ```
 Test on:
 - 1080p (1920x1080)
@@ -212,6 +236,7 @@ Expected:
 ## 🌐 Browser Testing
 
 ### Chrome
+
 ```
 1. Open in Chrome
 2. Check DevTools Console for errors
@@ -220,6 +245,7 @@ Expected:
 ```
 
 ### Firefox
+
 ```
 1. Open in Firefox
 2. Check backdrop-blur support
@@ -228,6 +254,7 @@ Expected:
 ```
 
 ### Safari
+
 ```
 1. Open in Safari
 2. Test on macOS
@@ -236,6 +263,7 @@ Expected:
 ```
 
 ### Edge
+
 ```
 1. Open in Edge
 2. Test Windows-specific issues
@@ -247,6 +275,7 @@ Expected:
 ## ⚡ Performance Testing
 
 ### Load Time
+
 ```
 1. Open browser DevTools (F12)
 2. Go to Network tab
@@ -258,6 +287,7 @@ Expected:
 ```
 
 ### Animation Performance
+
 ```
 1. Open DevTools
 2. Go to Performance tab
@@ -269,6 +299,7 @@ Expected:
 ```
 
 ### Memory Usage
+
 ```
 1. Open DevTools
 2. Go to Memory tab
@@ -283,6 +314,7 @@ Expected:
 ## 🐛 Common Issues & Fixes
 
 ### Issue: Animations not working
+
 ```
 Solution:
 - Clear browser cache
@@ -291,6 +323,7 @@ Solution:
 ```
 
 ### Issue: Backdrop blur not visible
+
 ```
 Solution:
 - Update browser to latest version
@@ -299,6 +332,7 @@ Solution:
 ```
 
 ### Issue: Gradients look banded
+
 ```
 Solution:
 - Update graphics drivers
@@ -307,6 +341,7 @@ Solution:
 ```
 
 ### Issue: Layout breaks on mobile
+
 ```
 Solution:
 - Clear cache
@@ -315,6 +350,7 @@ Solution:
 ```
 
 ### Issue: Shimmer animation not working
+
 ```
 Solution:
 - Verify globals.css loaded
@@ -327,23 +363,29 @@ Solution:
 ## 📸 Screenshot Testing
 
 ### Take Screenshots For:
+
 1. **Onboarding page - Desktop**
+
    - Full hero section visible
    - All elements in view
 
 2. **Onboarding page - Mobile**
+
    - Stacked layout
    - Proper spacing
 
 3. **Budget Display - Empty State (Desktop)**
+
    - CTA card centered
    - Feature grid visible
 
 4. **Budget Display - Empty State (Mobile)**
+
    - Single column
    - Full width button
 
 5. **Budget Display - Loading State**
+
    - Skeleton screens
    - Shimmer effect
 
@@ -356,6 +398,7 @@ Solution:
 ## ✅ Acceptance Criteria
 
 ### Must Pass:
+
 - [ ] All text is in English
 - [ ] Fully responsive (mobile, tablet, desktop)
 - [ ] Animations are smooth (60 FPS)
@@ -366,6 +409,7 @@ Solution:
 - [ ] Typography is readable
 
 ### Should Pass:
+
 - [ ] Works in all major browsers
 - [ ] Loads within 3 seconds
 - [ ] No accessibility violations
@@ -373,6 +417,7 @@ Solution:
 - [ ] Clean code (no warnings)
 
 ### Nice to Have:
+
 - [ ] Works on older browsers
 - [ ] Reduced motion support
 - [ ] Dark mode ready (for future)
@@ -383,20 +428,24 @@ Solution:
 ## 🎓 Testing Tips
 
 1. **Use Chrome DevTools Device Mode**
+
    - Press F12 → Click device icon (Ctrl+Shift+M)
    - Test different screen sizes quickly
 
 2. **Test Real Interactions**
+
    - Actually click buttons
    - Hover over elements
    - Scroll the page
 
 3. **Check Different Screen Sizes**
+
    - Start at 320px (smallest)
    - Go up to 2560px (4K)
    - Test common sizes (375px, 768px, 1920px)
 
 4. **Test Edge Cases**
+
    - Very long user names
    - Missing data
    - Slow network (throttle in DevTools)
@@ -430,16 +479,19 @@ Before deploying to production:
 If something doesn't work:
 
 1. **Check Console**
+
    - Press F12
    - Look for red errors
    - Fix JavaScript issues first
 
 2. **Check Network**
+
    - Are API calls working?
    - Is CSS file loaded?
    - Any 404 errors?
 
 3. **Check Browser**
+
    - Try different browser
    - Update to latest version
    - Clear cache and cookies
@@ -451,11 +503,14 @@ If something doesn't work:
 
 ---
 
-**Testing Date:** _______________  
-**Tester Name:** _______________  
+**Testing Date:** ******\_\_\_******  
+**Tester Name:** ******\_\_\_******  
 **Status:** [ ] Pass [ ] Fail [ ] Needs Work
 
 **Notes:**
-_________________________________________________________________
-_________________________________________________________________
-_________________________________________________________________
+
+---
+
+---
+
+---

@@ -24,15 +24,15 @@ export default function OnboardingPage() {
             'Content-Type': 'application/json',
           }
         })
-        
+
         if (response.ok) {
           const data = await response.json()
           console.log('Onboarding API response:', { status: response.status, data })
-          
+
           if (data.profile) {
             // Check if onboarding is complete
             const isComplete = data.profile.onboardingCompleted && data.profile.onboardingProgress >= 100
-            
+
             if (isComplete) {
               console.log('Onboarding is complete, redirecting to dashboard')
               router.replace('/dashboard')
@@ -121,7 +121,7 @@ export default function OnboardingPage() {
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
             <span className="text-xs sm:text-sm font-semibold">Let's Get Started</span>
           </div>
-          
+
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6">
             <span className="bg-gradient-to-r from-emerald-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
               Your Financial Journey
@@ -129,9 +129,9 @@ export default function OnboardingPage() {
             <br className="hidden sm:block" />
             <span className="text-gray-800">Starts Here</span>
           </h1>
-          
+
           <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4">
-            Answer a few quick questions and let our AI create a personalized budget 
+            Answer a few quick questions and let our AI create a personalized budget
             that fits your lifestyle and helps you achieve your financial goals.
           </p>
 
@@ -163,7 +163,7 @@ export default function OnboardingPage() {
           </div>
         </div>
       </div>
-      
+
       <OnboardingFlow />
     </div>
   )

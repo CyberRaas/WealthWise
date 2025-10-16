@@ -1401,7 +1401,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
               <span className="text-xs sm:text-sm font-semibold">AI-Powered Budget Generator</span>
             </div>
-            
+
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6">
               <span className="bg-gradient-to-r from-emerald-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 Create Your Smart
@@ -1409,9 +1409,9 @@ export default function BudgetDisplay({ refreshTrigger }) {
               <br />
               <span className="text-gray-800">Financial Budget</span>
             </h1>
-            
+
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed px-4">
-              Let our AI analyze your profile and generate a personalized budget 
+              Let our AI analyze your profile and generate a personalized budget
               that helps you save more, spend wisely, and achieve your financial dreams.
             </p>
           </div>
@@ -1487,7 +1487,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
             ].map((feature, index) => {
               const Icon = feature.icon
               return (
-                <Card 
+                <Card
                   key={index}
                   className="group bg-white/60 backdrop-blur-sm border border-gray-200 shadow-lg hover:shadow-xl rounded-2xl overflow-hidden transform hover:scale-105 transition-all duration-300"
                 >
