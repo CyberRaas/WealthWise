@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Slider } from '@/components/ui/slider'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
+import {
   Save,
   RefreshCw,
   TrendingUp,
@@ -41,17 +41,17 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
       console.warn('calculateTotals called with no categories')
       return
     }
-    
+
     console.log('Calculating totals for categories:', categories)
     const total = Object.values(categories).reduce((sum, category) => {
       console.log(`Category: ${category.englishName || 'unknown'}, Amount: ${category.amount || 0}`)
       return sum + (category.amount || 0)
     }, 0)
-    
+
     const budgetTotal = budget?.totalBudget || budget?.monthlyIncome || 50000
     const difference = Math.abs(total - budgetTotal)
     const balanced = difference <= 5000 || (difference / budgetTotal) <= 0.1 // Allow ₹5000 or 10% difference
-    
+
     console.log('Budget calculation:', {
       total,
       budgetTotal,
@@ -59,7 +59,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
       balanced,
       percentageDiff: ((difference / budgetTotal) * 100).toFixed(2) + '%'
     })
-    
+
     setTotalAllocated(total)
     setIsBalanced(balanced)
   }, [budget])
@@ -82,7 +82,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
 
     const updatedCategories = { ...customBudget.categories }
     const totalBudget = budget?.totalBudget || budget?.monthlyIncome || 50000
-    
+
     // Update amount
     updatedCategories[categoryKey] = {
       ...updatedCategories[categoryKey],
@@ -105,7 +105,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
     const updatedCategories = { ...customBudget.categories }
     const totalBudget = budget?.totalBudget || budget?.monthlyIncome || 50000
     const newAmount = Math.round((newPercentage / 100) * totalBudget)
-    
+
     updatedCategories[categoryKey] = {
       ...updatedCategories[categoryKey],
       amount: newAmount,
@@ -126,21 +126,21 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
 
     const totalBudget = budget?.totalBudget || budget?.monthlyIncome || 50000
     const difference = totalBudget - totalAllocated
-    
+
     console.log('Auto-balancing:', { totalBudget, totalAllocated, difference })
-    
+
     if (Math.abs(difference) <= 1000) {
       toast.info(t('budget.alreadyBalanced'))
       return
     }
 
     const categories = { ...customBudget.categories }
-    
+
     if (difference > 0) {
       // Need to add more allocation - distribute proportionally
       const totalCurrent = totalAllocated
       const factor = totalBudget / totalCurrent
-      
+
       Object.keys(categories).forEach(key => {
         categories[key].amount = Math.round(categories[key].amount * factor)
         categories[key].percentage = Math.round((categories[key].amount / totalBudget) * 100)
@@ -149,7 +149,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
       // Need to reduce allocation - reduce proportionally
       const totalCurrent = totalAllocated
       const factor = totalBudget / totalCurrent
-      
+
       Object.keys(categories).forEach(key => {
         categories[key].amount = Math.round(categories[key].amount * factor)
         categories[key].percentage = Math.round((categories[key].amount / totalBudget) * 100)
@@ -170,18 +170,18 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
   }
 
   const handleSave = async () => {
-    console.log('Save button clicked', { 
-      isBalanced, 
-      totalAllocated, 
+    console.log('Save button clicked', {
+      isBalanced,
+      totalAllocated,
       budgetTotal: budget?.totalBudget || budget?.monthlyIncome,
-      customBudget: !!customBudget 
+      customBudget: !!customBudget
     })
-    
+
     if (!customBudget) {
       toast.error(t('budget.noBudgetData'))
       return
     }
-    
+
     if (!isBalanced) {
       const totalBudget = budget?.totalBudget || budget?.monthlyIncome || 50000
       const difference = Math.abs(totalBudget - totalAllocated)
@@ -218,37 +218,37 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
     const totalBudget = budget.totalBudget
     const savingsPercentage = (customBudget.categories.savings?.percentage || 0)
     const essentialCategories = ['food', 'housing', 'healthcare', 'utilities']
-    const essentialPercentage = essentialCategories.reduce((sum, cat) => 
+    const essentialPercentage = essentialCategories.reduce((sum, cat) =>
       sum + (customBudget.categories[cat]?.percentage || 0), 0)
 
     if (savingsPercentage < 10) {
-      return { 
-        status: 'warning', 
-        message: t('budget.health.increaseSavings'), 
-        color: 'orange' 
+      return {
+        status: 'warning',
+        message: t('budget.health.increaseSavings'),
+        color: 'orange'
       }
     }
 
     if (essentialPercentage < 50) {
-      return { 
-        status: 'good', 
-        message: t('budget.health.greatBalance'), 
-        color: 'green' 
+      return {
+        status: 'good',
+        message: t('budget.health.greatBalance'),
+        color: 'green'
       }
     }
 
     if (essentialPercentage > 80) {
-      return { 
-        status: 'concern', 
-        message: t('budget.health.highEssentials'), 
-        color: 'red' 
+      return {
+        status: 'concern',
+        message: t('budget.health.highEssentials'),
+        color: 'red'
       }
     }
 
-    return { 
-      status: 'good', 
-      message: t('budget.health.wellBalanced'), 
-      color: 'green' 
+    return {
+      status: 'good',
+      message: t('budget.health.wellBalanced'),
+      color: 'green'
     }
   }
 
@@ -278,10 +278,10 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <CardTitle className="text-xl font-bold text-slate-800">
-                🎯 {t('budget.customizeTitle')}
+                🎯 {t('Customize Title')}
               </CardTitle>
               <CardDescription>
-                {t('budget.customizeDescription')}
+                {t('Customize Description')}
               </CardDescription>
             </div>
             <div className="flex gap-2">
@@ -291,7 +291,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                 onClick={() => setShowPercentages(!showPercentages)}
               >
                 {showPercentages ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
-                {showPercentages ? t('budget.showAmounts') : t('budget.showPercentages')}
+                {showPercentages ? t('Show Amounts') : t('Show Percentages')}
               </Button>
             </div>
           </div>
@@ -301,34 +301,34 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
           <div className="bg-gradient-to-r from-slate-50 to-emerald-50 rounded-lg p-4 mb-4">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
-                <p className="text-sm text-slate-600">{t('budget.monthlyIncome')}</p>
+                <p className="text-sm text-slate-600">{t('Monthly Income')}</p>
                 <p className="text-2xl font-bold text-slate-800">
                   ₹{totalBudget.toLocaleString('en-IN')}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-600">{t('budget.totalAllocated')}</p>
+                <p className="text-sm text-slate-600">{t('Total Allocated')}</p>
                 <p className={`text-2xl font-bold ${isBalanced ? 'text-emerald-600' : 'text-red-600'}`}>
                   ₹{totalAllocated.toLocaleString('en-IN')}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-600">{t('budget.difference')}</p>
+                <p className="text-sm text-slate-600">{t('Budget Difference')}</p>
                 <p className={`text-lg font-bold ${Math.abs(difference) <= 500 ? 'text-emerald-600' : 'text-red-600'}`}>
                   {difference > 0 ? '+' : ''}₹{difference.toLocaleString('en-IN')}
                 </p>
               </div>
             </div>
-            
+
             {!isBalanced && (
               <div className="mt-4 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-orange-600">
                   <AlertTriangle className="h-4 w-4" />
                   <span className="text-sm">
-                    {t('budget.needsBalancing', { difference: Math.abs(difference).toLocaleString('en-IN') })}
+                    {t('Budget needs Balancing', { difference: Math.abs(difference).toLocaleString('en-IN') })}
                     <br />
                     <span className="text-xs text-gray-500">
-                      {t('budget.totalVsBudget', { 
+                      {t('Budget total vs Budget', {
                         total: totalAllocated.toLocaleString('en-IN'),
                         budget: totalBudget.toLocaleString('en-IN')
                       })}
@@ -336,7 +336,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                   </span>
                 </div>
                 <Button onClick={autoBalance} size="sm" variant="outline">
-                  {t('budget.autoBalance')}
+                  {t('Auto Balance')}
                 </Button>
               </div>
             )}
@@ -358,10 +358,10 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg font-bold text-slate-800">
-            {t('budget.adjustCategories')}
+            {t('Adjust Categories')}
           </CardTitle>
           <CardDescription>
-            {t('budget.modifyAmounts')}
+            {t('Modify Amounts')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -387,7 +387,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                           ) : (
                             <TrendingDown className="h-3 w-3 mr-1" />
                           )}
-                          {currentAmount > originalAmount ? t('budget.increased') : t('budget.decreased')}
+                          {currentAmount > originalAmount ? t('Increased') : t('Decreased')}
                         </Badge>
                       )}
                     </div>
@@ -403,7 +403,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <label className="text-sm font-medium text-slate-700">
-                        {showPercentages ? t('budget.percentage') : t('budget.amount')}
+                        {showPercentages ? t('Percentage') : t('Amount')}
                       </label>
                       <div className="flex items-center gap-2">
                         {showPercentages ? (
@@ -433,7 +433,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                         )}
                       </div>
                     </div>
-                    
+
                     <Slider
                       value={[showPercentages ? category.percentage : category.amount]}
                       max={showPercentages ? 100 : totalBudget}
@@ -475,13 +475,13 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 justify-end">
         <Button variant="outline" onClick={onCancel}>
-          {t('budget.cancel')}
+          {t('Cancel')}
         </Button>
         <Button variant="outline" onClick={resetToOriginal}>
           <RotateCcw className="h-4 w-4 mr-2" />
-          {t('budget.resetToOriginal')}
+          {t('Reset to Original')}
         </Button>
-        <Button 
+        <Button
           onClick={handleSave}
           disabled={!isBalanced || saving}
           className="bg-emerald-600 hover:bg-emerald-700"
@@ -489,12 +489,12 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
           {saving ? (
             <>
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-              {t('budget.saving')}
+              {t('Saving...')}
             </>
           ) : (
             <>
               <Save className="h-4 w-4 mr-2" />
-              {t('budget.saveCustomBudget')}
+              {t('Save Custom Budget')}
             </>
           )}
         </Button>

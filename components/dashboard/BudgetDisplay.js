@@ -1330,55 +1330,203 @@ export default function BudgetDisplay({ refreshTrigger }) {
   // Loading State with Modern Skeleton
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
-        <div className="max-w-7xl mx-auto space-y-8">
-          <div className="animate-pulse">
-            <div className="h-48 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-3xl"></div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
+          {/* Animated Header Skeleton */}
+          <div className="relative overflow-hidden bg-white/60 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-lg">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer"></div>
+            <div className="relative">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="space-y-3 flex-1">
+                  <div className="h-4 w-32 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full animate-pulse"></div>
+                  <div className="h-8 w-48 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg animate-pulse"></div>
+                  <div className="h-4 w-40 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full animate-pulse"></div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="h-24 w-24 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-2xl animate-pulse"></div>
+                  <div className="space-y-2">
+                    <div className="h-10 w-32 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-xl animate-pulse"></div>
+                    <div className="h-8 w-32 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* Tabs Skeleton */}
+          <div className="flex gap-2 p-2 bg-white/40 backdrop-blur-sm rounded-2xl">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="h-32 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-2xl"></div>
+              <div key={i} className="h-10 flex-1 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-xl animate-pulse"></div>
+            ))}
+          </div>
+
+          {/* Content Skeleton */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="relative overflow-hidden bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer"></div>
+                <div className="relative space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="h-6 w-6 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg animate-pulse"></div>
+                    <div className="h-6 w-16 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full animate-pulse"></div>
+                  </div>
+                  <div className="h-4 w-3/4 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full animate-pulse"></div>
+                  <div className="h-8 w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg animate-pulse"></div>
+                  <div className="h-2 w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full animate-pulse"></div>
+                </div>
               </div>
             ))}
+          </div>
+
+          {/* Loading Message */}
+          <div className="text-center py-8">
+            <div className="inline-flex items-center space-x-3 bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-lg">
+              <div className="w-5 h-5 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-lg font-medium text-gray-700">Loading your budget data...</span>
+            </div>
           </div>
         </div>
       </div>
     )
   }
 
-  // Empty State with CTA
+  // Empty State with CTA - Enhanced Modern Design
   if (!budget) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
-        <Card className="max-w-2xl w-full bg-white border border-gray-200 shadow-lg rounded-2xl">
-          <CardContent className="p-12 text-center">
-            <div className="w-20 h-20 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <Sparkles className="w-10 h-10 text-emerald-600" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8">
+        <div className="max-w-5xl mx-auto">
+          {/* Hero Section */}
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-100 to-blue-100 text-emerald-700 rounded-full px-4 sm:px-6 py-2 sm:py-2.5 mb-6 shadow-sm">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span className="text-xs sm:text-sm font-semibold">AI-Powered Budget Generator</span>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">{t('budget.createSmartBudget')}</h1>
-            <p className="text-lg text-gray-600 mb-8">
-              Get AI-powered financial planning tailored to your lifestyle and goals
+            
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6">
+              <span className="bg-gradient-to-r from-emerald-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Create Your Smart
+              </span>
+              <br />
+              <span className="text-gray-800">Financial Budget</span>
+            </h1>
+            
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed px-4">
+              Let our AI analyze your profile and generate a personalized budget 
+              that helps you save more, spend wisely, and achieve your financial dreams.
             </p>
-            <Button
-              onClick={generateBudget}
-              disabled={generating}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 text-lg font-semibold rounded-xl"
-            >
-              {generating ? (
-                <>
-                  <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
-                  Creating Budget...
-                </>
-              ) : (
-                <>
-                  <Zap className="w-5 h-5 mr-2" />
-                  {t('budget.generateSmartBudget')}
-                </>
-              )}
-            </Button>
-          </CardContent>
-        </Card>
+          </div>
+
+          {/* Main CTA Card */}
+          <Card className="bg-white/80 backdrop-blur-xl border-0 shadow-2xl rounded-3xl overflow-hidden mb-8">
+            <CardContent className="p-8 sm:p-12 lg:p-16">
+              {/* Icon with Animation */}
+              <div className="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-8">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-3xl blur-2xl opacity-30 animate-pulse"></div>
+                <div className="relative w-full h-full bg-gradient-to-r from-emerald-500 to-blue-500 rounded-3xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300">
+                  <Sparkles className="w-12 h-12 sm:w-16 sm:h-16 text-white" />
+                </div>
+              </div>
+
+              {/* Main Heading */}
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 text-center">
+                Generate Your Personalized Budget
+              </h2>
+              <p className="text-base sm:text-lg text-gray-600 mb-8 sm:mb-10 text-center max-w-xl mx-auto">
+                Based on your income, location, and lifestyle, we'll create a custom budget plan in seconds.
+              </p>
+
+              {/* CTA Button */}
+              <div className="flex flex-col items-center space-y-4">
+                <Button
+                  onClick={generateBudget}
+                  disabled={generating}
+                  className="group relative w-full sm:w-auto bg-gradient-to-r from-emerald-600 via-blue-600 to-indigo-600 hover:from-emerald-700 hover:via-blue-700 hover:to-indigo-700 text-white px-8 sm:px-12 py-4 sm:py-5 text-base sm:text-lg font-bold rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                >
+                  {generating ? (
+                    <>
+                      <RefreshCw className="w-5 h-5 sm:w-6 sm:h-6 mr-3 animate-spin" />
+                      <span>Creating Your Budget...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="w-5 h-5 sm:w-6 sm:h-6 mr-3 group-hover:rotate-12 transition-transform duration-300" />
+                      <span>Generate My Smart Budget</span>
+                      <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 ml-3 group-hover:translate-x-1 transition-transform duration-300" />
+                    </>
+                  )}
+                </Button>
+                <p className="text-sm text-gray-500 flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-500" />
+                  Takes less than 10 seconds
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
+            {[
+              {
+                icon: Target,
+                title: 'Personalized Analysis',
+                description: 'Budget tailored to your income, city, and family size',
+                gradient: 'from-emerald-500 to-teal-500'
+              },
+              {
+                icon: Sparkles,
+                title: 'AI-Powered Insights',
+                description: 'Smart recommendations based on financial expertise',
+                gradient: 'from-blue-500 to-indigo-500'
+              },
+              {
+                icon: TrendingUp,
+                title: 'Actionable Tips',
+                description: 'Practical advice to improve your financial health',
+                gradient: 'from-violet-500 to-purple-500'
+              }
+            ].map((feature, index) => {
+              const Icon = feature.icon
+              return (
+                <Card 
+                  key={index}
+                  className="group bg-white/60 backdrop-blur-sm border border-gray-200 shadow-lg hover:shadow-xl rounded-2xl overflow-hidden transform hover:scale-105 transition-all duration-300"
+                >
+                  <CardContent className="p-6">
+                    <div className={`w-14 h-14 bg-gradient-to-r ${feature.gradient} rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon className="w-7 h-7 text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="bg-white/60 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 sm:p-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 text-center">
+              <div>
+                <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                  100%
+                </div>
+                <p className="text-sm text-gray-600">Personalized</p>
+              </div>
+              <div>
+                <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+                  AI-Powered
+                </div>
+                <p className="text-sm text-gray-600">Smart Analysis</p>
+              </div>
+              <div>
+                <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                  &lt;10s
+                </div>
+                <p className="text-sm text-gray-600">Super Fast</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
