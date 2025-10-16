@@ -261,10 +261,9 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
   }
 
   return (
-    <div 
-      className={`fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto transition-opacity duration-300 ${
-        isVisible ? 'opacity-100' : 'opacity-0'
-      }`}
+    <div
+      className={`fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
       onClick={(e) => {
         // Close modal when clicking backdrop
         if (e.target === e.currentTarget && !isListening && !isProcessing) {
@@ -272,10 +271,9 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
         }
       }}
     >
-      <div 
-        className={`bg-white rounded-2xl max-w-md w-full p-6 space-y-6 shadow-2xl my-8 transition-all duration-300 ease-out ${
-          isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
-        }`}
+      <div
+        className={`bg-white rounded-2xl max-w-md w-full p-6 space-y-6 shadow-2xl my-8 transition-all duration-300 ease-out ${isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
+          }`}
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -301,11 +299,10 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
               <button
                 onClick={isListening ? stopListening : startListening}
                 disabled={isProcessing}
-                className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${
-                  isListening
+                className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${isListening
                     ? 'bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 animate-pulse shadow-red-300'
                     : 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:scale-110 shadow-blue-300'
-                } ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl'}`}
+                  } ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl'}`}
               >
                 {isListening ? (
                   <MicOff className="w-10 h-10 text-white" />
@@ -334,12 +331,12 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
                   {/* Audio Quality Indicator */}
                   <div className="flex items-center justify-center space-x-2">
                     <div className={`w-2 h-2 rounded-full ${audioQuality === 'good' ? 'bg-green-500' :
-                        audioQuality === 'moderate' ? 'bg-yellow-500' :
-                          'bg-red-500'
+                      audioQuality === 'moderate' ? 'bg-yellow-500' :
+                        'bg-red-500'
                       }`}></div>
                     <span className={`text-xs ${audioQuality === 'good' ? 'text-green-600' :
-                        audioQuality === 'moderate' ? 'text-yellow-600' :
-                          'text-red-600'
+                      audioQuality === 'moderate' ? 'text-yellow-600' :
+                        'text-red-600'
                       }`}>
                       Audio: {audioQuality === 'good' ? 'Clear' : audioQuality === 'moderate' ? 'Moderate' : 'Noisy'}
                     </span>
@@ -495,9 +492,8 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
           <button
             onClick={onClose}
             disabled={isListening || isSaving}
-            className={`text-gray-500 hover:text-gray-700 flex items-center py-2 px-4 rounded-lg transition-all hover:bg-gray-100 ${
-              (isListening || isSaving) ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className={`text-gray-500 hover:text-gray-700 flex items-center py-2 px-4 rounded-lg transition-all hover:bg-gray-100 ${(isListening || isSaving) ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
           >
             <X className="w-4 h-4 mr-1" />
             Close
