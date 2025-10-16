@@ -15,9 +15,15 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
   const [audioQuality, setAudioQuality] = useState('good') // 'good', 'moderate', 'poor'
   const [transcriptAlternatives, setTranscriptAlternatives] = useState([])
   const [retryCount, setRetryCount] = useState(0)
+  const [isVisible, setIsVisible] = useState(false)
 
   const recognitionRef = useRef(null)
   const timeoutRef = useRef(null)
+
+  // Entrance animation
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
 
   // Initialize speech recognition with enhanced noise handling
   useEffect(() => {
@@ -255,12 +261,30 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-md w-full p-6 space-y-6">
+    <div 
+      className={`fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto transition-opacity duration-300 ${
+        isVisible ? 'opacity-100' : 'opacity-0'
+      }`}
+      onClick={(e) => {
+        // Close modal when clicking backdrop
+        if (e.target === e.currentTarget && !isListening && !isProcessing) {
+          onClose?.()
+        }
+      }}
+    >
+      <div 
+        className={`bg-white rounded-2xl max-w-md w-full p-6 space-y-6 shadow-2xl my-8 transition-all duration-300 ease-out ${
+          isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
 
         {/* Header */}
-        <div className="text-center">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+        <div className="text-center border-b pb-4">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 mb-3">
+            <Mic className="w-6 h-6 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Voice Expense Entry
           </h2>
           <p className="text-sm text-gray-600">
@@ -273,24 +297,28 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
           <div className="space-y-4">
 
             {/* Microphone Button */}
-            <div className="flex justify-center">
+            <div className="flex justify-center py-4">
               <button
                 onClick={isListening ? stopListening : startListening}
                 disabled={isProcessing}
-                className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all ${isListening
-                    ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                    : 'bg-blue-500 hover:bg-blue-600'
-                  } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`relative w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${
+                  isListening
+                    ? 'bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 animate-pulse shadow-red-300'
+                    : 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:scale-110 shadow-blue-300'
+                } ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl'}`}
               >
                 {isListening ? (
-                  <MicOff className="w-8 h-8 text-white" />
+                  <MicOff className="w-10 h-10 text-white" />
                 ) : (
-                  <Mic className="w-8 h-8 text-white" />
+                  <Mic className="w-10 h-10 text-white" />
                 )}
 
-                {/* Recording indicator */}
+                {/* Recording indicator rings */}
                 {isListening && (
-                  <div className="absolute inset-0 rounded-full border-4 border-red-300 animate-ping"></div>
+                  <>
+                    <div className="absolute inset-0 rounded-full border-4 border-red-400 animate-ping opacity-75"></div>
+                    <div className="absolute inset-0 rounded-full border-2 border-red-300 animate-pulse"></div>
+                  </>
                 )}
               </button>
             </div>
@@ -352,16 +380,30 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
             )}
 
             {/* Example Commands */}
-            <div className="bg-blue-50 rounded-lg p-3">
-              <p className="text-xs text-blue-600 font-medium mb-2">💡 Pro Tips for Better Accuracy:</p>
-              <div className="space-y-1 text-xs text-blue-700">
-                <p>• Speak clearly in a quiet environment</p>
-                <p>• Keep phone/mic close (15-30 cm away)</p>
-                <p>• Use natural phrases like:</p>
-                <p className="pl-4">- &quot;200 ka dosa khaya&quot;</p>
-                <p className="pl-4">- &quot;Metro में 45 rupees&quot;</p>
-                <p className="pl-4">- &quot;Swiggy से 180 ka order&quot;</p>
-                <p className="pl-4">- &quot;50 rupees chai pi&quot;</p>
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
+              <p className="text-sm text-blue-700 font-semibold mb-3 flex items-center">
+                <span className="mr-2">💡</span>
+                Pro Tips for Better Accuracy:
+              </p>
+              <div className="space-y-2 text-xs text-blue-600">
+                <p className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Speak clearly in a quiet environment</span>
+                </p>
+                <p className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Keep phone/mic close (15-30 cm away)</span>
+                </p>
+                <p className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>Use natural phrases like:</span>
+                </p>
+                <div className="pl-4 space-y-1 text-blue-700 font-mono text-xs">
+                  <p>- &quot;200 ka dosa khaya&quot;</p>
+                  <p>- &quot;Metro में 45 rupees&quot;</p>
+                  <p>- &quot;Swiggy से 180 ka order&quot;</p>
+                  <p>- &quot;50 rupees chai pi&quot;</p>
+                </div>
               </div>
             </div>
           </div>
@@ -449,10 +491,13 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
         )}
 
         {/* Close Button */}
-        <div className="flex justify-center">
+        <div className="flex justify-center pt-2 border-t">
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 flex items-center"
+            disabled={isListening || isSaving}
+            className={`text-gray-500 hover:text-gray-700 flex items-center py-2 px-4 rounded-lg transition-all hover:bg-gray-100 ${
+              (isListening || isSaving) ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
             <X className="w-4 h-4 mr-1" />
             Close
