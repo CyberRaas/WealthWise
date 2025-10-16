@@ -450,7 +450,7 @@ export default function GoalTracker({ userSavings = 0 }) {
                       <div className="flex items-center gap-2">
                         <Badge variant={
                           analysis.status === 'completed' ? 'default' :
-                          analysis.status === 'on_track' ? 'secondary' : 'destructive'
+                            analysis.status === 'on_track' ? 'secondary' : 'destructive'
                         } className="flex items-center gap-1">
                           {analysis.status === 'completed' ? (
                             <>
@@ -746,11 +746,10 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleTemplateSelect(template)}
-                className={`p-4 rounded-lg border-2 text-left transition-all ${
-                  selectedTemplate?.id === template.id
+                className={`p-4 rounded-lg border-2 text-left transition-all ${selectedTemplate?.id === template.id
                     ? 'border-blue-500 bg-blue-50 shadow-lg'
                     : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
-                }`}
+                  }`}
               >
                 <div className="text-2xl mb-2">{template.icon}</div>
                 <h4 className="font-medium text-sm">{template.name}</h4>
