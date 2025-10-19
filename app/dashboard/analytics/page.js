@@ -508,6 +508,7 @@ function AnalyticsContent() {
 
 export default function AnalyticsPage() {
   return (
+    
     <OnboardingGuard>
       <AnalyticsContent />
     </OnboardingGuard>
