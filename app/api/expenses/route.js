@@ -70,14 +70,14 @@ const CATEGORY_CANONICAL_MAP = {
 function unifyCategory(raw) {
   if (!raw) return 'Other'
   const key = String(raw).trim().toLowerCase()
-  return CATEGORY_CANONICAL_MAP[raw] || CATEGORY_CANONICAL_MAP[key] || CATEGORY_CANONICAL_MAP[key.replace(/\s+/g,' ')] || 'Other'
+  return CATEGORY_CANONICAL_MAP[raw] || CATEGORY_CANONICAL_MAP[key] || CATEGORY_CANONICAL_MAP[key.replace(/\s+/g, ' ')] || 'Other'
 }
 
 // POST - Add new expense entry
 export async function POST(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Authentication required' },
@@ -86,7 +86,7 @@ export async function POST(request) {
     }
 
     const expenseData = await request.json()
-    
+
     // Validate expense data
     if (!expenseData.amount || !expenseData.category) {
       return NextResponse.json(
@@ -99,7 +99,7 @@ export async function POST(request) {
 
     // Find user profile
     const userProfile = await UserProfile.findOne({ userId: session.user.id })
-    
+
     if (!userProfile) {
       return NextResponse.json(
         { error: 'User profile not found' },
@@ -131,7 +131,7 @@ export async function POST(request) {
 
     // Add expense to user profile
     userProfile.expenses.push(expense)
-    
+
     // Update user profile
     userProfile.markModified('expenses')
     await userProfile.save()
@@ -180,7 +180,7 @@ export async function POST(request) {
 export async function GET(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Authentication required' },
@@ -196,7 +196,7 @@ export async function GET(request) {
     await dbConnect()
 
     const userProfile = await UserProfile.findOne({ userId: session.user.id })
-    
+
     if (!userProfile || !userProfile.expenses) {
       return NextResponse.json({
         success: true,

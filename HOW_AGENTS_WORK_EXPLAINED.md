@@ -3,12 +3,14 @@
 ## 📊 Current Status: What's Working vs What's Not
 
 ### ✅ What's Currently Working:
+
 1. **EventBus System** - Communication infrastructure is ready
 2. **Agent Classes** - Income Agent, Spending Agent, Coach Agent are coded
 3. **Dashboard UI** - Beautiful interface is displaying
 4. **Auto-Initialization** - Agents start when app loads
 
 ### ❌ What's NOT Yet Connected:
+
 1. **Real User Data** - Agents are NOT reading your actual expenses yet
 2. **Real-Time Detection** - When you add expense, agents don't see it yet
 3. **Personalized Insights** - Currently showing generic welcome messages
@@ -18,15 +20,17 @@
 ## 🔍 The Truth: How It Currently Works
 
 ### Current Flow (Mock Data):
+
 ```
 User adds expense → Saved to MongoDB
                   ↓
                   ❌ AGENTS DON'T SEE IT
-                  
+
 Agents show generic welcome messages only
 ```
 
 ### What SHOULD Happen (Real Data):
+
 ```
 User adds expense → Saved to MongoDB
                   ↓
@@ -44,15 +48,18 @@ User adds expense → Saved to MongoDB
 ## 🔧 What Needs to Be Done
 
 ### Step 1: Connect Expense API to EventBus
+
 **File:** `app/api/expenses/route.js`
 
 **Current Code (Line 139):**
+
 ```javascript
-console.log('Expense added successfully:', expense)
-return NextResponse.json({ success: true })
+console.log("Expense added successfully:", expense);
+return NextResponse.json({ success: true });
 ```
 
 **Should Be:**
+
 ```javascript
 // Emit event so agents can respond
 eventBus.emit(EVENTS.EXPENSE_ADDED, {
@@ -61,45 +68,51 @@ eventBus.emit(EVENTS.EXPENSE_ADDED, {
   category: expense.category,
   description: expense.description,
   date: expense.date,
-  timestamp: new Date()
-})
+  timestamp: new Date(),
+});
 
-console.log('Expense added successfully:', expense)
-return NextResponse.json({ success: true })
+console.log("Expense added successfully:", expense);
+return NextResponse.json({ success: true });
 ```
 
 ### Step 2: Connect Income API to EventBus
+
 **File:** `app/api/income/route.js` (if exists)
 
 Same pattern - emit `EVENTS.INCOME_ADDED` when income is tracked.
 
 ### Step 3: Make Agents Fetch Real User Data
+
 **File:** `components/agents/AgentDashboard.js`
 
 **Add on mount:**
+
 ```javascript
 useEffect(() => {
   // Fetch user's actual transactions
-  fetchUserData()
-  
+  fetchUserData();
+
   // Then analyze with agents
-  analyzeUserFinancials()
-}, [])
+  analyzeUserFinancials();
+}, []);
 
 const fetchUserData = async () => {
-  const response = await fetch('/api/expenses')
-  const data = await response.json()
-  
+  const response = await fetch("/api/expenses");
+  const data = await response.json();
+
   // Let agents analyze
-  analyzeTransactions(data.expenses)
-}
+  analyzeTransactions(data.expenses);
+};
 ```
 
 ### Step 4: Show Real Insights
+
 Instead of:
+
 > "Start tracking your income to enable flex budget"
 
 Show:
+
 > "Based on your last 3 months, your income varies by 42%. I've created a flex budget: ₹15,000 essentials, ₹6,000 savings, ₹9,000 discretionary."
 
 ---
@@ -107,6 +120,7 @@ Show:
 ## 💡 What Agents SHOULD Do (Once Connected)
 
 ### 💰 Income Agent - Real Behavior:
+
 1. **Analyze:** Look at all user's income transactions
 2. **Calculate:** Income variability = (Std Dev / Mean) × 100
 3. **Detect:** "Your income varies by 35% - that's high variability"
@@ -115,11 +129,13 @@ Show:
 6. **Alert:** "Low income period predicted - save extra this month"
 
 **Data Sources:**
+
 - User's income entries from MongoDB
 - Historical patterns (last 3-6 months)
 - Income frequency (weekly, monthly, irregular)
 
 ### 🧠 Spending Agent - Real Behavior:
+
 1. **Learn:** Analyze spending by category, day of week, time
 2. **Detect Patterns:**
    - "You spend 40% more on weekends"
@@ -132,12 +148,14 @@ Show:
 4. **Intervene:** "It's Friday night, you usually overspend now. Your Food budget has ₹500 left for the week."
 
 **Data Sources:**
+
 - All user expenses from MongoDB
 - Category breakdown
 - Time-based patterns
 - Merchant analysis
 
 ### 🎯 Coach Agent - Real Behavior:
+
 1. **Context-Aware:** Knows your goals, budget, income situation
 2. **Recommendations:**
    - "You're spending 35% on Food (₹10,500). Reduce to 25% to save ₹3,000/month"
@@ -149,6 +167,7 @@ Show:
    - Course corrections
 
 **Data Sources:**
+
 - User's financial goals
 - Budget adherence
 - Saving rate
@@ -163,33 +182,37 @@ Show:
 **Step-by-Step (Once Connected):**
 
 1. **User Action:**
+
    ```
    Expense Form → Amount: ₹500, Category: Food, Description: Lunch
    ```
 
 2. **API Saves to MongoDB:**
+
    ```javascript
    POST /api/expenses
    → Saves to UserProfile.expenses[]
    ```
 
 3. **API Emits Event:**
+
    ```javascript
    eventBus.emit(EVENTS.EXPENSE_ADDED, {
-     userId: 'user123',
+     userId: "user123",
      amount: 500,
-     category: 'Food',
-     timestamp: new Date()
-   })
+     category: "Food",
+     timestamp: new Date(),
+   });
    ```
 
 4. **Spending Agent Receives Event:**
+
    ```javascript
    // In SpendingPatternAgent.js
    eventBus.on(EVENTS.EXPENSE_ADDED, async (data) => {
      // Analyze spending pattern
      const pattern = await this.analyzeSpending(data.userId)
-     
+
      // Check if this triggers alert
      if (pattern.foodSpendingThisMonth > pattern.foodBudget) {
        eventBus.emit(EVENTS.AGENT_ALERT, {
@@ -202,6 +225,7 @@ Show:
    ```
 
 5. **Dashboard Updates:**
+
    ```
    Live Activity Tab shows:
    🧠 Spending Agent
@@ -276,6 +300,7 @@ Show:
 ## 🚀 What We Need to Build Now
 
 ### Priority 1: Connect Real Data ✅
+
 - [x] EventBus infrastructure (DONE)
 - [ ] Emit events from expense API
 - [ ] Emit events from income API
@@ -283,12 +308,14 @@ Show:
 - [ ] Analyze real transactions
 
 ### Priority 2: Personalized Insights ✅
+
 - [ ] Calculate actual income variability
 - [ ] Detect real spending patterns
 - [ ] Generate context-aware recommendations
 - [ ] Show actual numbers (not generic messages)
 
 ### Priority 3: Real-Time Updates ✅
+
 - [ ] WebSocket or polling for live updates
 - [ ] Push notifications for critical alerts
 - [ ] Activity feed with actual user events
@@ -298,12 +325,14 @@ Show:
 ## 🎯 Bottom Line
 
 **Right Now:**
+
 - ❌ Agents show generic welcome messages
 - ❌ They DON'T see your real expenses
 - ❌ Adding expense doesn't trigger agents
 - ❌ Insights are placeholder text
 
 **After Full Integration:**
+
 - ✅ Agents analyze YOUR actual expenses
 - ✅ Real-time detection when you add expense
 - ✅ Personalized insights with YOUR numbers
@@ -314,6 +343,7 @@ Show:
 ## 📝 Next Steps
 
 I will now:
+
 1. **Connect expense API to emit EventBus events**
 2. **Make AgentDashboard fetch real user data**
 3. **Generate personalized insights from actual transactions**
@@ -323,5 +353,5 @@ This will transform the agents from "demo mode" to "production mode" where they 
 
 ---
 
-*Last Updated: October 19, 2025*
-*Status: In Progress - Connecting to Real Data*
+_Last Updated: October 19, 2025_
+_Status: In Progress - Connecting to Real Data_

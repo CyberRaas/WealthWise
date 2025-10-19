@@ -15,26 +15,31 @@
 ## 🎯 TOP 5 FEATURES TO BUILD
 
 ### 1. Flex Budget (Income Variability Handler)
+
 **What**: Adaptive budget that changes based on actual income
 **Demo**: Show Uber driver with ₹12K, ₹8K, ₹5K weekly income → Auto-adjusts
 **Wow Factor**: HIGH - No one else does this!
 
-### 2. Proactive Spending Alerts  
+### 2. Proactive Spending Alerts
+
 **What**: Warns BEFORE overspending, not after
 **Demo**: Try to order ₹800 Swiggy → Agent stops you
 **Wow Factor**: HIGH - Shows true autonomy
 
 ### 3. Voice in Hindi/Hinglish
+
 **What**: "₹500 petrol bharwaya" → Instant tracking
 **Demo**: Live voice command during pitch
 **Wow Factor**: MEDIUM - But crucial for target audience
 
 ### 4. Pattern Detection
+
 **What**: Learns spending habits (weekends, late night, etc.)
 **Demo**: Show "You spend more on Friday evenings" insight
 **Wow Factor**: MEDIUM - Shows AI learning
 
 ### 5. Agent Dashboard
+
 **What**: Real-time view of autonomous agent actions
 **Demo**: Show live feed of agent decisions
 **Wow Factor**: HIGH - Visual proof of autonomy
@@ -44,12 +49,14 @@
 ## 🎬 2-MINUTE DEMO SCRIPT
 
 **0:00-0:30** | Voice Expense
+
 ```
 🎤 "₹800 ka Swiggy order kiya"
 → Show instant recognition + categorization
 ```
 
 **0:30-1:15** | Proactive Alert
+
 ```
 🎤 "₹500 ka dinner bhi order"
 → Agent warns: "Already spent ₹800 today!"
@@ -58,6 +65,7 @@
 ```
 
 **1:15-2:00** | Income Variability
+
 ```
 Navigate to Income section
 → Show variable income (₹12K, ₹8K, ₹5K)
@@ -85,44 +93,50 @@ lib/
 ## 🔌 3 INTEGRATION POINTS
 
 ### 1. Voice Processor
+
 ```javascript
-import { eventBus, EVENTS } from './events/EventBus.js'
+import { eventBus, EVENTS } from "./events/EventBus.js";
 
 // After extracting expense
-eventBus.emit(EVENTS.VOICE_EXPENSE_DETECTED, data)
+eventBus.emit(EVENTS.VOICE_EXPENSE_DETECTED, data);
 ```
 
 ### 2. Expense API
+
 ```javascript
 // After saving expense
 eventBus.emit(EVENTS.EXPENSE_ADDED, {
-  userId, amount, category, date
-})
+  userId,
+  amount,
+  category,
+  date,
+});
 ```
 
 ### 3. App Initialization
+
 ```javascript
 // In app/layout.js
-import { initializeAgents } from '@/lib/agents'
-initializeAgents()
+import { initializeAgents } from "@/lib/agents";
+initializeAgents();
 ```
 
 ---
 
 ## 💬 5-MINUTE PITCH STRUCTURE
 
-| Time | Slide | Key Message |
-|------|-------|-------------|
-| 0:15 | Hook | "150M Indians earn daily, struggle monthly" |
-| 0:30 | Problem | Traditional apps fail gig workers |
-| 0:30 | Solution | Autonomous coach for variable income |
-| 2:00 | **DEMO** | Live voice + proactive alerts |
-| 0:30 | Tech | Multi-agent autonomous system |
-| 0:30 | USP | Voice + Privacy + Autonomy |
-| 0:20 | Market | ₹4.2L Cr, 150M workers |
-| 0:20 | Impact | 42% more savings in beta |
-| 0:20 | Roadmap | 1M users by 2026 |
-| 0:10 | Ask | Mentorship + partnerships |
+| Time | Slide    | Key Message                                 |
+| ---- | -------- | ------------------------------------------- |
+| 0:15 | Hook     | "150M Indians earn daily, struggle monthly" |
+| 0:30 | Problem  | Traditional apps fail gig workers           |
+| 0:30 | Solution | Autonomous coach for variable income        |
+| 2:00 | **DEMO** | Live voice + proactive alerts               |
+| 0:30 | Tech     | Multi-agent autonomous system               |
+| 0:30 | USP      | Voice + Privacy + Autonomy                  |
+| 0:20 | Market   | ₹4.2L Cr, 150M workers                      |
+| 0:20 | Impact   | 42% more savings in beta                    |
+| 0:20 | Roadmap  | 1M users by 2026                            |
+| 0:10 | Ask      | Mentorship + partnerships                   |
 
 ---
 
@@ -181,15 +195,19 @@ initializeAgents()
 ## 🚨 IF THINGS GO WRONG
 
 ### Demo Fails
+
 → "Let me show the backup video"
 
 ### Question You Don't Know
+
 → "Great question! We're still refining that, but..."
 
 ### Over Time Limit
+
 → Skip slides 8-9, jump to Ask
 
 ### Nervous
+
 → Deep breath, smile, you know this!
 
 ---
@@ -197,12 +215,14 @@ initializeAgents()
 ## ✅ PRE-PITCH CHECKLIST
 
 **30 Minutes Before:**
+
 - [ ] Test demo device
 - [ ] Backup video ready
 - [ ] Phone on airplane mode
 - [ ] Water bottle handy
 
 **5 Minutes Before:**
+
 - [ ] Practice opening line
 - [ ] Deep breaths
 - [ ] Team high-five
@@ -225,6 +245,7 @@ initializeAgents()
 ## 💡 DEMO DEVICE SETUP
 
 **Must Do:**
+
 - ✅ Charge to 100%
 - ✅ Airplane mode ON
 - ✅ Brightness 100%
@@ -238,6 +259,7 @@ initializeAgents()
 ## 🎯 TARGET AUDIENCE (For Demo)
 
 **Meet Rajesh:**
+
 - 32 years old
 - Uber driver in Mumbai
 - ₹25K-₹45K monthly (variable)
@@ -253,18 +275,21 @@ initializeAgents()
 ## 🔥 ENERGY BOOSTERS
 
 **Before Pitch:**
+
 - Team huddle
 - High-fives
 - "We've got this!"
 - Remember: You're helping 150M people
 
 **During Pitch:**
+
 - Make eye contact
 - Smile when talking about impact
 - Show passion for problem
 - Confident body language
 
 **After Pitch:**
+
 - Celebrate (regardless of outcome)
 - You did it!
 - Learn from feedback

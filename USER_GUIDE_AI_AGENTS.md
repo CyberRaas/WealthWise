@@ -5,7 +5,7 @@
 **Think of AI Agents as 3 smart assistants watching your money 24/7:**
 
 1. **💰 Income Agent** = Your income coach
-2. **🧠 Spending Agent** = Your spending watchdog  
+2. **🧠 Spending Agent** = Your spending watchdog
 3. **🎯 Coach Agent** = Your financial advisor
 
 They analyze YOUR real data and give YOU personalized advice.
@@ -15,6 +15,7 @@ They analyze YOUR real data and give YOU personalized advice.
 ## 🔥 How to See Them in Action
 
 ### Step 1: Add Your First Expense
+
 ```
 1. Go to "Expenses" tab
 2. Click "Add Expense"
@@ -23,6 +24,7 @@ They analyze YOUR real data and give YOU personalized advice.
 ```
 
 ### Step 2: Check AI Agents Tab
+
 ```
 1. Go to "Dashboard"
 2. Click "🤖 AI Agents" tab (at top)
@@ -30,6 +32,7 @@ They analyze YOUR real data and give YOU personalized advice.
 ```
 
 **You'll see something like:**
+
 ```
 🧠 Spending Agent (92% sure)
 "Analyzed Food expense of ₹500 for Coffee.
@@ -46,13 +49,15 @@ Just now
 **After adding 1 expense (₹500 coffee):**
 
 ✅ **What Agent Shows:**
+
 ```
 🧠 Spending Agent
-"Analyzed Food expense of ₹500. 
+"Analyzed Food expense of ₹500.
 Monthly Food total: ₹500"
 ```
 
 💡 **Insight:**
+
 ```
 Add more expenses so I can find patterns!
 Once you add 5+ expenses, I'll tell you:
@@ -66,6 +71,7 @@ Once you add 5+ expenses, I'll tell you:
 ### Example 2: After 10 Expenses
 
 **Your Spending So Far:**
+
 - Food: ₹3,000 (5 expenses)
 - Transport: ₹1,500 (3 expenses)
 - Shopping: ₹2,000 (2 expenses)
@@ -98,7 +104,7 @@ to get accurate insights."
 
 ```
 💰 Income Agent
-"Recorded income of ₹20,000. 
+"Recorded income of ₹20,000.
 Analyzing income stability..."
 
 💡 INSIGHT: "You're saving ₹13,500 this month (68%)!
@@ -126,7 +132,7 @@ Keep it up!"
 ⚠️ CRITICAL ALERT
 💰 Income Agent
 
-"Budget alert: You're spending ₹3,000 MORE 
+"Budget alert: You're spending ₹3,000 MORE
 than you're earning this month.
 
 Your biggest expenses:
@@ -134,7 +140,7 @@ Your biggest expenses:
 • Shopping: ₹5,000 (33%)
 • Entertainment: ₹4,000 (27%)
 
-ACTION: Cut Shopping or Entertainment to get 
+ACTION: Cut Shopping or Entertainment to get
 back on track."
 ```
 
@@ -145,11 +151,13 @@ back on track."
 ## 🎯 What Makes Data "Make Sense"
 
 ### ❌ Bad (Generic) Advice:
+
 - "Track your expenses" (But I already am!)
 - "Save 20%" (20% of what? How?)
 - "Budget better" (Too vague!)
 
 ### ✅ Good (Personalized) Advice:
+
 - "Your Food spending: ₹3,000 (46% of ₹6,500)"
 - "Save ₹13,500 = 68% of ₹20,000 income"
 - "Cut Shopping by ₹1,000 to stay under budget"
@@ -161,6 +169,7 @@ back on track."
 ## 📱 Dashboard Tour
 
 ### 1. Agent Status Cards (Top)
+
 ```
 ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐
 │ 💰 Income Agent     │  │ 🧠 Spending Agent   │  │ 🎯 Coach Agent      │
@@ -169,9 +178,11 @@ back on track."
 │ [ACTIVE]            │  │ [ACTIVE]            │  │ [ACTIVE]            │
 └─────────────────────┘  └─────────────────────┘  └─────────────────────┘
 ```
+
 **Shows**: How active each agent is with YOUR data
 
 ### 2. Live Activity Tab
+
 ```
 🧠 Spending Agent - Just now
 "Analyzed Food expense of ₹500. Monthly total: ₹3,200"
@@ -179,31 +190,36 @@ back on track."
 💰 Income Agent - 2 mins ago
 "Calculated savings rate: 40% (₹8,000 saved)"
 
-🎯 Coach Agent - 5 mins ago  
+🎯 Coach Agent - 5 mins ago
 "Great discipline! You're tracking consistently"
 ```
+
 **Shows**: Real-time analysis as you add data
 
 ### 3. Insights Tab
+
 ```
 💡 HIGH IMPACT - Spending Agent
 "Food spending is 46% (₹3,000). Recommended: 25-30%.
 Save ₹800-1,200 by meal planning."
 
 💡 HIGH IMPACT - Income Agent
-"Saving 68% is excellent! You'll reach emergency 
+"Saving 68% is excellent! You'll reach emergency
 fund goal in 3 months at this rate."
 ```
+
 **Shows**: Personalized recommendations with YOUR numbers
 
 ### 4. Alerts Tab
+
 ```
 ✅ SUCCESS
 "AI Agents monitoring your finances"
 
-⚠️ WARNING  
+⚠️ WARNING
 "Unusual ₹2,500 expense detected. 250% above average."
 ```
+
 **Shows**: Important notifications about YOUR activity
 
 ---
@@ -211,17 +227,22 @@ fund goal in 3 months at this rate."
 ## 🤔 Common Questions
 
 ### Q: Do agents see my REAL expenses?
+
 **A: YES!** When you add expense → Agents analyze it immediately
 
 ### Q: Are the numbers MY actual data?
+
 **A: YES!** Every insight shows YOUR real numbers:
+
 - YOUR spending amounts
 - YOUR income
 - YOUR savings rate
 - YOUR patterns
 
 ### Q: What if I just started?
+
 **A: Agents will show:**
+
 - Welcome tips to get started
 - "Add more expenses to see patterns"
 - Encouragement to keep tracking
@@ -229,9 +250,11 @@ fund goal in 3 months at this rate."
 **After 5-10 expenses, you'll see real insights!**
 
 ### Q: How do I know it's working?
-**A:** 
+
+**A:**
+
 1. Add an expense
-2. Go to AI Agents tab immediately  
+2. Go to AI Agents tab immediately
 3. See new entry in "Live Activity" with YOUR expense!
 
 ---
@@ -239,6 +262,7 @@ fund goal in 3 months at this rate."
 ## 🎯 What To Expect
 
 ### First Week:
+
 ```
 ✅ Basic analysis
 "You spent ₹8,000 this week"
@@ -246,6 +270,7 @@ fund goal in 3 months at this rate."
 ```
 
 ### After 2 Weeks:
+
 ```
 ✅ Pattern detection
 "You spend 40% more on weekends"
@@ -253,6 +278,7 @@ fund goal in 3 months at this rate."
 ```
 
 ### After 1 Month:
+
 ```
 ✅ Trends & predictions
 "Your Food budget should be ₹4,500/month"
@@ -260,6 +286,7 @@ fund goal in 3 months at this rate."
 ```
 
 ### After 3 Months:
+
 ```
 ✅ Deep insights
 "Income drops 15% every 3rd month"
@@ -272,18 +299,21 @@ fund goal in 3 months at this rate."
 ## ✅ Bottom Line
 
 ### What You Get:
+
 - ✅ Real-time analysis of YOUR expenses
 - ✅ Personalized insights with YOUR numbers
 - ✅ Clear, actionable advice
 - ✅ Proactive alerts before problems
 
 ### What You Do:
+
 1. Track expenses (as you normally would)
 2. Check AI Agents tab to see insights
 3. Follow recommendations
 4. Watch your financial health improve!
 
 ### It's That Simple!
+
 Add data → Agents analyze → You get personalized advice → You improve finances
 
 ---
@@ -298,5 +328,5 @@ That's all it takes to see your AI agents in action! 🎉
 
 ---
 
-*Made Simple for You*
-*Last Updated: October 19, 2025*
+_Made Simple for You_
+_Last Updated: October 19, 2025_
