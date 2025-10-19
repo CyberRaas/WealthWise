@@ -138,6 +138,28 @@ export async function POST(request) {
 
     console.log('Expense added successfully:', expense)
 
+    // 🤖 Emit event for AI Agents to process
+    try {
+      eventBus.emit(EVENTS.EXPENSE_ADDED, {
+        userId: session.user.id,
+        amount: expense.amount,
+        category: expense.category,
+        description: expense.description,
+        merchant: expense.merchant,
+        date: expense.date,
+        timestamp: expense.timestamp,
+        entryMethod: expense.entryMethod,
+        totalExpenses: userProfile.expenses.length,
+        monthlyTotal: userProfile.expenses
+          .filter(e => e.date && e.date.startsWith(new Date().toISOString().slice(0, 7)))
+          .reduce((sum, e) => sum + e.amount, 0)
+      })
+      console.log('✅ EventBus: EXPENSE_ADDED event emitted')
+    } catch (eventError) {
+      console.error('⚠️ EventBus emit failed:', eventError)
+      // Don't fail the request if event emission fails
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Expense added successfully',

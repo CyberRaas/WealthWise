@@ -26,6 +26,8 @@ import {
 import toast from 'react-hot-toast'
 import BudgetDisplay from '@/components/dashboard/BudgetDisplay'
 import ExpenseEntryModal from '@/components/expenses/ExpenseEntryModal'
+import { AgentDashboard } from '@/components/agents/AgentDashboard'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 function DashboardContent() {
   const { data: session } = useSession()
@@ -303,8 +305,23 @@ function DashboardContent() {
           )}
         </div>
 
-        {/* Financial Health Score & Overview with Real Data */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Main Dashboard Tabs */}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2 lg:w-auto lg:inline-flex">
+            <TabsTrigger value="overview" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              <span>Dashboard Overview</span>
+            </TabsTrigger>
+            <TabsTrigger value="ai-agents" className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              <span>🤖 AI Agents</span>
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
+            {/* Financial Health Score & Overview with Real Data */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -790,6 +807,13 @@ function DashboardContent() {
             </CardContent>
           </Card>
         </div>
+          </TabsContent>
+
+          {/* AI Agents Tab */}
+          <TabsContent value="ai-agents" className="space-y-6">
+            <AgentDashboard />
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Expense Entry Modal */}
