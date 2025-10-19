@@ -17,6 +17,7 @@
 ### 🌟 Why This PS is PERFECT for WealthWise
 
 Your existing project is **85% aligned** with this problem statement! You already have:
+
 - ✅ AI-powered budget generation (Google Gemini)
 - ✅ Voice-based expense tracking (Hindi/Hinglish/English)
 - ✅ Spending pattern analysis
@@ -26,6 +27,7 @@ Your existing project is **85% aligned** with this problem statement! You alread
 ### 🚀 What Makes You STAND OUT
 
 **Unique Differentiators**:
+
 1. **Voice-First in Hindi/Hinglish** - Perfect for informal sector workers with low financial literacy
 2. **Privacy-First** - No bank account linking (builds trust with gig workers)
 3. **Indian Cultural Context** - City-based adjustments, family size considerations
@@ -68,6 +70,7 @@ Transform WealthWise into an **Autonomous Financial Coaching Agent** by adding:
 ## 🎨 5 Key Features to Add (Hackathon-Ready)
 
 ### 1️⃣ **Autonomous Income Variability Handler** 🌊
+
 **Problem**: Gig workers have irregular income (Uber drivers, freelancers, daily wage workers)
 
 **Solution**: Adaptive "Flex Budget" System
@@ -77,50 +80,53 @@ Transform WealthWise into an **Autonomous Financial Coaching Agent** by adding:
 class FlexBudgetAgent {
   // Automatically adjusts budget based on actual income
   adaptBudget(currentMonthIncome, historicalIncome, expenses) {
-    const incomeScore = this.calculateIncomeStability(historicalIncome)
-    
-    if (incomeScore < 0.6) { // Variable income detected
+    const incomeScore = this.calculateIncomeStability(historicalIncome);
+
+    if (incomeScore < 0.6) {
+      // Variable income detected
       return {
-        type: 'FLEX_BUDGET',
-        strategy: 'income_based_allocation',
+        type: "FLEX_BUDGET",
+        strategy: "income_based_allocation",
         allocations: {
-          essentials: currentMonthIncome * 0.50,  // 50% fixed
-          savings: currentMonthIncome * 0.20,     // 20% savings
-          discretionary: currentMonthIncome * 0.30 // 30% flexible
+          essentials: currentMonthIncome * 0.5, // 50% fixed
+          savings: currentMonthIncome * 0.2, // 20% savings
+          discretionary: currentMonthIncome * 0.3, // 30% flexible
         },
         recommendations: [
           "Income ₹15,000 this week → Save ₹3,000 now",
           "Build 2-month emergency buffer for low-income weeks",
-          "Next week looks slow → Reduce discretionary by 40%"
-        ]
-      }
+          "Next week looks slow → Reduce discretionary by 40%",
+        ],
+      };
     }
   }
-  
+
   // Predict low-income periods and warn in advance
   predictLowIncomePeriod(historicalData) {
     // ML-based prediction using past 3 months data
-    const prediction = this.model.predict(historicalData)
-    
+    const prediction = this.model.predict(historicalData);
+
     if (prediction.confidence > 0.75) {
       return {
         alert: "⚠️ Next 2 weeks may have 30% lower income",
         action: "Save extra ₹2,000 this week as buffer",
-        reasoning: "Your income drops during festival season based on past data"
-      }
+        reasoning:
+          "Your income drops during festival season based on past data",
+      };
     }
   }
 }
 ```
 
 **Demo Scenario**:
+
 ```
 User: Rajesh (Uber Driver, ₹25K-₹45K/month variable income)
 
 Week 1 (High earnings): ₹12,000
 Agent: "🎉 Great week! Save ₹3,000 NOW for slower weeks ahead"
 
-Week 3 (Low earnings): ₹4,000  
+Week 3 (Low earnings): ₹4,000
 Agent: "⚠️ Low income week detected. Using your buffer from Week 1.
        Your essentials (₹2,000) are covered. Avoid discretionary spending."
 
@@ -132,6 +138,7 @@ Agent: "📊 Income this month: ₹32,000 (vs avg ₹35,000)
 ---
 
 ### 2️⃣ **Real-Time Behavioral Pattern Agent** 🧠
+
 **Problem**: Users overspend without realizing their patterns
 
 **Solution**: Autonomous Spending Pattern Detection
@@ -139,10 +146,10 @@ Agent: "📊 Income this month: ₹32,000 (vs avg ₹35,000)
 ```javascript
 class SpendingPatternAgent {
   constructor() {
-    this.patterns = {}
-    this.runContinuously() // Autonomous background process
+    this.patterns = {};
+    this.runContinuously(); // Autonomous background process
   }
-  
+
   // Continuously learns from every transaction
   async learnPattern(transaction) {
     const pattern = {
@@ -151,39 +158,39 @@ class SpendingPatternAgent {
       category: transaction.category,
       amount: transaction.amount,
       location: transaction.location,
-      mood: transaction.mood // detected from voice tone
-    }
-    
+      mood: transaction.mood, // detected from voice tone
+    };
+
     // Detect triggers
-    const triggers = this.detectSpendingTriggers(pattern)
-    
+    const triggers = this.detectSpendingTriggers(pattern);
+
     if (triggers.confidence > 0.8) {
-      this.proactiveIntervention(triggers)
+      this.proactiveIntervention(triggers);
     }
   }
-  
+
   // Proactive intervention BEFORE overspending
   proactiveIntervention(triggers) {
     return {
-      type: 'PROACTIVE_ALERT',
+      type: "PROACTIVE_ALERT",
       message: `🤔 Notice: You usually spend ₹800+ on food delivery 
                 on Friday evenings. You've already spent ₹600 today.
                 
                 💡 Suggestion: Cook at home tonight? 
                 You'll save ₹500 and hit your monthly savings goal! 🎯`,
-      timing: 'BEFORE_ACTION', // Key: Intervene BEFORE spending
+      timing: "BEFORE_ACTION", // Key: Intervene BEFORE spending
       alternatives: [
-        { action: 'Cook at home', savings: 500, effort: 'Medium' },
-        { action: 'Eat at local dhaba', savings: 300, effort: 'Low' },
-        { action: 'Order smaller meal', savings: 200, effort: 'Low' }
-      ]
-    }
+        { action: "Cook at home", savings: 500, effort: "Medium" },
+        { action: "Eat at local dhaba", savings: 300, effort: "Low" },
+        { action: "Order smaller meal", savings: 200, effort: "Low" },
+      ],
+    };
   }
-  
+
   // Detect anomalies autonomously
   detectAnomaly(transaction) {
-    const userAverage = this.getAverageForCategory(transaction.category)
-    
+    const userAverage = this.getAverageForCategory(transaction.category);
+
     if (transaction.amount > userAverage * 2) {
       return {
         alert: `⚠️ Unusual spending detected!
@@ -192,14 +199,15 @@ class SpendingPatternAgent {
                 
                 Is this expected? (Wedding/Emergency/Impulse)`,
         requireConfirmation: true,
-        suggestBudgetAdjustment: true
-      }
+        suggestBudgetAdjustment: true,
+      };
     }
   }
 }
 ```
 
 **Demo Scenario**:
+
 ```
 🎤 User (Saturday 8 PM): "₹1200 का Swiggy order kiya"
 
@@ -226,6 +234,7 @@ Want me to suggest easy recipes? 👨‍🍳"
 ---
 
 ### 3️⃣ **Proactive Bill Prediction Agent** 📅
+
 **Problem**: Unexpected bills derail budgets
 
 **Solution**: Autonomous Bill Forecasting
@@ -234,66 +243,67 @@ Want me to suggest easy recipes? 👨‍🍳"
 class BillPredictionAgent {
   // Learns bill patterns from history
   async predictUpcomingBills(userId) {
-    const bills = await this.analyzeBillingHistory(userId)
-    
+    const bills = await this.analyzeBillingHistory(userId);
+
     return {
       upcoming: [
         {
-          bill: 'Electricity',
+          bill: "Electricity",
           predictedAmount: 1850,
-          dueDate: '2025-10-25',
+          dueDate: "2025-10-25",
           confidence: 0.92,
-          reasoning: 'October avg ₹1,800, AC usage +3% this month',
-          proactiveAction: 'Set aside ₹1,850 now'
+          reasoning: "October avg ₹1,800, AC usage +3% this month",
+          proactiveAction: "Set aside ₹1,850 now",
         },
         {
-          bill: 'Mobile Recharge',
+          bill: "Mobile Recharge",
           predictedAmount: 299,
-          dueDate: '2025-10-28',
+          dueDate: "2025-10-28",
           confidence: 0.98,
-          reasoning: 'Prepaid plan expires in 9 days',
-          proactiveAction: 'Auto-recharge reminder set'
-        }
+          reasoning: "Prepaid plan expires in 9 days",
+          proactiveAction: "Auto-recharge reminder set",
+        },
       ],
       totalUpcoming: 2149,
       budgetImpact: {
         available: 5200,
         afterBills: 3051,
-        status: 'SAFE',
-        recommendation: 'You can afford these bills comfortably'
+        status: "SAFE",
+        recommendation: "You can afford these bills comfortably",
       },
       alerts: [
         {
-          type: 'ADVANCE_WARNING',
-          message: '⚠️ ₹2,149 in bills coming in next 10 days. Set aside now?',
-          action: 'MOVE_TO_BILLS_CATEGORY'
-        }
-      ]
-    }
+          type: "ADVANCE_WARNING",
+          message: "⚠️ ₹2,149 in bills coming in next 10 days. Set aside now?",
+          action: "MOVE_TO_BILLS_CATEGORY",
+        },
+      ],
+    };
   }
-  
+
   // Autonomous daily check (runs in background)
   async dailyBillCheck() {
-    const predictions = await this.predictUpcomingBills()
-    
+    const predictions = await this.predictUpcomingBills();
+
     // 7 days before due date → Proactive notification
-    predictions.upcoming.forEach(bill => {
-      const daysUntilDue = this.getDaysUntil(bill.dueDate)
-      
+    predictions.upcoming.forEach((bill) => {
+      const daysUntilDue = this.getDaysUntil(bill.dueDate);
+
       if (daysUntilDue === 7) {
         this.sendProactiveNotification({
           title: `📅 Bill Due in 1 Week`,
           message: `${bill.bill}: ₹${bill.predictedAmount} due ${bill.dueDate}
                     Set aside money now to avoid stress!`,
-          action: 'RESERVE_FUNDS'
-        })
+          action: "RESERVE_FUNDS",
+        });
       }
-    })
+    });
   }
 }
 ```
 
 **Demo Scenario**:
+
 ```
 🤖 Agent (Autonomous - Sunday Morning):
 "☀️ Good morning! Weekly financial check-in:
@@ -319,6 +329,7 @@ You have ₹2,352 for this week's expenses.
 ---
 
 ### 4️⃣ **Context-Aware Coaching Agent** 🎯
+
 **Problem**: Generic advice doesn't work; needs to be contextual
 
 **Solution**: Situational Intelligence
@@ -336,61 +347,61 @@ class ContextAwareCoachAgent {
       weatherData,
       socialContext
     } = context
-    
+
     // Multi-factor decision making
     const advice = await this.generateContextualCoaching({
-      
+
       // Scenario 1: Payday
       if (context.isPayday) {
         return {
           message: `🎉 Salary credited! ₹45,000
-                    
+
                     🤖 Smart Allocation (Auto-pilot mode):
                     ✅ Bills (₹8,500) → Reserved
-                    ✅ EMIs (₹12,000) → Reserved  
+                    ✅ EMIs (₹12,000) → Reserved
                     ✅ Savings (₹7,500) → Transferred to goal
-                    
+
                     💰 Free to spend: ₹17,000 (for next 30 days)
-                    
+
                     Want me to auto-execute this plan?`,
           autoExecute: true,
           confidence: 0.95
         }
       },
-      
+
       // Scenario 2: Weekend + Good Weather
       if (context.isWeekend && context.weather === 'sunny') {
         const avgWeekendSpending = 1200
         return {
           message: `🌞 Beautiful Saturday!
-                    
+
                     ⚠️ Pattern Alert: You usually spend ₹${avgWeekendSpending}
                     on weekend outings.
-                    
+
                     💡 Budget-Friendly Ideas:
                     • Free park visit (Save ₹1,000)
                     • Home movie night (Save ₹800)
                     • Cook & picnic (Save ₹600)
-                    
+
                     OR proceed with normal weekend budget?`,
           proactive: true,
           savingsOpportunity: 800
         }
       },
-      
+
       // Scenario 3: Low Balance + Mid-Month
       if (context.daysUntilPayday > 15 && context.balance < 5000) {
         return {
           message: `⚠️ Mid-month low balance alert!
-                    
+
                     📊 Current: ₹4,200
                     📅 Payday: 18 days away
-                    
+
                     🤖 Survival Mode Activated:
                     • Daily budget: ₹233 (essentials only)
                     • Skip non-essentials for 2 weeks
                     • Cook at home (saves ₹3,000)
-                    
+
                     You've been here before and succeeded! 💪`,
           mode: 'SURVIVAL',
           dailyLimit: 233
@@ -404,6 +415,7 @@ class ContextAwareCoachAgent {
 **Demo Scenarios**:
 
 **Scenario A: Festival Season**
+
 ```
 🎤 User: "Diwali ke liye ₹5000 ka shopping karna hai"
 
@@ -426,6 +438,7 @@ Want me to find best deals? 🛍️"
 ```
 
 **Scenario B: Stressful Day**
+
 ```
 🤖 Agent (Detects stress from voice tone):
 "Hey, you sound stressed 😔
@@ -438,7 +451,7 @@ Your pattern: Stress → Online shopping (avg ₹2,500)
 • Call a friend (Free, proven to help)
 • Watch saved movies (Already paid for)
 
-Shopping can wait till tomorrow. 
+Shopping can wait till tomorrow.
 Past data: You regret 73% of stress purchases.
 
 I'm here to help! 🤗"
@@ -447,6 +460,7 @@ I'm here to help! 🤗"
 ---
 
 ### 5️⃣ **Multi-Agent Autonomous Orchestration** 🎭
+
 **Problem**: Agents need to work together, not in silos
 
 **Solution**: Coordinated Multi-Agent System
@@ -459,12 +473,12 @@ class AutonomousFinancialOrchestrator {
       spending: new SpendingPatternAgent(),
       bills: new BillPredictionAgent(),
       coach: new ContextAwareCoachAgent(),
-      savings: new SavingsOptimizerAgent()
-    }
-    
-    this.runAutonomously() // 24/7 background operation
+      savings: new SavingsOptimizerAgent(),
+    };
+
+    this.runAutonomously(); // 24/7 background operation
   }
-  
+
   // Autonomous coordination
   async orchestrateAgents(userContext) {
     // All agents analyze simultaneously
@@ -473,49 +487,50 @@ class AutonomousFinancialOrchestrator {
       spendingPatterns,
       billPredictions,
       coachingAdvice,
-      savingsOps
+      savingsOps,
     ] = await Promise.all([
       this.agents.income.analyze(userContext),
       this.agents.spending.detectPatterns(userContext),
       this.agents.bills.predictBills(userContext),
       this.agents.coach.getAdvice(userContext),
-      this.agents.savings.findOpportunities(userContext)
-    ])
-    
+      this.agents.savings.findOpportunities(userContext),
+    ]);
+
     // Collaborative decision-making
     const orchestratedPlan = this.createUnifiedPlan({
       incomeInsights,
       spendingPatterns,
       billPredictions,
       coachingAdvice,
-      savingsOps
-    })
-    
+      savingsOps,
+    });
+
     // Proactive execution (with user consent)
     if (orchestratedPlan.confidence > 0.9) {
       return {
         plan: orchestratedPlan,
         autoExecute: true,
         userApprovalRequired: false,
-        reasoning: "High confidence based on 3 months of learned behavior"
-      }
+        reasoning: "High confidence based on 3 months of learned behavior",
+      };
     }
   }
-  
+
   // Example: Coordinated response to income drop
   async handleIncomeVariability(newIncome, historicalAverage) {
-    const drop = (historicalAverage - newIncome) / historicalAverage
-    
-    if (drop > 0.3) { // 30% income drop detected
+    const drop = (historicalAverage - newIncome) / historicalAverage;
+
+    if (drop > 0.3) {
+      // 30% income drop detected
       // All agents collaborate
       const response = {
         income: await this.agents.income.adaptBudget(newIncome),
         spending: await this.agents.spending.reduceLimits(0.3),
         bills: await this.agents.bills.prioritizeEssentials(),
         coach: await this.agents.coach.provideCrisisSupport(),
-        savings: await this.agents.savings.pauseGoals()
-      }
-      
+        savings: await this.agents.savings.pauseGoals(),
+      };
+
       return {
         message: `⚠️ 30% Income Drop Detected
                   
@@ -528,14 +543,15 @@ class AutonomousFinancialOrchestrator {
                   
                   You'll be okay. I've got you covered! 💪`,
         autoActions: response,
-        requireConfirmation: true
-      }
+        requireConfirmation: true,
+      };
     }
   }
 }
 ```
 
 **Demo Scenario: Complete Autonomous Flow**
+
 ```
 DAY 1 (Monday Morning):
 🤖 "Good morning! Weekly plan ready:
@@ -543,27 +559,27 @@ DAY 1 (Monday Morning):
     Bills due: ₹2,200 (Thu)
     Savings goal: ₹1,500
     Flexible budget: ₹4,300
-    
+
     I'm monitoring everything autonomously. You focus on driving! 🚗"
 
 DAY 3 (Wednesday Evening):
 🤖 "⚠️ Income only ₹5,000 so far (expected ₹6,000)
-    
+
     AUTO-ADJUSTED:
     • Reduced discretionary by ₹500
     • Bills still covered ✅
     • Savings reduced to ₹1,000 (temporary)
-    
+
     Drive extra 4 hours this week to hit target? 🎯"
 
 DAY 5 (Friday):
 🤖 "🎉 Income: ₹9,200 (Above target!)
-    
+
     SMART ALLOCATION:
     • Bills paid ✅
     • Savings topped up to ₹1,500 ✅
     • Extra ₹700 → Emergency fund
-    
+
     Great week! Take Sunday off guilt-free! 🏖️"
 ```
 
@@ -572,6 +588,7 @@ DAY 5 (Friday):
 ## 🏗️ Implementation Roadmap (Hackathon Timeline)
 
 ### Week 1: Foundation (Days 1-7)
+
 **Goal**: Set up multi-agent architecture
 
 ```
@@ -585,7 +602,7 @@ Day 3-4: Income Variability Agent
 ├── Add income prediction ML model
 └── Test with gig worker personas
 
-Day 5-6: Spending Pattern Agent  
+Day 5-6: Spending Pattern Agent
 ├── Pattern detection algorithm
 ├── Proactive intervention logic
 └── Anomaly detection
@@ -596,6 +613,7 @@ Day 7: Integration Testing
 ```
 
 ### Week 2: Intelligence Layer (Days 8-14)
+
 **Goal**: Add autonomous decision-making
 
 ```
@@ -620,6 +638,7 @@ Day 14: End-to-End Testing
 ```
 
 ### Week 3: Polish & Demo (Days 15-21)
+
 **Goal**: Create winning demo
 
 ```
@@ -648,6 +667,7 @@ Day 20-21: Presentation
 ### Demo Persona: **Rajesh - Uber Driver** (Perfect Gig Worker Example)
 
 **Setup** (30 seconds):
+
 ```
 "Meet Rajesh, an Uber driver in Mumbai.
 His income varies: ₹25K-₹45K per month.
@@ -656,6 +676,7 @@ WealthWise adapts autonomously."
 ```
 
 **Scene 1: Income Variability** (60 seconds):
+
 ```
 Week 1: Earns ₹12,000 (High)
 🤖 Agent: "Great week! Auto-saving ₹3,500 for slower weeks"
@@ -668,6 +689,7 @@ Week 3: Earns ₹4,000 (Low - Festival season, fewer rides)
 ```
 
 **Scene 2: Proactive Coaching** (45 seconds):
+
 ```
 Friday 8 PM (Rajesh just finished driving):
 🎤 Rajesh: "₹800 ka Swiggy karna hai" (Order ₹800 food)
@@ -677,44 +699,47 @@ Friday 8 PM (Rajesh just finished driving):
  • You order food when tired after driving
  • Already spent ₹600 today on snacks
  • Budget impact: -₹1,400 for one day!
- 
+
  💡 Alternative: Order from local dhaba (₹300)
  Save ₹500 → Closer to Goa trip goal!
- 
+
  Still want Swiggy?"
 
 [Rajesh: "Nahi, dhaba theek hai"] ← User learns!
 ```
 
 **Scene 3: Bill Prediction** (30 seconds):
+
 ```
 🤖 Agent (Autonomous - Sunday morning):
 "📅 Bills coming this week:
  • Mobile: ₹299 (Tomorrow)
  • Electricity: ₹850 (Thursday)
- 
+
  ✅ Auto-reserved ₹1,149 from this week's earnings
- 
+
  You have ₹3,200 free to spend. Drive safely! 🚗"
 ```
 
 **Scene 4: Month-End Success** (30 seconds):
+
 ```
 🤖 Agent:
 "🎉 Monthly Report - October 2025:
- 
+
  💰 Total Income: ₹34,500 (Variable ±25%)
  ✅ All bills paid on time
  ✅ Saved ₹6,200 (18% despite variability!)
  ✅ Emergency fund: 2 months ⬆️
- 
+
  The system adapted to your income 47 times this month.
  You made smarter decisions 23 times based on my alerts!
- 
+
  Ready for November? 🚀"
 ```
 
 **Closing** (15 seconds):
+
 ```
 "WealthWise: The only financial coach that adapts to YOUR life,
 not the other way around.
@@ -734,6 +759,7 @@ Thank you! 🙏"
 ### New Components to Build
 
 #### 1. Agent Framework (`lib/agents/`)
+
 ```
 lib/agents/
 ├── BaseAgent.js          # Common agent functionality
@@ -746,6 +772,7 @@ lib/agents/
 ```
 
 #### 2. Event System (`lib/events/`)
+
 ```
 lib/events/
 ├── EventBus.js           # Central event dispatcher
@@ -754,6 +781,7 @@ lib/events/
 ```
 
 #### 3. ML Models (`lib/ml/`)
+
 ```
 lib/ml/
 ├── IncomePredictionModel.js    # Simple ML for income
@@ -762,6 +790,7 @@ lib/ml/
 ```
 
 #### 4. Background Jobs (`lib/jobs/`)
+
 ```
 lib/jobs/
 ├── DailyFinancialCheckup.js    # Run daily
@@ -770,6 +799,7 @@ lib/jobs/
 ```
 
 #### 5. New API Endpoints
+
 ```
 /api/agents/
 ├── status              # Get all agent statuses
@@ -781,6 +811,7 @@ lib/jobs/
 ```
 
 #### 6. Dashboard Enhancements
+
 ```
 components/agents/
 ├── AgentStatusDashboard.js     # Show agent activity
@@ -794,6 +825,7 @@ components/agents/
 ## 🔥 Unique Selling Points (USP) for Judges
 
 ### 1. **Voice-First for Informal Sector** 🎤
+
 ```
 Most gig/informal workers:
 ❌ Don't track expenses (low financial literacy)
@@ -807,6 +839,7 @@ WealthWise:
 ```
 
 ### 2. **True Autonomy, Not Just AI** 🤖
+
 ```
 Other apps:
 ❌ AI answers questions when asked
@@ -820,6 +853,7 @@ WealthWise:
 ```
 
 ### 3. **Income Variability = Competitive Advantage** 🌊
+
 ```
 Traditional apps assume:
 ❌ Fixed monthly salary
@@ -834,6 +868,7 @@ WealthWise handles:
 ```
 
 ### 4. **Indian Cultural Context** 🇮🇳
+
 ```
 Generic apps miss:
 ❌ Family obligations (sending money home)
@@ -849,6 +884,7 @@ WealthWise includes:
 ```
 
 ### 5. **Privacy-First = Trust** 🔒
+
 ```
 Why gig workers don't use fintech:
 ❌ Fear of bank account linking
@@ -867,6 +903,7 @@ WealthWise promise:
 ## 📊 Impact Metrics (For Presentation)
 
 ### Target Market Size
+
 ```
 India's Gig Economy (2024):
 • 150M+ gig workers
@@ -880,6 +917,7 @@ Addressable Market:
 ```
 
 ### Success Metrics (Demo Data)
+
 ```
 After 1 Month of Using WealthWise:
 
@@ -898,6 +936,7 @@ After 1 Month of Using WealthWise:
 ## 💡 Presentation Tips
 
 ### Slide Structure (10 slides, 5 minutes)
+
 ```
 1. Hook: "150M Indians earn daily, struggle monthly" (15 sec)
 2. Problem: Income variability + Low literacy (30 sec)
@@ -912,6 +951,7 @@ After 1 Month of Using WealthWise:
 ```
 
 ### Storytelling Approach
+
 ```
 Start with emotion:
 "Rajesh drives 10 hours daily.
@@ -925,6 +965,7 @@ That's WealthWise."
 ```
 
 ### Live Demo Best Practices
+
 ```
 1. Use pre-recorded video (backup if live fails)
 2. Real voice commands (show voice feature)
@@ -938,6 +979,7 @@ That's WealthWise."
 ## 🚀 Quick Start Guide (Start Building NOW!)
 
 ### Step 1: Set Up Agent Base (Day 1)
+
 ```bash
 # Create agent structure
 mkdir -p lib/agents lib/events lib/ml
@@ -949,113 +991,118 @@ npm install eventsource node-cron
 ```
 
 ### Step 2: Income Agent (Day 2-3)
+
 ```javascript
 // lib/agents/IncomeAgent.js
 export class IncomeAgent {
   async analyzeIncomeVariability(userId) {
     // Fetch last 3 months income data
-    const incomeHistory = await this.getIncomeHistory(userId, 90)
-    
+    const incomeHistory = await this.getIncomeHistory(userId, 90);
+
     // Calculate variability score (0-1)
-    const variability = this.calculateVariability(incomeHistory)
-    
+    const variability = this.calculateVariability(incomeHistory);
+
     // Generate flex budget if variability > 0.3
     if (variability > 0.3) {
-      return await this.createFlexBudget(incomeHistory)
+      return await this.createFlexBudget(incomeHistory);
     }
-    
-    return { type: 'STANDARD_BUDGET' }
+
+    return { type: "STANDARD_BUDGET" };
   }
-  
+
   calculateVariability(incomeHistory) {
-    const amounts = incomeHistory.map(i => i.amount)
-    const mean = amounts.reduce((a, b) => a + b) / amounts.length
-    const variance = amounts.reduce((sum, val) => 
-      sum + Math.pow(val - mean, 2), 0) / amounts.length
-    
-    return Math.sqrt(variance) / mean // Coefficient of variation
+    const amounts = incomeHistory.map((i) => i.amount);
+    const mean = amounts.reduce((a, b) => a + b) / amounts.length;
+    const variance =
+      amounts.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) /
+      amounts.length;
+
+    return Math.sqrt(variance) / mean; // Coefficient of variation
   }
 }
 ```
 
 ### Step 3: Event Bus (Day 1)
+
 ```javascript
 // lib/events/EventBus.js
 class EventBus {
   constructor() {
-    this.listeners = {}
+    this.listeners = {};
   }
-  
+
   on(event, callback) {
     if (!this.listeners[event]) {
-      this.listeners[event] = []
+      this.listeners[event] = [];
     }
-    this.listeners[event].push(callback)
+    this.listeners[event].push(callback);
   }
-  
+
   emit(event, data) {
     if (this.listeners[event]) {
-      this.listeners[event].forEach(cb => cb(data))
+      this.listeners[event].forEach((cb) => cb(data));
     }
   }
 }
 
-export const eventBus = new EventBus()
+export const eventBus = new EventBus();
 
 // Usage in expense entry:
-eventBus.emit('EXPENSE_ADDED', { 
-  amount: 500, 
-  category: 'food', 
-  userId: 'user123' 
-})
+eventBus.emit("EXPENSE_ADDED", {
+  amount: 500,
+  category: "food",
+  userId: "user123",
+});
 
 // Agents listen:
-eventBus.on('EXPENSE_ADDED', (data) => {
-  spendingAgent.analyzePattern(data)
-  budgetAgent.updateBudget(data)
-  coachAgent.checkIntervention(data)
-})
+eventBus.on("EXPENSE_ADDED", (data) => {
+  spendingAgent.analyzePattern(data);
+  budgetAgent.updateBudget(data);
+  coachAgent.checkIntervention(data);
+});
 ```
 
 ### Step 4: Integrate with Existing Voice Processor
+
 ```javascript
 // Modify lib/voiceProcessor.js
 import { eventBus } from './events/EventBus.js'
 
 async processVoiceInput(voiceText) {
   const result = await this.extractWithAI(voiceText)
-  
+
   // Emit event for agents to process
   eventBus.emit('VOICE_EXPENSE_DETECTED', {
     voiceText,
     extracted: result,
     timestamp: new Date()
   })
-  
+
   return result
 }
 ```
 
 ### Step 5: Dashboard Widget (Day 5)
+
 ```javascript
 // components/agents/AgentActivityFeed.js
 export function AgentActivityFeed() {
-  const [activities, setActivities] = useState([])
-  
+  const [activities, setActivities] = useState([]);
+
   useEffect(() => {
     // Real-time agent activity stream
-    const eventSource = new EventSource('/api/agents/stream')
-    
+    const eventSource = new EventSource("/api/agents/stream");
+
     eventSource.onmessage = (event) => {
-      const activity = JSON.parse(event.data)
-      setActivities(prev => [activity, ...prev].slice(0, 10))
-    }
-  }, [])
-  
+      const activity = JSON.parse(event.data);
+      setActivities((prev) => [activity, ...prev].slice(0, 10));
+    };
+  }, []);
+
   return (
     <div className="agent-feed">
       <h3>🤖 Autonomous Agent Activity</h3>
-      {activities.map(activity => (
+      {activities.map((activity) => (
         <div key={activity.id} className="activity-item">
           <span className="agent-icon">{activity.agentIcon}</span>
           <span className="action">{activity.action}</span>
@@ -1063,7 +1110,7 @@ export function AgentActivityFeed() {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 // Example activities:
@@ -1078,6 +1125,7 @@ export function AgentActivityFeed() {
 ## 🎓 Learning Resources (For Team)
 
 ### Quick AI/ML Concepts
+
 ```
 You DON'T need complex ML for hackathon!
 Use simple approaches:
@@ -1098,6 +1146,7 @@ Keep it simple but effective!
 ```
 
 ### Prompt Engineering for Gemini
+
 ```javascript
 // Good prompt for autonomous coaching
 const prompt = `
@@ -1120,7 +1169,7 @@ RULES:
 5. Keep under 100 words
 
 Generate coaching advice now.
-`
+`;
 ```
 
 ---
@@ -1128,6 +1177,7 @@ Generate coaching advice now.
 ## ✅ Pre-Hackathon Checklist
 
 ### Technical Readiness
+
 - [ ] Code is working locally
 - [ ] All APIs have error handling
 - [ ] Demo data is pre-loaded
@@ -1136,6 +1186,7 @@ Generate coaching advice now.
 - [ ] Code pushed to GitHub (judges may check)
 
 ### Presentation Readiness
+
 - [ ] Pitch deck completed (10 slides max)
 - [ ] Demo script practiced (under 3 minutes)
 - [ ] Team roles defined (who presents what)
@@ -1143,6 +1194,7 @@ Generate coaching advice now.
 - [ ] Elevator pitch ready (30 seconds)
 
 ### Deployment Readiness
+
 - [ ] App deployed on Vercel/Netlify
 - [ ] Live URL working
 - [ ] Mobile responsive tested
@@ -1156,26 +1208,31 @@ Generate coaching advice now.
 ### Why You'll Win
 
 **1. Strong Foundation** ✅
+
 - You already have 85% of the app working
 - Focus on high-impact agentic features
 - Less time on basics, more on innovation
 
 **2. Perfect Problem-Solution Fit** ✅
+
 - PS asks for gig workers → You target them
 - PS wants autonomy → You have multi-agents
 - PS needs adaptability → You have flex budgets
 
 **3. Real Indian Market Understanding** ✅
+
 - Voice in Hindi/Hinglish (judges will love this!)
 - Privacy-first (builds trust)
 - Cultural context (festivals, family)
 
 **4. Live Demo Impact** ✅
+
 - Rajesh persona is relatable
 - Voice demo shows innovation
 - Real-time agent activity is impressive
 
 **5. Technical Depth** ✅
+
 - Multi-agent architecture (not just chatbot)
 - Event-driven system (scalable)
 - ML for predictions (shows depth)
@@ -1193,6 +1250,7 @@ Generate coaching advice now.
 ## 📞 Final Tips
 
 ### Do's ✅
+
 - Practice demo 10+ times
 - Have backup plans (video, screenshots)
 - Show passion for the problem
@@ -1200,6 +1258,7 @@ Generate coaching advice now.
 - Engage judges with questions
 
 ### Don'ts ❌
+
 - Don't claim features you don't have
 - Don't use jargon without explanation
 - Don't go over time limit
@@ -1207,12 +1266,13 @@ Generate coaching advice now.
 - Don't ignore judges' questions
 
 ### If Things Go Wrong
+
 ```
 Live demo fails?
 → Switch to pre-recorded video
 
 Judges ask about revenue model?
-→ "Freemium: Free for individuals, 
+→ "Freemium: Free for individuals,
    ₹99/month premium, B2B partnerships"
 
 Judges question ML accuracy?
@@ -1230,17 +1290,20 @@ Judges ask about competition?
 ## 🎯 Call to Action
 
 ### Next 3 Hours (START NOW!)
+
 1. ⏰ **Hour 1**: Read this document fully, align team
 2. ⏰ **Hour 2**: Set up agent base structure (`lib/agents/`)
 3. ⏰ **Hour 3**: Start Income Agent implementation
 
 ### This Week
+
 - **Days 1-3**: Build core agent features
 - **Days 4-5**: Integration and testing
 - **Day 6**: Demo preparation
 - **Day 7**: Final practice
 
 ### Remember
+
 ```
 You DON'T need to build everything!
 Focus on:
@@ -1271,6 +1334,7 @@ Your project is **already competitive**. With these agentic AI additions, you'll
 ## 📧 Questions?
 
 If you need clarification while building:
+
 1. Check this document first
 2. Review existing code in `lib/` folder
 3. Test with simple examples before complex ones

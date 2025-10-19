@@ -5,33 +5,35 @@
 ### 1. Initialize Event Bus (5 minutes)
 
 **File: `lib/events/index.js`** (Create this)
+
 ```javascript
-export { eventBus, EVENTS } from './EventBus.js'
+export { eventBus, EVENTS } from "./EventBus.js";
 ```
 
 ### 2. Initialize Agents (5 minutes)
 
 **File: `lib/agents/index.js`** (Create this)
+
 ```javascript
-import { incomeAgent } from './IncomeAgent.js'
-import { spendingPatternAgent } from './SpendingPatternAgent.js'
+import { incomeAgent } from "./IncomeAgent.js";
+import { spendingPatternAgent } from "./SpendingPatternAgent.js";
 
 // Initialize all agents
 export function initializeAgents() {
-  console.log('🤖 Initializing Autonomous Agents...')
-  
+  console.log("🤖 Initializing Autonomous Agents...");
+
   // Agents auto-register with event bus in their constructors
   const agents = {
     income: incomeAgent,
-    spending: spendingPatternAgent
-  }
-  
-  console.log('✅ Agents initialized:', Object.keys(agents))
-  
-  return agents
+    spending: spendingPatternAgent,
+  };
+
+  console.log("✅ Agents initialized:", Object.keys(agents));
+
+  return agents;
 }
 
-export { incomeAgent, spendingPatternAgent }
+export { incomeAgent, spendingPatternAgent };
 ```
 
 ### 3. Integrate with Existing Voice Processor (10 minutes)
@@ -39,11 +41,13 @@ export { incomeAgent, spendingPatternAgent }
 **File: `lib/voiceProcessor.js`** (Modify existing)
 
 Add at the top:
+
 ```javascript
-import { eventBus, EVENTS } from './events/EventBus.js'
+import { eventBus, EVENTS } from "./events/EventBus.js";
 ```
 
 Modify the `processVoiceInput` function:
+
 ```javascript
 async processVoiceInput(voiceText) {
   try {
@@ -59,13 +63,13 @@ async processVoiceInput(voiceText) {
         userId: 'current-user-id', // Get from session
         timestamp: new Date()
       })
-      
+
       return ruleBasedResult
     }
 
     // Fallback to AI processing for complex cases
     const aiResult = await this.extractWithAI(voiceText)
-    
+
     // 🆕 EMIT EVENT FOR AGENTS
     if (aiResult.success) {
       eventBus.emit(EVENTS.VOICE_EXPENSE_DETECTED, {
@@ -75,7 +79,7 @@ async processVoiceInput(voiceText) {
         timestamp: new Date()
       })
     }
-    
+
     return aiResult
 
   } catch (error) {
@@ -94,24 +98,26 @@ async processVoiceInput(voiceText) {
 **File: `app/api/expenses/route.js`** (Modify existing)
 
 Add at the top:
+
 ```javascript
-import { eventBus, EVENTS } from '@/lib/events/EventBus'
+import { eventBus, EVENTS } from "@/lib/events/EventBus";
 ```
 
 In your POST handler (add after expense is saved):
+
 ```javascript
 export async function POST(request) {
   try {
     // ... existing expense creation code ...
-    
+
     const expense = await Expense.create({
       userId,
       amount,
       category,
       description,
-      date
-    })
-    
+      date,
+    });
+
     // 🆕 EMIT EVENT FOR AGENTS
     eventBus.emit(EVENTS.EXPENSE_ADDED, {
       userId,
@@ -119,14 +125,13 @@ export async function POST(request) {
       category,
       description,
       date,
-      expenseId: expense._id
-    })
-    
+      expenseId: expense._id,
+    });
+
     return NextResponse.json({
       success: true,
-      expense
-    })
-    
+      expense,
+    });
   } catch (error) {
     // ... error handling ...
   }
@@ -138,11 +143,13 @@ export async function POST(request) {
 **File: `app/layout.js`** (Modify existing)
 
 Add at the top:
+
 ```javascript
-import { initializeAgents } from '@/lib/agents'
+import { initializeAgents } from "@/lib/agents";
 ```
 
 In the component (before return):
+
 ```javascript
 export default function RootLayout({ children }) {
   // Initialize agents on app start
@@ -151,7 +158,7 @@ export default function RootLayout({ children }) {
       initializeAgents()
     }
   }, [])
-  
+
   return (
     // ... existing layout code ...
   )
@@ -163,38 +170,41 @@ export default function RootLayout({ children }) {
 ## Testing the Integration (Quick Tests)
 
 ### Test 1: Voice Expense Detection
+
 ```javascript
 // In browser console
-import { voiceProcessor } from '@/lib/voiceProcessor'
-import { eventBus, EVENTS } from '@/lib/events/EventBus'
+import { voiceProcessor } from "@/lib/voiceProcessor";
+import { eventBus, EVENTS } from "@/lib/events/EventBus";
 
 // Listen for agent events
 eventBus.on(EVENTS.AGENT_ALERT, (data) => {
-  console.log('🚨 Agent Alert:', data)
-})
+  console.log("🚨 Agent Alert:", data);
+});
 
 // Process a voice expense
-await voiceProcessor.processVoiceInput("₹800 ka Swiggy order kiya")
+await voiceProcessor.processVoiceInput("₹800 ka Swiggy order kiya");
 
 // You should see agent analysis in console!
 ```
 
 ### Test 2: Income Variability
+
 ```javascript
-import { incomeAgent } from '@/lib/agents/IncomeAgent'
+import { incomeAgent } from "@/lib/agents/IncomeAgent";
 
 // Analyze income variability
-const analysis = await incomeAgent.analyzeIncomeVariability('user-123')
-console.log('Income Analysis:', analysis)
+const analysis = await incomeAgent.analyzeIncomeVariability("user-123");
+console.log("Income Analysis:", analysis);
 ```
 
 ### Test 3: Spending Patterns
+
 ```javascript
-import { spendingPatternAgent } from '@/lib/agents/SpendingPatternAgent'
+import { spendingPatternAgent } from "@/lib/agents/SpendingPatternAgent";
 
 // Get pattern summary
-const summary = spendingPatternAgent.getPatternSummary('user-123')
-console.log('Spending Patterns:', summary)
+const summary = spendingPatternAgent.getPatternSummary("user-123");
+console.log("Spending Patterns:", summary);
 ```
 
 ---
@@ -204,39 +214,49 @@ console.log('Spending Patterns:', summary)
 **File: `components/agents/AgentDashboard.js`** (Create new)
 
 ```javascript
-'use client'
-import { useState, useEffect } from 'react'
-import { eventBus, EVENTS } from '@/lib/events/EventBus'
+"use client";
+import { useState, useEffect } from "react";
+import { eventBus, EVENTS } from "@/lib/events/EventBus";
 
 export function AgentDashboard() {
-  const [activities, setActivities] = useState([])
-  const [alerts, setAlerts] = useState([])
+  const [activities, setActivities] = useState([]);
+  const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
     // Listen for agent activities
     const agentActionListener = eventBus.on(EVENTS.AGENT_ACTION, (data) => {
-      setActivities(prev => [{
-        id: Date.now(),
-        agent: data.agent,
-        action: data.action,
-        timestamp: new Date()
-      }, ...prev].slice(0, 10))
-    })
+      setActivities((prev) =>
+        [
+          {
+            id: Date.now(),
+            agent: data.agent,
+            action: data.action,
+            timestamp: new Date(),
+          },
+          ...prev,
+        ].slice(0, 10)
+      );
+    });
 
     // Listen for agent alerts
     const agentAlertListener = eventBus.on(EVENTS.AGENT_ALERT, (data) => {
-      setAlerts(prev => [{
-        id: Date.now(),
-        ...data,
-        timestamp: new Date()
-      }, ...prev].slice(0, 5))
-    })
+      setAlerts((prev) =>
+        [
+          {
+            id: Date.now(),
+            ...data,
+            timestamp: new Date(),
+          },
+          ...prev,
+        ].slice(0, 5)
+      );
+    });
 
     return () => {
-      eventBus.off(EVENTS.AGENT_ACTION, agentActionListener)
-      eventBus.off(EVENTS.AGENT_ALERT, agentAlertListener)
-    }
-  }, [])
+      eventBus.off(EVENTS.AGENT_ACTION, agentActionListener);
+      eventBus.off(EVENTS.AGENT_ALERT, agentAlertListener);
+    };
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -244,9 +264,11 @@ export function AgentDashboard() {
       {alerts.length > 0 && (
         <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
           <h3 className="font-bold text-yellow-800 mb-2">🤖 Agent Alerts</h3>
-          {alerts.map(alert => (
+          {alerts.map((alert) => (
             <div key={alert.id} className="mb-2 p-2 bg-white rounded">
-              <p className="text-sm font-medium">{alert.intervention?.message}</p>
+              <p className="text-sm font-medium">
+                {alert.intervention?.message}
+              </p>
               {alert.intervention?.suggestion && (
                 <p className="text-xs text-gray-600 mt-1">
                   💡 {alert.intervention.suggestion}
@@ -264,11 +286,16 @@ export function AgentDashboard() {
           {activities.length === 0 ? (
             <p className="text-gray-500 text-sm">No agent activity yet</p>
           ) : (
-            activities.map(activity => (
-              <div key={activity.id} className="flex items-center justify-between text-sm border-b pb-2">
+            activities.map((activity) => (
+              <div
+                key={activity.id}
+                className="flex items-center justify-between text-sm border-b pb-2"
+              >
                 <div>
                   <span className="font-medium">{activity.agent}</span>
-                  <span className="text-gray-600 ml-2">{activity.action.type}</span>
+                  <span className="text-gray-600 ml-2">
+                    {activity.action.type}
+                  </span>
                 </div>
                 <span className="text-xs text-gray-400">
                   {new Date(activity.timestamp).toLocaleTimeString()}
@@ -279,16 +306,17 @@ export function AgentDashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 ```
 
 Add to your dashboard:
+
 ```javascript
-import { AgentDashboard } from '@/components/agents/AgentDashboard'
+import { AgentDashboard } from "@/components/agents/AgentDashboard";
 
 // In your dashboard component
-<AgentDashboard />
+<AgentDashboard />;
 ```
 
 ---
@@ -296,6 +324,7 @@ import { AgentDashboard } from '@/components/agents/AgentDashboard'
 ## Demo Script for Hackathon
 
 ### Setup (Show judges)
+
 ```
 1. Open app on mobile/laptop
 2. Show dashboard with agent activity panel
@@ -305,6 +334,7 @@ import { AgentDashboard } from '@/components/agents/AgentDashboard'
 ### Demo Flow
 
 **Scene 1: Voice Expense + Pattern Detection**
+
 ```
 🎤 Say: "₹800 ka Swiggy order kiya"
 
@@ -317,6 +347,7 @@ Expected:
 ```
 
 **Scene 2: Income Variability**
+
 ```
 Navigate to Income section
 Add variable income entries:
@@ -332,6 +363,7 @@ Expected:
 ```
 
 **Scene 3: Proactive Coaching**
+
 ```
 Try to add another food expense:
 🎤 "₹500 ka dinner order"
@@ -344,6 +376,7 @@ Expected:
 ```
 
 **Scene 4: Show Agent Dashboard**
+
 ```
 Point to agent activity feed:
 ✅ Real-time activity log
@@ -358,16 +391,19 @@ Point to agent activity feed:
 ### What to Emphasize
 
 1. **True Autonomy**
+
    - "Agents run in the background 24/7"
    - "No manual intervention needed"
    - "Learns from every transaction"
 
 2. **Proactive, Not Reactive**
+
    - "Alerts BEFORE overspending, not after"
    - "Predicts low-income periods"
    - "Suggests alternatives in real-time"
 
 3. **Multi-Agent Collaboration**
+
    - "Income Agent + Spending Agent work together"
    - "Event-driven architecture"
    - "Coordinated decision-making"
@@ -382,25 +418,31 @@ Point to agent activity feed:
 ## Troubleshooting
 
 ### Issue: Events not firing
+
 **Solution**: Check if agents are initialized
+
 ```javascript
-import { initializeAgents } from '@/lib/agents'
-initializeAgents()
+import { initializeAgents } from "@/lib/agents";
+initializeAgents();
 ```
 
 ### Issue: No alerts showing
+
 **Solution**: Check event listeners in AgentDashboard
+
 ```javascript
 // Verify in console
-eventBus.getRegisteredEvents()
+eventBus.getRegisteredEvents();
 ```
 
 ### Issue: Voice not triggering agents
+
 **Solution**: Verify event emission
+
 ```javascript
 // Add debug log in voiceProcessor.js
-eventBus.emit(EVENTS.VOICE_EXPENSE_DETECTED, data)
-console.log('Event emitted:', data)
+eventBus.emit(EVENTS.VOICE_EXPENSE_DETECTED, data);
+console.log("Event emitted:", data);
 ```
 
 ---
