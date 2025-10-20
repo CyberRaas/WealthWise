@@ -2,7 +2,7 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // Disable Cloudflare Web Analytics beacon injection
+    // Security and PWA headers
     headers: async () => [
         {
             source: '/:path*',
@@ -26,6 +26,32 @@ const nextConfig = {
                 {
                     key: 'Referrer-Policy',
                     value: 'origin-when-cross-origin'
+                }
+            ]
+        },
+        {
+            source: '/sw.js',
+            headers: [
+                {
+                    key: 'Cache-Control',
+                    value: 'public, max-age=0, must-revalidate'
+                },
+                {
+                    key: 'Service-Worker-Allowed',
+                    value: '/'
+                }
+            ]
+        },
+        {
+            source: '/manifest.json',
+            headers: [
+                {
+                    key: 'Content-Type',
+                    value: 'application/manifest+json'
+                },
+                {
+                    key: 'Cache-Control',
+                    value: 'public, max-age=31536000, immutable'
                 }
             ]
         }

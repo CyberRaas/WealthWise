@@ -1,6 +1,8 @@
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import ClientProviders from '@/components/providers/ClientProviders'
+import PWARegister from '@/components/PWARegister'
+import PWAInstallPrompt from '@/components/PWAInstallPrompt'
 
 // Poppins font - clean, modern, highly readable for financial apps
 const poppins = Poppins({
@@ -13,6 +15,7 @@ const poppins = Poppins({
 export const metadata = {
   title: "WealthWise ",
   description: "AI-powered personal finance management and budgeting application",
+  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -20,6 +23,15 @@ export const metadata = {
   },
   formatDetection: {
     telephone: false
+  },
+  icons: {
+    icon: [
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' }
+    ],
+    apple: [
+      { url: '/icons/icon-152x152.png', sizes: '152x152', type: 'image/png' }
+    ]
   }
 };
 
@@ -55,8 +67,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${poppins.variable} font-poppins antialiased touch-manipulation`}
       >
+        <PWARegister />
         <ClientProviders>
           {children}
+          <PWAInstallPrompt />
         </ClientProviders>
       </body>
     </html>
