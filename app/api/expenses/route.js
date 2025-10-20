@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbConnect'
 import UserProfile from '@/models/UserProfile'
+import eventBus, { EVENTS } from '@/lib/eventBus'
+import notificationService from '@/lib/notificationService'
 
 // Canonical category mapping to unify voice + manual + budget keys
 // All expense.category values will be normalized to these display names
@@ -138,7 +140,39 @@ export async function POST(request) {
 
     console.log('Expense added successfully:', expense)
 
-    // 🤖 Emit event for AI Agents to process
+    // Calculate category spending for notifications
+    const currentMonthExpenses = userProfile.expenses
+      .filter(e => e.date && e.date.startsWith(new Date().toISOString().slice(0, 7)))
+
+    const monthlyTotal = currentMonthExpenses.reduce((sum, e) => sum + e.amount, 0)
+
+    const categoryTotal = currentMonthExpenses
+      .filter(e => unifyCategory(e.category) === unifiedCategory)
+      .reduce((sum, e) => sum + e.amount, 0)
+
+    // Get budget information if available
+    let budgetAmount = null
+    let categoryBudgetAmount = null
+
+    try {
+      if (userProfile.budget?.totalBudget) {
+        budgetAmount = userProfile.budget.totalBudget
+
+        // Find budget for this category
+        if (userProfile.budget.categories) {
+          const categoryBudget = userProfile.budget.categories.find(
+            cat => cat.name === unifiedCategory || cat.category === unifiedCategory
+          )
+          if (categoryBudget) {
+            categoryBudgetAmount = categoryBudget.amount
+          }
+        }
+      }
+    } catch (budgetError) {
+      console.warn('⚠️ Could not fetch budget:', budgetError)
+    }
+
+    // 🤖 Emit event for AI Agents and Notifications
     try {
       eventBus.emit(EVENTS.EXPENSE_ADDED, {
         userId: session.user.id,
@@ -150,14 +184,52 @@ export async function POST(request) {
         timestamp: expense.timestamp,
         entryMethod: expense.entryMethod,
         totalExpenses: userProfile.expenses.length,
-        monthlyTotal: userProfile.expenses
-          .filter(e => e.date && e.date.startsWith(new Date().toISOString().slice(0, 7)))
-          .reduce((sum, e) => sum + e.amount, 0)
+        monthlyTotal: monthlyTotal,
+        categoryTotal: categoryTotal,
+        budgetAmount: budgetAmount,
+        categoryBudgetAmount: categoryBudgetAmount
       })
-      console.log('✅ EventBus: EXPENSE_ADDED event emitted')
+      console.log('✅ EventBus: EXPENSE_ADDED event emitted with budget context')
     } catch (eventError) {
       console.error('⚠️ EventBus emit failed:', eventError)
       // Don't fail the request if event emission fails
+    }
+
+    // 🔔 Create smart notification if overspending detected
+    try {
+      if (categoryBudgetAmount && categoryTotal > 0) {
+        const spentPercentage = (categoryTotal / categoryBudgetAmount) * 100
+
+        // Critical notification if 95%+ spent
+        if (spentPercentage >= 95) {
+          await notificationService.create({
+            userId: session.user.id,
+            type: 'OVERSPENDING',
+            priority: 'CRITICAL',
+            category: 'SPENDING',
+            title: `🚨 Critical: ${unifiedCategory} Budget Exceeded!`,
+            message: `You've spent ₹${categoryTotal.toLocaleString('en-IN')} (${spentPercentage.toFixed(0)}%) of your ₹${categoryBudgetAmount.toLocaleString('en-IN')} budget. Consider reducing expenses in this category.`,
+            actionLabel: 'View Budget',
+            actionUrl: '/dashboard/budget'
+          })
+        }
+        // Warning notification if 80-94% spent
+        else if (spentPercentage >= 80) {
+          await notificationService.create({
+            userId: session.user.id,
+            type: 'BUDGET_WARNING',
+            priority: 'HIGH',
+            category: 'SPENDING',
+            title: `⚠️ ${unifiedCategory} Budget Alert`,
+            message: `You've used ${spentPercentage.toFixed(0)}% of your ${unifiedCategory} budget (₹${categoryTotal.toLocaleString('en-IN')} of ₹${categoryBudgetAmount.toLocaleString('en-IN')}). Watch your spending!`,
+            actionLabel: 'Review Expenses',
+            actionUrl: '/dashboard/expenses'
+          })
+        }
+      }
+    } catch (notificationError) {
+      console.error('⚠️ Notification creation failed:', notificationError)
+      // Don't fail the request if notification fails
     }
 
     return NextResponse.json({

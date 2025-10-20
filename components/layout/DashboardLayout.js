@@ -14,6 +14,7 @@ import HamburgerMenu from '@/components/mobile/HamburgerMenu'
 import SwipeGestureHandler from '@/components/mobile/SwipeGestureHandler'
 import PullToRefresh from '@/components/mobile/PullToRefresh'
 import LanguageSelector from '@/components/ui/LanguageSelector'
+import NotificationCenter from '@/components/notifications/NotificationCenter'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Bell,
@@ -147,15 +148,10 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
                   {/* Language Selector */}
                   <LanguageSelector variant="dashboard" />
 
-                  {/* Notifications - Hidden on small mobile */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-slate-500 hover:text-slate-700 relative hover:bg-slate-100 rounded-xl w-10 h-10 p-0 hidden sm:flex active:scale-95 transition-all"
-                  >
-                    <Bell className="h-5 w-5" />
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full border-2 border-white animate-pulse"></div>
-                  </Button>
+                  {/* Notifications Center */}
+                  <div className="hidden sm:block">
+                    <NotificationCenter />
+                  </div>
 
                   {/* User Profile Dropdown */}
                   <div className="relative" ref={dropdownRef}>
