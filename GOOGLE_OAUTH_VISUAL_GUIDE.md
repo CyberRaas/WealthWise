@@ -9,12 +9,14 @@ Follow this exactly to fix your Google OAuth error in 5 minutes.
 ## 🟢 **STEP 1: Go to Vercel Dashboard**
 
 ### What to do:
+
 1. Open browser
 2. Go to: **https://vercel.com/dashboard**
 3. Log in if needed
 4. Find and click your project: **smart-financial-planner** or **wealthwise**
 
 ### What you'll see:
+
 ```
 ┌─────────────────────────────────────────┐
 │  VERCEL DASHBOARD                       │
@@ -33,16 +35,19 @@ Follow this exactly to fix your Google OAuth error in 5 minutes.
 ## 🟢 **STEP 2: Navigate to Settings**
 
 ### What to do:
+
 1. Click **Settings** tab (top navigation)
 2. Look for **Environment Variables** in left sidebar
 3. Click **Environment Variables**
 
 ### Navigation path:
+
 ```
 Dashboard → Your Project → Settings → Environment Variables
 ```
 
 ### What you'll see:
+
 ```
 ┌─────────────────────────────────────────┐
 │  ⚙️ Settings                            │
@@ -120,6 +125,7 @@ Your current environment variables (you should already have these):
 ```
 
 ### ⚠️ **CRITICAL - Type EXACTLY:**
+
 ```
 Name:  AUTH_URL
 Value: https://www.mywealthwise.tech
@@ -134,14 +140,16 @@ Value: https://www.mywealthwise.tech
 ## 🟢 **STEP 5: Save Variable**
 
 ### What to do:
+
 1. Verify all 3 environment checkboxes are checked:
    - ☑ Production
-   - ☑ Preview  
+   - ☑ Preview
    - ☑ Development
 2. Click **"Save"** button
 3. You'll see a confirmation message
 
 ### Success confirmation:
+
 ```
 ┌─────────────────────────────────────────┐
 │  ✅ Environment variable added          │
@@ -183,6 +191,7 @@ Value: https://www.mywealthwise.tech
 ## 🟢 **STEP 7: Redeploy Your Application**
 
 ### What to do:
+
 1. Click **"Deployments"** tab (top navigation)
 2. Find the most recent deployment (top of list)
 3. Click on it to open deployment details
@@ -191,11 +200,13 @@ Value: https://www.mywealthwise.tech
 6. Click **"Redeploy"** button in confirmation dialog
 
 ### Navigation:
+
 ```
 Dashboard → Your Project → Deployments → Latest → ⋯ → Redeploy
 ```
 
 ### What you'll see:
+
 ```
 ┌─────────────────────────────────────────┐
 │  Redeploy to Production                 │
@@ -214,11 +225,13 @@ Dashboard → Your Project → Deployments → Latest → ⋯ → Redeploy
 ## 🟢 **STEP 8: Wait for Deployment**
 
 ### What happens:
+
 1. Vercel will start building your app
 2. Progress bar shows build status
 3. Usually takes 1-3 minutes
 
 ### What you'll see:
+
 ```
 ┌─────────────────────────────────────────┐
 │  🔄 Building...                         │
@@ -230,6 +243,7 @@ Dashboard → Your Project → Deployments → Latest → ⋯ → Redeploy
 ```
 
 ### When complete:
+
 ```
 ┌─────────────────────────────────────────┐
 │  ✅ Deployment Complete                 │
@@ -244,12 +258,14 @@ Dashboard → Your Project → Deployments → Latest → ⋯ → Redeploy
 ## 🟢 **STEP 9: Test Google Sign-In**
 
 ### What to do:
+
 1. Open new browser tab
 2. Go to: **https://www.mywealthwise.tech/auth/signin**
 3. Click **"Continue with Google"** button
 4. **Expected result**: Redirects to Google login page
 
 ### Test flow:
+
 ```
 Your App                    Google                  Your App
 ┌──────────┐              ┌──────────┐            ┌──────────┐
@@ -261,12 +277,14 @@ Your App                    Google                  Your App
 ```
 
 ### ✅ **Success indicators:**
+
 - Click "Continue with Google" → Redirects to Google
 - Login with Google account → Redirects back to app
 - See dashboard with your name/avatar
 - Refresh page → Still signed in
 
 ### ❌ **If still failing:**
+
 - See error page → Note the error code
 - Check browser console (F12) for errors
 - Jump to **TROUBLESHOOTING** section below
@@ -278,6 +296,7 @@ Your App                    Google                  Your App
 After successful sign-in, verify these endpoints:
 
 ### **Test 1: Check Configuration**
+
 ```
 URL: https://www.mywealthwise.tech/api/test-auth-config
 
@@ -290,6 +309,7 @@ Expected Response:
 ```
 
 ### **Test 2: Check Auth Providers**
+
 ```
 URL: https://www.mywealthwise.tech/api/auth/providers
 
@@ -304,6 +324,7 @@ Expected Response:
 ```
 
 ### **Test 3: Check Session**
+
 ```
 URL: https://www.mywealthwise.tech/api/auth/session
 
@@ -324,12 +345,14 @@ Expected Response:
 ### **Problem 1: Still getting 500 error**
 
 **Solution A - Clear Build Cache:**
+
 1. Go to Vercel Deployments
 2. Redeploy again
 3. This time **UNCHECK** "Use existing build cache"
 4. Click Redeploy
 
 **Solution B - Check Environment Variables Again:**
+
 1. Go to Settings → Environment Variables
 2. Verify `AUTH_URL` value is EXACTLY:
    ```
@@ -341,6 +364,7 @@ Expected Response:
 ### **Problem 2: Error "Configuration"**
 
 **Solution:**
+
 1. Verify `NEXTAUTH_SECRET` is set in Vercel
 2. Generate new secret if needed:
    ```powershell
@@ -355,6 +379,7 @@ Expected Response:
 ### **Problem 3: Error "OAuthCallback"**
 
 **Solution:**
+
 1. Check Google Cloud Console
 2. Verify redirect URI is EXACTLY:
    ```
@@ -367,6 +392,7 @@ Expected Response:
 ### **Problem 4: Browser shows "Blocked by client"**
 
 **Solution:**
+
 1. Disable ad blocker extensions
 2. Enable third-party cookies:
    - Chrome: Settings → Privacy → Cookies → "Allow all cookies"
@@ -397,6 +423,7 @@ Before asking for help, verify:
 ## 🎉 **SUCCESS!**
 
 If you can:
+
 - ✅ Click "Continue with Google"
 - ✅ See Google login page
 - ✅ Login and redirect back to dashboard
@@ -412,6 +439,7 @@ If you can:
 If you completed ALL steps above and it still doesn't work:
 
 1. **Check Vercel Logs:**
+
    ```powershell
    npm i -g vercel
    vercel login
@@ -419,6 +447,7 @@ If you completed ALL steps above and it still doesn't work:
    ```
 
 2. **Screenshot these:**
+
    - Vercel Environment Variables page (blur sensitive values)
    - Browser console errors (F12 → Console tab)
    - Network tab showing failed request (F12 → Network tab)
@@ -434,10 +463,12 @@ If you completed ALL steps above and it still doesn't work:
 ## 📊 **SUMMARY**
 
 **What was wrong:**
+
 - Missing `AUTH_URL` environment variable in Vercel
 - NextAuth v5 requires both `AUTH_URL` and `NEXTAUTH_URL`
 
 **What we fixed:**
+
 - Added `AUTH_URL=https://www.mywealthwise.tech` to Vercel
 - Set for all environments (Production, Preview, Development)
 - Redeployed application

@@ -37,11 +37,13 @@ Wait 2 minutes for deployment, then test:
 ## 🔍 **WHY WAS IT FAILING?**
 
 **The Problem:**
+
 - NextAuth v5 requires **both** `AUTH_URL` and `NEXTAUTH_URL`
 - You only had `NEXTAUTH_URL` in Vercel
 - This caused the 500 error: `INTERNAL_FUNCTION_INVOCATION_FAILED`
 
 **The Solution:**
+
 - Added `AUTH_URL=https://www.mywealthwise.tech` to environment variables
 - This tells NextAuth where your app is hosted
 
@@ -52,9 +54,11 @@ Wait 2 minutes for deployment, then test:
 After redeployment, verify these work:
 
 ### **Test 1: Check Configuration**
+
 Visit: https://www.mywealthwise.tech/api/test-auth-config
 
 Expected Response:
+
 ```json
 {
   "status": "OK",
@@ -64,9 +68,11 @@ Expected Response:
 ```
 
 ### **Test 2: Check Auth Providers**
+
 Visit: https://www.mywealthwise.tech/api/auth/providers
 
 Expected Response:
+
 ```json
 {
   "google": {
@@ -79,6 +85,7 @@ Expected Response:
 ```
 
 ### **Test 3: Test Google Sign In**
+
 1. Visit: https://www.mywealthwise.tech/auth/signin
 2. Click "Continue with Google"
 3. ✅ Should redirect to Google login
@@ -90,21 +97,26 @@ Expected Response:
 ## 🔧 **ADDITIONAL FIXES MADE**
 
 ### **1. Updated `.env.local`**
+
 Added `AUTH_URL` for local development:
+
 ```bash
 AUTH_URL=https://www.mywealthwise.tech
 NEXTAUTH_URL=https://www.mywealthwise.tech
 ```
 
 ### **2. Updated MongoDB Connection**
+
 - Added `&appName=pythoncluster0` to connection string
 - This improves connection reliability in serverless
 
 ### **3. Created Test Endpoint**
+
 - `/api/test-auth-config` - Verify environment variables
 - Useful for debugging auth issues
 
 ### **4. Enhanced Error Page**
+
 - Better error messages for each OAuth error type
 - Clear action steps for users
 - Support contact information
@@ -116,11 +128,13 @@ NEXTAUTH_URL=https://www.mywealthwise.tech
 Your OAuth settings are already correct:
 
 ✅ **Authorized redirect URIs:**
+
 - https://www.mywealthwise.tech/api/auth/callback/google
 - https://mywealthwise.tech/api/auth/callback/google
 - http://localhost:3000/api/auth/callback/google
 
 ✅ **Authorized JavaScript origins:**
+
 - https://www.mywealthwise.tech
 - https://mywealthwise.tech
 - http://localhost:3000
@@ -145,6 +159,7 @@ vercel logs https://www.mywealthwise.tech --follow
 ```
 
 Look for errors containing:
+
 - `nextauth`
 - `google`
 - `oauth`
@@ -186,7 +201,7 @@ In Vercel, ensure these are set for **ALL ENVIRONMENTS**:
 If still failing after 10 minutes:
 
 1. **Vercel Support**: https://vercel.com/support/tickets
-2. **NextAuth Discord**: https://discord.gg/nextauth  
+2. **NextAuth Discord**: https://discord.gg/nextauth
 3. **Stack Overflow**: Tag with `nextauth`, `vercel`, `oauth`
 
 ---
@@ -196,16 +211,19 @@ If still failing after 10 minutes:
 Run these to debug:
 
 ### **Check if auth endpoint is accessible:**
+
 ```powershell
 curl https://www.mywealthwise.tech/api/auth/signin
 ```
 
 ### **Check providers endpoint:**
+
 ```powershell
 curl https://www.mywealthwise.tech/api/auth/providers
 ```
 
 ### **Check config endpoint:**
+
 ```powershell
 curl https://www.mywealthwise.tech/api/test-auth-config
 ```

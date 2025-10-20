@@ -7,6 +7,7 @@
 ## ⚡ THE FIX (2 Minutes)
 
 ### Step 1: Open Vercel
+
 ```
 https://vercel.com/dashboard
 → Select your project
@@ -15,6 +16,7 @@ https://vercel.com/dashboard
 ```
 
 ### Step 2: Add Variable
+
 ```
 Click "Add New"
 
@@ -22,13 +24,14 @@ Name:  AUTH_URL
 Value: https://www.mywealthwise.tech
 
 ☑ Production
-☑ Preview  
+☑ Preview
 ☑ Development
 
 Click "Save"
 ```
 
 ### Step 3: Redeploy
+
 ```
 → Deployments tab
 → Click latest deployment
@@ -38,6 +41,7 @@ Click "Save"
 ```
 
 ### Step 4: Test
+
 ```
 Visit: https://www.mywealthwise.tech/auth/signin
 Click: "Continue with Google"
@@ -66,17 +70,20 @@ Check these URLs:
 ## ⚠️ TROUBLESHOOTING
 
 ### Still 500 error?
+
 → Check AUTH_URL has NO trailing slash
 → Must be: `https://www.mywealthwise.tech`
 → NOT: `https://www.mywealthwise.tech/`
 
 ### Still not working?
+
 → Clear browser cache
 → Try incognito mode
 → Disable ad blocker
 → Try different browser
 
 ### Need help?
+
 → Read: GOOGLE_OAUTH_QUICK_FIX.md
 → Or: GOOGLE_OAUTH_VISUAL_GUIDE.md
 
@@ -103,6 +110,7 @@ NODE_ENV = production
 **Already correct - NO CHANGES NEEDED**
 
 Redirect URIs:
+
 ```
 ✅ https://www.mywealthwise.tech/api/auth/callback/google
 ✅ https://mywealthwise.tech/api/auth/callback/google
@@ -133,6 +141,7 @@ Redirect URIs:
 ## 📞 STILL STUCK?
 
 **Run this command to see logs:**
+
 ```powershell
 npm i -g vercel
 vercel login
@@ -140,6 +149,7 @@ vercel logs https://www.mywealthwise.tech --follow
 ```
 
 **Get help:**
+
 - Vercel: https://vercel.com/support/tickets
 - NextAuth: https://discord.gg/nextauth
 

@@ -3,6 +3,7 @@
 ## 🚨 **Error Analysis**
 
 **Current Error:**
+
 ```
 500: INTERNAL_SERVER_ERROR
 Code: INTERNAL_FUNCTION_INVOCATION_FAILED
@@ -10,6 +11,7 @@ Failed to load resource: the server responded with a status of 500
 ```
 
 **Root Causes Identified:**
+
 1. ❌ Missing or incorrect `AUTH_URL` in Vercel (NextAuth v5 requirement)
 2. ❌ Potential mismatch between domain in env vars vs actual domain
 3. ❌ Cookie configuration may not work across www/non-www
@@ -53,18 +55,21 @@ MONGODB_DB_NAME=smart-financial-planner
 3. Verify these **EXACT** URIs are added:
 
 **Authorized JavaScript origins:**
+
 ```
 https://www.mywealthwise.tech
 https://mywealthwise.tech
 ```
 
 **Authorized redirect URIs:**
+
 ```
 https://www.mywealthwise.tech/api/auth/callback/google
 https://mywealthwise.tech/api/auth/callback/google
 ```
 
 **⚠️ Important Notes:**
+
 - NO trailing slashes (/)
 - HTTPS only (no http in production)
 - Remove `http://localhost:3000` from production credentials
@@ -119,33 +124,34 @@ Create `app/auth/error/page.js`:
 
 ```javascript
 // app/auth/error/page.js
-'use client'
+"use client";
 
-import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { AlertCircle, Home, RefreshCw } from 'lucide-react'
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { AlertCircle, Home, RefreshCw } from "lucide-react";
 
 const errorMessages = {
-  Configuration: 'There is a problem with the server configuration.',
-  AccessDenied: 'You do not have permission to sign in.',
-  Verification: 'The verification token has expired or has already been used.',
-  OAuthSignin: 'Error in constructing an authorization URL.',
-  OAuthCallback: 'Error in handling the response from the OAuth provider.',
-  OAuthCreateAccount: 'Could not create OAuth provider user in the database.',
-  EmailCreateAccount: 'Could not create email provider user in the database.',
-  Callback: 'Error in the OAuth callback handler route.',
-  OAuthAccountNotLinked: 'Email already exists with a different sign-in method.',
-  EmailSignin: 'Sending the e-mail with the verification token failed.',
-  CredentialsSignin: 'Invalid email or password.',
-  SessionRequired: 'Please sign in to access this page.',
-  Default: 'An error occurred during authentication.',
-}
+  Configuration: "There is a problem with the server configuration.",
+  AccessDenied: "You do not have permission to sign in.",
+  Verification: "The verification token has expired or has already been used.",
+  OAuthSignin: "Error in constructing an authorization URL.",
+  OAuthCallback: "Error in handling the response from the OAuth provider.",
+  OAuthCreateAccount: "Could not create OAuth provider user in the database.",
+  EmailCreateAccount: "Could not create email provider user in the database.",
+  Callback: "Error in the OAuth callback handler route.",
+  OAuthAccountNotLinked:
+    "Email already exists with a different sign-in method.",
+  EmailSignin: "Sending the e-mail with the verification token failed.",
+  CredentialsSignin: "Invalid email or password.",
+  SessionRequired: "Please sign in to access this page.",
+  Default: "An error occurred during authentication.",
+};
 
 export default function AuthError() {
-  const searchParams = useSearchParams()
-  const error = searchParams.get('error')
-  
-  const errorMessage = errorMessages[error] || errorMessages.Default
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+
+  const errorMessage = errorMessages[error] || errorMessages.Default;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 via-white to-purple-50 px-4">
@@ -163,20 +169,19 @@ export default function AuthError() {
         </h1>
 
         {/* Error Message */}
-        <p className="text-gray-600 mb-2">
-          {errorMessage}
-        </p>
+        <p className="text-gray-600 mb-2">{errorMessage}</p>
 
         {/* Error Code */}
         {error && (
           <p className="text-sm text-gray-500 mb-6">
-            Error Code: <code className="bg-gray-100 px-2 py-1 rounded">{error}</code>
+            Error Code:{" "}
+            <code className="bg-gray-100 px-2 py-1 rounded">{error}</code>
           </p>
         )}
 
         {/* Action Buttons */}
         <div className="space-y-3">
-          <Link 
+          <Link
             href="/auth/signin"
             className="w-full inline-flex items-center justify-center gap-2 bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors font-medium"
           >
@@ -184,7 +189,7 @@ export default function AuthError() {
             Try Again
           </Link>
 
-          <Link 
+          <Link
             href="/"
             className="w-full inline-flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors font-medium"
           >
@@ -196,9 +201,9 @@ export default function AuthError() {
         {/* Help Text */}
         <div className="mt-6 pt-6 border-t border-gray-200">
           <p className="text-sm text-gray-500">
-            If this problem persists, please contact support at{' '}
-            <a 
-              href="mailto:support@mywealthwise.tech" 
+            If this problem persists, please contact support at{" "}
+            <a
+              href="mailto:support@mywealthwise.tech"
               className="text-teal-600 hover:underline"
             >
               support@mywealthwise.tech
@@ -207,7 +212,7 @@ export default function AuthError() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 ```
 
@@ -220,13 +225,13 @@ Create/update `lib/database.js` with optimized settings:
 ```javascript
 // lib/database.js - PRODUCTION OPTIMIZED
 
-import { MongoClient } from 'mongodb'
+import { MongoClient } from "mongodb";
 
 if (!process.env.MONGODB_URI) {
-  throw new Error('Please add your Mongo URI to .env.local')
+  throw new Error("Please add your Mongo URI to .env.local");
 }
 
-const uri = process.env.MONGODB_URI
+const uri = process.env.MONGODB_URI;
 const options = {
   maxPoolSize: 10,
   minPoolSize: 2,
@@ -238,50 +243,52 @@ const options = {
   retryReads: true,
   connectTimeoutMS: 10000,
   heartbeatFrequencyMS: 10000,
-  appName: 'smart-financial-planner'
-}
+  appName: "smart-financial-planner",
+};
 
-let client
-let clientPromise
+let client;
+let clientPromise;
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   // In development, use a global variable to preserve client across HMR
   if (!global._mongoClientPromise) {
-    client = new MongoClient(uri, options)
-    global._mongoClientPromise = client.connect()
+    client = new MongoClient(uri, options);
+    global._mongoClientPromise = client.connect();
   }
-  clientPromise = global._mongoClientPromise
+  clientPromise = global._mongoClientPromise;
 } else {
   // In production, create new client
-  client = new MongoClient(uri, options)
-  clientPromise = client.connect()
+  client = new MongoClient(uri, options);
+  clientPromise = client.connect();
 }
 
 // Export the client promise for NextAuth adapter
-export default clientPromise
+export default clientPromise;
 
 // Export database connection function
 export async function connectToDatabase() {
   try {
-    const client = await clientPromise
-    const db = client.db(process.env.MONGODB_DB_NAME || 'smart-financial-planner')
-    return db
+    const client = await clientPromise;
+    const db = client.db(
+      process.env.MONGODB_DB_NAME || "smart-financial-planner"
+    );
+    return db;
   } catch (error) {
-    console.error('❌ MongoDB connection error:', error)
-    throw new Error('Failed to connect to database')
+    console.error("❌ MongoDB connection error:", error);
+    throw new Error("Failed to connect to database");
   }
 }
 
 // Test connection function
 export async function testConnection() {
   try {
-    const db = await connectToDatabase()
-    await db.command({ ping: 1 })
-    console.log('✅ MongoDB connected successfully')
-    return true
+    const db = await connectToDatabase();
+    await db.command({ ping: 1 });
+    console.log("✅ MongoDB connected successfully");
+    return true;
   } catch (error) {
-    console.error('❌ MongoDB connection test failed:', error)
-    return false
+    console.error("❌ MongoDB connection test failed:", error);
+    return false;
   }
 }
 ```
@@ -295,115 +302,121 @@ export async function testConnection() {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // Security headers
-    headers: async () => [
+  // Security headers
+  headers: async () => [
+    {
+      source: "/:path*",
+      headers: [
         {
-            source: '/:path*',
-            headers: [
-                {
-                    key: 'X-DNS-Prefetch-Control',
-                    value: 'on'
-                },
-                {
-                    key: 'Strict-Transport-Security',
-                    value: 'max-age=63072000; includeSubDomains; preload'
-                },
-                {
-                    key: 'X-Frame-Options',
-                    value: 'SAMEORIGIN'
-                },
-                {
-                    key: 'X-Content-Type-Options',
-                    value: 'nosniff'
-                },
-                {
-                    key: 'Referrer-Policy',
-                    value: 'origin-when-cross-origin'
-                },
-                {
-                    key: 'Permissions-Policy',
-                    value: 'camera=(), microphone=(), geolocation=()'
-                }
-            ]
+          key: "X-DNS-Prefetch-Control",
+          value: "on",
         },
-        // CORS headers for auth endpoints
         {
-            source: '/api/auth/:path*',
-            headers: [
-                {
-                    key: 'Access-Control-Allow-Origin',
-                    value: 'https://www.mywealthwise.tech'
-                },
-                {
-                    key: 'Access-Control-Allow-Methods',
-                    value: 'GET, POST, OPTIONS'
-                },
-                {
-                    key: 'Access-Control-Allow-Headers',
-                    value: 'Content-Type, Authorization'
-                },
-                {
-                    key: 'Access-Control-Allow-Credentials',
-                    value: 'true'
-                }
-            ]
-        }
+          key: "Strict-Transport-Security",
+          value: "max-age=63072000; includeSubDomains; preload",
+        },
+        {
+          key: "X-Frame-Options",
+          value: "SAMEORIGIN",
+        },
+        {
+          key: "X-Content-Type-Options",
+          value: "nosniff",
+        },
+        {
+          key: "Referrer-Policy",
+          value: "origin-when-cross-origin",
+        },
+        {
+          key: "Permissions-Policy",
+          value: "camera=(), microphone=(), geolocation=()",
+        },
+      ],
+    },
+    // CORS headers for auth endpoints
+    {
+      source: "/api/auth/:path*",
+      headers: [
+        {
+          key: "Access-Control-Allow-Origin",
+          value: "https://www.mywealthwise.tech",
+        },
+        {
+          key: "Access-Control-Allow-Methods",
+          value: "GET, POST, OPTIONS",
+        },
+        {
+          key: "Access-Control-Allow-Headers",
+          value: "Content-Type, Authorization",
+        },
+        {
+          key: "Access-Control-Allow-Credentials",
+          value: "true",
+        },
+      ],
+    },
+  ],
+
+  // Production optimization
+  reactStrictMode: true,
+  poweredByHeader: false,
+  compress: true,
+
+  // Environment variables - CRITICAL FIX
+  env: {
+    AUTH_URL:
+      process.env.AUTH_URL ||
+      process.env.NEXTAUTH_URL ||
+      "https://www.mywealthwise.tech",
+    NEXTAUTH_URL:
+      process.env.NEXTAUTH_URL ||
+      process.env.AUTH_URL ||
+      "https://www.mywealthwise.tech",
+  },
+
+  // Image optimization
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "www.mywealthwise.tech",
+      },
+      {
+        protocol: "https",
+        hostname: "mywealthwise.tech",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
     ],
+    formats: ["image/avif", "image/webp"],
+  },
 
-    // Production optimization
-    reactStrictMode: true,
-    poweredByHeader: false,
-    compress: true,
-
-    // Environment variables - CRITICAL FIX
-    env: {
-        AUTH_URL: process.env.AUTH_URL || process.env.NEXTAUTH_URL || 'https://www.mywealthwise.tech',
-        NEXTAUTH_URL: process.env.NEXTAUTH_URL || process.env.AUTH_URL || 'https://www.mywealthwise.tech',
+  // Experimental features
+  experimental: {
+    optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"],
+    serverActions: {
+      bodySizeLimit: "2mb",
     },
+  },
 
-    // Image optimization
-    images: {
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: 'www.mywealthwise.tech'
-            },
-            {
-                protocol: 'https',
-                hostname: 'mywealthwise.tech'
-            },
-            {
-                protocol: 'https',
-                hostname: 'lh3.googleusercontent.com'
-            }
-        ],
-        formats: ['image/avif', 'image/webp'],
-    },
-
-    // Experimental features
-    experimental: {
-        optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-        serverActions: {
-            bodySizeLimit: '2mb'
-        }
-    },
-
-    // Webpack config for better bundle size
-    webpack: (config, { isServer }) => {
-        if (!isServer) {
-            config.resolve.fallback = {
-                ...config.resolve.fallback,
-                fs: false,
-                net: false,
-                tls: false,
-                crypto: false,
-            }
-        }
-        return config
+  // Webpack config for better bundle size
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+      };
     }
-}
+    return config;
+  },
+};
 
-export default nextConfig
+export default nextConfig;
 ```
 
 ---
@@ -439,6 +452,7 @@ NODE_ENV = production
 ### **3. Redeploy in Vercel**
 
 After adding environment variables:
+
 1. Go to **Deployments** tab
 2. Click on latest deployment
 3. Click **⋯** (three dots) → **Redeploy**
@@ -452,22 +466,26 @@ After adding environment variables:
 After deployment, test in this order:
 
 ### **Test 1: Basic Auth Endpoint**
+
 ```bash
 curl https://www.mywealthwise.tech/api/auth/providers
 ```
+
 ✅ Should return: `{"google":{...}}`
 
 ### **Test 2: MongoDB Connection**
+
 Create `app/api/test-db/route.js`:
+
 ```javascript
-import { testConnection } from '@/lib/database'
+import { testConnection } from "@/lib/database";
 
 export async function GET() {
-  const isConnected = await testConnection()
-  return Response.json({ 
-    status: isConnected ? 'connected' : 'failed',
-    timestamp: new Date().toISOString()
-  })
+  const isConnected = await testConnection();
+  return Response.json({
+    status: isConnected ? "connected" : "failed",
+    timestamp: new Date().toISOString(),
+  });
 }
 ```
 
@@ -475,6 +493,7 @@ Visit: `https://www.mywealthwise.tech/api/test-db`
 ✅ Should return: `{"status":"connected"}`
 
 ### **Test 3: Google OAuth Flow**
+
 1. Go to `https://www.mywealthwise.tech/auth/signin`
 2. Click "Continue with Google"
 3. ✅ Should redirect to Google login
@@ -482,6 +501,7 @@ Visit: `https://www.mywealthwise.tech/api/test-db`
 5. ❌ If error, check error page shows helpful message
 
 ### **Test 4: Session Persistence**
+
 1. Sign in with Google
 2. Refresh page
 3. ✅ Should stay signed in (check user avatar in header)
@@ -491,6 +511,7 @@ Visit: `https://www.mywealthwise.tech/api/test-db`
 ## 🔍 **DEBUGGING TOOLS**
 
 ### **Check Vercel Logs**
+
 ```bash
 # Install Vercel CLI if not installed
 npm i -g vercel
@@ -503,6 +524,7 @@ vercel logs https://www.mywealthwise.tech --follow
 ```
 
 ### **Check Browser Console**
+
 1. Open DevTools (F12)
 2. Go to **Console** tab
 3. Look for errors related to:
@@ -511,6 +533,7 @@ vercel logs https://www.mywealthwise.tech --follow
    - `session`
 
 ### **Check Network Tab**
+
 1. Open DevTools (F12)
 2. Go to **Network** tab
 3. Filter by "auth"
@@ -527,6 +550,7 @@ vercel logs https://www.mywealthwise.tech --follow
 ### **Issue 1: Still Getting 500 Error**
 
 **Solution:**
+
 1. Clear all Vercel environment variables
 2. Re-add them one by one
 3. Redeploy after adding `AUTH_URL`
@@ -538,17 +562,19 @@ vercel logs https://www.mywealthwise.tech --follow
 This means email exists with different sign-in method.
 
 Add to `lib/auth.js`:
+
 ```javascript
 GoogleProvider({
   // ... existing config
   allowDangerousEmailAccountLinking: true, // ✅ Already added
-})
+});
 ```
 
 ### **Issue 3: Redirect Loop**
 
 **Solution:**
 Check cookie domain in `lib/auth.js`:
+
 ```javascript
 cookies: {
   sessionToken: {
@@ -562,16 +588,20 @@ cookies: {
 ### **Issue 4: "Configuration" Error**
 
 **Solution:**
+
 1. Verify `NEXTAUTH_SECRET` is set in Vercel
 2. Generate new secret if needed:
+
 ```bash
 openssl rand -base64 32
 ```
+
 3. Update in Vercel environment variables
 
 ### **Issue 5: MongoDB Timeout**
 
 **Solution:**
+
 1. Check MongoDB Atlas Network Access
 2. Add IP: `0.0.0.0/0` (allow all - for Vercel)
 3. Verify connection string has `&appName=pythoncluster0`
@@ -609,7 +639,7 @@ You'll know it's fixed when:
 ✅ After Google login, redirects to `/dashboard`  
 ✅ User session persists after page refresh  
 ✅ User avatar appears in header  
-✅ Vercel logs show no auth errors  
+✅ Vercel logs show no auth errors
 
 ---
 
@@ -632,10 +662,12 @@ You'll know it's fixed when:
 If the issue persists:
 
 1. **Check Vercel Build Logs**:
+
    - Go to Deployments → Click latest → View Build Logs
    - Look for "auth" or "nextauth" errors
 
 2. **Verify Domain Settings**:
+
    - Ensure www.mywealthwise.tech is primary domain
    - Check DNS records are correct
    - Verify SSL certificate is active
