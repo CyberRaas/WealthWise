@@ -413,16 +413,16 @@ a:active,
     padding: 1rem;
     margin-bottom: 0.75rem;
   }
-  
+
   .mobile-compact {
     padding: 0.75rem;
   }
-  
+
   /* Reduce large gaps on mobile */
   .gap-6 {
     gap: 1rem;
   }
-  
+
   .gap-8 {
     gap: 1.25rem;
   }
@@ -453,17 +453,17 @@ a:active,
     font-size: 1.75rem !important;
     line-height: 2rem !important;
   }
-  
+
   h2 {
     font-size: 1.5rem !important;
     line-height: 1.75rem !important;
   }
-  
+
   h3 {
     font-size: 1.25rem !important;
     line-height: 1.5rem !important;
   }
-  
+
   /* Ensure readable body text */
   body {
     font-size: 16px;

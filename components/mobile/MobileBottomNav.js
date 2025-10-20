@@ -126,11 +126,10 @@ export default function MobileBottomNav() {
 
                   {/* Label */}
                   <motion.span
-                    className={`text-xs font-medium mt-1 relative z-10 ${
-                      active
+                    className={`text-xs font-medium mt-1 relative z-10 ${active
                         ? 'text-transparent bg-gradient-to-r bg-clip-text from-emerald-600 to-teal-600'
                         : 'text-slate-500'
-                    }`}
+                      }`}
                     animate={{
                       scale: active ? 1.05 : 1,
                       fontWeight: active ? 600 : 500

@@ -761,8 +761,8 @@ function DashboardContent() {
                               <div className="w-full bg-slate-200 rounded-full h-2 mb-1">
                                 <div
                                   className={`h-2 rounded-full ${spentPercentage > 90 ? 'bg-red-500' :
-                                      spentPercentage > 70 ? 'bg-orange-500' :
-                                        'bg-emerald-500'
+                                    spentPercentage > 70 ? 'bg-orange-500' :
+                                      'bg-emerald-500'
                                     }`}
                                   style={{ width: `${Math.min(spentPercentage, 100)}%` }}
                                 ></div>
@@ -806,32 +806,32 @@ function DashboardContent() {
 
                         return (
                           <div key={goal.id} className={`p-3 rounded-lg ${isCompleted ? 'bg-emerald-50' :
-                              progress > 50 ? 'bg-blue-50' : 'bg-slate-50'
+                            progress > 50 ? 'bg-blue-50' : 'bg-slate-50'
                             }`}>
                             <div className="flex justify-between items-center mb-2">
                               <span className={`font-medium text-sm ${isCompleted ? 'text-emerald-800' :
-                                  progress > 50 ? 'text-blue-800' : 'text-slate-800'
+                                progress > 50 ? 'text-blue-800' : 'text-slate-800'
                                 }`}>
                                 {goal.name}
                               </span>
                               <span className={`text-xs ${isCompleted ? 'text-emerald-600' :
-                                  progress > 50 ? 'text-blue-600' : 'text-slate-600'
+                                progress > 50 ? 'text-blue-600' : 'text-slate-600'
                                 }`}>
                                 {progress.toFixed(0)}%
                               </span>
                             </div>
                             <div className={`w-full rounded-full h-2 ${isCompleted ? 'bg-emerald-200' :
-                                progress > 50 ? 'bg-blue-200' : 'bg-slate-200'
+                              progress > 50 ? 'bg-blue-200' : 'bg-slate-200'
                               }`}>
                               <div
                                 className={`h-2 rounded-full ${isCompleted ? 'bg-emerald-600' :
-                                    progress > 50 ? 'bg-blue-600' : 'bg-slate-600'
+                                  progress > 50 ? 'bg-blue-600' : 'bg-slate-600'
                                   }`}
                                 style={{ width: `${Math.min(progress, 100)}%` }}
                               ></div>
                             </div>
                             <div className={`text-xs mt-1 ${isCompleted ? 'text-emerald-700' :
-                                progress > 50 ? 'text-blue-700' : 'text-slate-700'
+                              progress > 50 ? 'text-blue-700' : 'text-slate-700'
                               }`}>
                               ₹{goal.currentAmount.toLocaleString('en-IN')} / ₹{goal.targetAmount.toLocaleString('en-IN')}
                               {isCompleted && ' ✅'}

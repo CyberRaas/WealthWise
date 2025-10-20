@@ -47,10 +47,10 @@ export default function FABMenu() {
       >
         {/* Pulse Animation Ring */}
         <div className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-30"></div>
-        
+
         {/* Mic Icon */}
         <Mic className="w-8 h-8 text-white relative z-10 group-hover:scale-110 transition-transform" strokeWidth={2.5} />
-        
+
         {/* Hover Glow Effect */}
         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-green-300 to-emerald-300 opacity-0 group-hover:opacity-30 transition-opacity blur-xl"></div>
       </motion.button>

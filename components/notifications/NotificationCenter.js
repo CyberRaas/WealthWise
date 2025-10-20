@@ -200,8 +200,8 @@ export default function NotificationCenter() {
                                     <button
                                         onClick={() => setFilter('all')}
                                         className={`tap-target px-4 py-2 text-xs font-medium rounded-lg transition-colors touch-feedback ${filter === 'all'
-                                                ? 'bg-white text-emerald-600 shadow-sm'
-                                                : 'bg-white/20 text-white hover:bg-white/30'
+                                            ? 'bg-white text-emerald-600 shadow-sm'
+                                            : 'bg-white/20 text-white hover:bg-white/30'
                                             }`}
                                     >
                                         All ({notifications.length})
@@ -209,8 +209,8 @@ export default function NotificationCenter() {
                                     <button
                                         onClick={() => setFilter('unread')}
                                         className={`tap-target px-4 py-2 text-xs font-medium rounded-lg transition-colors touch-feedback ${filter === 'unread'
-                                                ? 'bg-white text-emerald-600 shadow-sm'
-                                                : 'bg-white/20 text-white hover:bg-white/30'
+                                            ? 'bg-white text-emerald-600 shadow-sm'
+                                            : 'bg-white/20 text-white hover:bg-white/30'
                                             }`}
                                     >
                                         Unread ({unreadCount})
@@ -218,8 +218,8 @@ export default function NotificationCenter() {
                                     <button
                                         onClick={() => setFilter('critical')}
                                         className={`tap-target px-4 py-2 text-xs font-medium rounded-lg transition-colors touch-feedback ${filter === 'critical'
-                                                ? 'bg-white text-emerald-600 shadow-sm'
-                                                : 'bg-white/20 text-white hover:bg-white/30'
+                                            ? 'bg-white text-emerald-600 shadow-sm'
+                                            : 'bg-white/20 text-white hover:bg-white/30'
                                             }`}
                                     >
                                         Important

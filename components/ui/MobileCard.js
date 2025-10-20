@@ -14,132 +14,132 @@ import Link from 'next/link'
  */
 
 const MobileCard = forwardRef(({
-  children,
-  title,
-  subtitle,
-  icon: Icon,
-  action,
-  actionLabel = 'View',
-  href,
-  onClick,
-  variant = 'default',
-  interactive = Boolean(href || onClick),
-  className = '',
-  ...props
+    children,
+    title,
+    subtitle,
+    icon: Icon,
+    action,
+    actionLabel = 'View',
+    href,
+    onClick,
+    variant = 'default',
+    interactive = Boolean(href || onClick),
+    className = '',
+    ...props
 }, ref) => {
 
-  const baseStyles = `
+    const baseStyles = `
     block w-full
     bg-white rounded-2xl shadow-sm
     border border-gray-200
     transition-all duration-200
-    ${interactive 
-      ? 'touch-feedback active:scale-[0.98] hover:shadow-md hover:border-emerald-300 cursor-pointer' 
-      : ''
-    }
+    ${interactive
+            ? 'touch-feedback active:scale-[0.98] hover:shadow-md hover:border-emerald-300 cursor-pointer'
+            : ''
+        }
   `
 
-  const variants = {
-    default: 'p-4 sm:p-5',
-    compact: 'p-3 sm:p-4',
-    spacious: 'p-5 sm:p-6',
-    feature: `
+    const variants = {
+        default: 'p-4 sm:p-5',
+        compact: 'p-3 sm:p-4',
+        spacious: 'p-5 sm:p-6',
+        feature: `
       p-5 sm:p-6
       bg-gradient-to-br from-emerald-50 to-teal-50
       border-emerald-200
     `
-  }
+    }
 
-  const CardContent = () => (
-    <>
-      {/* Header Section */}
-      {(title || Icon) && (
-        <div className="flex items-start gap-3 mb-3">
-          {Icon && (
-            <div className="flex-shrink-0">
-              <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-                <Icon className="h-6 w-6 text-emerald-600" />
-              </div>
+    const CardContent = () => (
+        <>
+            {/* Header Section */}
+            {(title || Icon) && (
+                <div className="flex items-start gap-3 mb-3">
+                    {Icon && (
+                        <div className="flex-shrink-0">
+                            <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+                                <Icon className="h-6 w-6 text-emerald-600" />
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="flex-1 min-w-0">
+                        {title && (
+                            <h3 className="text-base sm:text-lg font-bold text-gray-900 leading-tight">
+                                {title}
+                            </h3>
+                        )}
+                        {subtitle && (
+                            <p className="text-sm text-gray-500 mt-1">
+                                {subtitle}
+                            </p>
+                        )}
+                    </div>
+
+                    {interactive && (
+                        <ChevronRight className="h-5 w-5 text-gray-400 flex-shrink-0" />
+                    )}
+                </div>
+            )}
+
+            {/* Content */}
+            <div className="mobile-card-content">
+                {children}
             </div>
-          )}
-          
-          <div className="flex-1 min-w-0">
-            {title && (
-              <h3 className="text-base sm:text-lg font-bold text-gray-900 leading-tight">
-                {title}
-              </h3>
+
+            {/* Action Footer */}
+            {action && (
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                    {action}
+                </div>
             )}
-            {subtitle && (
-              <p className="text-sm text-gray-500 mt-1">
-                {subtitle}
-              </p>
-            )}
-          </div>
+        </>
+    )
 
-          {interactive && (
-            <ChevronRight className="h-5 w-5 text-gray-400 flex-shrink-0" />
-          )}
-        </div>
-      )}
-
-      {/* Content */}
-      <div className="mobile-card-content">
-        {children}
-      </div>
-
-      {/* Action Footer */}
-      {action && (
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          {action}
-        </div>
-      )}
-    </>
-  )
-
-  const cardClasses = `
+    const cardClasses = `
     ${baseStyles}
     ${variants[variant]}
     ${className}
   `
 
-  // Render as Link if href provided
-  if (href) {
-    return (
-      <Link
-        ref={ref}
-        href={href}
-        className={cardClasses}
-        {...props}
-      >
-        <CardContent />
-      </Link>
-    )
-  }
+    // Render as Link if href provided
+    if (href) {
+        return (
+            <Link
+                ref={ref}
+                href={href}
+                className={cardClasses}
+                {...props}
+            >
+                <CardContent />
+            </Link>
+        )
+    }
 
-  // Render as button if onClick provided
-  if (onClick) {
-    return (
-      <button
-        ref={ref}
-        onClick={onClick}
-        className={`${cardClasses} text-left`}
-        {...props}
-      >
-        <CardContent />
-      </button>
-    )
-  }
+    // Render as button if onClick provided
+    if (onClick) {
+        return (
+            <button
+                ref={ref}
+                onClick={onClick}
+                className={`${cardClasses} text-left`}
+                {...props}
+            >
+                <CardContent />
+            </button>
+        )
+    }
 
-  // Render as div (non-interactive)
-  return (
-    <div
-      ref={ref}
-      className={cardClasses}
-      {...props}
-    >
-      <CardContent />
-    </div>
-  )
+    // Render as div (non-interactive)
+    return (
+        <div
+            ref={ref}
+            className={cardClasses}
+            {...props}
+        >
+            <CardContent />
+        </div>
+    )
 })
 
 MobileCard.displayName = 'MobileCard'
