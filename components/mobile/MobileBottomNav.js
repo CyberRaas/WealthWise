@@ -38,14 +38,6 @@ const NAV_ITEMS = [
     color: 'from-purple-500 to-pink-500'
   },
   {
-    id: 'add',
-    name: 'Add',
-    icon: Plus,
-    href: null, // Special FAB button
-    color: 'from-emerald-500 to-teal-500',
-    isFAB: true
-  },
-  {
     id: 'goals',
     name: 'Goals',
     icon: Target,
@@ -61,16 +53,13 @@ const NAV_ITEMS = [
   }
 ]
 
-export default function MobileBottomNav({ onFABClick }) {
+export default function MobileBottomNav() {
   const pathname = usePathname()
   const router = useRouter()
 
   const handleNavClick = (item) => {
     triggerHaptic('medium')
-
-    if (item.isFAB) {
-      onFABClick?.()
-    } else if (item.href) {
+    if (item.href) {
       router.push(item.href)
     }
   }
@@ -95,37 +84,10 @@ export default function MobileBottomNav({ onFABClick }) {
         {/* iOS Safe Area Bottom Padding */}
         <div className="bg-white pb-safe">
           <nav className="flex items-center justify-around h-16 px-2 relative">
-            {NAV_ITEMS.map((item, index) => {
+            {NAV_ITEMS.map((item) => {
               const Icon = item.icon
               const active = isActive(item.href)
 
-              // FAB (Floating Action Button)
-              if (item.isFAB) {
-                return (
-                  <motion.button
-                    key={item.id}
-                    onClick={() => handleNavClick(item)}
-                    className="relative"
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <motion.div
-                      className={`absolute -top-8 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-gradient-to-r ${item.color} shadow-lg flex items-center justify-center`}
-                      whileHover={{ scale: 1.1 }}
-                      animate={{
-                        rotate: active ? 45 : 0,
-                        scale: active ? 1.1 : 1
-                      }}
-                      transition={{ type: 'spring', stiffness: 300 }}
-                    >
-                      <Icon className="w-7 h-7 text-white" strokeWidth={2.5} />
-                    </motion.div>
-                    {/* Spacer */}
-                    <div className="w-14 h-8" />
-                  </motion.button>
-                )
-              }
-
-              // Regular Nav Items
               return (
                 <motion.button
                   key={item.id}

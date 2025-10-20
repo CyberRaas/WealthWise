@@ -33,7 +33,6 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
   const pathname = usePathname()
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [fabMenuOpen, setFABMenuOpen] = useState(false)
   const [hamburgerMenuOpen, setHamburgerMenuOpen] = useState(false)
   const dropdownRef = useRef(null)
 
@@ -75,6 +74,9 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
     '/dashboard/budget'
   ].some(path => pathname === path)
 
+  // Hide hamburger menu on main dashboard (show navigation directly instead)
+  const isDashboardHome = pathname === '/dashboard'
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50">
       <div className="flex">
@@ -99,11 +101,8 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
           onClose={() => setHamburgerMenuOpen(false)}
         />
 
-        {/* FAB Menu */}
-        <FABMenu
-          isOpen={fabMenuOpen}
-          onClose={() => setFABMenuOpen(false)}
-        />
+        {/* FAB Menu - Now Self-Contained */}
+        <FABMenu />
 
         {/* Main Content */}
         <div className="flex-1 min-w-0">
@@ -113,13 +112,15 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
               <div className="flex items-center justify-between h-full">
                 {/* Left Section: Mobile Menu + Title */}
                 <div className="flex items-center space-x-3 min-w-0 flex-1">
-                  {/* Mobile Hamburger Button - LG+ shows sidebar menu */}
-                  <button
-                    className="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md"
-                    onClick={() => setHamburgerMenuOpen(true)}
-                  >
-                    <Menu className="w-5 h-5 text-slate-600" />
-                  </button>
+                  {/* Mobile Hamburger Button - Only show on non-dashboard pages */}
+                  {!isDashboardHome && (
+                    <button
+                      className="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md"
+                      onClick={() => setHamburgerMenuOpen(true)}
+                    >
+                      <Menu className="w-5 h-5 text-slate-600" />
+                    </button>
+                  )}
 
                   {/* Title Section */}
                   <div className="min-w-0 flex-1">
@@ -263,7 +264,7 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
 
           {/* Mobile Bottom Navigation */}
           {showMobileNav && (
-            <MobileBottomNav onFABClick={() => setFABMenuOpen(true)} />
+            <MobileBottomNav />
           )}
         </div>
       </div>

@@ -21,7 +21,13 @@ import {
   BarChart3,
   DollarSign,
   AlertCircle,
-  RefreshCw
+  RefreshCw,
+  Sparkles,
+  CreditCard,
+  Calculator,
+  User,
+  Settings,
+  HelpCircle
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import BudgetDisplay from '@/components/dashboard/BudgetDisplay'
@@ -616,19 +622,21 @@ function DashboardContent() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg sm:text-xl font-bold text-slate-800">Quick Actions</CardTitle>
-                <CardDescription>Fast access to your most-used features</CardDescription>
+                <CardDescription>Fast access to all features</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+                  {/* Voice Entry - Primary Action */}
                   <Button
                     onClick={handleVoiceEntry}
-                    className="flex flex-col items-center p-4 sm:p-6 h-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl"
+                    className="flex flex-col items-center p-4 sm:p-6 h-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl col-span-2 sm:col-span-1"
                   >
                     <Mic className="h-6 w-6 sm:h-8 sm:w-8 mb-2" />
                     <span className="font-bold text-sm sm:text-base">Voice Entry</span>
-                    <span className="text-xs opacity-90">Add expenses by voice</span>
+                    <span className="text-xs opacity-90">Add by voice</span>
                   </Button>
 
+                  {/* Add Expense */}
                   <Button
                     onClick={handleAddExpense}
                     variant="outline"
@@ -639,16 +647,18 @@ function DashboardContent() {
                     <span className="text-xs text-slate-500">Manual entry</span>
                   </Button>
 
+                  {/* Budget Manager */}
                   <Button
                     onClick={handleViewBudget}
                     variant="outline"
-                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50 rounded-xl"
+                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-violet-300 hover:bg-violet-50 rounded-xl"
                   >
-                    <BarChart3 className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
-                    <span className="font-bold text-slate-700 text-sm sm:text-base">View Budget</span>
-                    <span className="text-xs text-slate-500">Detailed budget view</span>
+                    <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
+                    <span className="font-bold text-slate-700 text-sm sm:text-base">Budget</span>
+                    <span className="text-xs text-slate-500">Track budget</span>
                   </Button>
 
+                  {/* Goals */}
                   <Button
                     onClick={handleViewGoals}
                     variant="outline"
@@ -657,6 +667,61 @@ function DashboardContent() {
                     <Target className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
                     <span className="font-bold text-slate-700 text-sm sm:text-base">Goals</span>
                     <span className="text-xs text-slate-500">Track progress</span>
+                  </Button>
+
+                  {/* Debt Manager */}
+                  <Button
+                    onClick={() => router.push('/dashboard/debt')}
+                    variant="outline"
+                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-red-300 hover:bg-red-50 rounded-xl"
+                  >
+                    <CreditCard className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
+                    <span className="font-bold text-slate-700 text-sm sm:text-base">Debt</span>
+                    <span className="text-xs text-slate-500">Manage debts</span>
+                  </Button>
+
+                  {/* Debt Calculator */}
+                  <Button
+                    onClick={() => router.push('/dashboard/debt-calculator')}
+                    variant="outline"
+                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-orange-300 hover:bg-orange-50 rounded-xl"
+                  >
+                    <Calculator className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
+                    <span className="font-bold text-slate-700 text-sm sm:text-base">Calculator</span>
+                    <span className="text-xs text-slate-500">Calculate payments</span>
+                  </Button>
+
+                  {/* Profile */}
+                  <Button
+                    onClick={() => router.push('/dashboard/profile')}
+                    variant="outline"
+                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 rounded-xl"
+                  >
+                    <User className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
+                    <span className="font-bold text-slate-700 text-sm sm:text-base">Profile</span>
+                    <span className="text-xs text-slate-500">Manage account</span>
+                  </Button>
+
+                  {/* Settings */}
+                  <Button
+                    onClick={() => router.push('/dashboard/settings')}
+                    variant="outline"
+                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-slate-400 hover:bg-slate-50 rounded-xl"
+                  >
+                    <Settings className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
+                    <span className="font-bold text-slate-700 text-sm sm:text-base">Settings</span>
+                    <span className="text-xs text-slate-500">Preferences</span>
+                  </Button>
+
+                  {/* Help & Support */}
+                  <Button
+                    onClick={() => router.push('/dashboard/help')}
+                    variant="outline"
+                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-green-300 hover:bg-green-50 rounded-xl"
+                  >
+                    <HelpCircle className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
+                    <span className="font-bold text-slate-700 text-sm sm:text-base">Help</span>
+                    <span className="text-xs text-slate-500">Get support</span>
                   </Button>
                 </div>
               </CardContent>
