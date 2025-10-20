@@ -13,6 +13,7 @@ This script helps you create PWA icons in all required sizes.
 ## Option 2: Using Sharp (Node.js)
 
 Install Sharp:
+
 ```bash
 npm install sharp --save-dev
 ```
@@ -20,13 +21,13 @@ npm install sharp --save-dev
 Create a file `scripts/generate-icons.js`:
 
 ```javascript
-const sharp = require('sharp');
-const fs = require('fs');
-const path = require('path');
+const sharp = require("sharp");
+const fs = require("fs");
+const path = require("path");
 
 const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
-const inputFile = 'public/icon-base.png'; // Your 512x512 base icon
-const outputDir = 'public/icons';
+const inputFile = "public/icon-base.png"; // Your 512x512 base icon
+const outputDir = "public/icons";
 
 // Create output directory if it doesn't exist
 if (!fs.existsSync(outputDir)) {
@@ -34,18 +35,19 @@ if (!fs.existsSync(outputDir)) {
 }
 
 // Generate icons
-sizes.forEach(size => {
+sizes.forEach((size) => {
   sharp(inputFile)
     .resize(size, size)
     .toFile(path.join(outputDir, `icon-${size}x${size}.png`))
     .then(() => console.log(`✅ Generated ${size}x${size} icon`))
-    .catch(err => console.error(`❌ Error generating ${size}x${size}:`, err));
+    .catch((err) => console.error(`❌ Error generating ${size}x${size}:`, err));
 });
 
-console.log('🎨 Generating PWA icons...');
+console.log("🎨 Generating PWA icons...");
 ```
 
 Run:
+
 ```bash
 node scripts/generate-icons.js
 ```
@@ -116,9 +118,11 @@ Create `public/icons/icon.svg`:
 ## Screenshots for App Stores
 
 Create screenshots:
+
 - Mobile: 540x720 (narrow form factor)
 - Desktop: 1280x720 (wide form factor)
 
 Place in `public/screenshots/`:
+
 - dashboard.png
 - desktop.png

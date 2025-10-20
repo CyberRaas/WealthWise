@@ -3,18 +3,21 @@
 ## 🚀 Quick Start
 
 ### **Step 1: Generate Icons**
+
 ```bash
 npm install sharp --save-dev
 node scripts/generate-pwa-icons.js
 ```
 
 ### **Step 2: Build & Test**
+
 ```bash
 npm run build
 npm start
 ```
 
 ### **Step 3: Test on Mobile**
+
 - Open app on mobile device
 - Wait 3 seconds for install prompt
 - Tap "Install Now"
@@ -25,6 +28,7 @@ npm start
 ## 📋 Installation Methods
 
 ### **Android (Chrome/Edge)**
+
 ```
 Method 1: Install Prompt
 - Open app → Wait 3 seconds → Tap "Install Now"
@@ -34,6 +38,7 @@ Method 2: Browser Menu
 ```
 
 ### **iOS (Safari)**
+
 ```
 1. Tap Share button (□↑)
 2. Scroll down
@@ -42,6 +47,7 @@ Method 2: Browser Menu
 ```
 
 ### **Desktop (Chrome/Edge/Firefox)**
+
 ```
 - Look for install icon in address bar
 - Click → "Install" → Confirm
@@ -65,6 +71,7 @@ Method 2: Browser Menu
 ## 🎨 Customization
 
 ### **Change App Name:**
+
 ```json
 // public/manifest.json
 {
@@ -74,6 +81,7 @@ Method 2: Browser Menu
 ```
 
 ### **Change Theme Color:**
+
 ```json
 // public/manifest.json
 {
@@ -83,6 +91,7 @@ Method 2: Browser Menu
 ```
 
 ### **Change Start URL:**
+
 ```json
 // public/manifest.json
 {
@@ -91,11 +100,12 @@ Method 2: Browser Menu
 ```
 
 ### **Modify Install Prompt Timing:**
+
 ```javascript
 // components/PWAInstallPrompt.js
 setTimeout(() => {
-  setShowPrompt(true)
-}, 3000) // Change 3000 to your desired milliseconds
+  setShowPrompt(true);
+}, 3000); // Change 3000 to your desired milliseconds
 ```
 
 ---
@@ -103,6 +113,7 @@ setTimeout(() => {
 ## 🧪 Testing Checklist
 
 ### **Desktop Testing:**
+
 - [ ] Open Chrome DevTools → Application tab
 - [ ] Check Manifest loads correctly
 - [ ] Verify Service Worker is active
@@ -110,6 +121,7 @@ setTimeout(() => {
 - [ ] Run Lighthouse PWA audit (score 90+)
 
 ### **Mobile Testing:**
+
 - [ ] Install prompt appears after 3 seconds
 - [ ] Install app on home screen
 - [ ] App opens in standalone mode
@@ -121,15 +133,17 @@ setTimeout(() => {
 ## 🐛 Common Issues & Fixes
 
 ### **Install Prompt Not Showing:**
+
 ```javascript
 // Clear dismissed state
-localStorage.removeItem('pwa-prompt-dismissed')
-localStorage.removeItem('pwa-prompt-dismissed-time')
+localStorage.removeItem("pwa-prompt-dismissed");
+localStorage.removeItem("pwa-prompt-dismissed-time");
 
 // Then refresh page
 ```
 
 ### **Service Worker Not Registering:**
+
 ```bash
 # Clear cache and rebuild
 rm -rf .next
@@ -138,6 +152,7 @@ npm start
 ```
 
 ### **Icons Not Loading:**
+
 ```bash
 # Generate icons
 node scripts/generate-pwa-icons.js
@@ -147,6 +162,7 @@ npm run build
 ```
 
 ### **Manifest Not Found:**
+
 ```bash
 # Check file exists
 ls public/manifest.json
@@ -160,25 +176,28 @@ F12 → Console
 ## 📊 Performance Tips
 
 ### **Cache Management:**
+
 ```javascript
 // Update cache version in public/sw.js
-const CACHE_NAME = 'wealthwise-v1.0.1' // Increment version
+const CACHE_NAME = "wealthwise-v1.0.1"; // Increment version
 ```
 
 ### **Clear All Caches:**
+
 ```javascript
 // Run in browser console
-caches.keys().then(keys => {
-  keys.forEach(key => caches.delete(key))
-})
+caches.keys().then((keys) => {
+  keys.forEach((key) => caches.delete(key));
+});
 ```
 
 ### **Force Service Worker Update:**
+
 ```javascript
 // Run in browser console
-navigator.serviceWorker.getRegistrations().then(regs => {
-  regs.forEach(reg => reg.update())
-})
+navigator.serviceWorker.getRegistrations().then((regs) => {
+  regs.forEach((reg) => reg.update());
+});
 ```
 
 ---
@@ -186,6 +205,7 @@ navigator.serviceWorker.getRegistrations().then(regs => {
 ## 🎯 Best Practices
 
 ### **Do's:**
+
 ✅ Test on real devices
 ✅ Use HTTPS (or localhost for dev)
 ✅ Keep service worker cache size reasonable
@@ -194,6 +214,7 @@ navigator.serviceWorker.getRegistrations().then(regs => {
 ✅ Show install prompt smartly (3s delay)
 
 ### **Don'ts:**
+
 ❌ Don't show prompt immediately
 ❌ Don't show prompt too frequently
 ❌ Don't cache API responses excessively
@@ -206,6 +227,7 @@ navigator.serviceWorker.getRegistrations().then(regs => {
 ## 🚀 Deployment
 
 ### **Pre-Deployment Checklist:**
+
 - [ ] Icons generated (8 sizes)
 - [ ] Manifest.json configured
 - [ ] Service Worker tested
@@ -214,6 +236,7 @@ navigator.serviceWorker.getRegistrations().then(regs => {
 - [ ] Built for production (`npm run build`)
 
 ### **Post-Deployment:**
+
 - [ ] Test installation on Android
 - [ ] Test installation on iOS
 - [ ] Test installation on Desktop
@@ -226,17 +249,19 @@ navigator.serviceWorker.getRegistrations().then(regs => {
 ## 📈 Analytics Tracking
 
 ### **Track Installation:**
+
 ```javascript
 // components/PWAInstallPrompt.js
 // Already implemented!
-if (outcome === 'accepted') {
-  localStorage.setItem('pwa-installed', 'true')
+if (outcome === "accepted") {
+  localStorage.setItem("pwa-installed", "true");
   // Add your analytics event here
   // gtag('event', 'pwa_install', { ... })
 }
 ```
 
 ### **Track Offline Usage:**
+
 ```javascript
 // Add to your analytics
 if (!navigator.onLine) {
@@ -268,6 +293,7 @@ Your PWA is ready when:
 ---
 
 **Quick Help:**
+
 - **Icons:** `node scripts/generate-pwa-icons.js`
 - **Build:** `npm run build && npm start`
 - **Test:** Chrome DevTools → Application tab
