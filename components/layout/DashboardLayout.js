@@ -12,14 +12,15 @@ import MobileBottomNav from '@/components/mobile/MobileBottomNav'
 import SwipeGestureHandler from '@/components/mobile/SwipeGestureHandler'
 import PullToRefresh from '@/components/mobile/PullToRefresh'
 import LanguageSelector from '@/components/ui/LanguageSelector'
-import NotificationCenter from '@/components/notifications/NotificationCenter'
+import Logo from '@/components/ui/Logo'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   LogOut,
   User,
   Settings,
   HelpCircle,
-  ChevronDown
+  ChevronDown,
+  Bell
 } from 'lucide-react'
 
 export default function DashboardLayout({ children, title = "Dashboard", onRefresh }) {
@@ -68,7 +69,8 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
     '/dashboard/goals',
     '/dashboard/analytics',
     '/dashboard/budget',
-    '/dashboard/profile'
+    '/dashboard/profile',
+    '/dashboard/notifications'
   ].some(path => pathname === path)
 
   return (
@@ -95,10 +97,15 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
           <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
             <div className="h-16 px-3 sm:px-4 lg:px-6">
               <div className="flex items-center justify-between h-full">
-                {/* Left Section: Title */}
+                {/* Left Section: Logo (Mobile) or Title (Desktop) */}
                 <div className="flex items-center min-w-0 flex-1">
-                  {/* Title Section */}
-                  <div className="min-w-0 flex-1">
+                  {/* Mobile Logo - Show only on mobile */}
+                  <div className="lg:hidden mr-3">
+                    <Logo size="medium" />
+                  </div>
+
+                  {/* Title Section - Hidden on mobile, shown on desktop */}
+                  <div className="min-w-0 flex-1 hidden lg:block">
                     <motion.h1
                       key={pathname}
                       initial={{ opacity: 0, y: -10 }}
@@ -124,13 +131,20 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
                   {/* Language Selector */}
                   <LanguageSelector variant="dashboard" />
 
-                  {/* Notifications Center */}
-                  <div className="hidden sm:block">
-                    <NotificationCenter />
-                  </div>
+                  {/* Notification Bell Button - Redirects to notifications page */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => router.push('/dashboard/notifications')}
+                    className="relative h-10 w-10 rounded-xl hover:bg-slate-100 transition-colors active:scale-95"
+                  >
+                    <Bell className="h-5 w-5 text-slate-600" />
+                    {/* Optional: Add notification badge */}
+                    {/* <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span> */}
+                  </Button>
 
-                  {/* User Profile Dropdown */}
-                  <div className="relative" ref={dropdownRef}>
+                  {/* User Profile Dropdown - Hidden on mobile */}
+                  <div className="relative hidden lg:block" ref={dropdownRef}>
                     <Button
                       variant="ghost"
                       className="flex items-center space-x-2 bg-slate-100/50 hover:bg-slate-200/50 rounded-xl px-3 py-2 h-10 transition-all duration-200 active:scale-95"

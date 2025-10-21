@@ -244,141 +244,101 @@ export default function OnboardingFlow() {
   const progressPercentage = ((currentStep + 1) / ONBOARDING_STEPS.length) * 100
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-blue-50 py-8">
-      <div className="max-w-2xl mx-auto px-4">
-        {/* Progress Header */}
-        {/* Modern Progress Stepper */}
-        <div className="mb-12">
-          {/* Header with Step Counter */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 bg-clip-text text-transparent mb-2">
-                {ONBOARDING_STEPS[currentStep].title}
-              </h1>
-              <p className="text-slate-600 text-sm sm:text-base">Complete your profile in just a few steps</p>
+    <div className="h-[calc(100vh-80px)] bg-white overflow-hidden">
+      <div className="max-w-3xl mx-auto px-4 h-full flex flex-col py-4">
+        {/* Compact Progress Section */}
+        <div className="flex-shrink-0 mb-4">
+          {/* Step Counter Badge & Progress Bar Combined */}
+          <div className="flex items-center gap-4 mb-3">
+            <div className="inline-flex items-center space-x-2 bg-slate-100 rounded-full px-4 py-1.5 flex-shrink-0">
+              <span className="text-xs font-medium text-slate-600">Step</span>
+              <span className="text-xs font-bold text-slate-900">{currentStep + 1}</span>
+              <span className="text-xs text-slate-400">/</span>
+              <span className="text-xs text-slate-500">{ONBOARDING_STEPS.length}</span>
             </div>
-            <div className="flex items-center space-x-3">
-              <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 text-sm font-bold rounded-full shadow-lg">
-                Step {currentStep + 1} of {ONBOARDING_STEPS.length}
-              </Badge>
+
+            {/* Progress Bar */}
+            <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${progressPercentage}%` }}
+              ></div>
             </div>
           </div>
 
-          {/* Interactive Step Indicator */}
-          <div className="relative">
-            {/* Progress Bar Background */}
-            <div className="absolute top-6 left-0 right-0 h-1 bg-slate-200 rounded-full"></div>
-            {/* Animated Progress Bar */}
-            <div
-              className="absolute top-6 left-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 rounded-full transition-all duration-700 ease-out shadow-lg"
-              style={{ width: `${progressPercentage}%` }}
-            ></div>
-
-            {/* Step Nodes */}
-            <div className="relative flex justify-between">
-              {ONBOARDING_STEPS.map((step, index) => {
-                const isCompleted = index < currentStep
-                const isCurrent = index === currentStep
-                const isUpcoming = index > currentStep
-
-                return (
-                  <div key={step.key} className="flex flex-col items-center group">
-                    {/* Step Circle */}
-                    <div
-                      className={`
-                        relative w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold
-                        transition-all duration-500 transform
-                        ${isCurrent ? 'scale-125 shadow-2xl' : 'scale-100'}
-                        ${isCompleted
-                          ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-xl ring-4 ring-emerald-100'
-                          : isCurrent
-                            ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-2xl ring-4 ring-blue-200 animate-pulse'
-                            : 'bg-white border-2 border-slate-300 text-slate-400'
-                        }
-                      `}
-                    >
-                      {isCompleted ? (
-                        <CheckCircle className="w-6 h-6" />
-                      ) : (
-                        <span>{step.icon}</span>
-                      )}
-
-                      {/* Pulse Animation for Current Step */}
-                      {isCurrent && (
-                        <span className="absolute inset-0 rounded-full bg-blue-400 opacity-75 animate-ping"></span>
-                      )}
-                    </div>
-
-                    {/* Step Label */}
-                    <div className="mt-3 text-center">
-                      <p
-                        className={`
-                          text-xs sm:text-sm font-semibold transition-all duration-300
-                          ${isCurrent
-                            ? 'text-blue-600 scale-105'
-                            : isCompleted
-                              ? 'text-emerald-600'
-                              : 'text-slate-400'
-                          }
-                        `}
-                      >
-                        {step.shortTitle}
-                      </p>
-                      {/* Active Indicator */}
-                      {isCurrent && (
-                        <div className="mt-1 w-1 h-1 bg-blue-500 rounded-full mx-auto animate-bounce"></div>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+          {/* Step Title - Compact */}
+          <div className="text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">
+              {ONBOARDING_STEPS[currentStep].title}
+            </h1>
+            <p className="text-slate-600 text-sm">
+              {currentStep === 0 && "Choose your preferred language"}
+              {currentStep === 1 && "Tell us about your earnings"}
+              {currentStep === 2 && "Help us personalize your experience"}
+              {currentStep === 3 && "Let AI create your personalized budget"}
+              {currentStep === 4 && "Review and finalize your setup"}
+            </p>
           </div>
         </div>
 
-        {/* Step Content Card */}
-        <Card className="shadow-2xl border-0 bg-white backdrop-blur-xl rounded-3xl overflow-hidden transform transition-all duration-300 hover:shadow-3xl">
-          <CardContent className="p-8 sm:p-12">
-            <div className="min-h-[400px]">
-              {currentStep === 0 && <LanguageStep />}
-              {currentStep === 1 && <IncomeStep profile={profile} setProfile={setProfile} />}
-              {currentStep === 2 && <DemographicsStep profile={profile} setProfile={setProfile} />}
-              {currentStep === 3 && <BudgetGenerationStep isGenerating={isGeneratingBudget} />}
-              {currentStep === 4 && <ReviewStep profile={profile} budget={generatedBudget} />}
-            </div>
-          </CardContent>
+        {/* Content Card - Flexible Height */}
+        <div className="flex-1 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col mb-4">
+          <div className="flex-1 overflow-y-auto p-6 sm:p-8">
+            {currentStep === 0 && <LanguageStep />}
+            {currentStep === 1 && <IncomeStep profile={profile} setProfile={setProfile} />}
+            {currentStep === 2 && <DemographicsStep profile={profile} setProfile={setProfile} />}
+            {currentStep === 3 && <BudgetGenerationStep isGenerating={isGeneratingBudget} />}
+            {currentStep === 4 && <ReviewStep profile={profile} budget={generatedBudget} />}
+          </div>
+        </div>
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between items-center px-8 sm:px-12 pb-8 sm:pb-10 border-t border-slate-100 pt-6">
+        {/* Navigation Buttons - Fixed at Bottom */}
+        <div className="flex-shrink-0 space-y-3">
+          <div className="flex items-center justify-between gap-4">
             <Button
               onClick={handleBack}
               disabled={currentStep === 0 || loading}
               variant="outline"
-              className="group border-2 border-slate-300 hover:border-emerald-500 text-slate-700 hover:text-emerald-600 font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group border-2 border-slate-200 hover:border-slate-300 text-slate-700 hover:bg-slate-50 font-medium px-6 py-2.5 h-11 rounded-xl transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-300" />
+              <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-0.5 transition-transform duration-200" />
               Back
             </Button>
 
             <Button
               onClick={handleNext}
               disabled={loading || isGeneratingBudget}
-              className="group bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white font-bold px-8 py-3 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="group bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-2.5 h-11 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading || isGeneratingBudget ? (
                 <div className="flex items-center">
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   <span>{isGeneratingBudget ? 'Generating...' : 'Processing...'}</span>
                 </div>
               ) : (
                 <>
-                  <span>{currentStep === ONBOARDING_STEPS.length - 1 ? 'Complete Setup' : 'Next Step'}</span>
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                  <span>{currentStep === ONBOARDING_STEPS.length - 1 ? 'Complete Setup' : 'Continue'}</span>
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform duration-200" />
                 </>
               )}
             </Button>
           </div>
-        </Card>
+
+          {/* Step Indicators */}
+          <div className="flex items-center justify-center gap-2">
+            {ONBOARDING_STEPS.map((step, index) => (
+              <div
+                key={step.key}
+                className={`h-1.5 rounded-full transition-all duration-300 ${index < currentStep
+                  ? 'w-8 bg-emerald-500'
+                  : index === currentStep
+                    ? 'w-12 bg-emerald-600'
+                    : 'w-8 bg-slate-200'
+                  }`}
+              ></div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -394,57 +354,41 @@ function IncomeStep({ profile, setProfile }) {
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center">
-        <div className="relative w-20 h-20 mx-auto mb-6">
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl blur-lg opacity-50 animate-pulse"></div>
-          <div className="relative w-full h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-xl">
-            <Coins className="w-10 h-10 text-white" />
-          </div>
-        </div>
-        <h2 className="text-3xl font-bold text-slate-800 mb-3">Income Details</h2>
-        <p className="text-slate-600 text-lg">Tell us about your monthly earnings</p>
-      </div>
-
-      {/* Form Fields */}
-      <div className="space-y-6 max-w-2xl mx-auto">
+    <div className="space-y-5">
+      <div className="space-y-4">
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-3">
-            💰 Monthly Income (Required)
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Monthly Income <span className="text-red-500">*</span>
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg font-semibold">₹</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">₹</span>
             <Input
               type="number"
               placeholder="50,000"
               value={profile.monthlyIncome}
               onChange={(e) => setProfile(prev => ({ ...prev, monthlyIncome: e.target.value }))}
-              className="h-14 pl-10 text-lg font-medium border-2 border-slate-200 focus:border-emerald-500 rounded-xl transition-all duration-300 hover:border-slate-300"
+              className="h-11 pl-10 text-base border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
               min="1000"
               step="1000"
             />
           </div>
-          <p className="text-xs text-slate-500 mt-2 flex items-center">
-            <span className="w-1 h-1 bg-slate-400 rounded-full mr-2"></span>
-            Minimum ₹1,000 required
-          </p>
+          <p className="text-xs text-slate-500 mt-1">Minimum ₹1,000 required</p>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-3">
-            💼 Income Source
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Income Source
           </label>
           <Select value={profile.incomeSource} onValueChange={(value) => setProfile(prev => ({ ...prev, incomeSource: value }))}>
-            <SelectTrigger className="h-14 border-2 border-slate-200 hover:border-slate-300 focus:border-emerald-500 rounded-xl transition-all duration-300">
+            <SelectTrigger className="h-11 border-slate-200 focus:border-emerald-500 rounded-lg">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="rounded-xl">
+            <SelectContent className="rounded-lg">
               {INCOME_SOURCES.map(source => (
                 <SelectItem
                   key={source.value}
                   value={source.value}
-                  className="cursor-pointer hover:bg-emerald-50 rounded-lg"
+                  className="cursor-pointer focus:bg-emerald-50 rounded-md"
                 >
                   {source.label}
                 </SelectItem>
@@ -452,17 +396,14 @@ function IncomeStep({ profile, setProfile }) {
             </SelectContent>
           </Select>
         </div>
+      </div>
 
-        {/* Info Card */}
-        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4">
-          <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-sm">ℹ️</span>
-            </div>
-            <div>
-              <p className="text-sm text-emerald-900 font-medium mb-1">Why we need this?</p>
-              <p className="text-xs text-emerald-700">Your income helps us create a personalized budget that matches your financial situation and goals.</p>
-            </div>
+      <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3">
+        <div className="flex gap-2.5">
+          <div className="flex-shrink-0 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold mt-0.5">i</div>
+          <div>
+            <p className="text-xs font-medium text-emerald-900 mb-0.5">Why we need this</p>
+            <p className="text-[11px] text-emerald-700 leading-snug">Your income helps us create a personalized budget that matches your financial situation.</p>
           </div>
         </div>
       </div>
@@ -475,105 +416,84 @@ function DemographicsStep({ profile, setProfile }) {
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center">
-        <div className="relative w-20 h-20 mx-auto mb-6">
-          <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-blue-500 rounded-2xl blur-lg opacity-50 animate-pulse"></div>
-          <div className="relative w-full h-full bg-gradient-to-r from-teal-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-xl">
-            <User className="w-10 h-10 text-white" />
-          </div>
+    <div className="space-y-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* City */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            City <span className="text-red-500">*</span>
+          </label>
+          <Select value={profile.city} onValueChange={(value) => setProfile(prev => ({ ...prev, city: value }))}>
+            <SelectTrigger className="h-11 border-slate-200 focus:border-emerald-500 rounded-lg">
+              <SelectValue placeholder="Select your city" />
+            </SelectTrigger>
+            <SelectContent className="rounded-lg max-h-[300px]">
+              {INDIAN_CITIES.map(city => (
+                <SelectItem
+                  key={city}
+                  value={city}
+                  className="cursor-pointer focus:bg-emerald-50 rounded-md"
+                >
+                  {city}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <h2 className="text-3xl font-bold text-slate-800 mb-3">Personal Information</h2>
-        <p className="text-slate-600 text-lg">Help us personalize your experience</p>
+
+        {/* Family Size */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Family Size <span className="text-red-500">*</span>
+          </label>
+          <Input
+            type="number"
+            placeholder="e.g., 4"
+            value={profile.familySize}
+            onChange={(e) => setProfile(prev => ({ ...prev, familySize: e.target.value }))}
+            className="h-11 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
+            min="1"
+            max="20"
+          />
+        </div>
+
+        {/* Age */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Age <span className="text-red-500">*</span>
+          </label>
+          <Input
+            type="number"
+            placeholder="e.g., 30"
+            value={profile.age}
+            onChange={(e) => setProfile(prev => ({ ...prev, age: e.target.value }))}
+            className="h-11 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
+            min="18"
+            max="100"
+          />
+        </div>
+
+        {/* Occupation */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Occupation
+          </label>
+          <Input
+            type="text"
+            placeholder="e.g., Software Engineer"
+            value={profile.occupation}
+            onChange={(e) => setProfile(prev => ({ ...prev, occupation: e.target.value }))}
+            className="h-11 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
+          />
+        </div>
       </div>
 
-      {/* Form Fields */}
-      <div className="space-y-6 max-w-3xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* City */}
+      <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
+        <div className="flex gap-2.5">
+          <div className="flex-shrink-0 w-4 h-4 bg-slate-400 rounded-full flex items-center justify-center text-white text-[10px] font-bold mt-0.5">🔒</div>
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-3">
-              <MapPin className="w-4 h-4 inline mr-1" />
-              City (Required)
-            </label>
-            <Select value={profile.city} onValueChange={(value) => setProfile(prev => ({ ...prev, city: value }))}>
-              <SelectTrigger className="h-14 border-2 border-slate-200 hover:border-slate-300 focus:border-teal-500 rounded-xl transition-all duration-300">
-                <SelectValue placeholder="Select your city" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl max-h-[300px]">
-                {INDIAN_CITIES.map(city => (
-                  <SelectItem
-                    key={city}
-                    value={city}
-                    className="cursor-pointer hover:bg-teal-50 rounded-lg"
-                  >
-                    {city}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Family Size */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-3">
-              <Users className="w-4 h-4 inline mr-1" />
-              Family Size (Required)
-            </label>
-            <Input
-              type="number"
-              placeholder="e.g., 4"
-              value={profile.familySize}
-              onChange={(e) => setProfile(prev => ({ ...prev, familySize: e.target.value }))}
-              className="h-14 text-lg font-medium border-2 border-slate-200 focus:border-teal-500 rounded-xl transition-all duration-300 hover:border-slate-300"
-              min="1"
-              max="20"
-            />
-          </div>
-
-          {/* Age */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-3">
-              📅 Age (Required)
-            </label>
-            <Input
-              type="number"
-              placeholder="e.g., 30"
-              value={profile.age}
-              onChange={(e) => setProfile(prev => ({ ...prev, age: e.target.value }))}
-              className="h-14 text-lg font-medium border-2 border-slate-200 focus:border-teal-500 rounded-xl transition-all duration-300 hover:border-slate-300"
-              min="18"
-              max="100"
-            />
-          </div>
-
-          {/* Occupation */}
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-3">
-              <Briefcase className="w-4 h-4 inline mr-1" />
-              Occupation (Optional)
-            </label>
-            <Input
-              type="text"
-              placeholder="e.g., Software Engineer"
-              value={profile.occupation}
-              onChange={(e) => setProfile(prev => ({ ...prev, occupation: e.target.value }))}
-              className="h-14 text-lg font-medium border-2 border-slate-200 focus:border-teal-500 rounded-xl transition-all duration-300 hover:border-slate-300"
-            />
-          </div>
-        </div>
-
-        {/* Info Card */}
-        <div className="bg-gradient-to-r from-teal-50 to-blue-50 border border-teal-200 rounded-2xl p-4 mt-6">
-          <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-sm">🔒</span>
-            </div>
-            <div>
-              <p className="text-sm text-teal-900 font-medium mb-1">Your data is secure</p>
-              <p className="text-xs text-teal-700">We use this information only to create accurate financial recommendations tailored to your location and lifestyle.</p>
-            </div>
+            <p className="text-xs font-medium text-slate-900 mb-0.5">Your data is secure</p>
+            <p className="text-[11px] text-slate-600 leading-snug">We use this information only to create accurate financial recommendations tailored to your location.</p>
           </div>
         </div>
       </div>
@@ -587,50 +507,49 @@ function BudgetGenerationStep({ isGenerating }) {
 
   return (
     <div className="text-center space-y-6">
-      <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto">
+      <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto">
         {isGenerating ? (
-          <Loader2 className="w-10 h-10 text-white animate-spin" />
+          <Loader2 className="w-7 h-7 text-emerald-600 animate-spin" />
         ) : (
-          <PieChart className="w-10 h-10 text-white" />
+          <PieChart className="w-7 h-7 text-emerald-600" />
         )}
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('budget.title')}</h2>
-        <p className="text-slate-600 mb-6">
+        <p className="text-sm text-slate-600 mb-3">
           {isGenerating
-            ? t('budget.generating')
-            : t('budget.subtitle')
+            ? 'Creating your personalized budget...'
+            : 'Ready to generate your AI-powered budget based on your profile'
           }
         </p>
+
+        {isGenerating && (
+          <div className="space-y-1.5 text-xs text-slate-500">
+            <p>• Analyzing your income and expenses</p>
+            <p>• Matching with best practices</p>
+            <p>• Creating personalized recommendations</p>
+          </div>
+        )}
       </div>
 
-      {isGenerating && (
-        <div className="space-y-3">
-          <div className="text-sm text-slate-500">{t('budget.understanding')}</div>
-          <div className="text-sm text-slate-500">{t('budget.matching')}</div>
-          <div className="text-sm text-slate-500">{t('budget.creating')}</div>
-        </div>
-      )}
-
-      <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl p-6">
-        <h3 className="font-semibold text-slate-800 mb-3">{t('budget.features.title')}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-600">
-          <div className="flex items-center space-x-2">
-            <Target className="w-4 h-4 text-emerald-600" />
-            <span>{t('budget.features.categories')}</span>
+      <div className="bg-slate-50 rounded-xl p-4 text-left">
+        <h3 className="font-semibold text-slate-900 mb-3 text-center text-sm">What you&apos;ll get</h3>
+        <div className="grid grid-cols-1 gap-2 text-xs">
+          <div className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <span className="text-slate-700">Smart category allocations</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <PieChart className="w-4 h-4 text-teal-600" />
-            <span>{t('budget.features.breakdown')}</span>
+          <div className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <span className="text-slate-700">Personalized savings goals</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <TrendingUp className="w-4 h-4 text-blue-600" />
-            <span>{t('budget.features.recommendations')}</span>
+          <div className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <span className="text-slate-700">AI-powered recommendations</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600" />
-            <span>{t('budget.features.explanations')}</span>
+          <div className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <span className="text-slate-700">Detailed expense breakdown</span>
           </div>
         </div>
       </div>
@@ -644,8 +563,8 @@ function ReviewStep({ profile, budget }) {
 
   if (!budget) {
     return (
-      <div className="text-center">
-        <p className="text-slate-600">Budget not generated yet. Please go back and generate your budget.</p>
+      <div className="text-center py-8">
+        <p className="text-slate-600 text-sm">Budget not generated yet. Please go back and generate your budget.</p>
       </div>
     )
   }
@@ -659,26 +578,24 @@ function ReviewStep({ profile, budget }) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <CheckCircle className="w-8 h-8 text-white" />
+    <div className="space-y-5">
+      {/* Success Icon */}
+      <div className="flex items-center justify-center mb-2">
+        <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+          <CheckCircle className="w-5 h-5 text-emerald-600" />
         </div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('review.title')}</h2>
-        <p className="text-slate-600">{t('review.subtitle')}</p>
       </div>
 
       {/* Budget Overview */}
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('review.overview')}</h3>
-        <div className="grid grid-cols-2 gap-4 text-center">
+      <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+        <div className="grid grid-cols-2 gap-3 text-center">
           <div>
-            <p className="text-sm text-slate-600">{t('review.total_budget')}</p>
-            <p className="text-2xl font-bold text-slate-800">{formatCurrency(budget.totalBudget)}</p>
+            <p className="text-[11px] text-slate-600 mb-0.5">Total Budget</p>
+            <p className="text-lg font-bold text-slate-900">{formatCurrency(budget.totalBudget)}</p>
           </div>
           <div>
-            <p className="text-sm text-slate-600">{t('review.monthly_savings')}</p>
-            <p className="text-2xl font-bold text-emerald-600">
+            <p className="text-[11px] text-slate-600 mb-0.5">Monthly Savings</p>
+            <p className="text-lg font-bold text-emerald-600">
               {formatCurrency(budget.categories?.savings?.amount || 0)}
             </p>
           </div>
@@ -686,50 +603,50 @@ function ReviewStep({ profile, budget }) {
       </div>
 
       {/* Category Breakdown */}
-      <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-slate-800">{t('review.category_breakdown')}</h3>
-        {budget.categories && Object.entries(budget.categories).map(([key, category]) => (
-          <div key={key} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border">
-            <div className="flex items-center space-x-3">
-              <span className="text-2xl">{category.emoji}</span>
-              <div>
-                <p className="font-medium text-slate-800">{category.hinglishName}</p>
-                <p className="text-sm text-slate-600">{category.englishName}</p>
+      <div>
+        <h3 className="text-xs font-semibold text-slate-900 mb-2">Budget Breakdown</h3>
+        <div className="space-y-1.5">
+          {budget.categories && Object.entries(budget.categories).slice(0, 5).map(([key, category]) => (
+            <div key={key} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <span className="text-base">{category.emoji}</span>
+                <div>
+                  <p className="text-xs font-medium text-slate-900">{category.englishName}</p>
+                  <p className="text-[10px] text-slate-500">{category.percentage}%</p>
+                </div>
               </div>
+              <p className="text-xs font-semibold text-slate-900">{formatCurrency(category.amount)}</p>
             </div>
-            <div className="text-right">
-              <p className="font-semibold text-slate-800">{formatCurrency(category.amount)}</p>
-              <p className="text-sm text-slate-500">{category.percentage}%</p>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Profile Summary */}
-      <div className="bg-slate-50 rounded-xl p-6 border">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('review.profile_summary')}</h3>
-        <div className="grid grid-cols-2 gap-4 text-sm">
+      <div className="bg-slate-50 rounded-xl p-3 border border-slate-200">
+        <h3 className="text-xs font-semibold text-slate-900 mb-2">Your Profile</h3>
+        <div className="grid grid-cols-2 gap-2 text-xs">
           <div>
-            <span className="text-slate-600">{t('review.income')}</span>
-            <span className="ml-2 font-medium">{formatCurrency(profile.monthlyIncome)}</span>
+            <span className="text-slate-500">Income:</span>
+            <span className="ml-1.5 font-medium text-slate-900">{formatCurrency(profile.monthlyIncome)}</span>
           </div>
           <div>
-            <span className="text-slate-600">{t('review.city')}</span>
-            <span className="ml-2 font-medium">{profile.city}</span>
+            <span className="text-slate-500">City:</span>
+            <span className="ml-1.5 font-medium text-slate-900">{profile.city}</span>
           </div>
           <div>
-            <span className="text-slate-600">{t('review.family_size')}</span>
-            <span className="ml-2 font-medium">
-              {t('review.members', { count: profile.familySize })}
-              {profile.familySize > 1 ? t('review.members_plural', { count: profile.familySize }) : ''}
-            </span>
+            <span className="text-slate-500">Family:</span>
+            <span className="ml-1.5 font-medium text-slate-900">{profile.familySize} members</span>
           </div>
           <div>
-            <span className="text-slate-600">{t('review.age')}</span>
-            <span className="ml-2 font-medium">{t('review.years', { count: profile.age })}</span>
+            <span className="text-slate-500">Age:</span>
+            <span className="ml-1.5 font-medium text-slate-900">{profile.age} years</span>
           </div>
         </div>
       </div>
+
+      <p className="text-center text-[11px] text-slate-500 pt-1">
+        Click &apos;Complete Setup&apos; to start managing your finances
+      </p>
     </div>
   )
 }

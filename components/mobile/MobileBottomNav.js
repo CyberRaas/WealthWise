@@ -1,13 +1,14 @@
 'use client'
 
 import { usePathname, useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { motion } from 'framer-motion'
 import {
   Home,
   Wallet,
-  Target,
+  PieChart,
   BarChart3,
-  Plus
+  User
 } from 'lucide-react'
 
 // Haptic Feedback
@@ -38,10 +39,10 @@ const NAV_ITEMS = [
     color: 'from-purple-500 to-pink-500'
   },
   {
-    id: 'goals',
-    name: 'Goals',
-    icon: Target,
-    href: '/dashboard/goals',
+    id: 'budget',
+    name: 'Budget',
+    icon: PieChart,
+    href: '/dashboard/budget',
     color: 'from-orange-500 to-red-500'
   },
   {
@@ -50,12 +51,20 @@ const NAV_ITEMS = [
     icon: BarChart3,
     href: '/dashboard/analytics',
     color: 'from-indigo-500 to-purple-500'
+  },
+  {
+    id: 'profile',
+    name: 'Profile',
+    icon: User,
+    href: '/dashboard/profile',
+    color: 'from-emerald-500 to-teal-500'
   }
 ]
 
 export default function MobileBottomNav() {
   const pathname = usePathname()
   const router = useRouter()
+  const { data: session } = useSession()
 
   const handleNavClick = (item) => {
     triggerHaptic('medium')
@@ -84,19 +93,22 @@ export default function MobileBottomNav() {
         {/* iOS Safe Area Bottom Padding */}
         <div className="bg-white pb-safe">
           <nav className="flex items-center justify-around h-16 px-2 relative">
-            {NAV_ITEMS.map((item) => {
+            {NAV_ITEMS.map((item, index) => {
               const Icon = item.icon
               const active = isActive(item.href)
+              const isProfileIcon = item.id === 'profile'
 
               return (
                 <motion.button
                   key={item.id}
                   onClick={() => handleNavClick(item)}
-                  className="flex flex-col items-center justify-center min-w-[60px] py-1 relative"
+                  className={`flex flex-col items-center justify-center min-w-[60px] py-1 relative ${
+                    isProfileIcon ? 'ml-2' : ''
+                  }`}
                   whileTap={{ scale: 0.95 }}
                 >
                   {/* Active Indicator Background */}
-                  {active && (
+                  {active && !isProfileIcon && (
                     <motion.div
                       layoutId="activeTab"
                       className="absolute inset-0 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl"
@@ -110,11 +122,20 @@ export default function MobileBottomNav() {
                     <motion.div
                       animate={{
                         scale: active ? 1.1 : 1,
-                        y: active ? -2 : 0
+                        y: active && !isProfileIcon ? -2 : 0
                       }}
                       transition={{ type: 'spring', stiffness: 300 }}
                     >
-                      {active ? (
+                      {isProfileIcon ? (
+                        // Profile Avatar
+                        <div className={`w-9 h-9 rounded-full ${
+                          active 
+                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 ring-2 ring-emerald-200' 
+                            : 'bg-gradient-to-r from-slate-400 to-slate-500'
+                        } flex items-center justify-center text-white font-semibold text-sm shadow-md`}>
+                          {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
+                        </div>
+                      ) : active ? (
                         <div className={`p-2 rounded-xl bg-gradient-to-r ${item.color}`}>
                           <Icon className="w-5 h-5 text-white" strokeWidth={2.5} />
                         </div>
@@ -125,21 +146,35 @@ export default function MobileBottomNav() {
                   </div>
 
                   {/* Label */}
-                  <motion.span
-                    className={`text-xs font-medium mt-1 relative z-10 ${active
-                        ? 'text-transparent bg-gradient-to-r bg-clip-text from-emerald-600 to-teal-600'
-                        : 'text-slate-500'
-                      }`}
-                    animate={{
-                      scale: active ? 1.05 : 1,
-                      fontWeight: active ? 600 : 500
-                    }}
-                  >
-                    {item.name}
-                  </motion.span>
+                  {!isProfileIcon && (
+                    <motion.span
+                      className={`text-xs font-medium mt-1 relative z-10 ${active
+                          ? 'text-transparent bg-gradient-to-r bg-clip-text from-emerald-600 to-teal-600'
+                          : 'text-slate-500'
+                        }`}
+                      animate={{
+                        scale: active ? 1.05 : 1,
+                        fontWeight: active ? 600 : 500
+                      }}
+                    >
+                      {item.name}
+                    </motion.span>
+                  )}
+
+                  {/* Profile Label - Smaller */}
+                  {isProfileIcon && (
+                    <motion.span
+                      className={`text-[10px] font-medium mt-0.5 relative z-10 ${active
+                          ? 'text-emerald-600'
+                          : 'text-slate-500'
+                        }`}
+                    >
+                      {item.name}
+                    </motion.span>
+                  )}
 
                   {/* Active Dot Indicator */}
-                  {active && (
+                  {active && !isProfileIcon && (
                     <motion.div
                       className="absolute bottom-0 w-1 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"
                       layoutId="activeDot"

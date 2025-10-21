@@ -122,7 +122,7 @@ export default function NotificationCenter() {
 
                 {/* Unread Badge */}
                 {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1 text-xs font-bold text-white bg-red-600 rounded-full animate-pulse">
+                    <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-red-500 rounded-full ring-2 ring-white">
                         {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                 )}
@@ -153,10 +153,14 @@ export default function NotificationCenter() {
                             className={`
                                 bg-white shadow-2xl border border-gray-200 z-[70] overflow-hidden
                                 ${isMobile
-                                    ? 'fixed bottom-0 left-0 right-0 rounded-t-3xl max-h-[85vh] safe-area-inset-bottom'
-                                    : 'absolute right-0 mt-2 w-96 max-w-[calc(100vw-2rem)] rounded-xl'
+                                    ? 'fixed bottom-0 left-0 right-0 rounded-t-3xl'
+                                    : 'absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-2rem)] rounded-xl'
                                 }
                             `}
+                            style={isMobile ? { 
+                                maxHeight: 'calc(85vh - env(safe-area-inset-bottom))',
+                                paddingBottom: 'env(safe-area-inset-bottom)' 
+                            } : {}}
                         >
                             {/* Handle Bar for Mobile */}
                             {isMobile && (
@@ -166,11 +170,11 @@ export default function NotificationCenter() {
                             )}
 
                             {/* Header */}
-                            <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-4 sm:px-4 py-4 text-white">
+                            <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-3.5 text-white">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <h3 className="text-lg sm:text-lg font-bold">Notifications</h3>
-                                        <p className="text-xs sm:text-xs text-emerald-100 mt-0.5">
+                                        <h3 className="text-base sm:text-lg font-bold">Notifications</h3>
+                                        <p className="text-[11px] sm:text-xs text-emerald-100 mt-0.5">
                                             {unreadCount > 0 ? `${unreadCount} unread` : 'All caught up!'}
                                         </p>
                                     </div>
@@ -178,16 +182,16 @@ export default function NotificationCenter() {
                                         {unreadCount > 0 && (
                                             <button
                                                 onClick={handleMarkAllRead}
-                                                className="tap-target flex items-center gap-1.5 px-3 sm:px-3 py-2 text-xs font-medium bg-white/20 hover:bg-white/30 active:bg-white/40 rounded-lg transition-colors touch-feedback"
+                                                className="tap-target flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-medium bg-white/20 hover:bg-white/30 active:bg-white/40 rounded-lg transition-colors touch-feedback"
                                             >
-                                                <CheckCheck className="h-4 w-4" />
+                                                <CheckCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                                 <span className="hidden sm:inline">Mark all read</span>
                                             </button>
                                         )}
                                         {isMobile && (
                                             <button
                                                 onClick={() => setIsOpen(false)}
-                                                className="tap-target p-2 hover:bg-white/20 rounded-lg transition-colors"
+                                                className="tap-target p-1.5 hover:bg-white/20 rounded-lg transition-colors"
                                             >
                                                 <X className="h-5 w-5" />
                                             </button>
@@ -196,10 +200,10 @@ export default function NotificationCenter() {
                                 </div>
 
                                 {/* Filter Tabs - Touch-friendly */}
-                                <div className="flex gap-2 mt-3 touch-spacing">
+                                <div className="flex gap-1.5 sm:gap-2 mt-3 touch-spacing">
                                     <button
                                         onClick={() => setFilter('all')}
-                                        className={`tap-target px-4 py-2 text-xs font-medium rounded-lg transition-colors touch-feedback ${filter === 'all'
+                                        className={`tap-target px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-medium rounded-lg transition-colors touch-feedback ${filter === 'all'
                                             ? 'bg-white text-emerald-600 shadow-sm'
                                             : 'bg-white/20 text-white hover:bg-white/30'
                                             }`}
@@ -208,7 +212,7 @@ export default function NotificationCenter() {
                                     </button>
                                     <button
                                         onClick={() => setFilter('unread')}
-                                        className={`tap-target px-4 py-2 text-xs font-medium rounded-lg transition-colors touch-feedback ${filter === 'unread'
+                                        className={`tap-target px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-medium rounded-lg transition-colors touch-feedback ${filter === 'unread'
                                             ? 'bg-white text-emerald-600 shadow-sm'
                                             : 'bg-white/20 text-white hover:bg-white/30'
                                             }`}
@@ -217,7 +221,7 @@ export default function NotificationCenter() {
                                     </button>
                                     <button
                                         onClick={() => setFilter('critical')}
-                                        className={`tap-target px-4 py-2 text-xs font-medium rounded-lg transition-colors touch-feedback ${filter === 'critical'
+                                        className={`tap-target px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-medium rounded-lg transition-colors touch-feedback ${filter === 'critical'
                                             ? 'bg-white text-emerald-600 shadow-sm'
                                             : 'bg-white/20 text-white hover:bg-white/30'
                                             }`}
@@ -228,7 +232,7 @@ export default function NotificationCenter() {
                             </div>
 
                             {/* Notifications List - Touch-friendly scrolling */}
-                            <div className={`overflow-y-auto smooth-scroll ${isMobile ? 'max-h-[60vh]' : 'max-h-96'}`}>
+                            <div className={`overflow-y-auto smooth-scroll ${isMobile ? 'max-h-[50vh]' : 'max-h-96'}`}>
                                 {loading ? (
                                     <div className="flex items-center justify-center py-12">
                                         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600"></div>

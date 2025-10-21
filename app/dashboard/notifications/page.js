@@ -3,6 +3,7 @@
 
 import { useState } from 'react'
 import { useNotifications } from '@/contexts/NotificationContext'
+import { useRouter } from 'next/navigation'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -16,7 +17,8 @@ import {
     Info,
     Target,
     Wallet,
-    RefreshCw
+    RefreshCw,
+    ArrowLeft
 } from 'lucide-react'
 import { formatDistanceToNow, format } from 'date-fns'
 import Link from 'next/link'
@@ -63,6 +65,7 @@ const CATEGORY_ICONS = {
 
 export default function NotificationsPage() {
     const { notifications, unreadCount, markAsRead, markAllAsRead, dismiss, refresh, loading } = useNotifications()
+    const router = useRouter()
     const [filter, setFilter] = useState('all') // 'all', 'unread', 'critical', 'spending', etc.
 
     // Filter notifications
@@ -82,6 +85,19 @@ export default function NotificationsPage() {
     return (
         <DashboardLayout title="Notifications">
             <div className="space-y-6">
+                {/* Back Button - Mobile */}
+                <div className="lg:hidden">
+                    <Button
+                        onClick={() => router.back()}
+                        variant="ghost"
+                        size="sm"
+                        className="gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 -ml-2"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back
+                    </Button>
+                </div>
+
                 {/* Header */}
                 <Card>
                     <CardHeader>
@@ -100,6 +116,17 @@ export default function NotificationsPage() {
                             </div>
 
                             <div className="flex gap-2">
+                                {/* Back Button - Desktop */}
+                                <Button
+                                    onClick={() => router.back()}
+                                    variant="outline"
+                                    size="sm"
+                                    className="hidden lg:flex gap-2"
+                                >
+                                    <ArrowLeft className="h-4 w-4" />
+                                    Back
+                                </Button>
+
                                 <Button
                                     onClick={refresh}
                                     variant="outline"
@@ -115,6 +142,7 @@ export default function NotificationsPage() {
                                         onClick={markAllAsRead}
                                         variant="outline"
                                         size="sm"
+                                        className="hidden sm:flex"
                                     >
                                         <CheckCheck className="h-4 w-4 mr-2" />
                                         Mark all read
