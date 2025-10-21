@@ -131,8 +131,8 @@ export default function MobileBottomNav() {
                       {isProfileIcon ? (
                         // Profile Avatar with Image
                         <div className={`relative w-9 h-9 rounded-full ${active
-                            ? 'ring-2 ring-emerald-400 ring-offset-2'
-                            : 'ring-2 ring-slate-300'
+                          ? 'ring-2 ring-emerald-400 ring-offset-2'
+                          : 'ring-2 ring-slate-300'
                           } overflow-hidden shadow-md`}>
                           {profileImage ? (
                             <Image
@@ -145,8 +145,8 @@ export default function MobileBottomNav() {
                             />
                           ) : (
                             <div className={`w-full h-full ${active
-                                ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                                : 'bg-gradient-to-r from-slate-400 to-slate-500'
+                              ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
+                              : 'bg-gradient-to-r from-slate-400 to-slate-500'
                               } flex items-center justify-center text-white font-semibold text-sm`}>
                               {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
                             </div>

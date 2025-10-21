@@ -1,6 +1,7 @@
 # Quick Fix Guide - E11000 Duplicate Profile Error
 
 ## Error You're Seeing
+
 ```
 E11000 duplicate key error
 GET /api/profile 500
@@ -20,10 +21,12 @@ PUT /api/profile 409
 1. **Open MongoDB Compass** and connect to your database
 
 2. **Navigate to Collection**:
+
    - Database: `smart-financial-planner`
    - Collection: `userprofiles`
 
 3. **Filter for your duplicates**:
+
    ```
    { userId: ObjectId('68f79d23c1fc5f16390b5d86') }
    ```
@@ -31,6 +34,7 @@ PUT /api/profile 409
 4. **Look at the results** - You'll see 2+ profiles with same userId
 
 5. **Keep ONE profile**:
+
    - Keep the one with: ✅ `onboardingCompleted: true`
    - Or keep the one with: ✅ `monthlyIncome` value
    - Or keep the one with: ✅ Most recent `updatedAt`
@@ -63,6 +67,7 @@ The code now handles duplicates automatically, but if you see errors:
 ## Prevention
 
 ✅ **Already done** - Code now prevents duplicate creation even with:
+
 - Multiple simultaneous requests
 - Browser refreshes during loading
 - Network issues/retries

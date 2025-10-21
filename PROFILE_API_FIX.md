@@ -1,12 +1,14 @@
 # Profile API Fix - userId Validation Error
 
 ## Issue
+
 ```
 Profile fetch error: Error: UserProfile validation failed: userId: Path `userId` is required.
 GET /api/profile 500 (Internal Server Error)
 ```
 
 ## Root Cause
+
 The Profile API (`app/api/profile/route.js`) was creating UserProfile documents **without the required `userId` field**:
 
 - **GET Method**: Created default profiles with only email, name, and image
@@ -14,6 +16,7 @@ The Profile API (`app/api/profile/route.js`) was creating UserProfile documents 
 - **Missing**: Neither method was fetching the User document to get the `_id` for the userId field
 
 The UserProfile model **requires** `userId` to be set:
+
 ```javascript
 userId: {
   type: mongoose.Schema.Types.ObjectId,
@@ -26,83 +29,90 @@ userId: {
 ## Solution Applied
 
 ### 1. Added User Model Import
+
 ```javascript
-import User from '@/models/User'
+import User from "@/models/User";
 ```
 
 ### 2. Updated GET Method
+
 **Before:**
+
 ```javascript
 if (!userProfile) {
   userProfile = await UserProfile.create({
     email: session.user.email,
-    name: session.user.name || '',
+    name: session.user.name || "",
     // ❌ Missing userId!
-  })
+  });
 }
 ```
 
 **After:**
+
 ```javascript
 // Get the User document first
-const user = await User.findOne({ email: session.user.email })
+const user = await User.findOne({ email: session.user.email });
 
 if (!user) {
-  return NextResponse.json({ error: 'User not found' }, { status: 404 })
+  return NextResponse.json({ error: "User not found" }, { status: 404 });
 }
 
 if (!userProfile) {
   userProfile = await UserProfile.create({
-    userId: user._id,  // ✅ Now includes userId
+    userId: user._id, // ✅ Now includes userId
     email: session.user.email,
-    name: session.user.name || '',
-    profileImage: session.user.image || '',
-  })
+    name: session.user.name || "",
+    profileImage: session.user.image || "",
+  });
 }
 ```
 
 ### 3. Updated PUT Method
+
 **Before:**
+
 ```javascript
-let profile = await UserProfile.findOne({ email: session.user.email })
+let profile = await UserProfile.findOne({ email: session.user.email });
 
 if (profile) {
   // Update fields
-  await profile.save()
+  await profile.save();
 } else {
   return NextResponse.json(
-    { error: 'Profile not found. Please complete onboarding first.' },
-    { status: 404 }  // ❌ Returns error instead of creating profile
-  )
+    { error: "Profile not found. Please complete onboarding first." },
+    { status: 404 } // ❌ Returns error instead of creating profile
+  );
 }
 ```
 
 **After:**
+
 ```javascript
 // Get the User document first
-const user = await User.findOne({ email: session.user.email })
+const user = await User.findOne({ email: session.user.email });
 
 if (!user) {
-  return NextResponse.json({ error: 'User not found' }, { status: 404 })
+  return NextResponse.json({ error: "User not found" }, { status: 404 });
 }
 
-let profile = await UserProfile.findOne({ email: session.user.email })
+let profile = await UserProfile.findOne({ email: session.user.email });
 
 if (profile) {
   // Update existing profile
   if (!profile.userId) {
-    profile.userId = user._id  // ✅ Ensure userId is set
+    profile.userId = user._id; // ✅ Ensure userId is set
   }
-  await profile.save()
+  await profile.save();
 } else {
   // Create new profile with userId
   profile = await UserProfile.create({
-    userId: user._id,  // ✅ Includes userId
+    userId: user._id, // ✅ Includes userId
     email: session.user.email,
-    name: name || session.user.name || '',
-    phone: phone || '',
+    name: name || session.user.name || "",
+    phone: phone || "",
     // ... other fields
-  })
+  });
 }
 ```
 
@@ -129,6 +139,7 @@ UserProfile.create({ userId: user._id })  ← Now includes required field
 ## Testing
 
 1. **Before Fix:**
+
    - ❌ GET /api/profile → 500 error
    - ❌ PUT /api/profile → 404 error
    - ❌ Console: "UserProfile validation failed: userId is required"
@@ -146,10 +157,12 @@ UserProfile.create({ userId: user._id })  ← Now includes required field
 ## Prevention
 
 To prevent similar issues:
+
 1. Always check model requirements before creating documents
 2. Query the User collection when you need the MongoDB `_id`
 3. Don't rely solely on session data for required fields
 4. Test both GET and PUT endpoints after schema changes
 
 ## Status
+
 ✅ **FIXED** - Profile API now correctly creates and updates profiles with userId field

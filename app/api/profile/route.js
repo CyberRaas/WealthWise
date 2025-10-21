@@ -9,7 +9,7 @@ import mongoose from 'mongoose'
 export async function GET() {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -18,20 +18,20 @@ export async function GET() {
     }
 
     await dbConnect()
-    
+
     // Get the User document to obtain the userId
     const user = await User.findOne({ email: session.user.email })
-    
+
     if (!user) {
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
       )
     }
-    
+
     // Query by userId first (unique field), fallback to email
     let userProfile = await UserProfile.findOne({ userId: user._id })
-    
+
     if (!userProfile) {
       // Try finding by email as fallback
       userProfile = await UserProfile.findOne({ email: session.user.email })
@@ -88,7 +88,7 @@ export async function GET() {
 export async function PUT(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -100,25 +100,25 @@ export async function PUT(request) {
     const { name, phone, location, bio, dateOfBirth, occupation, image } = body
 
     await dbConnect()
-    
+
     // Get the User document to obtain the userId
     const user = await User.findOne({ email: session.user.email })
-    
+
     if (!user) {
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
       )
     }
-    
+
     // Query by userId first (unique field), fallback to email
     let profile = await UserProfile.findOne({ userId: user._id })
-    
+
     if (!profile) {
       // Try finding by email as fallback
       profile = await UserProfile.findOne({ email: session.user.email })
     }
-    
+
     if (profile) {
       // Update existing profile
       profile.name = name || session.user.name || profile.name
@@ -129,12 +129,12 @@ export async function PUT(request) {
       profile.occupation = occupation || profile.occupation || ''
       profile.profileImage = image || session.user.image || profile.profileImage
       profile.updatedAt = new Date()
-      
+
       // Ensure userId is set correctly
       if (!profile.userId || profile.userId.toString() !== user._id.toString()) {
         profile.userId = user._id
       }
-      
+
       await profile.save()
     } else {
       // Create profile with userId if it doesn't exist
@@ -199,7 +199,7 @@ export async function PUT(request) {
     })
   } catch (error) {
     console.error('Profile update error:', error)
-    
+
     // Handle duplicate key error specifically
     if (error.code === 11000) {
       return NextResponse.json(
@@ -207,7 +207,7 @@ export async function PUT(request) {
         { status: 409 }
       )
     }
-    
+
     return NextResponse.json(
       { error: 'Failed to update profile', details: error.message },
       { status: 500 }
