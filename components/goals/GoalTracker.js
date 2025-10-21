@@ -451,16 +451,15 @@ export default function GoalTracker({ userSavings = 0 }) {
                         <span className="font-semibold text-gray-900">{analysis.progress.toFixed(0)}%</span>
                       </div>
                       <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full rounded-full transition-all ${
-                            isCompleted 
-                              ? 'bg-emerald-500' 
-                              : analysis.progress > 75 
-                              ? 'bg-blue-500' 
-                              : analysis.progress > 50
-                              ? 'bg-cyan-500'
-                              : 'bg-gray-400'
-                          }`}
+                        <div
+                          className={`h-full rounded-full transition-all ${isCompleted
+                              ? 'bg-emerald-500'
+                              : analysis.progress > 75
+                                ? 'bg-blue-500'
+                                : analysis.progress > 50
+                                  ? 'bg-cyan-500'
+                                  : 'bg-gray-400'
+                            }`}
                           style={{ width: `${Math.min(analysis.progress, 100)}%` }}
                         />
                       </div>
@@ -656,8 +655,8 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleTemplateSelect(template)}
                 className={`p-4 rounded-lg border-2 text-left transition-all ${selectedTemplate?.id === template.id
-                    ? 'border-blue-500 bg-blue-50 shadow-lg'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                  ? 'border-blue-500 bg-blue-50 shadow-lg'
+                  : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
                   }`}
               >
                 <div className="text-2xl mb-2">{template.icon}</div>

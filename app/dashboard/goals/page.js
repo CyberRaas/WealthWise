@@ -6,7 +6,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
 import GoalTracker from '@/components/goals/GoalTracker'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { 
+import {
   Target,
   TrendingUp,
   Calendar,
@@ -34,7 +34,7 @@ function GoalsContent() {
     try {
       const response = await fetch('/api/goals')
       const data = await response.json()
-      
+
       if (data.success) {
         setGoalsData({
           goals: data.goals || [],
@@ -52,8 +52,8 @@ function GoalsContent() {
 
   const activeGoals = goalsData.goals.filter(goal => goal.status === 'active').length
   const completedGoals = goalsData.goals.filter(goal => goal.status === 'completed').length
-  const totalProgress = goalsData.totalTargetAmount > 0 
-    ? (goalsData.totalCurrentAmount / goalsData.totalTargetAmount) * 100 
+  const totalProgress = goalsData.totalTargetAmount > 0
+    ? (goalsData.totalCurrentAmount / goalsData.totalTargetAmount) * 100
     : 0
 
   return (
@@ -139,7 +139,7 @@ function GoalsContent() {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-full sm:w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full transition-all"
                       style={{ width: `${Math.min(totalProgress, 100)}%` }}
                     />
@@ -173,9 +173,9 @@ function GoalsContent() {
                   .map((goal) => {
                     const progress = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)
                     const isCompleted = goal.status === 'completed'
-                    
+
                     return (
-                      <div 
+                      <div
                         key={goal.id}
                         className="p-4 rounded-xl border-2 border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all"
                       >
@@ -211,16 +211,15 @@ function GoalsContent() {
                         {/* Progress Bar */}
                         <div className="space-y-2">
                           <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                            <div 
-                              className={`h-full rounded-full transition-all ${
-                                isCompleted 
-                                  ? 'bg-emerald-500' 
-                                  : progress > 75 
-                                  ? 'bg-blue-500' 
-                                  : progress > 50
-                                  ? 'bg-cyan-500'
-                                  : 'bg-gray-400'
-                              }`}
+                            <div
+                              className={`h-full rounded-full transition-all ${isCompleted
+                                  ? 'bg-emerald-500'
+                                  : progress > 75
+                                    ? 'bg-blue-500'
+                                    : progress > 50
+                                      ? 'bg-cyan-500'
+                                      : 'bg-gray-400'
+                                }`}
                               style={{ width: `${progress}%` }}
                             />
                           </div>

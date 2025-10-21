@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { 
+import {
   BarChart,
   Bar,
   XAxis,
@@ -23,7 +23,7 @@ import {
   Area,
   AreaChart
 } from 'recharts'
-import { 
+import {
   TrendingUp,
   TrendingDown,
   DollarSign,
@@ -39,7 +39,7 @@ import {
 
 const CATEGORY_COLORS = {
   'Food & Dining': '#10b981',
-  'Transportation': '#f59e0b', 
+  'Transportation': '#f59e0b',
   'Housing': '#3b82f6',
   'Entertainment': '#8b5cf6',
   'Healthcare': '#ef4444',
@@ -108,7 +108,7 @@ function AnalyticsContent() {
     expensesData.forEach(expense => {
       const month = new Date(expense.date).toLocaleDateString('en-US', { month: 'short' })
       const category = expense.category
-      
+
       if (!monthlyExpenses[month]) {
         monthlyExpenses[month] = 0
       }
@@ -159,7 +159,7 @@ function AnalyticsContent() {
     const thisMonthExpenses = expensesData
       .filter(expense => expense.date.substring(0, 7) === currentMonth)
       .reduce((sum, expense) => sum + expense.amount, 0)
-    
+
     const topCategory = categoryData[0]?.name || 'No data'
     const avgDailySpend = expensesData.length > 0 ? totalExpenses / Math.max(1, getDaysSinceFirstExpense(expensesData)) : 0
 
@@ -289,26 +289,26 @@ function AnalyticsContent() {
                   <AreaChart data={monthlyData}>
                     <defs>
                       <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="colorSavings" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                    <XAxis 
-                      dataKey="month" 
+                    <XAxis
+                      dataKey="month"
                       stroke="#6b7280"
                       style={{ fontSize: '12px' }}
                     />
-                    <YAxis 
+                    <YAxis
                       stroke="#6b7280"
                       style={{ fontSize: '12px' }}
                       tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
                     />
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{
                         backgroundColor: 'white',
                         border: '1px solid #e5e7eb',
@@ -320,19 +320,19 @@ function AnalyticsContent() {
                         name === 'expenses' ? 'Expenses' : 'Savings'
                       ]}
                     />
-                    <Area 
-                      type="monotone" 
-                      dataKey="expenses" 
-                      stroke="#ef4444" 
+                    <Area
+                      type="monotone"
+                      dataKey="expenses"
+                      stroke="#ef4444"
                       strokeWidth={2}
-                      fill="url(#colorExpenses)" 
+                      fill="url(#colorExpenses)"
                     />
-                    <Area 
-                      type="monotone" 
-                      dataKey="savings" 
-                      stroke="#10b981" 
+                    <Area
+                      type="monotone"
+                      dataKey="savings"
+                      stroke="#10b981"
                       strokeWidth={2}
-                      fill="url(#colorSavings)" 
+                      fill="url(#colorSavings)"
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -376,15 +376,15 @@ function AnalyticsContent() {
                         dataKey="value"
                       >
                         {categoryData.map((entry, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
+                          <Cell
+                            key={`cell-${index}`}
                             fill={entry.color}
                             stroke="#fff"
                             strokeWidth={2}
                           />
                         ))}
                       </Pie>
-                      <Tooltip 
+                      <Tooltip
                         contentStyle={{
                           backgroundColor: 'white',
                           border: '1px solid #e5e7eb',
@@ -398,18 +398,18 @@ function AnalyticsContent() {
                       />
                     </PieChart>
                   </ResponsiveContainer>
-                  
+
                   {/* Legend with interactive styling */}
                   <div className="grid grid-cols-2 gap-2 mt-4">
                     {categoryData.slice(0, 6).map((item, index) => {
                       const percentage = ((item.value / keyMetrics.totalExpenses) * 100).toFixed(1)
                       return (
-                        <div 
-                          key={index} 
+                        <div
+                          key={index}
                           className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                         >
-                          <div 
-                            className="w-3 h-3 rounded-full flex-shrink-0" 
+                          <div
+                            className="w-3 h-3 rounded-full flex-shrink-0"
                             style={{ backgroundColor: item.color }}
                           />
                           <div className="flex-1 min-w-0">
@@ -451,8 +451,8 @@ function AnalyticsContent() {
                     <div key={index} className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
-                          <div 
-                            className="w-3 h-3 rounded-full flex-shrink-0" 
+                          <div
+                            className="w-3 h-3 rounded-full flex-shrink-0"
                             style={{ backgroundColor: item.color }}
                           />
                           <span className="font-medium text-gray-900 truncate text-sm">{item.name}</span>
@@ -461,11 +461,11 @@ function AnalyticsContent() {
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div 
+                          <div
                             className="h-full rounded-full transition-all duration-500 hover:opacity-80"
-                            style={{ 
+                            style={{
                               width: `${percentage}%`,
-                              backgroundColor: item.color 
+                              backgroundColor: item.color
                             }}
                           />
                         </div>
@@ -497,23 +497,22 @@ function AnalyticsContent() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {monthlyData.map((month, index) => {
                   const isIncrease = index > 0 && month.expenses > monthlyData[index - 1].expenses
-                  const change = index > 0 
+                  const change = index > 0
                     ? ((month.expenses - monthlyData[index - 1].expenses) / monthlyData[index - 1].expenses * 100).toFixed(1)
                     : 0
-                  
+
                   return (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className="p-4 rounded-xl border-2 border-gray-100 hover:border-gray-300 hover:shadow-md transition-all cursor-pointer group"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium text-gray-600">{month.month}</span>
                         {index > 0 && change != 0 && (
-                          <span className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
-                            isIncrease 
-                              ? 'bg-red-100 text-red-700' 
+                          <span className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${isIncrease
+                              ? 'bg-red-100 text-red-700'
                               : 'bg-emerald-100 text-emerald-700'
-                          }`}>
+                            }`}>
                             {isIncrease ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                             {Math.abs(change)}%
                           </span>
@@ -550,7 +549,7 @@ function AnalyticsContent() {
                 {goals.map((goal) => {
                   const progress = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)
                   const isCompleted = goal.status === 'completed'
-                  
+
                   return (
                     <div key={goal.id} className="p-4 rounded-xl border-2 border-gray-100 hover:border-gray-200 transition-colors">
                       <div className="flex items-center justify-between mb-2">
@@ -560,12 +559,11 @@ function AnalyticsContent() {
                         </span>
                       </div>
                       <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-2">
-                        <div 
-                          className={`h-full rounded-full transition-all ${
-                            isCompleted ? 'bg-emerald-500' : 
-                            progress > 75 ? 'bg-blue-500' : 
-                            progress > 50 ? 'bg-cyan-500' : 'bg-gray-400'
-                          }`}
+                        <div
+                          className={`h-full rounded-full transition-all ${isCompleted ? 'bg-emerald-500' :
+                              progress > 75 ? 'bg-blue-500' :
+                                progress > 50 ? 'bg-cyan-500' : 'bg-gray-400'
+                            }`}
                           style={{ width: `${progress}%` }}
                         />
                       </div>
@@ -595,14 +593,14 @@ function AnalyticsContent() {
                     You have <span className="font-semibold">{keyMetrics.totalTransactions}</span> recorded transactions
                   </p>
                 </div>
-                
+
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50">
                   <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0" />
                   <p className="text-sm text-gray-700">
                     Top spending: <span className="font-semibold">{keyMetrics.topCategory}</span>
                   </p>
                 </div>
-                
+
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50">
                   <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0" />
                   <p className="text-sm text-gray-700">
@@ -639,7 +637,7 @@ function AnalyticsContent() {
 
 export default function AnalyticsPage() {
   return (
-    
+
     <OnboardingGuard>
       <AnalyticsContent />
     </OnboardingGuard>
