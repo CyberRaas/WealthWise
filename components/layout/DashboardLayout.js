@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Sidebar from '@/components/layout/Sidebar'
 import MobileBottomNav from '@/components/mobile/MobileBottomNav'
-import FABMenu from '@/components/mobile/FABMenu'
 import HamburgerMenu from '@/components/mobile/HamburgerMenu'
 import SwipeGestureHandler from '@/components/mobile/SwipeGestureHandler'
 import PullToRefresh from '@/components/mobile/PullToRefresh'
@@ -100,9 +99,6 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
           isOpen={hamburgerMenuOpen}
           onClose={() => setHamburgerMenuOpen(false)}
         />
-
-        {/* FAB Menu - Now Self-Contained */}
-        <FABMenu />
 
         {/* Main Content */}
         <div className="flex-1 min-w-0">

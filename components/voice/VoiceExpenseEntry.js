@@ -294,9 +294,7 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
 
         {/* Header */}
         <div className="text-center border-b pb-4">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 mb-3">
-            <Mic className="w-6 h-6 text-white" />
-          </div>
+
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Voice Expense Entry
           </h2>

@@ -45,7 +45,7 @@
 //   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 //   const [otpTimer, setOtpTimer] = useState(0)
 //   const router = useRouter()
-  
+
 //   // Form for signup
 //   const signupForm = useForm({
 //     resolver: zodResolver(signupSchema),
@@ -68,7 +68,7 @@
 //   // Handle signup form submission
 //   const onSignupSubmit = async (data) => {
 //     setIsLoading(true)
-    
+
 //     try {
 //       const response = await fetch('/api/auth/send-otp', {
 //         method: 'POST',
@@ -86,7 +86,7 @@
 //         setStep('otp')
 //         setOtpTimer(300) // 5 minutes
 //         startTimer()
-        
+
 //         toast.success('OTP Sent!', {
 //           description: `A 6-digit verification code has been sent to ${data.email}`,
 //           duration: 4000
@@ -108,7 +108,7 @@
 //   // Handle OTP verification
 //   const onOtpSubmit = async (data) => {
 //     setIsLoading(true)
-    
+
 //     try {
 //       // First verify OTP
 //       const verifyResponse = await fetch('/api/auth/verify-otp', {
@@ -143,7 +143,7 @@
 //             description: 'Your account has been created. Please sign in to continue.',
 //             duration: 5000
 //           })
-          
+
 //           // Redirect to signin page
 //           router.push(`/auth/signin?email=${encodeURIComponent(userData.email)}&message=registration-complete`)
 //         } else {
@@ -181,7 +181,7 @@
 //   // Resend OTP
 //   const handleResendOtp = async () => {
 //     if (otpTimer > 0) return
-    
+
 //     setIsLoading(true)
 //     try {
 //       const response = await fetch('/api/auth/send-otp', {
@@ -242,7 +242,7 @@
 //                 Join WealthWise  and start your journey
 //               </CardDescription>
 //             </CardHeader>
-            
+
 //             <form onSubmit={signupForm.handleSubmit(onSignupSubmit)}>
 //               <CardContent className="space-y-6 px-8">
 //                 <div className="space-y-3">
@@ -365,7 +365,7 @@
 //               </div>
 //             </form>
 //           </Card>
-          
+
 //           <div className="text-center">
 //             <p className="text-slate-400 font-medium">
 //               Already have an account?{' '}
@@ -429,7 +429,7 @@
 //                 <span className="font-bold text-slate-200">{userData?.email}</span>
 //               </CardDescription>
 //             </CardHeader>
-            
+
 //             <form onSubmit={otpForm.handleSubmit(onOtpSubmit)}>
 //               <CardContent className="space-y-8 px-8">
 //                 <div className="space-y-4">
@@ -578,7 +578,11 @@ export default function SignUpPage() {
     password: z.string()
       .min(8, t('validation.passwordMinLength'))
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, t('validation.passwordComplexity')),
-    confirmPassword: z.string()
+    confirmPassword: z.string(),
+    acceptPrivacyPolicy: z.boolean()
+      .refine(val => val === true, {
+        message: 'You must accept the Privacy Policy to continue'
+      })
   }).refine(data => data.password === data.confirmPassword, {
     message: t('validation.passwordsNoMatch'),
     path: ["confirmPassword"],
@@ -590,7 +594,7 @@ export default function SignUpPage() {
       .length(6, t('validation.otpLength'))
       .regex(/^\d{6}$/, t('validation.otpNumbers'))
   })
-  
+
   // Form for signup
   const signupForm = useForm({
     resolver: zodResolver(signupSchema),
@@ -598,7 +602,8 @@ export default function SignUpPage() {
       name: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      acceptPrivacyPolicy: false
     }
   })
 
@@ -613,7 +618,7 @@ export default function SignUpPage() {
   // Handle signup form submission
   const onSignupSubmit = async (data) => {
     setIsLoading(true)
-    
+
     try {
       const response = await fetch('/api/auth/send-otp', {
         method: 'POST',
@@ -631,7 +636,7 @@ export default function SignUpPage() {
         setStep('otp')
         setOtpTimer(300) // 5 minutes
         startTimer()
-        
+
         toast.success(`${t('toast.otpSent')} ${data.email}`, {
           duration: 4000
         })
@@ -648,7 +653,7 @@ export default function SignUpPage() {
   // Handle OTP verification
   const onOtpSubmit = async (data) => {
     setIsLoading(true)
-    
+
     try {
       // First verify OTP
       const verifyResponse = await fetch('/api/auth/verify-otp', {
@@ -682,7 +687,7 @@ export default function SignUpPage() {
           toast.success(t('toast.registrationSuccess'), {
             duration: 5000
           })
-          
+
           // Redirect to signin page
           router.push(`/auth/signin?email=${encodeURIComponent(userData.email)}&message=registration-complete`)
         } else {
@@ -714,7 +719,7 @@ export default function SignUpPage() {
   // Resend OTP
   const handleResendOtp = async () => {
     if (otpTimer > 0) return
-    
+
     setIsLoading(true)
     try {
       const response = await fetch('/api/auth/send-otp', {
@@ -757,7 +762,7 @@ export default function SignUpPage() {
           <div className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-r from-blue-200 to-indigo-200 rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-r from-slate-100 to-blue-100 rounded-full blur-3xl"></div>
         </div>
-        
+
         <div className="w-full max-w-md relative z-10">
           {/* Company Logo/Brand Area */}
           <div className="text-center mb-8 flex flex-col justify-center items-center">
@@ -777,13 +782,13 @@ export default function SignUpPage() {
                 {t('auth.signup.subtitle')}
               </CardDescription>
             </CardHeader>
-            
+
             <CardContent className="space-y-6">
               <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-5">
                 {/* Name Field */}
                 <div className="space-y-2">
-                  <label 
-                    htmlFor="name" 
+                  <label
+                    htmlFor="name"
                     className="text-sm font-medium text-slate-700 block"
                   >
                     {t('auth.signup.fullName')}
@@ -804,8 +809,8 @@ export default function SignUpPage() {
 
                 {/* Email Field */}
                 <div className="space-y-2">
-                  <label 
-                    htmlFor="email" 
+                  <label
+                    htmlFor="email"
                     className="text-sm font-medium text-slate-700 block"
                   >
                     {t('auth.signup.email')}
@@ -826,8 +831,8 @@ export default function SignUpPage() {
 
                 {/* Password Field */}
                 <div className="space-y-2">
-                  <label 
-                    htmlFor="password" 
+                  <label
+                    htmlFor="password"
                     className="text-sm font-medium text-slate-700 block"
                   >
                     {t('auth.signup.password')}
@@ -861,8 +866,8 @@ export default function SignUpPage() {
 
                 {/* Confirm Password Field */}
                 <div className="space-y-2">
-                  <label 
-                    htmlFor="confirmPassword" 
+                  <label
+                    htmlFor="confirmPassword"
                     className="text-sm font-medium text-slate-700 block"
                   >
                     {t('auth.signup.confirmPassword')}
@@ -894,11 +899,44 @@ export default function SignUpPage() {
                   )}
                 </div>
 
+                {/* Privacy Policy Checkbox */}
+                <div className="space-y-2 ">
+                  <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border-2 border-slate-200 hover:border-emerald-200 transition-colors">
+                    <input
+                      id="acceptPrivacyPolicy"
+                      type="checkbox"
+                      disabled={isLoading}
+                      {...signupForm.register('acceptPrivacyPolicy')}
+                      className="mt-1 h-5 w-5 rounded border-2 border-slate-300 text-emerald-600 focus:ring-4 focus:ring-emerald-500/30 cursor-pointer transition-all"
+                    />
+                    <label
+                      htmlFor="acceptPrivacyPolicy"
+                      className="text-sm text-slate-700 leading-relaxed cursor-pointer select-none"
+                    >
+                      I agree to the{' '}
+                      <Link
+                        href="/privacy-policy"
+                        target="_blank"
+                        className="font-bold text-emerald-600 hover:text-emerald-700 hover:underline transition-colors"
+                      >
+                        Privacy Policy
+                      </Link>
+                      {' '}
+                    </label>
+                  </div>
+                  {signupForm.formState.errors.acceptPrivacyPolicy && (
+                    <p className="text-sm text-red-600 font-medium mt-2 flex items-center gap-1">
+                      <Shield className="w-4 h-4" />
+                      {signupForm.formState.errors.acceptPrivacyPolicy.message}
+                    </p>
+                  )}
+                </div>
+
                 {/* Create Account Button */}
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] focus:ring-4 focus:ring-emerald-500/30 border border-white/20 mt-6" 
-                  disabled={isLoading}
+                <Button
+                  type="submit"
+                  className="w-full h-12 bg-gradient-to-r from-emerald-600 via-teal-600 to-teal-500 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] focus:ring-4 focus:ring-emerald-500/30 border border-white/20  disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  disabled={isLoading || !signupForm.watch('acceptPrivacyPolicy')}
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center space-x-2">
@@ -915,13 +953,13 @@ export default function SignUpPage() {
               </form>
             </CardContent>
           </Card>
-          
+
           {/* Sign In Link */}
           <div className="text-center mt-6">
             <p className="text-slate-600 font-medium">
               {t('auth.signup.alreadyHaveAccount')}{' '}
-              <Link 
-                href="/auth/signin" 
+              <Link
+                href="/auth/signin"
                 className="font-bold text-emerald-600 hover:text-emerald-700 transition-colors duration-200 hover:underline"
               >
                 {t('auth.signup.signIn')}
@@ -971,12 +1009,12 @@ export default function SignUpPage() {
                 <span className="font-bold text-emerald-700">{userData?.email}</span>
               </CardDescription>
             </CardHeader>
-            
+
             <CardContent className="space-y-6">
               <form onSubmit={otpForm.handleSubmit(onOtpSubmit)} className="space-y-6">
                 <div className="space-y-3">
-                  <label 
-                    htmlFor="otp" 
+                  <label
+                    htmlFor="otp"
                     className="text-sm font-medium text-slate-700 block text-center"
                   >
                     {t('auth.otp.verificationCode')}
@@ -1017,9 +1055,9 @@ export default function SignUpPage() {
                 )}
 
                 {/* Verify Button */}
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] focus:ring-4 focus:ring-emerald-500/30 border border-white/20" 
+                <Button
+                  type="submit"
+                  className="w-full h-12 bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] focus:ring-4 focus:ring-emerald-500/30 border border-white/20"
                   disabled={isLoading}
                 >
                   {isLoading ? (
