@@ -102,9 +102,8 @@ export default function MobileBottomNav() {
                 <motion.button
                   key={item.id}
                   onClick={() => handleNavClick(item)}
-                  className={`flex flex-col items-center justify-center min-w-[60px] py-1 relative ${
-                    isProfileIcon ? 'ml-2' : ''
-                  }`}
+                  className={`flex flex-col items-center justify-center min-w-[60px] py-1 relative ${isProfileIcon ? 'ml-2' : ''
+                    }`}
                   whileTap={{ scale: 0.95 }}
                 >
                   {/* Active Indicator Background */}
@@ -128,11 +127,10 @@ export default function MobileBottomNav() {
                     >
                       {isProfileIcon ? (
                         // Profile Avatar
-                        <div className={`w-9 h-9 rounded-full ${
-                          active 
-                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 ring-2 ring-emerald-200' 
+                        <div className={`w-9 h-9 rounded-full ${active
+                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 ring-2 ring-emerald-200'
                             : 'bg-gradient-to-r from-slate-400 to-slate-500'
-                        } flex items-center justify-center text-white font-semibold text-sm shadow-md`}>
+                          } flex items-center justify-center text-white font-semibold text-sm shadow-md`}>
                           {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
                         </div>
                       ) : active ? (
@@ -149,8 +147,8 @@ export default function MobileBottomNav() {
                   {!isProfileIcon && (
                     <motion.span
                       className={`text-xs font-medium mt-1 relative z-10 ${active
-                          ? 'text-transparent bg-gradient-to-r bg-clip-text from-emerald-600 to-teal-600'
-                          : 'text-slate-500'
+                        ? 'text-transparent bg-gradient-to-r bg-clip-text from-emerald-600 to-teal-600'
+                        : 'text-slate-500'
                         }`}
                       animate={{
                         scale: active ? 1.05 : 1,
@@ -165,8 +163,8 @@ export default function MobileBottomNav() {
                   {isProfileIcon && (
                     <motion.span
                       className={`text-[10px] font-medium mt-0.5 relative z-10 ${active
-                          ? 'text-emerald-600'
-                          : 'text-slate-500'
+                        ? 'text-emerald-600'
+                        : 'text-slate-500'
                         }`}
                     >
                       {item.name}

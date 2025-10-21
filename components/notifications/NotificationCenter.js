@@ -157,9 +157,9 @@ export default function NotificationCenter() {
                                     : 'absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-2rem)] rounded-xl'
                                 }
                             `}
-                            style={isMobile ? { 
+                            style={isMobile ? {
                                 maxHeight: 'calc(85vh - env(safe-area-inset-bottom))',
-                                paddingBottom: 'env(safe-area-inset-bottom)' 
+                                paddingBottom: 'env(safe-area-inset-bottom)'
                             } : {}}
                         >
                             {/* Handle Bar for Mobile */}
