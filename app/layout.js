@@ -162,6 +162,7 @@ export default function RootLayout({ children }) {
       </head>
       <body
         className={`${poppins.variable} font-poppins antialiased touch-manipulation`}
+        style={{ fontFeatureSettings: "'kern' 1, 'liga' 1, 'calt' 1" }}
       >
         <PWARegister />
         <ClientProviders>

@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Label } from '@/components/ui/label'
-import { 
+import {
   User,
   Mail,
   Phone,
@@ -33,7 +33,7 @@ function ProfileContent() {
   const [saving, setSaving] = useState(false)
   const [localProfileImage, setLocalProfileImage] = useState(profileImage)
   const fileInputRef = useRef(null)
-  
+
   const [profile, setProfile] = useState({
     name: session?.user?.name || '',
     email: session?.user?.email || '',
@@ -77,7 +77,7 @@ function ProfileContent() {
         toast.error(t('profile.imageSizeError'))
         return
       }
-      
+
       const reader = new FileReader()
       reader.onload = (e) => {
         setLocalProfileImage(e.target.result)
@@ -90,8 +90,8 @@ function ProfileContent() {
   const handleSaveProfile = async () => {
     setSaving(true)
     try {
-      const response = await fetch('/api/profile', { 
-        method: 'PUT', 
+      const response = await fetch('/api/profile', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -106,7 +106,7 @@ function ProfileContent() {
       if (data.success) {
         setIsEditing(false)
         toast.success(t('profile.profileUpdated'))
-        
+
         // Update the profile context with new data
         updateProfileData(data.profile)
       } else {
@@ -147,11 +147,11 @@ function ProfileContent() {
                   <User className="h-5 w-5 text-emerald-600" />
                   {t('profile.myProfile')}
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="hidden md:block">
                   {t('profile.managePersonalInfo')}
                 </CardDescription>
               </div>
-              
+
               {!isEditing ? (
                 <Button onClick={() => setIsEditing(true)} className="flex items-center gap-2">
                   <Edit3 className="h-4 w-4" />
@@ -159,8 +159,8 @@ function ProfileContent() {
                 </Button>
               ) : (
                 <div className="flex gap-2">
-                  <Button 
-                    onClick={handleSaveProfile} 
+                  <Button
+                    onClick={handleSaveProfile}
                     disabled={saving}
                     className="flex items-center gap-2"
                   >
@@ -179,7 +179,7 @@ function ProfileContent() {
               )}
             </div>
           </CardHeader>
-          
+
           <CardContent>
             <div className="flex flex-col md:flex-row gap-8">
               {/* Profile Photo Section */}
@@ -191,7 +191,7 @@ function ProfileContent() {
                       {profile.name ? profile.name[0]?.toUpperCase() : session?.user?.name?.[0]?.toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
-                  
+
                   {isEditing && (
                     <button
                       onClick={() => fileInputRef.current?.click()}
@@ -201,11 +201,11 @@ function ProfileContent() {
                     </button>
                   )}
                 </div>
-                
+
                 {isEditing && (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => fileInputRef.current?.click()}
                     className="flex items-center gap-2"
                   >
@@ -213,7 +213,7 @@ function ProfileContent() {
                     {t('profile.changePhoto')}
                   </Button>
                 )}
-                
+
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -233,7 +233,7 @@ function ProfileContent() {
                       <Input
                         id="name"
                         value={profile.name}
-                        onChange={(e) => setProfile({...profile, name: e.target.value})}
+                        onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                         placeholder={t('profile.enterFullName')}
                       />
                     ) : (
@@ -261,7 +261,7 @@ function ProfileContent() {
                       <Input
                         id="phone"
                         value={profile.phone}
-                        onChange={(e) => setProfile({...profile, phone: e.target.value})}
+                        onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                         placeholder="+91 98765 43210"
                       />
                     ) : (
@@ -279,7 +279,7 @@ function ProfileContent() {
                       <Input
                         id="location"
                         value={profile.location}
-                        onChange={(e) => setProfile({...profile, location: e.target.value})}
+                        onChange={(e) => setProfile({ ...profile, location: e.target.value })}
                         placeholder="Mumbai, Maharashtra"
                       />
                     ) : (
@@ -298,7 +298,7 @@ function ProfileContent() {
                         id="dateOfBirth"
                         type="date"
                         value={profile.dateOfBirth}
-                        onChange={(e) => setProfile({...profile, dateOfBirth: e.target.value})}
+                        onChange={(e) => setProfile({ ...profile, dateOfBirth: e.target.value })}
                       />
                     ) : (
                       <div className="text-slate-800">
@@ -314,7 +314,7 @@ function ProfileContent() {
                       <Input
                         id="occupation"
                         value={profile.occupation}
-                        onChange={(e) => setProfile({...profile, occupation: e.target.value})}
+                        onChange={(e) => setProfile({ ...profile, occupation: e.target.value })}
                         placeholder="Software Engineer"
                       />
                     ) : (
@@ -332,7 +332,7 @@ function ProfileContent() {
                     <Textarea
                       id="bio"
                       value={profile.bio}
-                      onChange={(e) => setProfile({...profile, bio: e.target.value})}
+                      onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                       placeholder={t('profile.tellAboutYourself')}
                       rows={3}
                     />
@@ -357,16 +357,16 @@ function ProfileContent() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => signOut({ callbackUrl: '/' })}
                 className="flex items-center gap-2"
               >
                 {t('profile.signOut')}
               </Button>
-              
-              <Button 
-                variant="outline" 
+
+              <Button
+                variant="outline"
                 onClick={() => {
                   if (confirm(t('profile.deleteAccountConfirm'))) {
                     toast.error(t('profile.deleteAccountSoon'))

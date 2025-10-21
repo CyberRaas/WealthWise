@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "verify-auth": "node scripts/verify-auth-config.js"
+    "verify-auth": "node scripts/verify-auth-config.js",
+    "cleanup-db": "node scripts/cleanup-invalid-profiles.js",
+    "cleanup-duplicates": "node scripts/cleanup-duplicate-profiles.js"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.10.0",

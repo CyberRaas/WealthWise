@@ -2,7 +2,9 @@
 
 import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import { useProfile } from '@/contexts/ProfileContext'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import {
   Home,
   Wallet,
@@ -65,6 +67,7 @@ export default function MobileBottomNav() {
   const pathname = usePathname()
   const router = useRouter()
   const { data: session } = useSession()
+  const { profileImage, profileData } = useProfile()
 
   const handleNavClick = (item) => {
     triggerHaptic('medium')
@@ -126,12 +129,28 @@ export default function MobileBottomNav() {
                       transition={{ type: 'spring', stiffness: 300 }}
                     >
                       {isProfileIcon ? (
-                        // Profile Avatar
-                        <div className={`w-9 h-9 rounded-full ${active
-                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 ring-2 ring-emerald-200'
-                            : 'bg-gradient-to-r from-slate-400 to-slate-500'
-                          } flex items-center justify-center text-white font-semibold text-sm shadow-md`}>
-                          {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
+                        // Profile Avatar with Image
+                        <div className={`relative w-9 h-9 rounded-full ${active
+                            ? 'ring-2 ring-emerald-400 ring-offset-2'
+                            : 'ring-2 ring-slate-300'
+                          } overflow-hidden shadow-md`}>
+                          {profileImage ? (
+                            <Image
+                              src={profileImage}
+                              alt={session?.user?.name || 'Profile'}
+                              fill
+                              className="object-cover"
+                              sizes="36px"
+                              priority
+                            />
+                          ) : (
+                            <div className={`w-full h-full ${active
+                                ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
+                                : 'bg-gradient-to-r from-slate-400 to-slate-500'
+                              } flex items-center justify-center text-white font-semibold text-sm`}>
+                              {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
+                            </div>
+                          )}
                         </div>
                       ) : active ? (
                         <div className={`p-2 rounded-xl bg-gradient-to-r ${item.color}`}>
