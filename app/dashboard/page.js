@@ -318,9 +318,12 @@ function DashboardContent() {
               <BarChart3 className="h-4 w-4" />
               <span>Dashboard Overview</span>
             </TabsTrigger>
-            <TabsTrigger value="ai-agents" className="flex items-center gap-2">
+            <TabsTrigger value="ai-agents" className="flex items-center gap-2 relative">
               <TrendingUp className="h-4 w-4" />
               <span>🤖 AI Agents</span>
+              <span className="ml-1 px-1.5 py-0.5 text-[10px] font-semibold bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md">
+                BETA
+              </span>
             </TabsTrigger>
           </TabsList>
 

@@ -428,6 +428,27 @@ export function AgentDashboard() {
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
+            {/* Beta Banner */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 p-4 shadow-lg">
+                <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,white)] pointer-events-none" />
+                <div className="relative flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                        <Sparkles className="h-6 w-6 text-white animate-pulse" />
+                    </div>
+                    <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-lg font-bold text-white">Beta Feature - AI Agents</h3>
+                            <span className="px-2 py-1 text-xs font-bold bg-white/20 backdrop-blur-sm text-white rounded-full border border-white/30">
+                                IN PROGRESS
+                            </span>
+                        </div>
+                        <p className="text-sm text-white/90 leading-relaxed">
+                            Our autonomous AI agents are learning and improving! Features may evolve as we enhance their capabilities based on your feedback.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
