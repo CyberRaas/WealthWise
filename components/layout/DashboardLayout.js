@@ -4,25 +4,22 @@ import { useState, useRef, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useTranslation } from 'react-i18next'
 import { useProfile } from '@/contexts/ProfileContext'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Sidebar from '@/components/layout/Sidebar'
 import MobileBottomNav from '@/components/mobile/MobileBottomNav'
-import HamburgerMenu from '@/components/mobile/HamburgerMenu'
 import SwipeGestureHandler from '@/components/mobile/SwipeGestureHandler'
 import PullToRefresh from '@/components/mobile/PullToRefresh'
 import LanguageSelector from '@/components/ui/LanguageSelector'
 import NotificationCenter from '@/components/notifications/NotificationCenter'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Bell,
   LogOut,
   User,
   Settings,
   HelpCircle,
-  ChevronDown,
-  Menu
+  ChevronDown
 } from 'lucide-react'
 
 export default function DashboardLayout({ children, title = "Dashboard", onRefresh }) {
@@ -30,9 +27,9 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
   const { profileImage } = useProfile()
   const { t } = useTranslation()
   const pathname = usePathname()
+  const router = useRouter()
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [hamburgerMenuOpen, setHamburgerMenuOpen] = useState(false)
   const dropdownRef = useRef(null)
 
   // Close dropdown when clicking outside
@@ -70,11 +67,9 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
     '/dashboard/expenses',
     '/dashboard/goals',
     '/dashboard/analytics',
-    '/dashboard/budget'
+    '/dashboard/budget',
+    '/dashboard/profile'
   ].some(path => pathname === path)
-
-  // Hide hamburger menu on main dashboard (show navigation directly instead)
-  const isDashboardHome = pathname === '/dashboard'
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50">
@@ -94,30 +89,14 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
           />
         )}
 
-        {/* Hamburger Menu */}
-        <HamburgerMenu
-          isOpen={hamburgerMenuOpen}
-          onClose={() => setHamburgerMenuOpen(false)}
-        />
-
         {/* Main Content */}
         <div className="flex-1 min-w-0">
           {/* Fixed Header with Consistent Height */}
           <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
             <div className="h-16 px-3 sm:px-4 lg:px-6">
               <div className="flex items-center justify-between h-full">
-                {/* Left Section: Mobile Menu + Title */}
-                <div className="flex items-center space-x-3 min-w-0 flex-1">
-                  {/* Mobile Hamburger Button - Only show on non-dashboard pages */}
-                  {!isDashboardHome && (
-                    <button
-                      className="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md"
-                      onClick={() => setHamburgerMenuOpen(true)}
-                    >
-                      <Menu className="w-5 h-5 text-slate-600" />
-                    </button>
-                  )}
-
+                {/* Left Section: Title */}
+                <div className="flex items-center min-w-0 flex-1">
                   {/* Title Section */}
                   <div className="min-w-0 flex-1">
                     <motion.h1
@@ -206,7 +185,10 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
                             <MenuItem
                               icon={User}
                               label="Profile"
-                              onClick={() => setShowProfileDropdown(false)}
+                              onClick={() => {
+                                setShowProfileDropdown(false)
+                                router.push('/dashboard/profile')
+                              }}
                             />
                             <MenuItem
                               icon={Settings}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -354,64 +355,37 @@ export default function GoalTracker({ userSavings = 0 }) {
         )}
       </AnimatePresence>
 
-      {/* Goals Overview with Stats */}
-      <Card className="group bg-gradient-to-br from-emerald-600 via-teal-600 to-blue-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-xl rounded-2xl ring-2 ring-white/20">
-        <CardContent className="p-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-xl rounded-full px-4 py-2 mb-4">
-                <Target className="w-4 h-4 text-white" />
-                <span className="text-white font-medium text-sm">{t('goals.goalProgress')}</span>
-              </div>
-              <h2 className="text-3xl lg:text-4xl font-bold mb-3">🎯 {t('goals.financialGoals')}</h2>
-              <p className="text-emerald-100 text-lg font-medium">
-                {goals.length} {t('goals.activeGoals')} • ₹{totalSaved.toLocaleString('en-IN')} saved
-              </p>
-            </div>
-            <Button
-              onClick={() => setShowCreateGoal(true)}
-              className="group bg-white/20 hover:bg-white/30 text-white border-white/30 px-6 py-3 rounded-2xl backdrop-blur-xl font-bold transition-all duration-300 hover:scale-105"
-            >
-              <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-              {t('goals.addGoal')}
-            </Button>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 text-center">
-              <Trophy className="w-8 h-8 mx-auto mb-2" />
-              <p className="text-2xl font-bold">{completedGoals}</p>
-              <p className="text-sm text-emerald-100">Completed</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 text-center">
-              <TrendingUp className="w-8 h-8 mx-auto mb-2" />
-              <p className="text-2xl font-bold">{goals.length - completedGoals}</p>
-              <p className="text-sm text-emerald-100">In Progress</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 text-center">
-              <Sparkles className="w-8 h-8 mx-auto mb-2" />
-              <p className="text-2xl font-bold">{Object.keys(achievements).length}</p>
-              <p className="text-sm text-emerald-100">Achievements</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Add Goal Button - Clean & Simple */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">Manage Your Goals</h3>
+          <p className="text-sm text-gray-600">Create and track your financial goals</p>
+        </div>
+        <Button
+          onClick={() => setShowCreateGoal(true)}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          {t('goals.addGoal')}
+        </Button>
+      </div>
 
       {/* Goals List */}
       {goals.length === 0 ? (
-        <Card className="group bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 hover:from-white hover:via-emerald-50/50 hover:to-teal-50/50 border-2 border-emerald-200/40 hover:border-emerald-300/60 shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-xl rounded-2xl ring-1 ring-white/50">
-          <CardContent className="text-center p-12">
-            <Target className="w-20 h-20 text-emerald-300 mx-auto mb-6" />
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-slate-800 bg-clip-text text-transparent mb-4">{t('goals.noGoalsYet')}</h3>
-            <p className="text-slate-600 mb-8 text-lg">
+        <Card className="border-2 border-dashed border-gray-300">
+          <CardContent className="text-center p-8 sm:p-12">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Target className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('goals.noGoalsYet')}</h3>
+            <p className="text-gray-600 mb-6 text-sm">
               {t('goals.startJourney')}
             </p>
             <Button
               onClick={() => setShowCreateGoal(true)}
-              className="group bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 hover:from-emerald-700 hover:via-teal-700 hover:to-blue-700 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 ring-2 ring-white/20 text-lg font-bold"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
             >
-              <Plus className="w-6 mr-3 group-hover:rotate-90 transition-transform duration-300" />
+              <Plus className="w-4 h-4 mr-2" />
               {t('goals.createFirstGoal')}
             </Button>
           </CardContent>
@@ -432,191 +406,114 @@ export default function GoalTracker({ userSavings = 0 }) {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className={`group ${isCelebrating ? 'ring-4 ring-yellow-400 animate-pulse' : ''} bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 hover:from-white hover:via-emerald-50/50 hover:to-teal-50/50 border-2 ${isCompleted ? 'border-yellow-400' : 'border-emerald-200/40'} hover:border-emerald-300/60 shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-xl rounded-2xl ring-1 ring-white/50`}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4 flex-1">
-                        <div className={`w-14 h-14 ${template?.color || 'bg-gray-500'} rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg ${isCelebrating ? 'animate-bounce' : ''}`}>
+                <Card className={`border-2 hover:shadow-md transition-shadow ${isCompleted ? 'border-emerald-200 bg-emerald-50/30' : 'border-gray-200'}`}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
                           {isCompleted ? '🏆' : template?.icon || '🎯'}
                         </div>
-                        <div className="flex-1">
-                          <CardTitle className="text-xl font-bold bg-gradient-to-r from-slate-800 via-emerald-700 to-slate-800 bg-clip-text text-transparent">
-                            {goal.name}
-                            {isCelebrating && <PartyPopper className="inline-block ml-2 w-5 h-5 text-yellow-500 animate-spin" />}
-                          </CardTitle>
-                          <CardDescription className="text-slate-600 text-base">{goal.description}</CardDescription>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <CardTitle className="text-base font-semibold text-gray-900 truncate">
+                              {goal.name}
+                            </CardTitle>
+                            {isCompleted && (
+                              <span className="flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                                <CheckCircle className="w-3 h-3 mr-1" />
+                                Done
+                              </span>
+                            )}
+                          </div>
+                          {goal.description && (
+                            <CardDescription className="text-sm line-clamp-1">{goal.description}</CardDescription>
+                          )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant={
-                          analysis.status === 'completed' ? 'default' :
-                            analysis.status === 'on_track' ? 'secondary' : 'destructive'
-                        } className="flex items-center gap-1">
-                          {analysis.status === 'completed' ? (
-                            <>
-                              <Trophy className="w-3 h-3" />
-                              {t('goals.status.completed')}
-                            </>
-                          ) : analysis.status === 'on_track' ? (
-                            <>
-                              <TrendingUp className="w-3 h-3" />
-                              {t('goals.status.onTrack')}
-                            </>
-                          ) : (
-                            <>
-                              <TrendingDown className="w-3 h-3" />
-                              {t('goals.status.behind')}
-                            </>
-                          )}
-                        </Badge>
-                        {!isCompleted && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => deleteGoal(goal.id)}
-                            className="h-8 w-8 p-0"
-                          >
-                            <Trash2 className="w-4 h-4 text-red-500" />
-                          </Button>
-                        )}
-                      </div>
+                      {!isCompleted && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => deleteGoal(goal.id)}
+                          className="h-8 w-8 p-0 flex-shrink-0"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </Button>
+                      )}
                     </div>
                   </CardHeader>
 
-                  <CardContent>
-                    <div className="space-y-4">
-                      {/* Progress with Animation */}
-                      <div>
-                        <div className="flex justify-between text-sm mb-2">
-                          <span className="font-medium">{t('goals.progress')}</span>
-                          <span className="font-bold text-emerald-600">{analysis.progress.toFixed(1)}%</span>
-                        </div>
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: '100%' }}
-                          transition={{ duration: 0.5 }}
-                        >
-                          <Progress value={analysis.progress} className="h-3" />
-                        </motion.div>
-                        <div className="flex justify-between text-sm mt-2 text-gray-600">
-                          <span>₹{goal.currentAmount.toLocaleString('en-IN')}</span>
-                          <span>₹{goal.targetAmount.toLocaleString('en-IN')}</span>
-                        </div>
+                  <CardContent className="space-y-4">
+                    {/* Progress Bar */}
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-gray-600">{t('goals.progress')}</span>
+                        <span className="font-semibold text-gray-900">{analysis.progress.toFixed(0)}%</span>
                       </div>
+                      <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all ${
+                            isCompleted 
+                              ? 'bg-emerald-500' 
+                              : analysis.progress > 75 
+                              ? 'bg-blue-500' 
+                              : analysis.progress > 50
+                              ? 'bg-cyan-500'
+                              : 'bg-gray-400'
+                          }`}
+                          style={{ width: `${Math.min(analysis.progress, 100)}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-sm mt-2">
+                        <span className="text-gray-600">₹{goal.currentAmount.toLocaleString('en-IN')}</span>
+                        <span className="font-medium text-gray-900">₹{goal.targetAmount.toLocaleString('en-IN')}</span>
+                      </div>
+                    </div>
 
-                      {/* AI Insights */}
+                    {/* Timeline Info */}
+                    <div className="flex items-center justify-between text-sm pt-2 border-t">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Calendar className="w-4 h-4" />
+                        <span>{new Date(goal.targetDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                      </div>
                       {!isCompleted && (
-                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-200">
-                          <div className="flex items-start gap-3">
-                            <Sparkles className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                            <div className="space-y-2 text-sm">
-                              <p className="font-semibold text-slate-800">Smart Insights</p>
-                              {analysis.isOnTrack ? (
-                                <>
-                                  <p className="text-green-700 flex items-center gap-2">
-                                    <ArrowUp className="w-4 h-4" />
-                                    You&apos;re ahead by ₹{(goal.currentAmount - (goal.targetAmount * analysis.expectedProgress / 100)).toLocaleString('en-IN')}!
-                                  </p>
-                                  <p className="text-slate-600">
-                                    At current pace, you&apos;ll complete this <span className="font-semibold text-green-600">{Math.ceil((new Date(goal.targetDate) - analysis.predictedDate) / (1000 * 60 * 60 * 24))} days early</span>
-                                  </p>
-                                </>
-                              ) : (
-                                <>
-                                  <p className="text-orange-700 flex items-center gap-2">
-                                    <ArrowDown className="w-4 h-4" />
-                                    Behind schedule by ₹{Math.abs(goal.currentAmount - (goal.targetAmount * analysis.expectedProgress / 100)).toLocaleString('en-IN')}
-                                  </p>
-                                  <p className="text-slate-600">
-                                    Save <span className="font-semibold text-blue-600">₹{Math.ceil((goal.targetAmount - goal.currentAmount) / analysis.daysRemaining).toLocaleString('en-IN')}/day</span> to reach your goal on time
-                                  </p>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Timeline Info */}
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div className="bg-white/50 rounded-lg p-3">
-                          <p className="text-gray-600 flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            {t('goals.targetDate')}
-                          </p>
-                          <p className="font-bold text-slate-800 mt-1">
-                            {new Date(goal.targetDate).toLocaleDateString('en-IN')}
-                          </p>
-                          {!isCompleted && (
-                            <p className="text-xs text-gray-500 mt-1">{analysis.daysRemaining} days left</p>
-                          )}
-                        </div>
-                        <div className="bg-white/50 rounded-lg p-3">
-                          <p className="text-gray-600 flex items-center gap-1">
-                            <PiggyBank className="w-4 h-4" />
-                            {isCompleted ? 'Saved' : t('goals.monthlyTarget')}
-                          </p>
-                          <p className="font-bold text-slate-800 mt-1">
-                            ₹{(isCompleted ? goal.currentAmount : analysis.monthlySavingRequired).toLocaleString('en-IN')}
-                          </p>
-                          {!isCompleted && (
-                            <p className="text-xs text-gray-500 mt-1">per month</p>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Completed Goal Message */}
-                      {isCompleted ? (
-                        <div className="bg-gradient-to-r from-yellow-50 via-orange-50 to-yellow-50 rounded-xl p-4 border-2 border-yellow-400 text-center">
-                          <div className="flex items-center justify-center gap-2 text-yellow-700">
-                            <Trophy className="w-6 h-6" />
-                            <p className="text-lg font-bold">🎉 Goal Achieved! 🎉</p>
-                            <Trophy className="w-6 h-6" />
-                          </div>
-                          <p className="text-sm text-slate-600 mt-2">
-                            Completed on {new Date(goal.completedAt || goal.updatedAt).toLocaleDateString('en-IN')}
-                          </p>
-                        </div>
-                      ) : (
-                        /* Quick Action Buttons */
-                        <div className="space-y-2">
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => addToGoal(goal.id, 1000)}
-                              className="flex-1 hover:bg-emerald-50 hover:border-emerald-500 transition-all"
-                              disabled={isCompleted}
-                            >
-                              <Zap className="w-4 h-4 mr-1" />
-                              +₹1K
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => addToGoal(goal.id, 5000)}
-                              className="flex-1 hover:bg-blue-50 hover:border-blue-500 transition-all"
-                              disabled={isCompleted}
-                            >
-                              <Zap className="w-4 h-4 mr-1" />
-                              +₹5K
-                            </Button>
-                            {remainingAmount > 0 && remainingAmount <= 50000 && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => addToGoal(goal.id, remainingAmount)}
-                                className="flex-1 hover:bg-purple-50 hover:border-purple-500 transition-all font-bold"
-                                disabled={isCompleted}
-                              >
-                                <Trophy className="w-4 h-4 mr-1" />
-                                Finish! ₹{(remainingAmount / 1000).toFixed(1)}K
-                              </Button>
-                            )}
-                          </div>
+                        <div className="text-gray-600">
+                          <span className="font-medium">{analysis.daysRemaining}</span> days left
                         </div>
                       )}
                     </div>
+
+                    {/* Quick Action Buttons */}
+                    {!isCompleted && (
+                      <div className="flex gap-2 pt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => addToGoal(goal.id, 1000)}
+                          className="flex-1"
+                        >
+                          +₹1K
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => addToGoal(goal.id, 5000)}
+                          className="flex-1"
+                        >
+                          +₹5K
+                        </Button>
+                        {remainingAmount > 0 && remainingAmount <= 50000 && (
+                          <Button
+                            size="sm"
+                            onClick={() => addToGoal(goal.id, remainingAmount)}
+                            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                          >
+                            <Trophy className="w-4 h-4 mr-1" />
+                            Complete
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
@@ -651,6 +548,16 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
     targetMonths: 12
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [])
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template)
@@ -704,12 +611,14 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
     }
   }
 
-  return (
+  if (!mounted) return null
+
+  const modalContent = (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <motion.div
@@ -717,7 +626,7 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-white rounded-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl relative"
       >
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -880,4 +789,6 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
       </motion.div>
     </motion.div>
   )
+
+  return createPortal(modalContent, document.body)
 }
