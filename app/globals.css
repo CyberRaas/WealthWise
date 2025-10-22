@@ -300,12 +300,14 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    font-family: var(--font-poppins), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-poppins), ui-sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, sans-serif;
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-poppins), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-poppins), ui-sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, sans-serif;
     font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -359,7 +361,8 @@
 
   /* Explicit font classes */
   .font-poppins {
-    font-family: var(--font-poppins), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-poppins), ui-sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, sans-serif;
   }
 }
 
