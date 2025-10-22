@@ -111,7 +111,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={poppins.variable}>
       <head>
         {/* PWA Support */}
         <link rel="manifest" href="/manifest.json" />
@@ -161,7 +161,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${poppins.variable} font-poppins antialiased touch-manipulation`}
+        className="font-poppins antialiased touch-manipulation"
         style={{ fontFeatureSettings: "'kern' 1, 'liga' 1, 'calt' 1" }}
       >
         <PWARegister />
