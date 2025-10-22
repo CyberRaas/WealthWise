@@ -9,7 +9,7 @@ async function sendOtpHandler(req) {
   const body = await req.json()
   const validatedData = sendOtpSchema.parse(body)
   
-  const { email, type } = validatedData
+  const { email, type, name } = validatedData
   const db = await connectToDatabase()
   
   // Check if user exists based on type
@@ -61,10 +61,13 @@ async function sendOtpHandler(req) {
   
   // Send OTP via email
   try {
+    // Use name from request body, or existing user name, or default to 'there'
+    const userName = name || existingUser?.name || 'there'
+    
     const emailContent = otpService.generateEmailContent(
       otp, 
       type, 
-      existingUser?.name || 'User'
+      userName
     )
     
     await emailService.sendEmail({

@@ -220,7 +220,7 @@ function DashboardContent() {
     <DashboardLayout title={t('dashboard.overview')}>
       <div className="space-y-8">
 
-        {/* Welcome Message with Real Data */}
+        {/*TODO: Implement Welcome Message with Real Data */}
         <div className="bg-gradient-to-r from-emerald-50 via-blue-50 to-purple-50 rounded-2xl p-6 border border-emerald-100">
           <div className="flex items-center justify-between">
             <div className="flex-1">
@@ -269,11 +269,11 @@ function DashboardContent() {
               )}
             </div>
 
-            <div className="hidden sm:block ml-6">
+            {/* <div className="hidden sm:block ml-6">
               <div className="w-20 h-20 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg animate-pulse-subtle">
                 {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : '😊'}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Real quick stats row */}

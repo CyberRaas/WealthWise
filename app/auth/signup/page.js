@@ -625,7 +625,8 @@ export default function SignUpPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: data.email,
-          type: 'registration'
+          type: 'registration',
+          name: data.name // Include name for personalized email
         })
       })
 
@@ -727,7 +728,8 @@ export default function SignUpPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: userData.email,
-          type: 'registration'
+          type: 'registration',
+          name: userData.name // Include name for personalized email
         })
       })
 
