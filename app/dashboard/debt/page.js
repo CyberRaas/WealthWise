@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import LanguageSelector from '@/components/ui/LanguageSelector'
@@ -38,6 +39,41 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
     dueDate: '',
     description: ''
   })
+  const [mounted, setMounted] = useState(false)
+
+  // Ensure component is mounted (for portal)
+  useEffect(() => {
+    setMounted(true)
+    return () => setMounted(false)
+  }, [])
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    
+    // Cleanup function
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleEscapeKey = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleEscapeKey)
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey)
+    }
+  }, [isOpen, onClose])
 
   // Calculate monthly installment and due date based on amount, interest rate, and duration
   const calculateLoanDetails = (amount, interestRate, duration) => {
@@ -136,14 +172,32 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
     await onSave(debtData)
   }
 
-  if (!isOpen) return null
+  if (!isOpen || !mounted) return null
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">
-          {debt ? 'Edit' : 'Add'} {type === 'taken' ? 'Debt Taken' : 'Debt Given'}
-        </h2>
+  const modalContent = (
+    <div 
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold">
+            {debt ? 'Edit' : 'Add'} {type === 'taken' ? 'Debt Taken' : 'Debt Given'}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600 transition-colors"
+            aria-label="Close modal"
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -267,6 +321,9 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
       </div>
     </div>
   )
+
+  // Use portal to render modal outside the component tree
+  return createPortal(modalContent, document.body)
 }
 
 function DebtOverview() {
