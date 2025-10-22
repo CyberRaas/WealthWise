@@ -333,15 +333,15 @@ export default function PrivacyPolicyPage() {
                                     <div className="grid sm:grid-cols-2 gap-4">
                                         <div className="p-4 bg-slate-50 rounded-lg">
                                             <p className="font-semibold text-slate-800 mb-2">Email</p>
-                                            <a href="mailto:privacy@wealthwise.app" className="text-emerald-600 hover:underline">
-                                                privacy@wealthwise.app
+                                            <a href="mailto:privacy@mywealthwise.tech" className="text-emerald-600 hover:underline">
+                                                privacy@mywealthwise.tech
                                             </a>
                                         </div>
 
                                         <div className="p-4 bg-slate-50 rounded-lg">
                                             <p className="font-semibold text-slate-800 mb-2">Support</p>
-                                            <a href="mailto:support@wealthwise.app" className="text-emerald-600 hover:underline">
-                                                support@wealthwise.app
+                                            <a href="mailto:support@mywealthwise.tech" className="text-emerald-600 hover:underline">
+                                                support@mywealthwise.tech
                                             </a>
                                         </div>
                                     </div>
