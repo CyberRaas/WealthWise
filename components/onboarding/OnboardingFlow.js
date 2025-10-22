@@ -532,6 +532,27 @@ function BudgetGenerationStep({ isGenerating }) {
         )}
       </div>
 
+      {/* AI Budget Tip */}
+      <div className="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-xl p-4 text-left border border-purple-100">
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <span className="text-lg">💡</span>
+          </div>
+          <div className="flex-1 space-y-2">
+            <h3 className="font-semibold text-slate-900 text-sm">AI Budget Tip</h3>
+            <p className="text-xs text-slate-700 leading-relaxed">
+              Your budget will be automatically generated using the <span className="font-semibold text-purple-700">50-30-20 Rule</span> to help you manage your finances smarter.
+            </p>
+            <div className="flex items-start gap-2 bg-white/70 rounded-lg p-2">
+              <span className="text-xs">✨</span>
+              <p className="text-[11px] text-slate-600 leading-snug">
+                You can customize it anytime to better match your goals. AI suggestions may not always be perfect, so please review before finalizing.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="bg-slate-50 rounded-xl p-4 text-left">
         <h3 className="font-semibold text-slate-900 mb-3 text-center text-sm">What you&apos;ll get</h3>
         <div className="grid grid-cols-1 gap-2 text-xs">

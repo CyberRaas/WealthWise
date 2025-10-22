@@ -1152,6 +1152,7 @@ import {
 import ExpenseTrackingDashboard from '@/components/dashboard/ExpenseTrackingDashboard'
 import BudgetCustomizer from '@/components/budget/BudgetCustomizer'
 import BudgetCustomizationGuide from '@/components/budget/BudgetCustomizationGuide'
+import AIBudgetTip from '@/components/budget/AIBudgetTip'
 import toast from 'react-hot-toast'
 
 const COLORS = [
@@ -1644,6 +1645,11 @@ export default function BudgetDisplay({ refreshTrigger }) {
             </div>
           </CardContent>
         </Card>
+
+        {/* AI Budget Tip Section - Only show for AI-generated budgets */}
+        {!budget.isCustomized && (
+          <AIBudgetTip onCustomize={handleCustomizeBudget} />
+        )}
 
         {/* Responsive Navigation Tabs */}
         <div className="flex gap-1 p-1 bg-gray-100 rounded-xl overflow-x-auto">
