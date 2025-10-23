@@ -220,36 +220,36 @@ Support: support@mywealthwise.tech
     }
 
     return (
-        <div className="space-y-6 pb-6">
-            {/* Header with Download Button */}
-            <div className="flex items-center justify-between mb-4">
-                <div>
-                    <h2 className="text-2xl font-bold text-slate-900">Your Budget Report</h2>
-                    <p className="text-sm text-slate-600 mt-1">Detailed analysis and recommendations</p>
+        <div className="space-y-4 sm:space-y-6 pb-6">
+            {/* Header with Download Button - Mobile Optimized */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4">
+                <div className="flex-1">
+                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">Your Budget Report</h2>
+                    <p className="text-xs sm:text-sm text-slate-600 mt-1">Detailed analysis and recommendations</p>
                 </div>
                 <button
                     onClick={downloadReport}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all active:scale-95 shadow-sm hover:shadow-md"
+                    className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-3 sm:py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all active:scale-95 shadow-sm hover:shadow-md text-sm sm:text-base font-medium"
                 >
                     <Download className="w-4 h-4" />
-                    <span className="font-medium">Download Report</span>
+                    <span>Download Report</span>
                 </button>
             </div>
 
-            {/* Budget Health Score Card */}
+            {/* Budget Health Score Card - Mobile Optimized */}
             {budget.budgetHealth && (
-                <div className={`rounded-xl p-6 border-2 ${getHealthColor(budget.budgetHealth.score)}`}>
-                    <div className="flex items-start justify-between mb-4">
+                <div className={`rounded-xl p-4 sm:p-6 border-2 ${getHealthColor(budget.budgetHealth.score)}`}>
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4">
                         <div className="flex items-center gap-3">
                             {getHealthIcon(budget.budgetHealth.score)}
                             <div>
-                                <h3 className="text-lg font-bold">Budget Health Score</h3>
-                                <p className="text-sm opacity-80">Overall financial assessment</p>
+                                <h3 className="text-base sm:text-lg font-bold">Budget Health Score</h3>
+                                <p className="text-xs sm:text-sm opacity-80">Overall financial assessment</p>
                             </div>
                         </div>
-                        <div className="text-right">
-                            <div className="text-4xl font-bold">{budget.budgetHealth.score}</div>
-                            <div className="text-sm font-semibold">{budget.budgetHealth.grade}</div>
+                        <div className="text-center sm:text-right bg-white/50 sm:bg-transparent rounded-lg p-3 sm:p-0">
+                            <div className="text-3xl sm:text-4xl font-bold">{budget.budgetHealth.score}</div>
+                            <div className="text-xs sm:text-sm font-semibold">{budget.budgetHealth.grade}</div>
                         </div>
                     </div>
 
@@ -309,26 +309,26 @@ Support: support@mywealthwise.tech
                 </button>
 
                 {expandedSections.overview && (
-                    <div className="p-5 pt-0 space-y-4">
-                        {/* Three Key Metrics */}
-                        <div className="grid grid-cols-3 gap-4">
+                    <div className="p-4 sm:p-5 pt-0 space-y-4">
+                        {/* Three Key Metrics - Mobile Responsive */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
-                                <p className="text-xs text-blue-700 font-medium mb-1">Total Budget</p>
-                                <p className="text-2xl font-bold text-blue-900">{formatCurrency(budget.totalBudget)}</p>
+                                <p className="text-xs sm:text-xs text-blue-700 font-medium mb-1">Total Budget</p>
+                                <p className="text-xl sm:text-2xl font-bold text-blue-900">{formatCurrency(budget.totalBudget)}</p>
                                 <p className="text-xs text-blue-600 mt-1">Monthly income</p>
                             </div>
 
                             <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4 border border-emerald-200">
-                                <p className="text-xs text-emerald-700 font-medium mb-1">Monthly Savings</p>
-                                <p className="text-2xl font-bold text-emerald-900">
+                                <p className="text-xs sm:text-xs text-emerald-700 font-medium mb-1">Monthly Savings</p>
+                                <p className="text-xl sm:text-2xl font-bold text-emerald-900">
                                     {formatCurrency(budget.categories?.savings?.amount || 0)}
                                 </p>
                                 <p className="text-xs text-emerald-600 mt-1">{budget.categories?.savings?.percentage}% of income</p>
                             </div>
 
                             <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200">
-                                <p className="text-xs text-slate-700 font-medium mb-1">Total Expenses</p>
-                                <p className="text-2xl font-bold text-slate-900">
+                                <p className="text-xs sm:text-xs text-slate-700 font-medium mb-1">Total Expenses</p>
+                                <p className="text-xl sm:text-2xl font-bold text-slate-900">
                                     {formatCurrency(budget.totalBudget - (budget.categories?.savings?.amount || 0))}
                                 </p>
                                 <p className="text-xs text-slate-600 mt-1">
@@ -337,13 +337,13 @@ Support: support@mywealthwise.tech
                             </div>
                         </div>
 
-                        {/* Profile Details */}
+                        {/* Profile Details - Mobile Optimized */}
                         <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
                             <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
                                 <Info className="w-4 h-4" />
                                 Your Profile
                             </h4>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                                 <div>
                                     <p className="text-xs text-slate-600">City</p>
                                     <p className="text-sm font-semibold text-slate-900">{profile.city}</p>
@@ -363,7 +363,7 @@ Support: support@mywealthwise.tech
                             </div>
 
                             {(budget.incomeBracket || budget.lifeStage) && (
-                                <div className="mt-3 pt-3 border-t border-slate-200 grid grid-cols-2 gap-3">
+                                <div className="mt-3 pt-3 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {budget.incomeBracket && (
                                         <div>
                                             <p className="text-xs text-slate-600">Income Bracket</p>
@@ -402,19 +402,19 @@ Support: support@mywealthwise.tech
                 </button>
 
                 {expandedSections.breakdown && (
-                    <div className="p-5 pt-0 space-y-3">
+                    <div className="p-4 sm:p-5 pt-0 space-y-3">
                         {budget.categories && Object.entries(budget.categories).map(([key, category]) => (
-                            <div key={key} className="bg-slate-50 rounded-lg p-4 border border-slate-200 hover:border-slate-300 transition-colors">
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-2xl">{category.emoji}</span>
-                                        <div>
-                                            <p className="text-sm font-bold text-slate-900">{category.englishName}</p>
-                                            <p className="text-xs text-slate-600">{category.description}</p>
+                            <div key={key} className="bg-slate-50 rounded-lg p-3 sm:p-4 border border-slate-200 hover:border-slate-300 transition-colors">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 mb-2">
+                                    <div className="flex items-center gap-2 sm:gap-3">
+                                        <span className="text-xl sm:text-2xl">{category.emoji}</span>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-bold text-slate-900 truncate">{category.englishName}</p>
+                                            <p className="text-xs text-slate-600 line-clamp-1">{category.description}</p>
                                         </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-lg font-bold text-slate-900">{formatCurrency(category.amount)}</p>
+                                    <div className="text-left sm:text-right ml-7 sm:ml-0 flex-shrink-0">
+                                        <p className="text-lg sm:text-lg font-bold text-slate-900">{formatCurrency(category.amount)}</p>
                                         <p className="text-xs text-slate-600">{category.percentage}% of budget</p>
                                     </div>
                                 </div>
@@ -454,23 +454,23 @@ Support: support@mywealthwise.tech
                     </button>
 
                     {expandedSections.insights && (
-                        <div className="p-5 pt-0 space-y-4">
-                            {/* Savings Analysis */}
+                        <div className="p-4 sm:p-5 pt-0 space-y-4">
+                            {/* Savings Analysis - Mobile Optimized */}
                             {budget.savingsAnalysis && (
                                 <div className="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
                                     <div className="flex items-center gap-2 mb-3">
-                                        <Target className="w-5 h-5 text-emerald-600" />
+                                        <Target className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
                                         <h4 className="text-sm font-bold text-emerald-900">Savings Analysis</h4>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-3 mb-3">
+                                    <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-3">
                                         <div className="bg-white rounded-lg p-3">
                                             <p className="text-xs text-slate-600 mb-1">Current Rate</p>
-                                            <p className="text-xl font-bold text-emerald-700">{budget.savingsAnalysis.currentRate}%</p>
+                                            <p className="text-lg sm:text-xl font-bold text-emerald-700">{budget.savingsAnalysis.currentRate}%</p>
                                         </div>
                                         <div className="bg-white rounded-lg p-3">
                                             <p className="text-xs text-slate-600 mb-1">Target Rate</p>
-                                            <p className="text-xl font-bold text-slate-700">{budget.savingsAnalysis.targetRate}%</p>
+                                            <p className="text-lg sm:text-xl font-bold text-slate-700">{budget.savingsAnalysis.targetRate}%</p>
                                         </div>
                                     </div>
 
@@ -503,23 +503,23 @@ Support: support@mywealthwise.tech
                                 </div>
                             )}
 
-                            {/* Housing Analysis */}
+                            {/* Housing Analysis - Mobile Optimized */}
                             {budget.housingAnalysis && (
                                 <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
                                     <div className="flex items-center gap-2 mb-3">
-                                        <Award className="w-5 h-5 text-blue-600" />
+                                        <Award className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                                         <h4 className="text-sm font-bold text-blue-900">Housing Analysis</h4>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-3 mb-3">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-3">
                                         <div className="bg-white rounded-lg p-3">
                                             <p className="text-xs text-slate-600 mb-1">Your Housing Cost</p>
-                                            <p className="text-lg font-bold text-blue-700">{formatCurrency(budget.housingAnalysis.currentAmount)}</p>
+                                            <p className="text-base sm:text-lg font-bold text-blue-700">{formatCurrency(budget.housingAnalysis.currentAmount)}</p>
                                             <p className="text-xs text-blue-600">{budget.housingAnalysis.percentage}% of income</p>
                                         </div>
                                         <div className="bg-white rounded-lg p-3">
                                             <p className="text-xs text-slate-600 mb-1">City Average</p>
-                                            <p className="text-lg font-bold text-slate-700">{formatCurrency(budget.housingAnalysis.cityAverage)}</p>
+                                            <p className="text-base sm:text-lg font-bold text-slate-700">{formatCurrency(budget.housingAnalysis.cityAverage)}</p>
                                             <p className="text-xs text-slate-600">Typical for {profile.city}</p>
                                         </div>
                                     </div>
@@ -538,26 +538,26 @@ Support: support@mywealthwise.tech
                                 </div>
                             )}
 
-                            {/* Lifestyle Balance */}
+                            {/* Lifestyle Balance - Mobile Optimized */}
                             {budget.lifestyleBalance && (
                                 <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
                                     <div className="flex items-center gap-2 mb-3">
-                                        <TrendingUp className="w-5 h-5 text-purple-600" />
+                                        <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                                         <h4 className="text-sm font-bold text-purple-900">Lifestyle Balance</h4>
                                     </div>
 
                                     <div className="grid grid-cols-3 gap-2 mb-3">
                                         <div className="bg-white rounded-lg p-3 text-center">
                                             <p className="text-xs text-slate-600 mb-1">Discretionary</p>
-                                            <p className="text-lg font-bold text-purple-700">{budget.lifestyleBalance.discretionarySpending}%</p>
+                                            <p className="text-base sm:text-lg font-bold text-purple-700">{budget.lifestyleBalance.discretionarySpending}%</p>
                                         </div>
                                         <div className="bg-white rounded-lg p-3 text-center">
                                             <p className="text-xs text-slate-600 mb-1">Essential</p>
-                                            <p className="text-lg font-bold text-slate-700">{budget.lifestyleBalance.essentialSpending}%</p>
+                                            <p className="text-base sm:text-lg font-bold text-slate-700">{budget.lifestyleBalance.essentialSpending}%</p>
                                         </div>
                                         <div className="bg-white rounded-lg p-3 text-center">
                                             <p className="text-xs text-slate-600 mb-1">Savings</p>
-                                            <p className="text-lg font-bold text-emerald-700">{budget.lifestyleBalance.savingsRate}%</p>
+                                            <p className="text-base sm:text-lg font-bold text-emerald-700">{budget.lifestyleBalance.savingsRate}%</p>
                                         </div>
                                     </div>
 
@@ -575,53 +575,56 @@ Support: support@mywealthwise.tech
                                 </div>
                             )}
 
-                            {/* Benchmarks */}
+                            {/* Benchmarks - Mobile Scrollable Table */}
                             {budget.benchmarks && (
                                 <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
                                     <h4 className="text-sm font-bold text-slate-900 mb-3">Comparison Benchmarks</h4>
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full text-xs">
+                                    <div className="overflow-x-auto -mx-4 px-4">
+                                        <table className="w-full min-w-[500px] text-xs">
                                             <thead>
                                                 <tr className="border-b border-slate-200">
-                                                    <th className="text-left py-2 text-slate-600 font-semibold">Category</th>
-                                                    <th className="text-center py-2 text-slate-900 font-semibold">You</th>
-                                                    <th className="text-center py-2 text-emerald-700 font-semibold">Ideal</th>
-                                                    <th className="text-center py-2 text-blue-700 font-semibold">City Avg</th>
-                                                    <th className="text-center py-2 text-purple-700 font-semibold">National</th>
+                                                    <th className="text-left py-2 pr-2 text-slate-600 font-semibold">Category</th>
+                                                    <th className="text-center py-2 px-1 text-slate-900 font-semibold">You</th>
+                                                    <th className="text-center py-2 px-1 text-emerald-700 font-semibold">Ideal</th>
+                                                    <th className="text-center py-2 px-1 text-blue-700 font-semibold">City</th>
+                                                    <th className="text-center py-2 px-1 text-purple-700 font-semibold">National</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="text-slate-800">
                                                 <tr className="border-b border-slate-100">
-                                                    <td className="py-2">Housing</td>
-                                                    <td className="text-center font-semibold">{budget.benchmarks.yourBudget.housing}%</td>
-                                                    <td className="text-center">{budget.benchmarks.idealBenchmark.housing}%</td>
-                                                    <td className="text-center">{budget.benchmarks.yourCityAverage.housing}%</td>
-                                                    <td className="text-center">{budget.benchmarks.nationalAverage.housing}%</td>
+                                                    <td className="py-2 pr-2">Housing</td>
+                                                    <td className="text-center px-1 font-semibold">{budget.benchmarks.yourBudget.housing}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.idealBenchmark.housing}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.yourCityAverage.housing}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.nationalAverage.housing}%</td>
                                                 </tr>
                                                 <tr className="border-b border-slate-100">
-                                                    <td className="py-2">Food</td>
-                                                    <td className="text-center font-semibold">{budget.benchmarks.yourBudget.food}%</td>
-                                                    <td className="text-center">{budget.benchmarks.idealBenchmark.food}%</td>
-                                                    <td className="text-center">{budget.benchmarks.yourCityAverage.food}%</td>
-                                                    <td className="text-center">{budget.benchmarks.nationalAverage.food}%</td>
+                                                    <td className="py-2 pr-2">Food</td>
+                                                    <td className="text-center px-1 font-semibold">{budget.benchmarks.yourBudget.food}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.idealBenchmark.food}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.yourCityAverage.food}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.nationalAverage.food}%</td>
                                                 </tr>
                                                 <tr className="border-b border-slate-100">
-                                                    <td className="py-2">Transport</td>
-                                                    <td className="text-center font-semibold">{budget.benchmarks.yourBudget.transport}%</td>
-                                                    <td className="text-center">{budget.benchmarks.idealBenchmark.transport}%</td>
-                                                    <td className="text-center">{budget.benchmarks.yourCityAverage.transport}%</td>
-                                                    <td className="text-center">{budget.benchmarks.nationalAverage.transport}%</td>
+                                                    <td className="py-2 pr-2">Transport</td>
+                                                    <td className="text-center px-1 font-semibold">{budget.benchmarks.yourBudget.transport}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.idealBenchmark.transport}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.yourCityAverage.transport}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.nationalAverage.transport}%</td>
                                                 </tr>
                                                 <tr>
-                                                    <td className="py-2">Savings</td>
-                                                    <td className="text-center font-semibold">{budget.benchmarks.yourBudget.savings}%</td>
-                                                    <td className="text-center">{budget.benchmarks.idealBenchmark.savings}%</td>
-                                                    <td className="text-center">{budget.benchmarks.yourCityAverage.savings}%</td>
-                                                    <td className="text-center">{budget.benchmarks.nationalAverage.savings}%</td>
+                                                    <td className="py-2 pr-2">Savings</td>
+                                                    <td className="text-center px-1 font-semibold">{budget.benchmarks.yourBudget.savings}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.idealBenchmark.savings}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.yourCityAverage.savings}%</td>
+                                                    <td className="text-center px-1">{budget.benchmarks.nationalAverage.savings}%</td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
+                                    <p className="text-xs text-slate-500 mt-2 text-center sm:text-left">
+                                        📱 Scroll horizontally to view all columns
+                                    </p>
                                 </div>
                             )}
                         </div>
@@ -649,25 +652,25 @@ Support: support@mywealthwise.tech
                     </button>
 
                     {expandedSections.recommendations && (
-                        <div className="p-5 pt-0 space-y-4">
+                        <div className="p-4 sm:p-5 pt-0 space-y-3 sm:space-y-4">
                             {budget.recommendations.map((rec, index) => (
-                                <div key={index} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                                    <div className="flex items-start gap-3 mb-3">
-                                        <span className="text-2xl">{rec.icon}</span>
-                                        <div className="flex-1">
-                                            <div className="flex items-center justify-between mb-1">
+                                <div key={index} className="bg-slate-50 rounded-lg p-3 sm:p-4 border border-slate-200">
+                                    <div className="flex items-start gap-2 sm:gap-3 mb-3">
+                                        <span className="text-xl sm:text-2xl flex-shrink-0">{rec.icon}</span>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 mb-1">
                                                 <h4 className="text-sm font-bold text-slate-900">{rec.type}</h4>
-                                                <span className={`text-xs px-2 py-1 rounded-full font-semibold ${rec.priority === 'Critical' ? 'bg-red-100 text-red-700' :
+                                                <span className={`text-xs px-2 py-1 rounded-full font-semibold w-fit ${rec.priority === 'Critical' ? 'bg-red-100 text-red-700' :
                                                         rec.priority === 'High' ? 'bg-amber-100 text-amber-700' :
                                                             'bg-blue-100 text-blue-700'
                                                     }`}>
                                                     {rec.priority}
                                                 </span>
                                             </div>
-                                            <p className="text-sm text-slate-700 mb-2">{rec.description}</p>
+                                            <p className="text-xs sm:text-sm text-slate-700 mb-2">{rec.description}</p>
 
                                             {rec.amount && (
-                                                <p className="text-lg font-bold text-emerald-700 mb-2">
+                                                <p className="text-base sm:text-lg font-bold text-emerald-700 mb-2">
                                                     {formatCurrency(rec.amount)}
                                                 </p>
                                             )}
@@ -678,7 +681,7 @@ Support: support@mywealthwise.tech
                                                     <ul className="space-y-1.5">
                                                         {rec.howTo.map((step, stepIndex) => (
                                                             <li key={stepIndex} className="text-xs text-slate-700 flex items-start gap-2">
-                                                                <span className="text-emerald-500 mt-0.5">✓</span>
+                                                                <span className="text-emerald-500 mt-0.5 flex-shrink-0">✓</span>
                                                                 <span>{step}</span>
                                                             </li>
                                                         ))}
@@ -688,7 +691,7 @@ Support: support@mywealthwise.tech
 
                                             {rec.timeline && (
                                                 <div className="mt-2 flex items-center gap-2 text-xs text-slate-600">
-                                                    <Calendar className="w-3 h-3" />
+                                                    <Calendar className="w-3 h-3 flex-shrink-0" />
                                                     <span>{rec.timeline}</span>
                                                 </div>
                                             )}
@@ -701,36 +704,36 @@ Support: support@mywealthwise.tech
                 </div>
             )}
 
-            {/* Action Items */}
+            {/* Action Items - Mobile Optimized */}
             {budget.actionItems && budget.actionItems.length > 0 && (
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-5 border-2 border-emerald-200">
-                    <h3 className="text-lg font-bold text-emerald-900 mb-4 flex items-center gap-2">
-                        <Calendar className="w-5 h-5" />
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-4 sm:p-5 border-2 border-emerald-200">
+                    <h3 className="text-base sm:text-lg font-bold text-emerald-900 mb-3 sm:mb-4 flex items-center gap-2">
+                        <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
                         Week-by-Week Action Plan
                     </h3>
 
                     <div className="space-y-3">
                         {budget.actionItems.map((item) => (
-                            <div key={item.week} className="bg-white rounded-lg p-4 border border-emerald-200">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <div className="w-8 h-8 bg-emerald-600 text-white rounded-lg flex items-center justify-center text-sm font-bold">
+                            <div key={item.week} className="bg-white rounded-lg p-3 sm:p-4 border border-emerald-200">
+                                <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-emerald-600 text-white rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold flex-shrink-0">
                                         W{item.week}
                                     </div>
-                                    <p className="text-sm font-bold text-slate-900">{item.action}</p>
+                                    <p className="text-xs sm:text-sm font-bold text-slate-900">{item.action}</p>
                                 </div>
 
                                 {item.steps && item.steps.length > 0 && (
-                                    <ul className="space-y-1 ml-11">
+                                    <ul className="space-y-1 ml-9 sm:ml-11">
                                         {item.steps.map((step, index) => (
                                             <li key={index} className="text-xs text-slate-700 flex items-start gap-2">
-                                                <span className="text-emerald-500 mt-0.5">→</span>
+                                                <span className="text-emerald-500 mt-0.5 flex-shrink-0">→</span>
                                                 <span>{step}</span>
                                             </li>
                                         ))}
                                     </ul>
                                 )}
 
-                                <div className="mt-2 ml-11 flex items-center gap-4 text-xs text-slate-600">
+                                <div className="mt-2 ml-9 sm:ml-11 flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-slate-600">
                                     {item.timeRequired && (
                                         <span>⏱️ {item.timeRequired}</span>
                                     )}
@@ -744,13 +747,13 @@ Support: support@mywealthwise.tech
                 </div>
             )}
 
-            {/* Tips Section */}
+            {/* Tips Section - Mobile Optimized */}
             {budget.tips && budget.tips.length > 0 && (
-                <div className="bg-amber-50 rounded-xl p-5 border-2 border-amber-200">
-                    <h3 className="text-lg font-bold text-amber-900 mb-4">💡 Smart Money Tips</h3>
-                    <div className="space-y-3">
+                <div className="bg-amber-50 rounded-xl p-4 sm:p-5 border-2 border-amber-200">
+                    <h3 className="text-base sm:text-lg font-bold text-amber-900 mb-3 sm:mb-4">💡 Smart Money Tips</h3>
+                    <div className="space-y-2 sm:space-y-3">
                         {budget.tips.map((tip, index) => (
-                            <div key={index} className="bg-white rounded-lg p-3 border border-amber-200 text-sm text-slate-700">
+                            <div key={index} className="bg-white rounded-lg p-3 border border-amber-200 text-xs sm:text-sm text-slate-700">
                                 {tip}
                             </div>
                         ))}
@@ -758,8 +761,8 @@ Support: support@mywealthwise.tech
                 </div>
             )}
 
-            {/* Footer Info */}
-            <div className="bg-slate-100 rounded-xl p-4 border border-slate-200 text-center">
+            {/* Footer Info - Mobile Optimized */}
+            <div className="bg-slate-100 rounded-xl p-3 sm:p-4 border border-slate-200 text-center">
                 <p className="text-xs text-slate-600">
                     Generated using <span className="font-semibold text-slate-900">WealthWise Advanced AI Budget Engine</span>
                 </p>

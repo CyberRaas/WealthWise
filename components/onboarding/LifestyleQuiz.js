@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -18,7 +18,8 @@ import {
     Target,
     TrendingUp,
     CheckCircle,
-    Info
+    Info,
+    Award
 } from 'lucide-react'
 
 // Quiz questions organized by category (20 questions total)
@@ -360,10 +361,12 @@ const ALL_QUESTIONS = QUIZ_CATEGORIES.flatMap(cat =>
 export default function LifestyleQuiz({ onComplete, onSkip, initialAnswers = {} }) {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
     const [answers, setAnswers] = useState(initialAnswers)
+    const [isCompleting, setIsCompleting] = useState(false)
 
     const currentQuestion = ALL_QUESTIONS[currentQuestionIndex]
     const progress = ((currentQuestionIndex + 1) / ALL_QUESTIONS.length) * 100
     const isLastQuestion = currentQuestionIndex === ALL_QUESTIONS.length - 1
+    const answeredCount = Object.keys(answers).length
 
     const handleAnswer = (value) => {
         const newAnswers = {
@@ -374,9 +377,7 @@ export default function LifestyleQuiz({ onComplete, onSkip, initialAnswers = {} 
 
         // Auto-advance to next question after a brief delay
         setTimeout(() => {
-            if (isLastQuestion) {
-                onComplete(newAnswers)
-            } else {
+            if (!isLastQuestion) {
                 setCurrentQuestionIndex(currentQuestionIndex + 1)
             }
         }, 300)
@@ -385,6 +386,22 @@ export default function LifestyleQuiz({ onComplete, onSkip, initialAnswers = {} 
     const handlePrevious = () => {
         if (currentQuestionIndex > 0) {
             setCurrentQuestionIndex(currentQuestionIndex - 1)
+        }
+    }
+
+    const handleNext = () => {
+        if (currentQuestionIndex < ALL_QUESTIONS.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1)
+        }
+    }
+
+    const handleComplete = () => {
+        if (isLastQuestion && answers[currentQuestion.id]) {
+            setIsCompleting(true)
+            // Call onComplete with all answers
+            setTimeout(() => {
+                onComplete(answers)
+            }, 100)
         }
     }
 
@@ -406,6 +423,20 @@ export default function LifestyleQuiz({ onComplete, onSkip, initialAnswers = {} 
         return colors[color] || colors.blue
     }
 
+    const getBgColor = (color) => {
+        const colors = {
+            blue: 'bg-blue-50 border-blue-200',
+            emerald: 'bg-emerald-50 border-emerald-200',
+            orange: 'bg-orange-50 border-orange-200',
+            purple: 'bg-purple-50 border-purple-200',
+            pink: 'bg-pink-50 border-pink-200',
+            red: 'bg-red-50 border-red-200',
+            indigo: 'bg-indigo-50 border-indigo-200',
+            teal: 'bg-teal-50 border-teal-200'
+        }
+        return colors[color] || colors.blue
+    }
+
     const getCurrentCategory = () => {
         return QUIZ_CATEGORIES.find(cat => cat.id === currentQuestion.category)
     }
@@ -414,112 +445,194 @@ export default function LifestyleQuiz({ onComplete, onSkip, initialAnswers = {} 
     const CategoryIcon = category.icon
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div className="text-center space-y-2">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                    <Sparkles className="w-5 h-5 text-emerald-600" />
-                    <h2 className="text-2xl font-bold text-slate-900">Lifestyle Insights</h2>
+        <div className="w-full max-w-4xl mx-auto px-2 sm:px-4">
+            <div className="space-y-4 sm:space-y-6">
+                {/* Header */}
+                <div className="text-center space-y-2 sm:space-y-3">
+                    <div className="flex items-center justify-center gap-2 mb-1 sm:mb-2">
+                        <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
+                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">
+                            Lifestyle Insights
+                        </h2>
+                        <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
+                    </div>
+                    <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto px-4">
+                        Answer 20 quick questions for better recommendations
+                    </p>
+                    <Badge variant="outline" className="text-[10px] sm:text-xs border-emerald-200 text-emerald-700">
+                        ✨ Optional - Skip anytime
+                    </Badge>
                 </div>
-                <p className="text-sm text-slate-600">
-                    Help us personalize your financial recommendations
-                </p>
-                <Badge variant="outline" className="text-xs">
-                    Optional - You can skip anytime
-                </Badge>
-            </div>
 
-            {/* Progress Bar */}
-            <div className="space-y-2">
-                <div className="flex justify-between items-center text-xs text-slate-600">
-                    <span>Question {currentQuestionIndex + 1} of {ALL_QUESTIONS.length}</span>
-                    <span>{Math.round(progress)}% complete</span>
-                </div>
-                <Progress value={progress} className="h-2" />
-            </div>
-
-            {/* Category Badge */}
-            <div className="flex items-center justify-center">
-                <div className={`flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r ${getCategoryColor(category.color)} text-white shadow-md`}>
-                    <CategoryIcon className="w-4 h-4" />
-                    <span className="text-sm font-semibold">{category.title}</span>
-                </div>
-            </div>
-
-            {/* Question Card */}
-            <Card className="border-2 border-slate-200 shadow-lg">
-                <CardHeader className="pb-4">
-                    <CardTitle className="text-xl text-center flex items-center justify-center gap-3">
-                        <span className="text-3xl">{currentQuestion.emoji}</span>
-                        <span className="text-slate-900">{currentQuestion.question}</span>
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                    {currentQuestion.options.map((option) => (
-                        <button
-                            key={option.value}
-                            onClick={() => handleAnswer(option.value)}
-                            className={`w-full text-left p-4 rounded-lg border-2 transition-all hover:border-emerald-500 hover:bg-emerald-50 hover:shadow-md active:scale-[0.98] ${answers[currentQuestion.id] === option.value
-                                    ? 'border-emerald-500 bg-emerald-50 shadow-md'
-                                    : 'border-slate-200 bg-white'
-                                }`}
-                        >
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-slate-900">{option.label}</span>
-                                {answers[currentQuestion.id] === option.value && (
-                                    <CheckCircle className="w-5 h-5 text-emerald-600" />
-                                )}
+                {/* Progress Bar with Stats */}
+                <div className="space-y-2 sm:space-y-3">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs sm:text-sm text-slate-600">
+                        <div className="flex items-center gap-2">
+                            <span className="font-semibold text-slate-900">
+                                Question {currentQuestionIndex + 1}
+                            </span>
+                            <span className="text-slate-400">/</span>
+                            <span className="text-slate-500">{ALL_QUESTIONS.length}</span>
+                        </div>
+                        <div className="flex items-center gap-3 sm:gap-4">
+                            <div className="flex items-center gap-1.5">
+                                <Award className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-600" />
+                                <span className="text-[10px] sm:text-xs font-medium">
+                                    {answeredCount} answered
+                                </span>
                             </div>
-                        </button>
-                    ))}
-                </CardContent>
-            </Card>
+                            <span className="font-semibold text-emerald-600">
+                                {Math.round(progress)}%
+                            </span>
+                        </div>
+                    </div>
+                    <div className="relative">
+                        <Progress value={progress} className="h-2 sm:h-3" />
+                        <div
+                            className="absolute top-0 left-0 h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-500 ease-out"
+                            style={{ width: `${progress}%` }}
+                        />
+                    </div>
+                </div>
 
-            {/* Navigation Buttons */}
-            <div className="flex items-center justify-between gap-3 pt-2">
-                <Button
-                    variant="outline"
-                    onClick={handlePrevious}
-                    disabled={currentQuestionIndex === 0}
-                    className="flex items-center gap-2"
-                >
-                    <ChevronLeft className="w-4 h-4" />
-                    Previous
-                </Button>
+                {/* Category Badge */}
+                <div className="flex items-center justify-center">
+                    <div className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r ${getCategoryColor(category.color)} text-white shadow-lg transform hover:scale-105 transition-transform`}>
+                        <CategoryIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span className="text-xs sm:text-sm font-semibold">{category.title}</span>
+                    </div>
+                </div>
 
-                <Button
-                    variant="ghost"
-                    onClick={handleSkipQuiz}
-                    className="text-slate-600 hover:text-slate-900"
-                >
-                    Skip Quiz
-                </Button>
+                {/* Question Card - Redesigned */}
+                <div className={`rounded-2xl border-2 ${getBgColor(category.color)} shadow-xl transition-all duration-300 overflow-hidden`}>
+                    {/* Question Header */}
+                    <div className="p-4 sm:p-6 pb-3 sm:pb-4">
+                        <div className="flex flex-col items-center gap-3 sm:gap-4">
+                            <div className="text-4xl sm:text-5xl lg:text-6xl animate-bounce-subtle">
+                                {currentQuestion.emoji}
+                            </div>
+                            <h3 className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 text-center leading-snug px-2">
+                                {currentQuestion.question}
+                            </h3>
+                        </div>
+                    </div>
 
-                {answers[currentQuestion.id] && (
+                    {/* Options Grid */}
+                    <div className="p-4 sm:p-6 pt-2 sm:pt-3 space-y-2 sm:space-y-3">
+                        {currentQuestion.options.map((option, index) => {
+                            const isSelected = answers[currentQuestion.id] === option.value
+                            return (
+                                <button
+                                    key={option.value}
+                                    onClick={() => handleAnswer(option.value)}
+                                    className={`group w-full text-left p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] ${
+                                        isSelected
+                                            ? 'border-emerald-500 bg-white shadow-lg ring-2 ring-emerald-200'
+                                            : 'border-slate-200 bg-white hover:border-emerald-400 hover:shadow-md'
+                                    }`}
+                                    style={{
+                                        animationDelay: `${index * 50}ms`
+                                    }}
+                                >
+                                    <div className="flex items-center justify-between gap-3">
+                                        <span className={`text-sm sm:text-base font-medium transition-colors ${
+                                            isSelected ? 'text-emerald-900' : 'text-slate-700 group-hover:text-slate-900'
+                                        }`}>
+                                            {option.label}
+                                        </span>
+                                        {isSelected && (
+                                            <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 animate-scale-in" />
+                                        )}
+                                    </div>
+                                </button>
+                            )
+                        })}
+                    </div>
+                </div>
+
+                {/* Navigation Buttons - Mobile Optimized */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3 pt-2">
                     <Button
-                        onClick={() => {
-                            if (isLastQuestion) {
-                                onComplete(answers)
-                            } else {
-                                setCurrentQuestionIndex(currentQuestionIndex + 1)
-                            }
-                        }}
-                        className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700"
+                        variant="outline"
+                        onClick={handlePrevious}
+                        disabled={currentQuestionIndex === 0}
+                        className="flex items-center justify-center gap-2 h-11 sm:h-10 text-sm sm:text-base order-1 sm:order-1 border-2 hover:border-slate-400 transition-all"
                     >
-                        {isLastQuestion ? 'Complete' : 'Next'}
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronLeft className="w-4 h-4" />
+                        Previous
                     </Button>
-                )}
+
+                    <Button
+                        variant="ghost"
+                        onClick={handleSkipQuiz}
+                        className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 h-11 sm:h-10 text-sm sm:text-base order-3 sm:order-2 transition-all"
+                    >
+                        Skip Quiz
+                    </Button>
+
+                    {isLastQuestion && answers[currentQuestion.id] ? (
+                        <Button
+                            onClick={handleComplete}
+                            disabled={isCompleting}
+                            className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white h-11 sm:h-10 text-sm sm:text-base order-2 sm:order-3 shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                        >
+                            {isCompleting ? (
+                                <>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                    Completing...
+                                </>
+                            ) : (
+                                <>
+                                    <CheckCircle className="w-4 h-4" />
+                                    Complete Quiz
+                                </>
+                            )}
+                        </Button>
+                    ) : answers[currentQuestion.id] ? (
+                        <Button
+                            onClick={handleNext}
+                            className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white h-11 sm:h-10 text-sm sm:text-base order-2 sm:order-3 transition-all"
+                        >
+                            Next
+                            <ChevronRight className="w-4 h-4" />
+                        </Button>
+                    ) : (
+                        <div className="h-11 sm:h-10 order-2 sm:order-3" />
+                    )}
+                </div>
+
+                {/* Help Text - Enhanced */}
+                <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200 shadow-sm">
+                    <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <div className="space-y-1">
+                        <p className="text-xs sm:text-sm text-blue-900 font-medium">
+                            Your answers help our AI create hyper-personalized recommendations
+                        </p>
+                        <p className="text-[10px] sm:text-xs text-blue-700">
+                            🔒 All information is encrypted and private. Never shared with anyone.
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            {/* Help Text */}
-            <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-blue-900">
-                    Your answers help our AI create a more accurate budget based on your lifestyle.
-                    All information is encrypted and private.
-                </p>
-            </div>
+            {/* Add custom animations */}
+            <style jsx>{`
+                @keyframes bounce-subtle {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-5px); }
+                }
+                @keyframes scale-in {
+                    0% { transform: scale(0); }
+                    50% { transform: scale(1.2); }
+                    100% { transform: scale(1); }
+                }
+                .animate-bounce-subtle {
+                    animation: bounce-subtle 2s ease-in-out infinite;
+                }
+                .animate-scale-in {
+                    animation: scale-in 0.3s ease-out;
+                }
+            `}</style>
         </div>
     )
 }

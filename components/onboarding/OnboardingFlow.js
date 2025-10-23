@@ -303,7 +303,7 @@ export default function OnboardingFlow() {
             {currentStep === 0 && <LanguageStep />}
             {currentStep === 1 && <IncomeStep profile={profile} setProfile={setProfile} />}
             {currentStep === 2 && <DemographicsStep profile={profile} setProfile={setProfile} />}
-            {currentStep === 3 && <LifestyleQuizStep profile={profile} setProfile={setProfile} onSkip={() => setCurrentStep(4)} />}
+            {currentStep === 3 && <LifestyleQuizStep profile={profile} setProfile={setProfile} onSkip={() => setCurrentStep(4)} onComplete={() => setCurrentStep(4)} />}
             {currentStep === 4 && <BudgetGenerationStep isGenerating={isGeneratingBudget} />}
             {currentStep === 5 && <ReviewStep profile={profile} budget={generatedBudget} />}
           </div>
@@ -596,14 +596,21 @@ function BudgetGenerationStep({ isGenerating }) {
 }
 
 // Lifestyle Quiz Step Component (Optional)
-function LifestyleQuizStep({ profile, setProfile, onSkip }) {
+function LifestyleQuizStep({ profile, setProfile, onSkip, onComplete }) {
   const handleQuizComplete = (answers) => {
+    // Save answers to profile state
     setProfile(prev => ({
       ...prev,
       lifestyleAnswers: answers
     }))
-    // Auto-advance to next step after completion
-    // The handleNext function will save this to the backend
+    
+    // Notify parent component that quiz is complete
+    // This will trigger the handleNext function in the main flow
+    if (onComplete) {
+      setTimeout(() => {
+        onComplete(answers)
+      }, 500)
+    }
   }
 
   const handleSkipQuiz = () => {
