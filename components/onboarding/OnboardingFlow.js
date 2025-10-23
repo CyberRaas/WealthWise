@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import LanguageSelector from '@/components/ui/LanguageSelector'
+import DetailedBudgetReport from '@/components/budget/DetailedBudgetReport'
 import {
   ArrowRight,
   ArrowLeft,
@@ -599,74 +600,12 @@ function ReviewStep({ profile, budget }) {
   }
 
   return (
-    <div className="space-y-5">
-      {/* Success Icon */}
-      <div className="flex items-center justify-center mb-2">
-        <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
-          <CheckCircle className="w-5 h-5 text-emerald-600" />
-        </div>
-      </div>
+    <div>
+      {/* Use new detailed budget report component */}
+      <DetailedBudgetReport budget={budget} profile={profile} />
 
-      {/* Budget Overview */}
-      <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-        <div className="grid grid-cols-2 gap-3 text-center">
-          <div>
-            <p className="text-[11px] text-slate-600 mb-0.5">Total Budget</p>
-            <p className="text-lg font-bold text-slate-900">{formatCurrency(budget.totalBudget)}</p>
-          </div>
-          <div>
-            <p className="text-[11px] text-slate-600 mb-0.5">Monthly Savings</p>
-            <p className="text-lg font-bold text-emerald-600">
-              {formatCurrency(budget.categories?.savings?.amount || 0)}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Category Breakdown */}
-      <div>
-        <h3 className="text-xs font-semibold text-slate-900 mb-2">Budget Breakdown</h3>
-        <div className="space-y-1.5">
-          {budget.categories && Object.entries(budget.categories).slice(0, 5).map(([key, category]) => (
-            <div key={key} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-              <div className="flex items-center gap-2">
-                <span className="text-base">{category.emoji}</span>
-                <div>
-                  <p className="text-xs font-medium text-slate-900">{category.englishName}</p>
-                  <p className="text-[10px] text-slate-500">{category.percentage}%</p>
-                </div>
-              </div>
-              <p className="text-xs font-semibold text-slate-900">{formatCurrency(category.amount)}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Profile Summary */}
-      <div className="bg-slate-50 rounded-xl p-3 border border-slate-200">
-        <h3 className="text-xs font-semibold text-slate-900 mb-2">Your Profile</h3>
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <div>
-            <span className="text-slate-500">Income:</span>
-            <span className="ml-1.5 font-medium text-slate-900">{formatCurrency(profile.monthlyIncome)}</span>
-          </div>
-          <div>
-            <span className="text-slate-500">City:</span>
-            <span className="ml-1.5 font-medium text-slate-900">{profile.city}</span>
-          </div>
-          <div>
-            <span className="text-slate-500">Family:</span>
-            <span className="ml-1.5 font-medium text-slate-900">{profile.familySize} members</span>
-          </div>
-          <div>
-            <span className="text-slate-500">Age:</span>
-            <span className="ml-1.5 font-medium text-slate-900">{profile.age} years</span>
-          </div>
-        </div>
-      </div>
-
-      <p className="text-center text-[11px] text-slate-500 pt-1">
-        Click &apos;Complete Setup&apos; to start managing your finances
+      <p className="text-center text-sm text-slate-500 pt-4 pb-2">
+        Click &apos;Complete Setup&apos; below to start managing your finances
       </p>
     </div>
   )
