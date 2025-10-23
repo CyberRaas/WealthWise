@@ -13,6 +13,7 @@ import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import LanguageSelector from '@/components/ui/LanguageSelector'
 import DetailedBudgetReport from '@/components/budget/DetailedBudgetReport'
+import LifestyleQuiz from '@/components/onboarding/LifestyleQuiz'
 import {
   ArrowRight,
   ArrowLeft,
@@ -47,6 +48,7 @@ const ONBOARDING_STEPS = [
   { key: 'language', title: 'Language', shortTitle: 'Language', icon: '🌐' },
   { key: 'income', title: 'Income Details', shortTitle: 'Income', icon: '💰' },
   { key: 'demographics', title: 'Personal Info', shortTitle: 'Personal', icon: '👤' },
+  { key: 'lifestyle_quiz', title: 'Lifestyle Insights (Optional)', shortTitle: 'Lifestyle', icon: '✨' },
   { key: 'budget_generation', title: 'AI Budget', shortTitle: 'Budget', icon: '🤖' },
   { key: 'review', title: 'Review', shortTitle: 'Review', icon: '✓' }
 ]
@@ -69,7 +71,8 @@ export default function OnboardingFlow() {
     budgetPreferences: {
       language: 'hinglish',
       notifications: true
-    }
+    },
+    lifestyleAnswers: {} // Store quiz answers
   })
   const [generatedBudget, setGeneratedBudget] = useState(null)
   const [isGeneratingBudget, setIsGeneratingBudget] = useState(false)
@@ -206,10 +209,21 @@ export default function OnboardingFlow() {
         }
         break
 
+      case 'lifestyle_quiz':
+        // Quiz is optional, always allow progression
+        // Answers are already saved in profile.lifestyleAnswers
+        const lifestyleSuccess = await updateProfile('lifestyle_quiz', {
+          lifestyleAnswers: profile.lifestyleAnswers || {}
+        })
+        if (lifestyleSuccess) {
+          setCurrentStep(4)
+        }
+        break
+
       case 'budget_generation':
         const budgetSuccess = await generateBudget()
         if (budgetSuccess) {
-          setCurrentStep(4)
+          setCurrentStep(5)
         }
         break
 
@@ -276,8 +290,9 @@ export default function OnboardingFlow() {
               {currentStep === 0 && "Choose your preferred language"}
               {currentStep === 1 && "Tell us about your earnings"}
               {currentStep === 2 && "Help us personalize your experience"}
-              {currentStep === 3 && "Let AI create your personalized budget"}
-              {currentStep === 4 && "Review and finalize your setup"}
+              {currentStep === 3 && "Answer 20 quick questions for better recommendations (Optional)"}
+              {currentStep === 4 && "Let AI create your personalized budget"}
+              {currentStep === 5 && "Review and finalize your setup"}
             </p>
           </div>
         </div>
@@ -288,8 +303,9 @@ export default function OnboardingFlow() {
             {currentStep === 0 && <LanguageStep />}
             {currentStep === 1 && <IncomeStep profile={profile} setProfile={setProfile} />}
             {currentStep === 2 && <DemographicsStep profile={profile} setProfile={setProfile} />}
-            {currentStep === 3 && <BudgetGenerationStep isGenerating={isGeneratingBudget} />}
-            {currentStep === 4 && <ReviewStep profile={profile} budget={generatedBudget} />}
+            {currentStep === 3 && <LifestyleQuizStep profile={profile} setProfile={setProfile} onSkip={() => setCurrentStep(4)} />}
+            {currentStep === 4 && <BudgetGenerationStep isGenerating={isGeneratingBudget} />}
+            {currentStep === 5 && <ReviewStep profile={profile} budget={generatedBudget} />}
           </div>
         </div>
 
@@ -576,6 +592,31 @@ function BudgetGenerationStep({ isGenerating }) {
         </div>
       </div>
     </div>
+  )
+}
+
+// Lifestyle Quiz Step Component (Optional)
+function LifestyleQuizStep({ profile, setProfile, onSkip }) {
+  const handleQuizComplete = (answers) => {
+    setProfile(prev => ({
+      ...prev,
+      lifestyleAnswers: answers
+    }))
+    // Auto-advance to next step after completion
+    // The handleNext function will save this to the backend
+  }
+
+  const handleSkipQuiz = () => {
+    // Skip quiz - proceed to budget generation
+    onSkip()
+  }
+
+  return (
+    <LifestyleQuiz
+      onComplete={handleQuizComplete}
+      onSkip={handleSkipQuiz}
+      initialAnswers={profile.lifestyleAnswers || {}}
+    />
   )
 }
 
