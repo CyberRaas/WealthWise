@@ -525,19 +525,17 @@ export default function LifestyleQuiz({ onComplete, onSkip, initialAnswers = {} 
                                 <button
                                     key={option.value}
                                     onClick={() => handleAnswer(option.value)}
-                                    className={`group w-full text-left p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] ${
-                                        isSelected
+                                    className={`group w-full text-left p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] ${isSelected
                                             ? 'border-emerald-500 bg-white shadow-lg ring-2 ring-emerald-200'
                                             : 'border-slate-200 bg-white hover:border-emerald-400 hover:shadow-md'
-                                    }`}
+                                        }`}
                                     style={{
                                         animationDelay: `${index * 50}ms`
                                     }}
                                 >
                                     <div className="flex items-center justify-between gap-3">
-                                        <span className={`text-sm sm:text-base font-medium transition-colors ${
-                                            isSelected ? 'text-emerald-900' : 'text-slate-700 group-hover:text-slate-900'
-                                        }`}>
+                                        <span className={`text-sm sm:text-base font-medium transition-colors ${isSelected ? 'text-emerald-900' : 'text-slate-700 group-hover:text-slate-900'
+                                            }`}>
                                             {option.label}
                                         </span>
                                         {isSelected && (

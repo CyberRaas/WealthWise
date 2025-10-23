@@ -661,8 +661,8 @@ Support: support@mywealthwise.tech
                                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 mb-1">
                                                 <h4 className="text-sm font-bold text-slate-900">{rec.type}</h4>
                                                 <span className={`text-xs px-2 py-1 rounded-full font-semibold w-fit ${rec.priority === 'Critical' ? 'bg-red-100 text-red-700' :
-                                                        rec.priority === 'High' ? 'bg-amber-100 text-amber-700' :
-                                                            'bg-blue-100 text-blue-700'
+                                                    rec.priority === 'High' ? 'bg-amber-100 text-amber-700' :
+                                                        'bg-blue-100 text-blue-700'
                                                     }`}>
                                                     {rec.priority}
                                                 </span>

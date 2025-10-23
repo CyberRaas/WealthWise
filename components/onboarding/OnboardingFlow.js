@@ -603,7 +603,7 @@ function LifestyleQuizStep({ profile, setProfile, onSkip, onComplete }) {
       ...prev,
       lifestyleAnswers: answers
     }))
-    
+
     // Notify parent component that quiz is complete
     // This will trigger the handleNext function in the main flow
     if (onComplete) {
