@@ -175,13 +175,13 @@
 // }
 
 
-
+// layout.js
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import ClientProviders from '@/components/providers/ClientProviders'
 import PWARegister from '@/components/PWARegister'
 import PWAInstallPrompt from '@/components/PWAInstallPrompt'
-// import OmnidimWidget from '@/components/coach/OmnidimWidget'
+import OmnidimAuthWidget from '@/components/OmnidimAuthWidget'
 
 
 // Poppins font - clean, modern, highly readable for financial apps
@@ -312,10 +312,6 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
 
-        {/* ✅ Omnidimension Voice Widget Script */}
-        <script id="omnidimension-web-widget" async src="https://backend.omnidim.io/web_widget.js?secret_key=e5f0a6c277c4291a7e14c6262e59f650" ></script>
-
-
         {/* Structured Data for SEO */}
         <script
           type="application/ld+json"
@@ -358,12 +354,10 @@ export default function RootLayout({ children }) {
         <ClientProviders>
           {children}
           <PWAInstallPrompt />
-          {/* <OmnidimWidget /> */}
+          <OmnidimAuthWidget />
         </ClientProviders>
       </body>
     </html>
   );
 }
-
-
 
