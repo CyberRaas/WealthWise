@@ -65,7 +65,7 @@ export default function OmnidimAuthWidget() {
             if (widgetElement) {
                 const style = document.createElement('style')
                 style.id = 'omnidim-responsive-fix'
-                
+
                 // Remove existing style if present
                 const existingStyle = document.getElementById('omnidim-responsive-fix')
                 if (existingStyle) {
@@ -149,7 +149,7 @@ export default function OmnidimAuthWidget() {
                         }
                     }
                 `
-                
+
                 document.head.appendChild(style)
                 console.log('📱 Responsive styles applied to OmniDim widget')
             }
@@ -178,7 +178,7 @@ export default function OmnidimAuthWidget() {
                 script.onload = () => {
                     setScriptLoaded(true)
                     console.log('✅ OmniDim Voice Widget loaded for authenticated user')
-                    
+
                     // Apply responsive positioning after widget loads
                     applyResponsiveStyles()
                 }
@@ -191,7 +191,7 @@ export default function OmnidimAuthWidget() {
                 applyResponsiveStyles()
             }
         }
-        
+
         // Apply responsive styles to prevent overlap with bottom navigation
         if (scriptLoaded && !isExcludedPage) {
             applyResponsiveStyles()
@@ -224,7 +224,7 @@ export default function OmnidimAuthWidget() {
                     if (widgetContainer) {
                         widgetContainer.remove()
                     }
-                    
+
                     // Remove responsive styles
                     const responsiveStyle = document.getElementById('omnidim-responsive-fix')
                     if (responsiveStyle) {
