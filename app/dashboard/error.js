@@ -48,7 +48,7 @@ export default function Error({ error, reset }) {
           >
             Try Again
           </button>
-          <Link 
+          <Link
             href="/"
             className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-semibold transition-all duration-300"
           >

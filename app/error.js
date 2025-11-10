@@ -30,7 +30,7 @@ export default function GlobalError({ error, reset }) {
               >
                 Try Again
               </button>
-              <Link 
+              <Link
                 href="/"
                 className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-8 py-4 rounded-xl font-semibold transition-all duration-300 text-lg text-center"
               >
