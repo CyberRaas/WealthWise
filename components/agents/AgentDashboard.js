@@ -70,6 +70,7 @@ export function AgentDashboard() {
             eventBus.off(EVENTS.AGENT_RECOMMENDATION, agentRecommendationListener)
             clearInterval(monitoringInterval)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const fetchAndAnalyzeUserData = async () => {
