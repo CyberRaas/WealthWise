@@ -3,7 +3,7 @@ import "./globals.css";
 import ClientProviders from '@/components/providers/ClientProviders'
 import PWARegister from '@/components/PWARegister'
 import PWAInstallPrompt from '@/components/PWAInstallPrompt'
-import  VAPIVoiceAgent  from "@/components/vapi";
+// import  VAPIVoiceAgent  from "@/components/vapi";
 // import { VAPIVoiceAgent } from '@/components/vapi'
 
 
@@ -177,7 +177,7 @@ export default function RootLayout({ children }) {
         <ClientProviders>
           {children}
           <PWAInstallPrompt />
-          <VAPIVoiceAgent position="bottom-right" showTranscript={true} />
+          {/* <VAPIVoiceAgent position="bottom-right" showTranscript={true} /> */}
         </ClientProviders>
       </body>
     </html>
