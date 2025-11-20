@@ -3,7 +3,8 @@ import "./globals.css";
 import ClientProviders from '@/components/providers/ClientProviders'
 import PWARegister from '@/components/PWARegister'
 import PWAInstallPrompt from '@/components/PWAInstallPrompt'
-import OmnidimAuthWidget from '@/components/OmnidimAuthWidget'
+import  VAPIVoiceAgent  from "@/components/vapi";
+// import { VAPIVoiceAgent } from '@/components/vapi'
 
 
 // Poppins font - clean, modern, highly readable for financial apps
@@ -176,7 +177,7 @@ export default function RootLayout({ children }) {
         <ClientProviders>
           {children}
           <PWAInstallPrompt />
-          <OmnidimAuthWidget />
+          <VAPIVoiceAgent position="bottom-right" showTranscript={true} />
         </ClientProviders>
       </body>
     </html>

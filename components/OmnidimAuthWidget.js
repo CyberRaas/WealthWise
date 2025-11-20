@@ -169,8 +169,10 @@ export default function OmnidimAuthWidget() {
                 // Create and inject the script
                 const script = document.createElement('script')
                 script.id = 'omnidimension-web-widget'
-                script.src = 'https://backend.omnidim.io/web_widget.js?secret_key=e5f0a6c277c4291a7e14c6262e59f650'
+                script.src = 'https://backend.omnidim.io/web_widget.js?secret_key=0ed29bf08c262a06ac0aed7394bedf18'
                 script.async = true
+
+                // <script script id = "omnidimension-web-widget" async src = "https://omnidim.io/web_widget.js?secret_key=0ed29bf08c262a06ac0aed7394bedf18" ></script >
 
                 // Add script to document head
                 document.head.appendChild(script)
