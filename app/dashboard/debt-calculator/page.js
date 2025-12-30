@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@/lib/i18n'
 import DashboardLayout from '@/components/layout/DashboardLayout'
-import LanguageSelector from '@/components/ui/LanguageSelector'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { 
+import { Badge } from '@/components/ui/badge'
+import {
   Calculator,
   Bot,
   Send,
@@ -16,16 +16,24 @@ import {
   PieChart,
   Lightbulb,
   User,
-  MessageCircle,
   Copy,
-  Check
+  Check,
+  Sparkles,
+  IndianRupee,
+  Clock,
+  ChevronRight
 } from 'lucide-react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts'
 import { toast } from 'react-hot-toast'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-// Enhanced EMI Calculator Component
+// Skeleton components
+function SkeletonBox({ className }) {
+  return <div className={`animate-pulse bg-slate-200 rounded ${className}`} />
+}
+
+// EMI Calculator Component
 function EMICalculator({ onCalculate }) {
   const { t } = useTranslation()
   const [formData, setFormData] = useState({
@@ -35,44 +43,43 @@ function EMICalculator({ onCalculate }) {
     durationType: 'months',
     compoundingFrequency: 'monthly'
   })
-  
   const [results, setResults] = useState(null)
   const [chartData, setChartData] = useState([])
   const [errors, setErrors] = useState({})
+  const [calculating, setCalculating] = useState(false)
 
   const validateForm = () => {
     const newErrors = {}
-    
     if (!formData.principal || parseFloat(formData.principal) <= 0) {
       newErrors.principal = t('debtCalculator.validPrincipalError')
     }
-    
     if (!formData.interestRate || parseFloat(formData.interestRate) < 0) {
       newErrors.interestRate = t('debtCalculator.validInterestError')
     }
-    
     if (!formData.duration || parseInt(formData.duration) <= 0) {
       newErrors.duration = t('debtCalculator.validDurationError')
     }
-
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const calculateEMI = () => {
+  const calculateEMI = async () => {
     if (!validateForm()) {
       toast.error(t('debtCalculator.fixFormErrors'))
       return
     }
 
+    setCalculating(true)
+
+    // Simulate calculation delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 300))
+
     const { principal, interestRate, duration, durationType } = formData
-    
     const P = parseFloat(principal)
     const annualRate = parseFloat(interestRate) / 100
     const months = durationType === 'years' ? parseInt(duration) * 12 : parseInt(duration)
     const monthlyRate = annualRate / 12
 
-    // EMI Calculation with proper compound interest
     let emi = 0
     if (monthlyRate > 0) {
       emi = P * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1)
@@ -84,292 +91,209 @@ function EMICalculator({ onCalculate }) {
     const totalInterest = totalPayable - P
 
     const calculationResults = {
-      emi: emi,
-      totalPayable: totalPayable,
-      totalInterest: totalInterest,
-      months: months,
+      emi,
+      totalPayable,
+      totalInterest,
+      months,
       principal: P,
       interestRate: parseFloat(interestRate),
-      monthlyRate: monthlyRate
+      monthlyRate
     }
 
     setResults(calculationResults)
     generateChartData(calculationResults)
     onCalculate(calculationResults)
-    toast.success('EMI calculated successfully!')
+    setCalculating(false)
+    toast.success(t('debtCalculator.emiSuccess'))
   }
 
   const generateChartData = (results) => {
     const data = []
     let remainingPrincipal = results.principal
     let cumulativeInterest = 0
-    
+
     for (let month = 1; month <= Math.min(results.months, 120); month++) {
       const interestPayment = remainingPrincipal * results.monthlyRate
       const principalPayment = results.emi - interestPayment
       remainingPrincipal = Math.max(0, remainingPrincipal - principalPayment)
       cumulativeInterest += interestPayment
-      
+
       data.push({
         month,
         remainingPrincipal: Math.round(remainingPrincipal),
-        cumulativeInterest: Math.round(cumulativeInterest),
-        principalPayment: Math.round(principalPayment),
-        interestPayment: Math.round(interestPayment)
+        cumulativeInterest: Math.round(cumulativeInterest)
       })
     }
-    
     setChartData(data)
   }
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(amount)
-  }
-
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text)
-    toast.success('Copied to clipboard!')
-  }
+  const formatCurrency = (amount) => `₹${Math.round(amount).toLocaleString('en-IN')}`
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Calculator Form */}
-      <Card className="bg-gradient-to-br from-green-50 to-blue-50 border-green-200 shadow-lg">
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center text-slate-800 text-lg sm:text-xl">
-            <Calculator className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-green-600" />
+      <Card className="border-slate-200">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-semibold text-slate-800 flex items-center gap-2">
+            <Calculator className="w-5 h-5 text-emerald-600" />
             {t('debtCalculator.title')}
           </CardTitle>
-          <p className="text-xs sm:text-sm text-slate-600">
-            {t('debtCalculator.subtitle')}
-          </p>
+          <p className="text-xs text-slate-500">{t('debtCalculator.subtitle')}</p>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Principal Amount */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-slate-700">
+        <CardContent className="space-y-4">
+          {/* Amount and Interest Row */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1.5">
                 {t('debtCalculator.loanAmount')} (₹) *
               </label>
-              <input
-                type="number"
-                value={formData.principal}
-                onChange={(e) => setFormData({...formData, principal: e.target.value})}
-                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${
-                  errors.principal ? 'border-red-500' : 'border-slate-300'
-                }`}
-                placeholder={t('debtCalculator.loanAmount')}
-                min="0"
-              />
-              {errors.principal && (
-                <p className="text-red-500 text-xs mt-1">{errors.principal}</p>
-              )}
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">₹</span>
+                <input
+                  type="number"
+                  value={formData.principal}
+                  onChange={(e) => setFormData({ ...formData, principal: e.target.value })}
+                  className={`w-full pl-7 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm ${errors.principal ? 'border-red-400' : 'border-slate-300'}`}
+                  placeholder="500000"
+                />
+              </div>
+              {errors.principal && <p className="text-red-500 text-xs mt-1">{errors.principal}</p>}
             </div>
 
-            {/* Interest Rate */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-slate-700">
-                {t('debtCalculator.interestRate')} (% {t('common.perAnnum')}) *
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1.5">
+                {t('debtCalculator.interestRate')} (%) *
               </label>
-              <input
-                type="number"
-                value={formData.interestRate}
-                onChange={(e) => setFormData({...formData, interestRate: e.target.value})}
-                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${
-                  errors.interestRate ? 'border-red-500' : 'border-slate-300'
-                }`}
-                placeholder={t('debtCalculator.interestRate')}
-                min="0"
-                max="50"
-                step="0.01"
-              />
-              {errors.interestRate && (
-                <p className="text-red-500 text-xs mt-1">{errors.interestRate}</p>
-              )}
+              <div className="relative">
+                <input
+                  type="number"
+                  value={formData.interestRate}
+                  onChange={(e) => setFormData({ ...formData, interestRate: e.target.value })}
+                  className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm ${errors.interestRate ? 'border-red-400' : 'border-slate-300'}`}
+                  placeholder="10.5"
+                  step="0.1"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">{t('common.perAnnum')}</span>
+              </div>
+              {errors.interestRate && <p className="text-red-500 text-xs mt-1">{errors.interestRate}</p>}
             </div>
           </div>
 
-          {/* Duration and Compounding Frequency Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Duration */}
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-slate-700">
+          {/* Duration Row */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1.5">
                 {t('debtCalculator.loanTerm')} *
               </label>
-              <div className="space-y-3">
+              <div className="flex gap-2">
                 <input
                   type="number"
                   value={formData.duration}
-                  onChange={(e) => setFormData({...formData, duration: e.target.value})}
-                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors ${
-                    errors.duration ? 'border-red-500' : 'border-slate-300'
-                  }`}
-                  placeholder={t('debtCalculator.enterDuration')}
+                  onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                  className={`flex-1 px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm ${errors.duration ? 'border-red-400' : 'border-slate-300'}`}
+                  placeholder="36"
                   min="1"
                 />
                 <select
                   value={formData.durationType}
-                  onChange={(e) => setFormData({...formData, durationType: e.target.value})}
-                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-colors hover:border-green-400"
+                  onChange={(e) => setFormData({ ...formData, durationType: e.target.value })}
+                  className="px-2 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-white text-sm"
                 >
                   <option value="months">{t('common.months')}</option>
                   <option value="years">{t('common.years')}</option>
                 </select>
               </div>
-              {errors.duration && (
-                <p className="text-red-500 text-xs mt-1">{errors.duration}</p>
-              )}
+              {errors.duration && <p className="text-red-500 text-xs mt-1">{errors.duration}</p>}
             </div>
 
-            {/* Compounding Frequency */}
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-slate-700">
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1.5">
                 {t('debtCalculator.compoundingFrequency')}
               </label>
-              <div className="space-y-2">
-                <select
-                  value={formData.compoundingFrequency}
-                  onChange={(e) => setFormData({...formData, compoundingFrequency: e.target.value})}
-                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white transition-colors hover:border-green-400"
-                >
-                  <option value="monthly">{t('common.monthly')}</option>
-                  <option value="quarterly">{t('common.quarterly')}</option>
-                  <option value="annually">{t('common.annually')}</option>
-                </select>
-                <p className="text-xs text-slate-500">
-                  {t('debtCalculator.compoundingDescription')}
-                </p>
-              </div>
+              <select
+                value={formData.compoundingFrequency}
+                onChange={(e) => setFormData({ ...formData, compoundingFrequency: e.target.value })}
+                className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-white text-sm"
+              >
+                <option value="monthly">{t('common.monthly')}</option>
+                <option value="quarterly">{t('common.quarterly')}</option>
+                <option value="annually">{t('common.annually')}</option>
+              </select>
             </div>
           </div>
 
-          <div className="pt-4">
-            <Button
-              onClick={calculateEMI}
-              className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 text-base sm:text-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
-            >
-              <Calculator className="w-5 h-5 mr-2" />
-              {t('debtCalculator.calculate')} EMI
-            </Button>
-          </div>
+          <Button
+            onClick={calculateEMI}
+            disabled={calculating}
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3"
+          >
+            {calculating ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                Calculating...
+              </>
+            ) : (
+              <>
+                <Calculator className="w-4 h-4 mr-2" />
+                {t('debtCalculator.calculate')} EMI
+              </>
+            )}
+          </Button>
         </CardContent>
       </Card>
 
-      {/* Results */}
+      {/* Results Cards */}
       {results && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="bg-white border-blue-200 hover:shadow-lg transition-shadow">
-            <CardContent className="p-4 sm:p-6 text-center">
-              <DollarSign className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 text-blue-600" />
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1">Monthly EMI</h3>
-              <p className="text-xl sm:text-2xl font-bold text-blue-600 mb-2">{formatCurrency(results.emi)}</p>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => copyToClipboard(results.emi.toFixed(0))}
-                className="text-xs text-slate-500 hover:text-slate-700"
-              >
-                <Copy className="w-3 h-3 mr-1" />
-                Copy
-              </Button>
+        <div className="grid grid-cols-3 gap-3">
+          <Card className="border-blue-200 bg-blue-50/50">
+            <CardContent className="p-3 text-center">
+              <IndianRupee className="w-6 h-6 mx-auto mb-1 text-blue-600" />
+              <p className="text-[10px] text-blue-600 font-medium">{t('debtCalculator.monthlyEmi')}</p>
+              <p className="text-lg font-bold text-blue-700">{formatCurrency(results.emi)}</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-green-200 hover:shadow-lg transition-shadow">
-            <CardContent className="p-4 sm:p-6 text-center">
-              <TrendingUp className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 text-green-600" />
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1">Total Payable</h3>
-              <p className="text-xl sm:text-2xl font-bold text-green-600 mb-2">{formatCurrency(results.totalPayable)}</p>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => copyToClipboard(results.totalPayable.toFixed(0))}
-                className="text-xs text-slate-500 hover:text-slate-700"
-              >
-                <Copy className="w-3 h-3 mr-1" />
-                Copy
-              </Button>
+          <Card className="border-emerald-200 bg-emerald-50/50">
+            <CardContent className="p-3 text-center">
+              <TrendingUp className="w-6 h-6 mx-auto mb-1 text-emerald-600" />
+              <p className="text-[10px] text-emerald-600 font-medium">{t('debtCalculator.totalPayable')}</p>
+              <p className="text-lg font-bold text-emerald-700">{formatCurrency(results.totalPayable)}</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-red-200 hover:shadow-lg transition-shadow">
-            <CardContent className="p-4 sm:p-6 text-center">
-              <PieChart className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 text-red-600" />
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1">Total Interest</h3>
-              <p className="text-xl sm:text-2xl font-bold text-red-600 mb-2">{formatCurrency(results.totalInterest)}</p>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => copyToClipboard(results.totalInterest.toFixed(0))}
-                className="text-xs text-slate-500 hover:text-slate-700"
-              >
-                <Copy className="w-3 h-3 mr-1" />
-                Copy
-              </Button>
+          <Card className="border-red-200 bg-red-50/50">
+            <CardContent className="p-3 text-center">
+              <PieChart className="w-6 h-6 mx-auto mb-1 text-red-600" />
+              <p className="text-[10px] text-red-600 font-medium">{t('debtCalculator.totalInterest')}</p>
+              <p className="text-lg font-bold text-red-700">{formatCurrency(results.totalInterest)}</p>
             </CardContent>
           </Card>
         </div>
       )}
 
-      {/* Repayment Timeline Chart */}
+      {/* Chart */}
       {chartData.length > 0 && (
-        <Card className="bg-white">
-          <CardHeader>
-            <CardTitle className="flex items-center text-slate-800 text-base sm:text-lg">
-              <Calendar className="w-5 h-5 mr-2 text-purple-600" />
-              Repayment Timeline
+        <Card className="border-slate-200">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-purple-600" />
+              {t('debtCalculator.repaymentTimeline')}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64 sm:h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis 
-                    dataKey="month" 
-                    stroke="#64748b"
-                    fontSize={12}
-                    tickLine={false}
-                  />
-                  <YAxis 
-                    stroke="#64748b"
-                    fontSize={12}
-                    tickLine={false}
-                    tickFormatter={(value) => `₹${(value/1000).toFixed(0)}K`}
-                  />
-                  <Tooltip 
-                    formatter={(value, name) => [formatCurrency(value), name]}
-                    labelStyle={{ color: '#1f2937' }}
-                    contentStyle={{ 
-                      backgroundColor: 'white', 
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '8px',
-                      fontSize: '12px'
-                    }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="remainingPrincipal" 
-                    stroke="#3b82f6" 
-                    strokeWidth={2}
-                    name="Remaining Principal"
-                    dot={false}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="cumulativeInterest" 
-                    stroke="#ef4444" 
-                    strokeWidth={2}
-                    name="Cumulative Interest"
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="month" fontSize={10} stroke="#94a3b8" tickLine={false} />
+                <YAxis fontSize={10} stroke="#94a3b8" tickLine={false} tickFormatter={(v) => `₹${(v/1000).toFixed(0)}k`} />
+                <Tooltip
+                  formatter={(value) => [formatCurrency(value)]}
+                  contentStyle={{ backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '12px' }}
+                />
+                <Area type="monotone" dataKey="remainingPrincipal" stroke="#3b82f6" fill="#93c5fd" fillOpacity={0.5} name={t('debtCalculator.remainingPrincipal')} />
+                <Area type="monotone" dataKey="cumulativeInterest" stroke="#ef4444" fill="#fca5a5" fillOpacity={0.5} name={t('debtCalculator.cumulativeInterest')} />
+              </AreaChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
       )}
@@ -377,19 +301,19 @@ function EMICalculator({ onCalculate }) {
   )
 }
 
-function LoanAdvisorChat({ calculationResults, onInsightGenerated }) {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      type: 'bot',
-      content: `👋 **Hi! I'm your AI Loan Advisor.**
+// AI Loan Advisor Chat
+function LoanAdvisorChat({ calculationResults }) {
+  const { t } = useTranslation()
+  const [messages, setMessages] = useState([{
+    id: 1,
+    type: 'bot',
+    content: `**Hi! I'm your AI Loan Advisor.**
 
 I can help you with:
-• **EMI calculations** and comparisons
-• **Debt repayment strategies** (snowball vs avalanche)
-• **Bank recommendations** with current rates
-• **Credit score** improvement tips
-• **Loan optimization** strategies
+- **EMI calculations** and comparisons
+- **Debt repayment strategies** (snowball vs avalanche)
+- **Bank recommendations** with current rates
+- **Credit score** improvement tips
 
 **Try asking:**
 - "Calculate EMI for ₹5L at 10% for 2 years"
@@ -397,27 +321,19 @@ I can help you with:
 - "Best banks for personal loans?"
 
 What would you like to know?`,
-      timestamp: new Date()
-    }
-  ])
+    timestamp: new Date()
+  }])
   const [newMessage, setNewMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [copiedId, setCopiedId] = useState(null)
   const messagesEndRef = useRef(null)
-  const chatContainerRef = useRef(null)
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
 
   useEffect(() => {
-    scrollToBottom()
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // Enhanced AI that can use calculation context
   const getContextualPrompt = (userMessage) => {
     let prompt = userMessage
-    
     if (calculationResults) {
       prompt += `\n\nContext: User just calculated EMI with these details:
       - Principal: ₹${calculationResults.principal.toLocaleString()}
@@ -425,10 +341,9 @@ What would you like to know?`,
       - Duration: ${calculationResults.months} months
       - Monthly EMI: ₹${calculationResults.emi.toFixed(0)}
       - Total Interest: ₹${calculationResults.totalInterest.toFixed(0)}
-      
+
       Please provide advice relevant to these calculations.`
     }
-    
     return prompt
   }
 
@@ -447,47 +362,34 @@ What would you like to know?`,
     setIsLoading(true)
 
     try {
-      const contextualMessage = getContextualPrompt(userMessage.content)
-      
       const response = await fetch('/api/loan-advisor', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-          message: contextualMessage,
-          calculationData: calculationResults 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: getContextualPrompt(userMessage.content),
+          calculationData: calculationResults
         })
       })
 
       const data = await response.json()
 
       if (response.ok) {
-        const botMessage = {
+        setMessages(prev => [...prev, {
           id: Date.now() + 1,
           type: 'bot',
           content: data.response,
           timestamp: new Date()
-        }
-        setMessages(prev => [...prev, botMessage])
-        
-        // Generate insight for the insights card
-        if (data.response.includes('save') || data.response.includes('reduce') || data.response.includes('strategy')) {
-          onInsightGenerated(data.response)
-        }
+        }])
       } else {
-        throw new Error(data.error || 'Failed to get response')
+        throw new Error(data.error)
       }
     } catch (error) {
-      console.error('Chat error:', error)
-      const errorMessage = {
+      setMessages(prev => [...prev, {
         id: Date.now() + 1,
         type: 'bot',
-        content: '🚫 Sorry, I encountered an error. Please try again or ask a different question.',
+        content: 'Sorry, I encountered an error. Please try again.',
         timestamp: new Date()
-      }
-      setMessages(prev => [...prev, errorMessage])
-      toast.error('Failed to get AI response')
+      }])
     } finally {
       setIsLoading(false)
     }
@@ -500,483 +402,294 @@ What would you like to know?`,
     }
   }
 
-  const copyMessage = async (content, messageId) => {
-    try {
-      await navigator.clipboard.writeText(content)
-      setCopiedId(messageId)
-      toast.success('Message copied!')
-      setTimeout(() => setCopiedId(null), 2000)
-    } catch (error) {
-      toast.error('Failed to copy message')
-    }
+  const copyMessage = async (content, id) => {
+    await navigator.clipboard.writeText(content)
+    setCopiedId(id)
+    toast.success(t('debtCalculator.copied'))
+    setTimeout(() => setCopiedId(null), 2000)
   }
 
-  const formatTime = (date) => {
-    return new Date(date).toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    })
-  }
-
-  // Quick action buttons for common queries
   const quickActions = [
     "Calculate EMI for ₹10L at 12% for 5 years",
-    "Best repayment strategy for multiple loans?",
-    "How to improve my credit score?",
-    "Which banks offer lowest interest rates?"
+    "Best repayment strategy?",
+    "How to improve credit score?",
+    "Which banks offer lowest rates?"
   ]
 
-  const handleQuickAction = (action) => {
-    setNewMessage(action)
-  }
-
   return (
-    <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200 h-full flex flex-col">
-      <CardHeader className="pb-4 border-b border-blue-100">
-        <CardTitle className="flex items-center text-slate-800 text-lg sm:text-xl">
-          <Bot className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" />
-          AI Loan Advisor
+    <Card className="border-slate-200 h-full flex flex-col">
+      <CardHeader className="pb-3 border-b">
+        <CardTitle className="text-base font-semibold text-slate-800 flex items-center gap-2">
+          <Bot className="w-5 h-5 text-blue-600" />
+          {t('debtCalculator.aiAdvisor')}
         </CardTitle>
-        <p className="text-xs sm:text-sm text-slate-600">
-          Get personalized loan advice and strategies
-        </p>
+        <p className="text-xs text-slate-500">{t('debtCalculator.aiAdvisorDesc')}</p>
       </CardHeader>
-      
-      <CardContent className="flex-1 flex flex-col p-4 min-h-0">
+
+      <CardContent className="flex-1 flex flex-col p-0 min-h-0">
         {/* Quick Actions */}
         {messages.length <= 1 && (
-          <div className="mb-4">
-            <p className="text-xs text-slate-500 mb-2">Quick questions:</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {quickActions.map((action, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleQuickAction(action)}
-                  className="text-xs text-left h-auto p-2 border-blue-200 hover:bg-blue-50"
+          <div className="p-3 border-b bg-slate-50">
+            <p className="text-xs text-slate-500 mb-2">{t('debtCalculator.quickQuestions')}:</p>
+            <div className="flex flex-wrap gap-1.5">
+              {quickActions.map((action, i) => (
+                <button
+                  key={i}
+                  onClick={() => setNewMessage(action)}
+                  className="text-xs px-2 py-1 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 hover:border-blue-200 transition-colors"
                 >
                   {action}
-                </Button>
+                </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* Chat Messages */}
-        <div 
-          ref={chatContainerRef}
-          className="flex-1 space-y-4 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-blue-50"
-          style={{ maxHeight: 'calc(100vh - 400px)', minHeight: '300px' }}
-        >
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-3 space-y-3" style={{ maxHeight: '400px' }}>
           {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`flex max-w-[85%] sm:max-w-[80%] ${
-                message.type === 'user' ? 'flex-row-reverse' : 'flex-row'
-              } items-start gap-2 sm:gap-3`}>
-                {/* Avatar */}
-                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  message.type === 'user' 
-                    ? 'bg-green-500 text-white' 
-                    : 'bg-blue-500 text-white'
-                }`}>
-                  {message.type === 'user' ? (
-                    <User className="w-3 h-3 sm:w-4 sm:h-4" />
-                  ) : (
-                    <Bot className="w-3 h-3 sm:w-4 sm:h-4" />
-                  )}
+            <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`flex max-w-[85%] ${message.type === 'user' ? 'flex-row-reverse' : ''} items-start gap-2`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${message.type === 'user' ? 'bg-emerald-500' : 'bg-blue-500'}`}>
+                  {message.type === 'user' ? <User className="w-3.5 h-3.5 text-white" /> : <Bot className="w-3.5 h-3.5 text-white" />}
                 </div>
-                
-                {/* Message Bubble */}
-                <div className={`group rounded-2xl px-3 py-2 sm:px-4 sm:py-3 ${
-                  message.type === 'user'
-                    ? 'bg-green-500 text-white rounded-br-md'
-                    : 'bg-white text-slate-800 rounded-bl-md border shadow-sm'
-                }`}>
-                  <div className="prose prose-sm max-w-none">
-                    {message.type === 'bot' ? (
+
+                <div className={`group rounded-xl px-3 py-2 ${message.type === 'user' ? 'bg-emerald-500 text-white rounded-br-sm' : 'bg-white border border-slate-200 rounded-bl-sm'}`}>
+                  {message.type === 'bot' ? (
+                    <div className="prose prose-sm max-w-none">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                          p: ({ children }) => <p className="mb-2 last:mb-0 text-xs sm:text-sm leading-relaxed">{children}</p>,
-                          ul: ({ children }) => <ul className="mb-2 last:mb-0 text-xs sm:text-sm space-y-1">{children}</ul>,
-                          ol: ({ children }) => <ol className="mb-2 last:mb-0 text-xs sm:text-sm space-y-1">{children}</ol>,
-                          li: ({ children }) => <li className="ml-4">{children}</li>,
-                          strong: ({ children }) => <strong className="font-semibold text-slate-900">{children}</strong>,
-                          h1: ({ children }) => <h1 className="text-sm sm:text-base font-bold mb-2 text-slate-900">{children}</h1>,
-                          h2: ({ children }) => <h2 className="text-sm font-semibold mb-2 text-slate-900">{children}</h2>,
-                          h3: ({ children }) => <h3 className="text-xs sm:text-sm font-semibold mb-1 text-slate-900">{children}</h3>,
-                          code: ({ children }) => <code className="bg-slate-100 px-1 py-0.5 rounded text-xs font-mono">{children}</code>,
-                          blockquote: ({ children }) => <blockquote className="border-l-2 border-blue-500 pl-3 italic text-slate-700">{children}</blockquote>
+                          p: ({ children }) => <p className="mb-1.5 last:mb-0 text-xs leading-relaxed text-slate-700">{children}</p>,
+                          ul: ({ children }) => <ul className="mb-1.5 text-xs space-y-0.5 text-slate-700">{children}</ul>,
+                          li: ({ children }) => <li className="ml-3">{children}</li>,
+                          strong: ({ children }) => <strong className="font-semibold text-slate-800">{children}</strong>,
+                          h2: ({ children }) => <h2 className="text-sm font-semibold mb-1.5 text-slate-800">{children}</h2>,
+                          h3: ({ children }) => <h3 className="text-xs font-semibold mb-1 text-slate-800">{children}</h3>,
+                          table: ({ children }) => <table className="text-xs border-collapse my-2">{children}</table>,
+                          th: ({ children }) => <th className="border border-slate-200 px-2 py-1 bg-slate-50 text-left font-medium">{children}</th>,
+                          td: ({ children }) => <td className="border border-slate-200 px-2 py-1">{children}</td>
                         }}
                       >
                         {message.content}
                       </ReactMarkdown>
-                    ) : (
-                      <div className="text-xs sm:text-sm whitespace-pre-wrap">
-                        {message.content}
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Message Footer */}
-                  <div className={`flex items-center justify-between mt-2 ${
-                    message.type === 'user' ? 'text-green-100' : 'text-slate-500'
-                  }`}>
-                    <span className="text-xs">
-                      {formatTime(message.timestamp)}
-                    </span>
-                    
-                    {/* Copy Button */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
+                    </div>
+                  ) : (
+                    <p className="text-xs">{message.content}</p>
+                  )}
+
+                  <div className={`flex items-center justify-between mt-1.5 ${message.type === 'user' ? 'text-emerald-100' : 'text-slate-400'}`}>
+                    <span className="text-[10px]">{new Date(message.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                    <button
                       onClick={() => copyMessage(message.content, message.id)}
-                      className={`h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity ${
-                        message.type === 'user' 
-                          ? 'hover:bg-green-600 text-green-100' 
-                          : 'hover:bg-slate-100 text-slate-400'
-                      }`}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5"
                     >
-                      {copiedId === message.id ? (
-                        <Check className="w-3 h-3" />
-                      ) : (
-                        <Copy className="w-3 h-3" />
-                      )}
-                    </Button>
+                      {copiedId === message.id ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           ))}
-          
-          {/* Loading Indicator */}
+
           {isLoading && (
             <div className="flex justify-start">
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                  <Bot className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+              <div className="flex items-start gap-2">
+                <div className="w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center">
+                  <Bot className="w-3.5 h-3.5 text-white" />
                 </div>
-                <div className="bg-white rounded-2xl rounded-bl-md px-4 py-3 border shadow-sm">
+                <div className="bg-white border border-slate-200 rounded-xl rounded-bl-sm px-3 py-2">
                   <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" />
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
                   </div>
                 </div>
               </div>
             </div>
           )}
-          
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
-        <div className="mt-4 pt-4 border-t border-blue-100">
+        {/* Input */}
+        <div className="p-3 border-t bg-slate-50">
           <div className="flex gap-2">
-            <div className="flex-1 relative">
-              <textarea
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Ask about loans, EMI, strategies..."
-                className="w-full p-3 pr-12 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-colors text-sm"
-                disabled={isLoading}
-                rows={1}
-                style={{ minHeight: '44px', maxHeight: '120px' }}
-                onInput={(e) => {
-                  e.target.style.height = 'auto'
-                  e.target.style.height = e.target.scrollHeight + 'px'
-                }}
-              />
-              {newMessage.trim() && (
-                <Button
-                  onClick={sendMessage}
-                  disabled={isLoading}
-                  className="absolute right-2 top-2 h-8 w-8 p-0 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
-                >
-                  <Send className="w-4 h-4" />
-                </Button>
-              )}
-            </div>
-            
-            {!newMessage.trim() && (
-              <Button
-                onClick={sendMessage}
-                disabled={isLoading}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 h-11"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
-            )}
+            <input
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={t('debtCalculator.askAboutLoans')}
+              className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              disabled={isLoading}
+            />
+            <Button
+              onClick={sendMessage}
+              disabled={isLoading || !newMessage.trim()}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-3"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
           </div>
-          
-          <p className="text-xs text-slate-500 mt-2">
-            Press Enter to send, Shift+Enter for new line
-          </p>
         </div>
       </CardContent>
     </Card>
   )
 }
 
-// Enhanced Smart Insights Card
-function SmartInsightsCard({ insights, calculationResults }) {
-  const [copiedInsight, setCopiedInsight] = useState(null)
+// Smart Insights Component
+function SmartInsights({ calculationResults }) {
+  const { t } = useTranslation()
 
   const generateInsights = () => {
     if (!calculationResults) return []
 
-    const insights = []
     const { emi, totalInterest, principal, months, interestRate } = calculationResults
+    const insights = []
 
     // Extra payment insight
-    const extraPayment = Math.round(emi * 0.1) // 10% extra
-    const savedMonths = Math.floor(months * 0.15) // Approximate savings
-    const savedInterest = Math.round(totalInterest * 0.12) // Approximate interest savings
+    const extraPayment = Math.round(emi * 0.1)
+    const savedMonths = Math.floor(months * 0.15)
+    const savedInterest = Math.round(totalInterest * 0.12)
     insights.push({
       type: 'tip',
       icon: '💡',
       title: 'Extra Payment Strategy',
-      content: `Paying an extra ₹${extraPayment.toLocaleString()}/month could save you ${savedMonths} months and approximately ₹${savedInterest.toLocaleString()} in interest.`
+      content: `Pay extra ₹${extraPayment.toLocaleString()}/month to save ${savedMonths} months and ~₹${savedInterest.toLocaleString()} interest.`
     })
 
-    // Interest comparison
+    // Interest percentage insight
     const interestPercentage = ((totalInterest / principal) * 100).toFixed(1)
     if (interestPercentage > 50) {
       insights.push({
         type: 'warning',
         icon: '⚠️',
-        title: 'High Interest Burden',
-        content: `Your total interest (${interestPercentage}% of principal) is quite high. Consider shorter tenure or prepayment to reduce costs.`
+        title: 'High Interest',
+        content: `Total interest is ${interestPercentage}% of principal. Consider shorter tenure or prepayment.`
       })
     } else {
       insights.push({
         type: 'success',
         icon: '✅',
         title: 'Reasonable Interest',
-        content: `Your interest burden (${interestPercentage}% of principal) is reasonable for this loan type.`
+        content: `Interest burden (${interestPercentage}% of principal) is reasonable.`
       })
     }
 
-    // EMI-to-income ratio advice
+    // EMI guideline
     insights.push({
       type: 'info',
       icon: '📊',
       title: 'EMI Guidelines',
-      content: `Ensure your total EMIs don't exceed 40% of your monthly income. Current EMI: ₹${emi.toFixed(0)}/month.`
+      content: `Keep total EMIs under 40% of monthly income. Current EMI: ₹${emi.toFixed(0)}/month.`
     })
-
-    // Prepayment strategy
-    if (months > 24) {
-      const prepaymentAmount = Math.round(principal * 0.1)
-      const newMonths = Math.floor(months * 0.8)
-      insights.push({
-        type: 'strategy',
-        icon: '🎯',
-        title: 'Prepayment Option',
-        content: `A prepayment of ₹${prepaymentAmount.toLocaleString()} could reduce your tenure by approximately ${months - newMonths} months.`
-      })
-    }
 
     return insights
   }
 
-  const copyInsight = async (content, index) => {
-    try {
-      await navigator.clipboard.writeText(content)
-      setCopiedInsight(index)
-      toast.success('Insight copied!')
-      setTimeout(() => setCopiedInsight(null), 2000)
-    } catch (error) {
-      toast.error('Failed to copy insight')
-    }
-  }
+  const allInsights = generateInsights()
 
-  const getInsightColor = (type) => {
+  const getInsightStyle = (type) => {
     switch (type) {
-      case 'success': return 'border-green-200 bg-green-50'
+      case 'success': return 'border-emerald-200 bg-emerald-50'
       case 'warning': return 'border-yellow-200 bg-yellow-50'
       case 'tip': return 'border-blue-200 bg-blue-50'
-      case 'strategy': return 'border-purple-200 bg-purple-50'
       default: return 'border-slate-200 bg-slate-50'
     }
   }
 
-  const allInsights = generateInsights()
-
   return (
-    <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center text-slate-800 text-lg sm:text-xl">
-          <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-purple-600" />
-          Smart Loan Insights
+    <Card className="border-slate-200">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-purple-600" />
+          {t('debtCalculator.smartInsights')}
         </CardTitle>
-        <p className="text-xs sm:text-sm text-slate-600">
-          AI-powered recommendations based on your calculations
-        </p>
+        <p className="text-xs text-slate-500">{t('debtCalculator.smartInsightsDesc')}</p>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
-          {allInsights.map((insight, index) => (
-            <div 
-              key={index} 
-              className={`rounded-lg p-4 border transition-all duration-200 hover:shadow-md ${getInsightColor(insight.type)}`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-lg">{insight.icon}</span>
-                    <h4 className="font-semibold text-slate-800 text-sm">{insight.title}</h4>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                    {insight.content}
-                  </p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyInsight(insight.content, index)}
-                  className="h-8 w-8 p-0 text-slate-400 hover:text-slate-600 flex-shrink-0"
-                >
-                  {copiedInsight === index ? (
-                    <Check className="w-4 h-4 text-green-600" />
-                  ) : (
-                    <Copy className="w-4 h-4" />
-                  )}
-                </Button>
-              </div>
-            </div>
-          ))}
-          
-          {/* AI Generated Insights */}
-          {insights && (
-            <div className="rounded-lg p-4 border border-indigo-200 bg-indigo-50">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Bot className="w-4 h-4 text-indigo-600" />
-                    <h4 className="font-semibold text-slate-800 text-sm">AI Recommendation</h4>
-                  </div>
-                  <div className="prose prose-sm max-w-none">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        p: ({ children }) => <p className="text-xs sm:text-sm text-slate-700 mb-1 last:mb-0">{children}</p>,
-                        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                      }}
-                    >
-                      {insights}
-                    </ReactMarkdown>
+        {allInsights.length > 0 ? (
+          <div className="space-y-2">
+            {allInsights.map((insight, index) => (
+              <div key={index} className={`rounded-lg p-3 border ${getInsightStyle(insight.type)}`}>
+                <div className="flex items-start gap-2">
+                  <span className="text-base">{insight.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-slate-800 text-xs mb-0.5">{insight.title}</p>
+                    <p className="text-xs text-slate-600">{insight.content}</p>
                   </div>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyInsight(insights, 'ai')}
-                  className="h-8 w-8 p-0 text-slate-400 hover:text-slate-600 flex-shrink-0"
-                >
-                  {copiedInsight === 'ai' ? (
-                    <Check className="w-4 h-4 text-green-600" />
-                  ) : (
-                    <Copy className="w-4 h-4" />
-                  )}
-                </Button>
               </div>
-            </div>
-          )}
-          
-          {allInsights.length === 0 && !insights && (
-            <div className="text-center py-8 text-slate-500">
-              <MessageCircle className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-              <p className="text-sm">Calculate a loan or chat with the AI advisor to get personalized insights!</p>
-              <p className="text-xs text-slate-400 mt-1">
-                Tips and strategies will appear here based on your calculations
-              </p>
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-6 text-slate-400">
+            <Lightbulb className="w-8 h-8 mx-auto mb-2 text-slate-200" />
+            <p className="text-xs">Calculate a loan to get personalized insights</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   )
 }
 
-// Main Debt Calculator Page
+// Main Page Component
 export default function DebtCalculatorPage() {
   const { t } = useTranslation()
   const [calculationResults, setCalculationResults] = useState(null)
-  const [aiInsights, setAiInsights] = useState(null)
-
-  const handleCalculation = (results) => {
-    setCalculationResults(results)
-    // Clear previous AI insights when new calculation is made
-    setAiInsights(null)
-  }
-
-  const handleInsightGenerated = (insight) => {
-    setAiInsights(insight)
-  }
 
   return (
     <DashboardLayout title={t('debtCalculator.title')}>
-      <div className="min-h-screen bg-slate-50">
-        <div className="max-w-7xl mx-auto space-y-6">
-          {/* Header */}
-          <div className="text-center mb-6 sm:mb-8">
-            <p className="text-sm sm:text-base text-slate-600 max-w-3xl mx-auto">
-              Calculate your EMI, explore repayment strategies, and get AI-powered loan advice to make informed financial decisions
-            </p>
+      <div className="space-y-4 max-w-6xl mx-auto">
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Left: Calculator */}
+          <div className="space-y-4">
+            <EMICalculator onCalculate={setCalculationResults} />
+            <SmartInsights calculationResults={calculationResults} />
           </div>
 
-          {/* Main Layout */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
-            {/* Left Panel - Calculator */}
-            <div className="space-y-4 sm:space-y-6">
-              <EMICalculator onCalculate={handleCalculation} />
-            </div>
-
-            {/* Right Panel - AI Chat & Insights */}
-            <div className="space-y-4 sm:space-y-6">
-              {/* AI Chat */}
-              <div className="min-h-[500px] sm:min-h-[600px]">
-                <LoanAdvisorChat 
-                  calculationResults={calculationResults}
-                  onInsightGenerated={handleInsightGenerated}
-                />
-              </div>
-              
-              {/* Smart Insights Card */}
-              <SmartInsightsCard 
-                insights={aiInsights}
-                calculationResults={calculationResults}
-              />
-            </div>
-          </div>
-
-          {/* Additional Information */}
-          <Card className="bg-white">
-            <CardContent className="p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4">How to Use This Calculator</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-xs sm:text-sm text-slate-600">
-                <div>
-                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">🧮 Calculate EMI</h4>
-                  <p>Enter your loan amount, interest rate, and duration to get accurate EMI calculations with detailed breakdowns.</p>
-                </div>
-                <div>
-                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">🤖 AI Advisor</h4>
-                  <p>Ask questions about loan strategies, bank recommendations, or get personalized advice based on your calculations.</p>
-                </div>
-                <div>
-                  <h4 className="font-medium text-slate-800 mb-2 text-sm sm:text-base">💡 Smart Insights</h4>
-                  <p>Get automated recommendations for prepayment strategies, interest optimization, and loan management tips.</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Right: AI Chat */}
+          <LoanAdvisorChat calculationResults={calculationResults} />
         </div>
+
+        {/* How to Use */}
+        <Card className="border-slate-200">
+          <CardContent className="p-4">
+            <h3 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
+              <Lightbulb className="w-4 h-4 text-amber-500" />
+              {t('debtCalculator.howToUse')}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-600">
+              <div className="flex items-start gap-2">
+                <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <Calculator className="w-3 h-3 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-slate-800 mb-0.5">Calculate EMI</p>
+                  <p>Enter loan amount, interest rate, and duration for accurate EMI calculations.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <Bot className="w-3 h-3 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-slate-800 mb-0.5">Ask AI Advisor</p>
+                  <p>Get personalized advice on repayment strategies and loan optimization.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-3 h-3 text-purple-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-slate-800 mb-0.5">Smart Insights</p>
+                  <p>View automated recommendations for prepayment and interest optimization.</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   )

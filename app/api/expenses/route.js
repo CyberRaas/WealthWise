@@ -7,10 +7,12 @@ import notificationService from '@/lib/notificationService'
 
 // Canonical category mapping to unify voice + manual + budget keys
 // All expense.category values will be normalized to these display names
+// This ensures consistency between voice entry, manual entry, and budget categories
 const CATEGORY_CANONICAL_MAP = {
-  // Food & Dining
+  // Food & Dining (budget key: food_dining)
   'food': 'Food & Dining',
   'food & dining': 'Food & Dining',
+  'Food & Dining': 'Food & Dining',
   'food_dining': 'Food & Dining',
   'food &dining': 'Food & Dining',
   'food and dining': 'Food & Dining',
@@ -22,51 +24,117 @@ const CATEGORY_CANONICAL_MAP = {
   'lunch': 'Food & Dining',
   'dinner': 'Food & Dining',
   'breakfast': 'Food & Dining',
+  'snack': 'Food & Dining',
+  'snacks': 'Food & Dining',
   'Food': 'Food & Dining',
-  'Food & Dining': 'Food & Dining',
+  'dining': 'Food & Dining',
+  'meal': 'Food & Dining',
+  'restaurant': 'Food & Dining',
+  'cafe': 'Food & Dining',
 
-  // Transportation
+  // Transportation (budget key: transportation)
   'transport': 'Transportation',
   'transportation': 'Transportation',
+  'Transportation': 'Transportation',
   'Transport': 'Transportation',
+  'travel': 'Transportation',
+  'Travel': 'Transportation',
   'metro': 'Transportation',
   'bus': 'Transportation',
   'uber': 'Transportation',
   'ola': 'Transportation',
+  'taxi': 'Transportation',
+  'cab': 'Transportation',
+  'auto': 'Transportation',
+  'rickshaw': 'Transportation',
+  'petrol': 'Transportation',
+  'fuel': 'Transportation',
+  'parking': 'Transportation',
+  'toll': 'Transportation',
+  'rapido': 'Transportation',
 
-  // Home & Utilities
+  // Home & Utilities (budget key: home_utilities)
   'home': 'Home & Utilities',
   'home_utilities': 'Home & Utilities',
+  'Home & Utilities': 'Home & Utilities',
   'utilities': 'Home & Utilities',
   'Home': 'Home & Utilities',
   'Utilities': 'Home & Utilities',
   'home & utilities': 'Home & Utilities',
   'housing': 'Home & Utilities',
   'Housing': 'Home & Utilities',
+  'rent': 'Home & Utilities',
+  'electricity': 'Home & Utilities',
+  'water': 'Home & Utilities',
+  'gas': 'Home & Utilities',
+  'internet': 'Home & Utilities',
+  'wifi': 'Home & Utilities',
+  'bill': 'Home & Utilities',
+  'bills': 'Home & Utilities',
+  'maintenance': 'Home & Utilities',
+  'recharge': 'Home & Utilities',
 
-  // Entertainment
+  // Entertainment (budget key: entertainment)
   'entertainment': 'Entertainment',
   'Entertainment': 'Entertainment',
+  'movie': 'Entertainment',
+  'movies': 'Entertainment',
+  'cinema': 'Entertainment',
+  'game': 'Entertainment',
+  'games': 'Entertainment',
+  'gaming': 'Entertainment',
+  'netflix': 'Entertainment',
+  'ott': 'Entertainment',
+  'subscription': 'Entertainment',
+  'gym': 'Entertainment',
+  'party': 'Entertainment',
+  'concert': 'Entertainment',
+  'event': 'Entertainment',
 
-  // Shopping
+  // Shopping (budget key: shopping)
   'shopping': 'Shopping',
   'Shopping': 'Shopping',
+  'clothes': 'Shopping',
+  'clothing': 'Shopping',
+  'shoes': 'Shopping',
+  'amazon': 'Shopping',
+  'flipkart': 'Shopping',
+  'myntra': 'Shopping',
+  'mall': 'Shopping',
+  'apparel': 'Shopping',
+  'electronics': 'Shopping',
+  'gadget': 'Shopping',
+  'gadgets': 'Shopping',
 
-  // Healthcare
+  // Healthcare (budget key: healthcare)
   'healthcare': 'Healthcare',
   'Healthcare': 'Healthcare',
   'medical': 'Healthcare',
   'medicine': 'Healthcare',
+  'medicines': 'Healthcare',
+  'doctor': 'Healthcare',
+  'hospital': 'Healthcare',
+  'clinic': 'Healthcare',
+  'pharmacy': 'Healthcare',
+  'health': 'Healthcare',
+  'checkup': 'Healthcare',
 
-  // Savings
+  // Savings (budget key: savings)
   'savings': 'Savings',
   'Savings': 'Savings',
   'saving': 'Savings',
   'Saving': 'Savings',
+  'investment': 'Savings',
+  'investments': 'Savings',
+  'mutual fund': 'Savings',
+  'fd': 'Savings',
+  'rd': 'Savings',
 
   // Other / fallback
   'other': 'Other',
-  'Other': 'Other'
+  'Other': 'Other',
+  'misc': 'Other',
+  'miscellaneous': 'Other'
 }
 
 function unifyCategory(raw) {
@@ -159,9 +227,17 @@ export async function POST(request) {
         budgetAmount = userProfile.budget.totalBudget
 
         // Find budget for this category
+        // Bug fix: Handle both array and object formats for categories
         if (userProfile.budget.categories) {
-          const categoryBudget = userProfile.budget.categories.find(
-            cat => cat.name === unifiedCategory || cat.category === unifiedCategory
+          const categories = userProfile.budget.categories
+          const categoriesArray = Array.isArray(categories)
+            ? categories
+            : Object.values(categories)
+
+          const categoryBudget = categoriesArray.find(
+            cat => cat?.name === unifiedCategory ||
+                   cat?.category === unifiedCategory ||
+                   cat?.englishName === unifiedCategory
           )
           if (categoryBudget) {
             categoryBudgetAmount = categoryBudget.amount
@@ -283,6 +359,8 @@ export async function GET(request) {
     // Filter by month if specified
     if (month) {
       expenses = expenses.filter(expense => {
+        // Bug fix: Add null check for expense.date
+        if (!expense.date) return false
         const expenseMonth = expense.date.substring(0, 7) // Extract YYYY-MM
         return expenseMonth === month
       })

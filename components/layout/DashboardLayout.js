@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@/lib/i18n'
 import { useProfile } from '@/contexts/ProfileContext'
 import { usePathname, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -207,15 +207,20 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
                             <MenuItem
                               icon={Settings}
                               label="Settings"
-                              onClick={() => setShowProfileDropdown(false)}
+                              onClick={() => {
+                                setShowProfileDropdown(false)
+                                router.push('/dashboard/settings')
+                              }}
                             />
-                            <div className="border-t border-slate-100 my-2"></div>
-
                             <MenuItem
                               icon={HelpCircle}
                               label="Help & Support"
-                              onClick={() => setShowProfileDropdown(false)}
+                              onClick={() => {
+                                setShowProfileDropdown(false)
+                                router.push('/dashboard/help')
+                              }}
                             />
+                            <div className="border-t border-slate-100 my-2"></div>
                             <MenuItem
                               icon={LogOut}
                               label="Sign Out"

@@ -4,21 +4,19 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   Home,
   Wallet,
   Target,
   TrendingUp,
   PieChart,
-  Settings,
   ChevronLeft,
   ChevronRight,
   User,
   CreditCard,
   BarChart3,
-  Menu,
   X,
   LogOut,
   Calculator
@@ -110,42 +108,43 @@ export default function Sidebar({ isOpen, onClose }) {
             </div>
 
             {/* Navigation for mobile */}
-            <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+            <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
               {navigationItems.map((item) => {
                 const isActive = pathname === item.href
                 const Icon = item.icon
-                
+
                 return (
                   <Link key={item.name} href={item.href} onClick={onClose}>
-                    <div 
-                      className={`group flex items-center px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
-                        isActive 
-                          ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg' 
-                          : 'text-slate-600 hover:text-emerald-600 hover:bg-gray-200'
+                    <div
+                      className={`group relative flex items-center px-3 py-3 rounded-lg transition-all duration-150 cursor-pointer ${
+                        isActive
+                          ? 'bg-emerald-50 text-emerald-700'
+                          : 'text-slate-600 hover:bg-slate-50'
                       }`}
                     >
+                      {/* Active indicator bar */}
+                      {isActive && (
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-7 bg-emerald-500 rounded-r-full" />
+                      )}
+
                       <Icon className={`h-5 w-5 ${
-                        isActive 
-                          ? 'text-white' 
-                          : 'text-slate-500 group-hover:text-emerald-600'
+                        isActive
+                          ? 'text-emerald-600'
+                          : 'text-slate-400 group-hover:text-slate-600'
                       } transition-colors flex-shrink-0`} />
-                      
+
                       <div className="ml-3 flex-1 min-w-0">
-                        <p className={`font-medium text-sm ${
-                          isActive ? 'text-white' : 'text-slate-700 group-hover:text-emerald-600'
+                        <p className={`text-sm font-medium ${
+                          isActive ? 'text-emerald-700' : 'text-slate-700 group-hover:text-slate-900'
                         }`}>
                           {t(item.name)}
                         </p>
                         <p className={`text-xs ${
-                          isActive ? 'text-emerald-100' : 'text-slate-500 group-hover:text-emerald-500'
+                          isActive ? 'text-emerald-600/70' : 'text-slate-400'
                         }`}>
                           {t(item.description)}
                         </p>
                       </div>
-                      
-                      {isActive && (
-                        <div className="w-2 h-2 bg-white rounded-full opacity-90 flex-shrink-0" />
-                      )}
                     </div>
                   </Link>
                 )
@@ -218,47 +217,44 @@ export default function Sidebar({ isOpen, onClose }) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {navigationItems.map((item) => {
             const isActive = pathname === item.href
             const Icon = item.icon
-            
+
             return (
               <Link key={item.name} href={item.href}>
-                <div 
-                  className={`group flex items-center px-4 py-3.5 rounded-xl transition-all duration-200 cursor-pointer ${
-                    isActive 
-                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25' 
-                      : 'text-slate-600 hover:text-emerald-600 hover:bg-gray-200'
+                <div
+                  className={`group relative flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 cursor-pointer ${
+                    isActive
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : 'text-slate-600 hover:bg-slate-50'
                   }`}
                 >
-                  <Icon className={`h-6 w-6 ${
-                    isActive 
-                      ? 'text-white' 
-                      : 'text-slate-500 group-hover:text-emerald-600'
+                  {/* Active indicator bar */}
+                  {isActive && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-emerald-500 rounded-r-full" />
+                  )}
+
+                  <Icon className={`h-5 w-5 ${
+                    isActive
+                      ? 'text-emerald-600'
+                      : 'text-slate-400 group-hover:text-slate-600'
                   } transition-colors flex-shrink-0`} />
-                  
+
                   {!isCollapsed && (
-                    <div className="ml-4 flex-1 min-w-0">
-                      <p className={`font-semibold text-sm ${
-                        isActive ? 'text-white' : 'text-slate-700 group-hover:text-emerald-600'
+                    <div className="ml-3 flex-1 min-w-0">
+                      <p className={`text-sm font-medium ${
+                        isActive ? 'text-emerald-700' : 'text-slate-700 group-hover:text-slate-900'
                       }`}>
                         {t(item.name)}
                       </p>
                       <p className={`text-xs ${
-                        isActive ? 'text-emerald-100' : 'text-slate-500 group-hover:text-emerald-500'
+                        isActive ? 'text-emerald-600/70' : 'text-slate-400'
                       }`}>
                         {t(item.description)}
                       </p>
                     </div>
-                  )}
-                  
-                  {isActive && !isCollapsed && (
-                    <div className="w-2 h-2 bg-white rounded-full opacity-90 flex-shrink-0" />
-                  )}
-
-                  {isActive && isCollapsed && (
-                    <div className="absolute left-full ml-2 w-2 h-2 bg-emerald-500 rounded-full" />
                   )}
                 </div>
               </Link>

@@ -25,7 +25,7 @@ import {
   RotateCcw
 } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@/lib/i18n'
 
 export default function BudgetCustomizer({ budget, onSave, onCancel }) {
   const { t } = useTranslation()
@@ -185,7 +185,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
     if (!isBalanced) {
       const totalBudget = budget?.totalBudget || budget?.monthlyIncome || 50000
       const difference = Math.abs(totalBudget - totalAllocated)
-      toast.error(t('budget.balanceFirst', { difference: difference.toLocaleString('en-IN') }))
+      toast.error(`Please balance your budget first. Difference: ₹${difference.toLocaleString('en-IN')}`)
       return
     }
 
@@ -206,7 +206,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
       toast.success(t('budget.savedSuccessfully'))
     } catch (error) {
       console.error('Save error:', error)
-      toast.error(t('budget.saveFailed', { error: error.message }))
+      toast.error(`Failed to save budget: ${error.message}`)
     } finally {
       setSaving(false)
     }
@@ -325,18 +325,15 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                 <div className="flex items-center gap-2 text-orange-600">
                   <AlertTriangle className="h-4 w-4" />
                   <span className="text-sm">
-                    {t('Budget needs Balancing', { difference: Math.abs(difference).toLocaleString('en-IN') })}
+                    Budget needs balancing (₹{Math.abs(difference).toLocaleString('en-IN')} {difference > 0 ? 'over' : 'under'})
                     <br />
                     <span className="text-xs text-gray-500">
-                      {t('Budget total vs Budget', {
-                        total: totalAllocated.toLocaleString('en-IN'),
-                        budget: totalBudget.toLocaleString('en-IN')
-                      })}
+                      Allocated: ₹{totalAllocated.toLocaleString('en-IN')} / Budget: ₹{totalBudget.toLocaleString('en-IN')}
                     </span>
                   </span>
                 </div>
                 <Button onClick={autoBalance} size="sm" variant="outline">
-                  {t('Auto Balance')}
+                  Auto Balance
                 </Button>
               </div>
             )}
@@ -458,11 +455,8 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                   {/* Original vs Current Comparison */}
                   {isChanged && (
                     <div className="text-xs text-slate-500 bg-slate-50 p-2 rounded">
-                      {t('budget.originalVsChanged', {
-                        original: originalAmount.toLocaleString('en-IN'),
-                        percentage: Math.round((originalAmount / totalBudget) * 100),
-                        changed: Math.abs(currentAmount - originalAmount).toLocaleString('en-IN')
-                      })}
+                      Original: ₹{originalAmount.toLocaleString('en-IN')} ({Math.round((originalAmount / totalBudget) * 100)}%)
+                      {currentAmount > originalAmount ? ' → +' : ' → -'}₹{Math.abs(currentAmount - originalAmount).toLocaleString('en-IN')}
                     </div>
                   )}
                 </div>

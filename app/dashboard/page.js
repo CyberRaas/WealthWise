@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@/lib/i18n'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
 import LanguageSelector from '@/components/ui/LanguageSelector'
@@ -34,6 +34,13 @@ import BudgetDisplay from '@/components/dashboard/BudgetDisplay'
 import ExpenseEntryModal from '@/components/expenses/ExpenseEntryModal'
 import { AgentDashboard } from '@/components/agents/AgentDashboard'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { SeasonalPlanningWidget } from '@/components/seasonal'
+import IncomeRecommendations from '@/components/budget/IncomeRecommendations'
+import { FinancialInsightsWidget } from '@/components/insights'
+import DailyPulseWidget from '@/components/retention/DailyPulseWidget'
+import DailyTipCard from '@/components/retention/DailyTipCard'
+import SmartNudgeToast from '@/components/retention/SmartNudgeToast'
+import { Trophy } from 'lucide-react'
 
 function DashboardContent() {
   const { data: session } = useSession()
@@ -51,30 +58,23 @@ function DashboardContent() {
     savingsRate: 0
   })
 
-  // Get dynamic greeting based on time and day
+  // Get dynamic greeting based on time
   const getGreeting = () => {
-    const hour = new Date().getHours()
-    const day = new Date().getDay()
+    const now = new Date()
+    const hour = now.getHours()
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
     let timeGreeting = ''
-    if (hour < 12) timeGreeting = t('greeting.goodMorning')
-    else if (hour < 17) timeGreeting = t('greeting.goodAfternoon')
-    else timeGreeting = t('greeting.goodEvening')
+    if (hour < 12) timeGreeting = 'Good morning'
+    else if (hour < 17) timeGreeting = 'Good afternoon'
+    else timeGreeting = 'Good evening'
 
-    const dayMessages = {
-      0: t('greeting.sunday'), // Sunday
-      1: t('greeting.monday'), // Monday
-      2: t('greeting.tuesday'), // Tuesday
-      3: t('greeting.wednesday'), // Wednesday
-      4: t('greeting.thursday'), // Thursday
-      5: t('greeting.friday'), // Friday
-      6: t('greeting.saturday') // Saturday
-    }
+    const dateStr = `${dayNames[now.getDay()]}, ${monthNames[now.getMonth()]} ${now.getDate()}`
 
     return {
-      greeting: `${timeGreeting}! ${dayMessages[day]}`,
-      day: dayNames[day]
+      greeting: timeGreeting,
+      date: dateStr
     }
   }
 
@@ -218,536 +218,250 @@ function DashboardContent() {
 
   return (
     <DashboardLayout title={t('dashboard.overview')}>
-      <div className="space-y-8">
+      <div className="space-y-6">
 
-        {/*TODO: Implement Welcome Message with Real Data */}
-        <div className="bg-gradient-to-r from-emerald-50 via-blue-50 to-purple-50 rounded-2xl p-6 border border-emerald-100">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
-                {t('dashboard.welcome')} {session?.user?.name || 'Friend'}! 👋
-              </h1>
-              <p className="text-slate-600 text-base sm:text-lg mb-3">
-                {greetingData.greeting}
-              </p>
-
-              {/* Dynamic motivational message based on real data */}
-              {financialHealthScore >= 75 && (
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm text-emerald-700 font-medium bg-emerald-100 px-3 py-1 rounded-full">
-                    {t('health.excellent')}
-                  </span>
-                </div>
-              )}
-
-              {financialHealthScore < 75 && financialHealthScore >= 50 && (
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm text-blue-700 font-medium bg-blue-100 px-3 py-1 rounded-full">
-                    {t('health.good')}
-                  </span>
-                </div>
-              )}
-
-              {financialHealthScore < 50 && (
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm text-orange-700 font-medium bg-orange-100 px-3 py-1 rounded-full">
-                    {t('health.needsImprovement')}
-                  </span>
-                </div>
-              )}
-
-              {monthlyData.savingsRate > 0 && (
-                <p className="text-sm text-slate-500">
-                  💰 You&apos;re saving {monthlyData.savingsRate}% of your income this month!
-                </p>
-              )}
-
-              {monthlyData.savingsRate <= 0 && (
-                <p className="text-sm text-slate-500">
-                  🎯 Focus on reducing expenses to increase your savings rate.
-                </p>
-              )}
-            </div>
-
-            {/* <div className="hidden sm:block ml-6">
-              <div className="w-20 h-20 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg animate-pulse-subtle">
-                {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : '😊'}
-              </div>
-            </div> */}
+        {/* Compact Header Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <h1 className="text-lg font-semibold text-slate-800">
+              {greetingData.greeting}, {session?.user?.name?.split(' ')[0] || 'Friend'}
+            </h1>
+            <p className="text-sm text-slate-500">{greetingData.date}</p>
           </div>
 
-          {/* Real quick stats row */}
-          {monthlyData.totalIncome > 0 && (
-            <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-emerald-200">
-              <div className="text-center">
-                <div className="text-lg font-bold text-emerald-600">
-                  ₹{monthlyData.totalSaved > 0 ? (monthlyData.totalSaved / 100000).toFixed(1) : '0'}L
+          {/* Quick Stats Pills */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className={`px-3 py-1.5 rounded-full text-sm font-medium ${
+              financialHealthScore >= 75 ? 'bg-emerald-100 text-emerald-700' :
+              financialHealthScore >= 50 ? 'bg-blue-100 text-blue-700' :
+              'bg-amber-100 text-amber-700'
+            }`}>
+              <span className="hidden sm:inline">Health: </span>{financialHealthScore}/100
+            </div>
+            {monthlyData.totalIncome > 0 && (
+              <>
+                <div className="px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-sm font-medium">
+                  {monthlyData.savingsRate}% saved
                 </div>
-                <div className="text-xs text-slate-600">{t('health.savedThisMonth')}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-bold text-blue-600">{monthlyData.savingsRate}%</div>
-                <div className="text-xs text-slate-600">{t('health.savingsRate')}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-bold text-purple-600">{goals.filter(g => g.status === 'active').length}</div>
-                <div className="text-xs text-slate-600">{t('health.activeGoals')}</div>
-              </div>
-            </div>
-          )}
-
-          {/* No data state */}
-          {monthlyData.totalIncome === 0 && (
-            <div className="mt-4 pt-4 border-t border-emerald-200 text-center">
-              <p className="text-sm text-slate-500 mb-2">{t('health.noDataAvailable')}</p>
-              <Button
-                onClick={() => router.push('/dashboard/budget')}
-                size="sm"
-                className="bg-emerald-600 hover:bg-emerald-700"
-              >
-                {t('health.generateBudget')}
-              </Button>
-            </div>
-          )}
+                <div className="px-3 py-1.5 rounded-full bg-purple-100 text-purple-700 text-sm font-medium">
+                  {goals.filter(g => g.status === 'active').length} goals
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
+        {/* Primary Action Row - 4 Column Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Financial Summary Card */}
+          <div className="col-span-2 lg:col-span-1 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-4 text-white">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-emerald-100 text-sm font-medium">This Month</span>
+              <Wallet className="w-5 h-5 text-emerald-200" />
+            </div>
+            {monthlyData.totalIncome > 0 ? (
+              <>
+                <div className="text-2xl font-bold mb-1">
+                  ₹{monthlyData.totalSaved > 0 ? monthlyData.totalSaved.toLocaleString('en-IN') : '0'}
+                </div>
+                <div className="text-emerald-100 text-sm">saved of ₹{monthlyData.totalIncome.toLocaleString('en-IN')}</div>
+                <div className="mt-3 bg-white/20 rounded-full h-2">
+                  <div
+                    className="bg-white rounded-full h-2 transition-all"
+                    style={{ width: `${Math.min(monthlyData.savingsRate, 100)}%` }}
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="text-emerald-100">
+                <p className="text-sm mb-2">No budget set up yet</p>
+                <Button
+                  onClick={() => router.push('/dashboard/budget')}
+                  size="sm"
+                  variant="secondary"
+                  className="bg-white/20 hover:bg-white/30 text-white border-0"
+                >
+                  Set Up Budget
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Quick Add Expense */}
+          <button
+            onClick={() => setShowExpenseEntry(true)}
+            className="bg-white border-2 border-dashed border-slate-200 hover:border-emerald-400 hover:bg-emerald-50 rounded-xl p-4 transition-all group text-left"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 group-hover:bg-emerald-200 flex items-center justify-center transition-colors">
+                <Mic className="w-5 h-5 text-emerald-600" />
+              </div>
+              <div>
+                <div className="font-semibold text-slate-800">Quick Add</div>
+                <div className="text-xs text-slate-500">Voice or manual</div>
+              </div>
+            </div>
+            <div className="text-xs text-slate-400 group-hover:text-emerald-600 transition-colors">
+              + Add expense
+            </div>
+          </button>
+
+          {/* Budget Status */}
+          <button
+            onClick={handleViewBudget}
+            className="bg-white border border-slate-200 hover:border-violet-400 hover:shadow-sm rounded-xl p-4 transition-all text-left"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
+                <BarChart3 className="w-5 h-5 text-violet-600" />
+              </div>
+              <div>
+                <div className="font-semibold text-slate-800">Budget</div>
+                <div className="text-xs text-slate-500">
+                  {budget ? `${Math.round((monthlyData.totalExpenses / budget.totalBudget) * 100)}% used` : 'Not set'}
+                </div>
+              </div>
+            </div>
+            <div className="text-xs text-violet-600 font-medium">View details →</div>
+          </button>
+
+          {/* Goals Status */}
+          <button
+            onClick={handleViewGoals}
+            className="bg-white border border-slate-200 hover:border-purple-400 hover:shadow-sm rounded-xl p-4 transition-all text-left"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                <Target className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <div className="font-semibold text-slate-800">Goals</div>
+                <div className="text-xs text-slate-500">
+                  {goals.length > 0 ? `${goals.filter(g => g.status === 'completed').length}/${goals.length} complete` : 'None set'}
+                </div>
+              </div>
+            </div>
+            <div className="text-xs text-purple-600 font-medium">Track progress →</div>
+          </button>
+        </div>
+
+        {/* Daily Engagement Row - Balanced 2 Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Today's Pulse Widget */}
+          <DailyPulseWidget
+            onQuickAdd={() => setShowExpenseEntry(true)}
+          />
+
+          {/* Recent Activity Card - Expanded */}
+          <Card className="border-slate-200">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-slate-500" />
+                  Recent Activity
+                </CardTitle>
+                <button
+                  onClick={() => router.push('/dashboard/expenses')}
+                  className="text-xs text-emerald-600 font-medium hover:underline"
+                >
+                  View all →
+                </button>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              {expenses.length > 0 ? (
+                <div className="space-y-2">
+                  {expenses.slice(0, 5).map((expense) => (
+                    <div key={expense.id} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-base">
+                          {expense.category === 'Food & Dining' ? '🍕' :
+                            expense.category === 'Transportation' ? '🚗' :
+                            expense.category === 'Shopping' ? '🛒' :
+                            expense.category === 'Healthcare' ? '🏥' :
+                            expense.category === 'Entertainment' ? '🎬' :
+                            expense.category === 'Home & Utilities' ? '🏠' : '💰'}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-slate-800 truncate max-w-[180px]">
+                            {expense.description || expense.merchant || expense.category}
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            {new Date(expense.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-sm font-semibold text-red-600">
+                        -₹{expense.amount.toLocaleString('en-IN')}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-6">
+                  <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
+                    <CreditCard className="w-6 h-6 text-slate-400" />
+                  </div>
+                  <p className="text-sm text-slate-600 mb-1">No transactions yet</p>
+                  <p className="text-xs text-slate-500 mb-3">Start tracking your expenses</p>
+                  <Button onClick={() => setShowExpenseEntry(true)} size="sm" className="bg-emerald-600 hover:bg-emerald-700">
+                    Add First Expense
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Daily Tip - Full Width Banner */}
+        <DailyTipCard className="w-full" />
+
         {/* Main Dashboard Tabs */}
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:w-auto lg:inline-flex">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
+        <Tabs defaultValue="overview" className="space-y-4">
+          <TabsList className="bg-slate-100 p-1 rounded-lg">
+            <TabsTrigger value="overview" className="flex items-center gap-2 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
               <BarChart3 className="h-4 w-4" />
-              <span>Dashboard Overview</span>
+              <span>Overview</span>
             </TabsTrigger>
-            <TabsTrigger value="ai-agents" className="flex items-center gap-2 relative">
-              <TrendingUp className="h-4 w-4" />
-              <span>🤖 AI Agents</span>
-              <span className="ml-1 px-1.5 py-0.5 text-[10px] font-semibold bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md">
+            <TabsTrigger value="ai-agents" className="flex items-center gap-2 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Sparkles className="h-4 w-4" />
+              <span>AI Agents</span>
+              <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded">
                 BETA
               </span>
             </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            {/* Financial Health Score & Overview with Real Data */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-emerald-600" />
-                    {t('health.financialHealthScore')}
-                  </CardTitle>
-                  <CardDescription>{t('health.overallWellness')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div className="text-center">
-                      <div className="relative inline-flex items-center justify-center w-32 h-32 mx-auto mb-4">
-                        <svg className="transform -rotate-90 w-32 h-32">
-                          <circle
-                            cx="64"
-                            cy="64"
-                            r="56"
-                            stroke="currentColor"
-                            strokeWidth="8"
-                            fill="transparent"
-                            className="text-slate-200"
-                          />
-                          <circle
-                            cx="64"
-                            cy="64"
-                            r="56"
-                            stroke="currentColor"
-                            strokeWidth="8"
-                            fill="transparent"
-                            strokeDasharray={`${2 * Math.PI * 56}`}
-                            strokeDashoffset={`${2 * Math.PI * 56 * (1 - financialHealthScore / 100)}`}
-                            className="text-emerald-500"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-3xl font-bold text-slate-800">{financialHealthScore}</span>
-                        </div>
-                      </div>
-                      <h3 className="text-xl font-bold text-slate-800 mb-2">
-                        {financialHealthScore >= 75 ? 'Excellent Financial Health' :
-                          financialHealthScore >= 50 ? 'Good Financial Health' :
-                            'Needs Improvement'}
-                      </h3>
-                      <p className="text-slate-600">
-                        {financialHealthScore >= 75 ? 'You\'re doing great with your finances!' :
-                          financialHealthScore >= 50 ? 'You\'re on the right track' :
-                            'Let\'s work together to improve your financial wellness'}
-                      </p>
-                    </div>
+          <TabsContent value="overview" className="space-y-4 mt-0">
+            {/* Two Column Layout - AI Insights & Spending */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* AI-Powered Financial Insights */}
+              <FinancialInsightsWidget compact={true} />
 
-                    <div className="grid grid-cols-3 gap-4 pt-4 border-t">
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-emerald-600">{monthlyData.savingsRate}%</div>
-                        <div className="text-sm text-slate-600">Savings Rate</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-blue-600">
-                          {budget ? Math.round((monthlyData.totalExpenses / budget.totalBudget) * 100) : 0}%
-                        </div>
-                        <div className="text-sm text-slate-600">Budget Used</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-purple-600">{goals.length}</div>
-                        <div className="text-sm text-slate-600">Goals Set</div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5 text-emerald-600" />
-                    This Month Summary
+              {/* Budget Spending Overview */}
+              <Card className="border-slate-200">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-semibold flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <BarChart3 className="w-4 h-4 text-blue-600" />
+                      Budget Overview
+                    </span>
+                    <button
+                      onClick={handleViewBudget}
+                      className="text-xs text-emerald-600 hover:underline font-medium"
+                    >
+                      View all →
+                    </button>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  {monthlyData.totalIncome > 0 ? (
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center p-3 bg-emerald-50 rounded-lg">
-                        <div>
-                          <div className="text-sm text-emerald-700">Total Income</div>
-                          <div className="text-lg font-bold text-emerald-800">
-                            ₹{monthlyData.totalIncome.toLocaleString('en-IN')}
-                          </div>
-                        </div>
-                        <TrendingUp className="h-6 w-6 text-emerald-600" />
-                      </div>
-
-                      <div className="flex justify-between items-center p-3 bg-red-50 rounded-lg">
-                        <div>
-                          <div className="text-sm text-red-700">Total Expenses</div>
-                          <div className="text-lg font-bold text-red-800">
-                            ₹{monthlyData.totalExpenses.toLocaleString('en-IN')}
-                          </div>
-                        </div>
-                        <Wallet className="h-6 w-6 text-red-600" />
-                      </div>
-
-                      <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                        <div>
-                          <div className="text-sm text-blue-700">Money Saved</div>
-                          <div className="text-lg font-bold text-blue-800">
-                            ₹{Math.max(0, monthlyData.totalSaved).toLocaleString('en-IN')}
-                          </div>
-                        </div>
-                        <PiggyBank className="h-6 w-6 text-blue-600" />
-                      </div>
-
-                      <div className="text-center pt-2 border-t">
-                        <div className="text-xs text-slate-500">Savings Rate</div>
-                        <div className="text-lg font-bold text-purple-600">{monthlyData.savingsRate}%</div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-2" />
-                      <p className="text-slate-500 text-sm mb-4">No financial data available</p>
-                      <Button
-                        onClick={() => router.push('/dashboard/budget')}
-                        size="sm"
-                        variant="outline"
-                      >
-                        Set Up Budget
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Recent Activity & Insights with Real Data */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Transactions</CardTitle>
-                  <CardDescription>Your latest spending and income</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {expenses.length > 0 ? (
-                    <div className="space-y-3">
-                      {expenses.slice(0, 4).map((expense) => (
-                        <div key={expense.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                              <span className="text-xs">
-                                {expense.category === 'Food & Dining' ? '🍕' :
-                                  expense.category === 'Transportation' ? '🚗' :
-                                    expense.category === 'Shopping' ? '🛒' :
-                                      expense.category === 'Healthcare' ? '🏥' :
-                                        expense.category === 'Entertainment' ? '🎬' :
-                                          expense.category === 'Home & Utilities' ? '🏠' :
-                                            '💰'}
-                              </span>
-                            </div>
-                            <div>
-                              <div className="font-medium text-sm">
-                                {expense.description || expense.merchant || expense.category}
-                              </div>
-                              <div className="text-xs text-slate-500">
-                                {expense.category} • {new Date(expense.date).toLocaleDateString()}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-red-600 font-medium">
-                            -₹{expense.amount.toLocaleString('en-IN')}
-                          </div>
-                        </div>
-                      ))}
-
-                      <Button
-                        onClick={() => router.push('/dashboard/expenses')}
-                        variant="outline"
-                        className="w-full mt-4"
-                      >
-                        View All Transactions
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <Wallet className="h-12 w-12 text-slate-400 mx-auto mb-2" />
-                      <p className="text-slate-500 text-sm mb-4">No transactions yet</p>
-                      <Button
-                        onClick={handleAddExpense}
-                        size="sm"
-                        className="bg-emerald-600 hover:bg-emerald-700"
-                      >
-                        Add Your First Expense
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Smart Money Tips</CardTitle>
-                  <CardDescription>Personalized advice based on your data</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Dynamic tips based on real data */}
-                    {monthlyData.savingsRate >= 20 && (
-                      <div className="p-4 bg-emerald-50 rounded-lg border-l-4 border-emerald-500">
-                        <div className="flex items-start gap-3">
-                          <div className="text-emerald-600">✅</div>
-                          <div>
-                            <h4 className="font-medium text-emerald-800">Great Savings!</h4>
-                            <p className="text-sm text-emerald-700 mt-1">
-                              You&apos;re saving {monthlyData.savingsRate}% this month. Excellent work with your financial discipline!
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {monthlyData.savingsRate < 10 && monthlyData.totalIncome > 0 && (
-                      <div className="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
-                        <div className="flex items-start gap-3">
-                          <div className="text-amber-600">⚠️</div>
-                          <div>
-                            <h4 className="font-medium text-amber-800">Low Savings Alert</h4>
-                            <p className="text-sm text-amber-700 mt-1">
-                              Your savings rate is {monthlyData.savingsRate}%. Try to save at least 10-20% of your income.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Category-based tips */}
-                    {expenses.length > 0 && (() => {
-                      const categoryTotals = expenses.reduce((acc, expense) => {
-                        acc[expense.category] = (acc[expense.category] || 0) + expense.amount
-                        return acc
-                      }, {})
-
-                      const topCategory = Object.entries(categoryTotals).sort(([, a], [, b]) => b - a)[0]
-                      const [categoryName, categoryAmount] = topCategory || ['', 0]
-
-                      if (categoryAmount > (monthlyData.totalIncome * 0.3)) {
-                        return (
-                          <div className="p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500">
-                            <div className="flex items-start gap-3">
-                              <div className="text-orange-600">📊</div>
-                              <div>
-                                <h4 className="font-medium text-orange-800">High Spending Alert</h4>
-                                <p className="text-sm text-orange-700 mt-1">
-                                  You&apos;ve spent ₹{categoryAmount.toLocaleString('en-IN')} on {categoryName}. Consider optimizing this category.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      }
-                    })()}
-
-                    <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-                      <div className="flex items-start gap-3">
-                        <div className="text-blue-600">💡</div>
-                        <div>
-                          <h4 className="font-medium text-blue-800">Investment Tip</h4>
-                          <p className="text-sm text-blue-700 mt-1">
-                            Consider SIP in mutual funds or invest in PPF for tax benefits and long-term growth.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* No data tip */}
-                    {expenses.length === 0 && monthlyData.totalIncome === 0 && (
-                      <div className="p-4 bg-slate-50 rounded-lg border-l-4 border-slate-400">
-                        <div className="flex items-start gap-3">
-                          <div className="text-slate-600">📝</div>
-                          <div>
-                            <h4 className="font-medium text-slate-800">Get Started</h4>
-                            <p className="text-sm text-slate-700 mt-1">
-                              Set up your budget and start tracking expenses to get personalized financial advice.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg sm:text-xl font-bold text-slate-800">Quick Actions</CardTitle>
-                <CardDescription>Fast access to all features</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-                  {/* Voice Entry - Primary Action */}
-                  <Button
-                    onClick={handleVoiceEntry}
-                    className="flex flex-col items-center p-4 sm:p-6 h-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl col-span-2 sm:col-span-1"
-                  >
-                    <Mic className="h-6 w-6 sm:h-8 sm:w-8 mb-2" />
-                    <span className="font-bold text-sm sm:text-base">Voice Entry</span>
-                    <span className="text-xs opacity-90">Add by voice</span>
-                  </Button>
-
-                  {/* Add Expense */}
-                  <Button
-                    onClick={handleAddExpense}
-                    variant="outline"
-                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 rounded-xl"
-                  >
-                    <Plus className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
-                    <span className="font-bold text-slate-700 text-sm sm:text-base">Add Expense</span>
-                    <span className="text-xs text-slate-500">Manual entry</span>
-                  </Button>
-
-                  {/* Budget Manager */}
-                  <Button
-                    onClick={handleViewBudget}
-                    variant="outline"
-                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-violet-300 hover:bg-violet-50 rounded-xl"
-                  >
-                    <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
-                    <span className="font-bold text-slate-700 text-sm sm:text-base">Budget</span>
-                    <span className="text-xs text-slate-500">Track budget</span>
-                  </Button>
-
-                  {/* Goals */}
-                  <Button
-                    onClick={handleViewGoals}
-                    variant="outline"
-                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-purple-300 hover:bg-purple-50 rounded-xl"
-                  >
-                    <Target className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
-                    <span className="font-bold text-slate-700 text-sm sm:text-base">Goals</span>
-                    <span className="text-xs text-slate-500">Track progress</span>
-                  </Button>
-
-                  {/* Debt Manager */}
-                  <Button
-                    onClick={() => router.push('/dashboard/debt')}
-                    variant="outline"
-                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-red-300 hover:bg-red-50 rounded-xl"
-                  >
-                    <CreditCard className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
-                    <span className="font-bold text-slate-700 text-sm sm:text-base">Debt</span>
-                    <span className="text-xs text-slate-500">Manage debts</span>
-                  </Button>
-
-                  {/* Debt Calculator */}
-                  <Button
-                    onClick={() => router.push('/dashboard/debt-calculator')}
-                    variant="outline"
-                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-orange-300 hover:bg-orange-50 rounded-xl"
-                  >
-                    <Calculator className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
-                    <span className="font-bold text-slate-700 text-sm sm:text-base">Calculator</span>
-                    <span className="text-xs text-slate-500">Calculate payments</span>
-                  </Button>
-
-                  {/* Profile */}
-                  <Button
-                    onClick={() => router.push('/dashboard/profile')}
-                    variant="outline"
-                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 rounded-xl"
-                  >
-                    <User className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
-                    <span className="font-bold text-slate-700 text-sm sm:text-base">Profile</span>
-                    <span className="text-xs text-slate-500">Manage account</span>
-                  </Button>
-
-                  {/* Settings */}
-                  <Button
-                    onClick={() => router.push('/dashboard/settings')}
-                    variant="outline"
-                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-slate-400 hover:bg-slate-50 rounded-xl"
-                  >
-                    <Settings className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
-                    <span className="font-bold text-slate-700 text-sm sm:text-base">Settings</span>
-                    <span className="text-xs text-slate-500">Preferences</span>
-                  </Button>
-
-                  {/* Help & Support */}
-                  <Button
-                    onClick={() => router.push('/dashboard/help')}
-                    variant="outline"
-                    className="flex flex-col items-center p-4 sm:p-6 h-auto border-2 border-slate-200 hover:border-green-300 hover:bg-green-50 rounded-xl"
-                  >
-                    <HelpCircle className="h-6 w-6 sm:h-8 sm:w-8 mb-2 text-slate-600" />
-                    <span className="font-bold text-slate-700 text-sm sm:text-base">Help</span>
-                    <span className="text-xs text-slate-500">Get support</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Spending Trends and Goals with Real Data */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-blue-600" />
-                    Monthly Spending
-                  </CardTitle>
-                  <CardDescription>Where your money goes each month</CardDescription>
-                </CardHeader>
-                <CardContent>
+                <CardContent className="pt-0">
                   {budget && budget.categories ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {Object.entries(budget.categories)
                         .sort(([, a], [, b]) => b.amount - a.amount)
-                        .slice(0, 5)
+                        .slice(0, 4)
                         .map(([key, category]) => {
-                          // Calculate actual spending for this category
                           const categoryExpenses = expenses.filter(e => e.category === category.englishName)
                           const actualSpent = categoryExpenses.reduce((sum, e) => sum + e.amount, 0)
                           const budgetAmount = category.amount
@@ -755,119 +469,183 @@ function DashboardContent() {
 
                           return (
                             <div key={key}>
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-medium">{category.englishName}</span>
-                                <span className="text-sm text-slate-600">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-xs font-medium text-slate-700">{category.englishName}</span>
+                                <span className="text-xs text-slate-500">
                                   ₹{actualSpent.toLocaleString('en-IN')} / ₹{budgetAmount.toLocaleString('en-IN')}
                                 </span>
                               </div>
-                              <div className="w-full bg-slate-200 rounded-full h-2 mb-1">
+                              <div className="w-full bg-slate-100 rounded-full h-1.5">
                                 <div
-                                  className={`h-2 rounded-full ${spentPercentage > 90 ? 'bg-red-500' :
-                                    spentPercentage > 70 ? 'bg-orange-500' :
-                                      'bg-emerald-500'
-                                    }`}
+                                  className={`h-1.5 rounded-full transition-all ${
+                                    spentPercentage > 90 ? 'bg-red-500' :
+                                    spentPercentage > 70 ? 'bg-amber-500' :
+                                    'bg-emerald-500'
+                                  }`}
                                   style={{ width: `${Math.min(spentPercentage, 100)}%` }}
-                                ></div>
-                              </div>
-                              <div className="text-xs text-slate-500">
-                                {spentPercentage.toFixed(0)}% of budget used
+                                />
                               </div>
                             </div>
                           )
                         })}
                     </div>
                   ) : (
-                    <div className="text-center py-8">
-                      <BarChart3 className="h-12 w-12 text-slate-400 mx-auto mb-2" />
-                      <p className="text-slate-500 text-sm mb-4">No budget data available</p>
-                      <Button
-                        onClick={() => router.push('/dashboard/budget')}
-                        size="sm"
-                        className="bg-emerald-600 hover:bg-emerald-700"
-                      >
-                        Create Your Budget
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Target className="h-5 w-5 text-purple-600" />
-                    Savings Goals
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {goals.length > 0 ? (
-                    <div className="space-y-4">
-                      {goals.slice(0, 4).map((goal) => {
-                        const progress = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)
-                        const isCompleted = goal.status === 'completed' || progress >= 100
-
-                        return (
-                          <div key={goal.id} className={`p-3 rounded-lg ${isCompleted ? 'bg-emerald-50' :
-                            progress > 50 ? 'bg-blue-50' : 'bg-slate-50'
-                            }`}>
-                            <div className="flex justify-between items-center mb-2">
-                              <span className={`font-medium text-sm ${isCompleted ? 'text-emerald-800' :
-                                progress > 50 ? 'text-blue-800' : 'text-slate-800'
-                                }`}>
-                                {goal.name}
-                              </span>
-                              <span className={`text-xs ${isCompleted ? 'text-emerald-600' :
-                                progress > 50 ? 'text-blue-600' : 'text-slate-600'
-                                }`}>
-                                {progress.toFixed(0)}%
-                              </span>
-                            </div>
-                            <div className={`w-full rounded-full h-2 ${isCompleted ? 'bg-emerald-200' :
-                              progress > 50 ? 'bg-blue-200' : 'bg-slate-200'
-                              }`}>
-                              <div
-                                className={`h-2 rounded-full ${isCompleted ? 'bg-emerald-600' :
-                                  progress > 50 ? 'bg-blue-600' : 'bg-slate-600'
-                                  }`}
-                                style={{ width: `${Math.min(progress, 100)}%` }}
-                              ></div>
-                            </div>
-                            <div className={`text-xs mt-1 ${isCompleted ? 'text-emerald-700' :
-                              progress > 50 ? 'text-blue-700' : 'text-slate-700'
-                              }`}>
-                              ₹{goal.currentAmount.toLocaleString('en-IN')} / ₹{goal.targetAmount.toLocaleString('en-IN')}
-                              {isCompleted && ' ✅'}
-                            </div>
-                          </div>
-                        )
-                      })}
-
-                      <Button
-                        onClick={() => router.push('/dashboard/goals')}
-                        variant="outline"
-                        size="sm"
-                        className="w-full mt-2"
-                      >
-                        View All Goals
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <Target className="h-12 w-12 text-slate-400 mx-auto mb-2" />
-                      <p className="text-slate-500 text-sm mb-4">No goals set yet</p>
-                      <Button
-                        onClick={() => router.push('/dashboard/goals')}
-                        size="sm"
-                        className="bg-purple-600 hover:bg-purple-700"
-                      >
-                        Set Your First Goal
+                    <div className="text-center py-6">
+                      <BarChart3 className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                      <p className="text-sm text-slate-500 mb-2">No budget data</p>
+                      <Button onClick={handleViewBudget} size="sm" variant="outline">
+                        Create Budget
                       </Button>
                     </div>
                   )}
                 </CardContent>
               </Card>
             </div>
+
+            {/* Seasonal & Income Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <SeasonalPlanningWidget
+                compact={true}
+                onViewAll={() => router.push('/dashboard/budget#seasonal')}
+              />
+              <IncomeRecommendations compact={true} />
+            </div>
+
+            {/* Goals Section */}
+            <Card className="border-slate-200">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <Target className="w-4 h-4 text-purple-600" />
+                    Savings Goals
+                  </span>
+                  <button
+                    onClick={handleViewGoals}
+                    className="text-xs text-emerald-600 hover:underline font-medium"
+                  >
+                    Manage goals →
+                  </button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                {goals.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {goals.slice(0, 4).map((goal) => {
+                      const progress = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)
+                      const isCompleted = goal.status === 'completed' || progress >= 100
+
+                      return (
+                        <div
+                          key={goal.id}
+                          className={`p-3 rounded-lg border ${
+                            isCompleted ? 'bg-emerald-50 border-emerald-200' :
+                            progress > 50 ? 'bg-blue-50 border-blue-200' :
+                            'bg-slate-50 border-slate-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-slate-800 truncate">{goal.name}</span>
+                            {isCompleted && <span className="text-emerald-500">✓</span>}
+                          </div>
+                          <div className="w-full bg-white rounded-full h-1.5 mb-1">
+                            <div
+                              className={`h-1.5 rounded-full ${
+                                isCompleted ? 'bg-emerald-500' :
+                                progress > 50 ? 'bg-blue-500' :
+                                'bg-slate-400'
+                              }`}
+                              style={{ width: `${Math.min(progress, 100)}%` }}
+                            />
+                          </div>
+                          <div className="flex justify-between text-xs text-slate-500">
+                            <span>₹{(goal.currentAmount / 1000).toFixed(0)}k</span>
+                            <span>{progress.toFixed(0)}%</span>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-6">
+                    <Target className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                    <p className="text-sm text-slate-500 mb-2">No goals set yet</p>
+                    <Button onClick={handleViewGoals} size="sm" className="bg-purple-600 hover:bg-purple-700">
+                      Create First Goal
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions - Compact Grid */}
+            <Card className="border-slate-200">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                  <button
+                    onClick={handleAddExpense}
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-emerald-100 group-hover:bg-emerald-200 flex items-center justify-center mb-1 transition-colors">
+                      <Plus className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <span className="text-xs text-slate-600">Add</span>
+                  </button>
+
+                  <button
+                    onClick={() => router.push('/dashboard/debt')}
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-red-100 group-hover:bg-red-200 flex items-center justify-center mb-1 transition-colors">
+                      <CreditCard className="w-5 h-5 text-red-600" />
+                    </div>
+                    <span className="text-xs text-slate-600">Debt</span>
+                  </button>
+
+                  <button
+                    onClick={() => router.push('/dashboard/debt-calculator')}
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-amber-100 group-hover:bg-amber-200 flex items-center justify-center mb-1 transition-colors">
+                      <Calculator className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <span className="text-xs text-slate-600">Calculator</span>
+                  </button>
+
+                  <button
+                    onClick={() => router.push('/dashboard/profile')}
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-indigo-100 group-hover:bg-indigo-200 flex items-center justify-center mb-1 transition-colors">
+                      <User className="w-5 h-5 text-indigo-600" />
+                    </div>
+                    <span className="text-xs text-slate-600">Profile</span>
+                  </button>
+
+                  <button
+                    onClick={() => router.push('/dashboard/settings')}
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center mb-1 transition-colors">
+                      <Settings className="w-5 h-5 text-slate-600" />
+                    </div>
+                    <span className="text-xs text-slate-600">Settings</span>
+                  </button>
+
+                  <button
+                    onClick={() => router.push('/dashboard/help')}
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-green-100 group-hover:bg-green-200 flex items-center justify-center mb-1 transition-colors">
+                      <HelpCircle className="w-5 h-5 text-green-600" />
+                    </div>
+                    <span className="text-xs text-slate-600">Help</span>
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* AI Agents Tab */}
@@ -883,6 +661,9 @@ function DashboardContent() {
         onClose={() => setShowExpenseEntry(false)}
         onExpenseAdded={handleExpenseAdded}
       />
+
+      {/* Smart Nudge Toasts */}
+      <SmartNudgeToast />
     </DashboardLayout>
   )
 }

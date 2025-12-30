@@ -20,7 +20,50 @@ const userProfileSchema = new mongoose.Schema({
     enum: ['salary', 'business', 'freelance', 'other'],
     default: 'salary'
   },
-  
+
+  // Multiple Income Sources (NEW - for semifinal feature)
+  incomeSources: [{
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: [100, 'Income source name cannot exceed 100 characters']
+    },
+    type: {
+      type: String,
+      enum: ['salary', 'business', 'freelance', 'rental', 'investment', 'pension', 'side_hustle', 'other'],
+      required: true,
+      default: 'salary'
+    },
+    amount: {
+      type: Number,
+      required: true,
+      min: [0, 'Amount cannot be negative']
+    },
+    frequency: {
+      type: String,
+      enum: ['monthly', 'bi-weekly', 'weekly', 'quarterly', 'annually', 'irregular'],
+      default: 'monthly'
+    },
+    isStable: {
+      type: Boolean,
+      default: true
+    },
+    includeInBudget: {
+      type: Boolean,
+      default: true
+    },
+    description: {
+      type: String,
+      trim: true,
+      maxlength: 500
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+
   city: {
     type: String,
     trim: true
@@ -46,7 +89,59 @@ const userProfileSchema = new mongoose.Schema({
     trim: true,
     default: ''
   },
-  
+
+  // Enhanced Demographics (from improved onboarding)
+  livingSituation: {
+    type: String,
+    enum: ['with_parents', 'renting_alone', 'renting_shared', 'own_home', 'home_loan', ''],
+    default: ''
+  },
+
+  commuteMode: {
+    type: String,
+    enum: ['wfh', 'public_transport', 'two_wheeler', 'four_wheeler', 'cab_auto', ''],
+    default: ''
+  },
+
+  hasKids: {
+    type: Boolean,
+    default: false
+  },
+
+  monthlyRent: {
+    type: Number,
+    default: 0
+  },
+
+  // Financial Pulse (strategic onboarding questions)
+  financialPulse: {
+    debtStatus: {
+      type: String,
+      enum: ['none', 'low', 'medium', 'high', ''],
+      default: ''
+    },
+    savingsStatus: {
+      type: String,
+      enum: ['none', 'partial', 'adequate', 'strong', ''],
+      default: ''
+    },
+    moneyStress: {
+      type: String,
+      enum: ['stressed', 'concerned', 'stable', 'confident', ''],
+      default: ''
+    },
+    spendingStyle: {
+      type: String,
+      enum: ['impulsive', 'emotional', 'planned', 'frugal', ''],
+      default: ''
+    },
+    primaryGoal: {
+      type: String,
+      enum: ['debt_free', 'emergency_fund', 'big_purchase', 'invest', 'balance', ''],
+      default: ''
+    }
+  },
+
   // Additional Profile Fields
   name: {
     type: String,
@@ -167,6 +262,229 @@ const userProfileSchema = new mongoose.Schema({
     default: []
   },
 
+  // Seasonal Financial Planning (NEW - for semifinal feature)
+  seasonalEvents: [{
+    eventType: {
+      type: String,
+      enum: ['prebuilt', 'custom'],
+      default: 'custom'
+    },
+    prebuiltEventId: String,
+    name: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    description: String,
+    category: {
+      type: String,
+      enum: ['festival', 'education', 'insurance', 'tax', 'utility', 'birthday', 'anniversary', 'vacation', 'wedding', 'custom', 'other'],
+      default: 'custom'
+    },
+    icon: {
+      type: String,
+      default: '📅'
+    },
+    date: {
+      type: Date,
+      required: true
+    },
+    isRecurring: {
+      type: Boolean,
+      default: false
+    },
+    recurringPattern: {
+      type: String,
+      enum: ['yearly', 'monthly', 'quarterly', 'custom'],
+      default: 'yearly'
+    },
+    estimatedExpense: {
+      type: Number,
+      required: true,
+      min: 0
+    },
+    currentSavings: {
+      type: Number,
+      default: 0
+    },
+    priority: {
+      type: String,
+      enum: ['low', 'medium', 'high', 'critical'],
+      default: 'medium'
+    },
+    reminderSettings: {
+      enabled: { type: Boolean, default: true },
+      reminderDays: { type: [Number], default: [30, 14, 7, 1] }
+    },
+    status: {
+      type: String,
+      enum: ['upcoming', 'in_progress', 'completed', 'skipped'],
+      default: 'upcoming'
+    },
+    notes: String,
+    createdAt: { type: Date, default: Date.now }
+  }],
+
+  // Seasonal Planning Preferences
+  seasonalPlanningPreferences: {
+    autoAddPrebuiltEvents: { type: Boolean, default: true },
+    selectedPrebuiltEvents: [String],
+    defaultPreparationWeeks: { type: Number, default: 4 },
+    seasonalReservePercentage: { type: Number, default: 10 },
+    notificationPreferences: {
+      emailReminders: { type: Boolean, default: true },
+      pushReminders: { type: Boolean, default: true },
+      reminderFrequency: {
+        type: String,
+        enum: ['weekly', 'bi-weekly', 'monthly'],
+        default: 'weekly'
+      }
+    },
+    regionalPreferences: [String]
+  },
+
+  // Emergency Alert Settings (NEW - for semifinal feature)
+  emergencyAlertSettings: {
+    enabled: { type: Boolean, default: true },
+    emailAlertsEnabled: { type: Boolean, default: true },
+    lowBalanceThreshold: { type: Number, default: 5000, min: 500 },
+    criticalBalanceThreshold: { type: Number, default: 1000, min: 100 },
+    budgetWarningPercent: { type: Number, default: 80, min: 50, max: 100 },
+    budgetCriticalPercent: { type: Number, default: 100, min: 80, max: 150 },
+    unusualExpenseMultiplier: { type: Number, default: 3, min: 2, max: 10 },
+    emiAlertDaysBefore: { type: Number, default: 5, min: 1, max: 15 },
+    quietHoursEnabled: { type: Boolean, default: false },
+    quietHoursStart: { type: Number, default: 22, min: 0, max: 23 },
+    quietHoursEnd: { type: Number, default: 7, min: 0, max: 23 },
+    alertCategories: {
+      lowBalance: { type: Boolean, default: true },
+      budgetExceeded: { type: Boolean, default: true },
+      unusualExpense: { type: Boolean, default: true },
+      emiAtRisk: { type: Boolean, default: true }
+    },
+    lastAlertSent: {
+      type: Map,
+      of: Date,
+      default: new Map()
+    },
+    alertCooldownHours: { type: Number, default: 4, min: 1, max: 24 }
+  },
+
+  // ============================================
+  // RETENTION SYSTEM (Achievements, Tips, Activity)
+  // ============================================
+
+  // Achievement tracking
+  achievements: {
+    unlocked: [{
+      id: {
+        type: String,
+        required: true
+      },
+      unlockedAt: {
+        type: Date,
+        default: Date.now
+      },
+      celebrated: {
+        type: Boolean,
+        default: false
+      }
+    }],
+    progress: {
+      // Tracking achievements
+      expenseCount: { type: Number, default: 0 },
+      voiceEntryCount: { type: Number, default: 0 },
+      // Savings achievements
+      totalSaved: { type: Number, default: 0 },
+      monthsWith20PercentSavings: { type: Number, default: 0 },
+      // Budget achievements
+      daysUnderBudget: { type: Number, default: 0 },
+      consecutiveDaysUnderBudget: { type: Number, default: 0 },
+      monthsUnderBudget: { type: Number, default: 0 },
+      categoriesUnderBudgetThisMonth: { type: [String], default: [] },
+      // Goal achievements
+      goalsCreated: { type: Number, default: 0 },
+      goalsCompleted: { type: Number, default: 0 },
+      goalsMilestoneReached: { type: [String], default: [] } // e.g., ['goal_id:50', 'goal_id:75']
+    },
+    lastChecked: {
+      type: Date,
+      default: Date.now
+    }
+  },
+
+  // Activity tracking for retention
+  activityTracking: {
+    lastActiveDate: {
+      type: Date,
+      default: Date.now
+    },
+    lastExpenseDate: {
+      type: Date
+    },
+    dailyPulseHistory: [{
+      date: {
+        type: Date,
+        required: true
+      },
+      mood: {
+        type: String,
+        enum: ['great', 'good', 'okay', 'tough'],
+        required: true
+      },
+      estimatedSpend: {
+        type: Number,
+        default: 0
+      }
+    }],
+    weeklyReportsSent: [{
+      type: Date
+    }],
+    tipsShown: [{
+      tipId: {
+        type: String,
+        required: true
+      },
+      shownAt: {
+        type: Date,
+        default: Date.now
+      },
+      feedback: {
+        type: String,
+        enum: ['helpful', 'not_relevant', null],
+        default: null
+      }
+    }],
+    lastTipShownDate: {
+      type: Date
+    },
+    nudgeHistory: [{
+      type: {
+        type: String,
+        required: true
+      },
+      sentAt: {
+        type: Date,
+        default: Date.now
+      },
+      dismissed: {
+        type: Boolean,
+        default: false
+      }
+    }]
+  },
+
+  // Retention feature preferences
+  retentionPreferences: {
+    dailyPulseEnabled: { type: Boolean, default: true },
+    weeklyEmailEnabled: { type: Boolean, default: true },
+    smartNudgesEnabled: { type: Boolean, default: true },
+    dailyTipsEnabled: { type: Boolean, default: true },
+    achievementNotificationsEnabled: { type: Boolean, default: true },
+    quietHoursStart: { type: Number, default: 22, min: 0, max: 23 },
+    quietHoursEnd: { type: Number, default: 7, min: 0, max: 23 }
+  },
+
   // Onboarding Status
   onboardingCompleted: {
     type: Boolean,
@@ -175,7 +493,7 @@ const userProfileSchema = new mongoose.Schema({
   
   onboardingStep: {
     type: String,
-    enum: ['income', 'demographics', 'budget_generation', 'review', 'completed'],
+    enum: ['income', 'demographics', 'financial_pulse', 'budget_generation', 'review', 'completed'],
     default: 'income'
   },
   
@@ -219,7 +537,7 @@ userProfileSchema.pre('save', function(next) {
 userProfileSchema.virtual('formattedIncome').get(function() {
   const currency = this.budgetPreferences?.currency || 'INR'
   const language = this.budgetPreferences?.language || 'hinglish'
-  
+
   // Map language to locale
   let locale = 'en-IN'
   if (language === 'hindi' || language === 'hi') {
@@ -227,12 +545,72 @@ userProfileSchema.virtual('formattedIncome').get(function() {
   } else if (language === 'english' || language === 'en') {
     locale = 'en-US'
   }
-  
+
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: currency,
     maximumFractionDigits: 0
   }).format(this.monthlyIncome || 0)
+})
+
+// Helper function to normalize income to monthly amount
+function normalizeToMonthly(amount, frequency) {
+  const multipliers = {
+    'weekly': 4.33,
+    'bi-weekly': 2.17,
+    'monthly': 1,
+    'quarterly': 0.33,
+    'annually': 0.083,
+    'irregular': 1
+  }
+  return Math.round(amount * (multipliers[frequency] || 1))
+}
+
+// Virtual: Total monthly income from all sources
+userProfileSchema.virtual('totalMonthlyIncome').get(function() {
+  if (!this.incomeSources || this.incomeSources.length === 0) {
+    return this.monthlyIncome || 0
+  }
+
+  return this.incomeSources
+    .filter(source => source.includeInBudget)
+    .reduce((total, source) => {
+      return total + normalizeToMonthly(source.amount, source.frequency)
+    }, 0)
+})
+
+// Virtual: Stable monthly income only (for conservative budgeting)
+userProfileSchema.virtual('stableMonthlyIncome').get(function() {
+  if (!this.incomeSources || this.incomeSources.length === 0) {
+    return this.monthlyIncome || 0
+  }
+
+  return this.incomeSources
+    .filter(source => source.includeInBudget && source.isStable)
+    .reduce((total, source) => {
+      return total + normalizeToMonthly(source.amount, source.frequency)
+    }, 0)
+})
+
+// Virtual: Income stability ratio (stable/total)
+userProfileSchema.virtual('incomeStabilityRatio').get(function() {
+  const total = this.totalMonthlyIncome
+  if (total === 0) return 1
+  return this.stableMonthlyIncome / total
+})
+
+// Virtual: Primary income source (highest amount)
+userProfileSchema.virtual('primaryIncomeSource').get(function() {
+  if (!this.incomeSources || this.incomeSources.length === 0) {
+    return { type: this.incomeSource || 'salary', amount: this.monthlyIncome || 0 }
+  }
+
+  return this.incomeSources.reduce((primary, source) => {
+    const normalizedAmount = normalizeToMonthly(source.amount, source.frequency)
+    return normalizedAmount > (primary.normalizedAmount || 0)
+      ? { ...source.toObject(), normalizedAmount }
+      : primary
+  }, { normalizedAmount: 0 })
 })
 
 // Method to check if budget needs regeneration (if profile updated)
@@ -359,6 +737,11 @@ userProfileSchema.methods.shouldSendNotification = function(type) {
   }
 }
 
-const UserProfile = mongoose.models.UserProfile || mongoose.model('UserProfile', userProfileSchema)
+// Clear cached model during development to pick up schema changes
+if (mongoose.models.UserProfile) {
+  delete mongoose.models.UserProfile
+}
+
+const UserProfile = mongoose.model('UserProfile', userProfileSchema)
 
 export default UserProfile

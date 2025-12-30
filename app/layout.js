@@ -135,6 +135,24 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
 
+        {/* Clear Google Translate cookies on first load - Default to English */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                if (typeof document !== 'undefined') {
+                  var lang = localStorage.getItem('wealthwise-language');
+                  if (!lang || lang === 'en') {
+                    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname + ';';
+                    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + window.location.hostname + ';';
+                  }
+                }
+              })();
+            `
+          }}
+        />
+
         {/* Structured Data for SEO */}
         <script
           type="application/ld+json"

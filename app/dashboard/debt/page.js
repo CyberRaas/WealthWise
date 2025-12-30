@@ -2,32 +2,62 @@
 
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@/lib/i18n'
 import DashboardLayout from '@/components/layout/DashboardLayout'
-import LanguageSelector from '@/components/ui/LanguageSelector'
 import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import {
   Plus,
-  Receipt,
   TrendingDown,
   TrendingUp,
-  Calendar,
-  AlertCircle,
-  CheckCircle,
   Edit,
   Trash2,
-  Eye,
   DollarSign,
   PieChart,
   LineChart,
-  Brain,
-
+  CheckCircle,
+  X,
+  Wallet,
+  Receipt
 } from 'lucide-react'
 import { toast } from 'react-hot-toast'
-import { PieChart as RechartsPieChart, Cell, ResponsiveContainer, LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Pie } from 'recharts'
+import { PieChart as RechartsPieChart, Cell, ResponsiveContainer, LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Pie } from 'recharts'
 
-// Modal Component for Adding/Editing Debt
+// Skeleton component
+function SkeletonBox({ className }) {
+  return <div className={`animate-pulse bg-slate-200 rounded ${className}`} />
+}
+
+function DebtSkeleton() {
+  return (
+    <div className="space-y-6 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {[1, 2].map(i => (
+          <div key={i} className="space-y-4">
+            <div className="flex justify-between items-center">
+              <SkeletonBox className="h-6 w-40" />
+              <SkeletonBox className="h-9 w-24" />
+            </div>
+            <div className="bg-white rounded-xl border p-4">
+              <div className="grid grid-cols-2 gap-4">
+                <SkeletonBox className="h-16" />
+                <SkeletonBox className="h-16" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {[1, 2, 3].map(i => (
+          <SkeletonBox key={i} className="h-48" />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// Modal Component
 function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
   const [formData, setFormData] = useState({
     type: type,
@@ -41,94 +71,60 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
   })
   const [mounted, setMounted] = useState(false)
 
-  // Ensure component is mounted (for portal)
   useEffect(() => {
     setMounted(true)
     return () => setMounted(false)
   }, [])
 
-  // Lock body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = 'unset'
     }
-
-    // Cleanup function
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
+    return () => { document.body.style.overflow = 'unset' }
   }, [isOpen])
 
-  // Handle ESC key to close modal
   useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape' && isOpen) {
-        onClose()
-      }
-    }
-
-    document.addEventListener('keydown', handleEscapeKey)
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey)
-    }
+    const handleEsc = (e) => { if (e.key === 'Escape' && isOpen) onClose() }
+    document.addEventListener('keydown', handleEsc)
+    return () => document.removeEventListener('keydown', handleEsc)
   }, [isOpen, onClose])
 
-  // Calculate monthly installment and due date based on amount, interest rate, and duration
+  // Calculate EMI and due date
   const calculateLoanDetails = (amount, interestRate, duration) => {
     if (!amount || !duration || amount <= 0 || duration <= 0) {
       return { monthlyInstallment: '', dueDate: '' }
     }
-
     const principal = parseFloat(amount)
     const months = parseInt(duration)
     const monthlyRate = parseFloat(interestRate || 0) / 100 / 12
-
     let monthlyInstallment
     if (monthlyRate > 0) {
-      // EMI calculation with interest
       monthlyInstallment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1)
     } else {
-      // Simple division if no interest
       monthlyInstallment = principal / months
     }
-
-    // Calculate due date (duration months from today)
     const today = new Date()
     const dueDate = new Date(today.getFullYear(), today.getMonth() + months, today.getDate())
-
     return {
       monthlyInstallment: monthlyInstallment.toFixed(2),
       dueDate: dueDate.toISOString().split('T')[0]
     }
   }
 
-  // Auto-calculate when amount, interest rate, or duration changes
   useEffect(() => {
-    const { monthlyInstallment, dueDate } = calculateLoanDetails(
-      formData.amount,
-      formData.interestRate,
-      formData.duration
-    )
-
+    const { monthlyInstallment, dueDate } = calculateLoanDetails(formData.amount, formData.interestRate, formData.duration)
     if (monthlyInstallment && dueDate) {
-      setFormData(prev => ({
-        ...prev,
-        monthlyInstallment,
-        dueDate
-      }))
+      setFormData(prev => ({ ...prev, monthlyInstallment, dueDate }))
     }
   }, [formData.amount, formData.interestRate, formData.duration])
 
   useEffect(() => {
     if (debt) {
-      // For existing debt, calculate duration from current date to due date
       const today = new Date()
       const existingDueDate = new Date(debt.dueDate)
-      const monthsDiff = (existingDueDate.getFullYear() - today.getFullYear()) * 12 +
-        (existingDueDate.getMonth() - today.getMonth())
-
+      const monthsDiff = (existingDueDate.getFullYear() - today.getFullYear()) * 12 + (existingDueDate.getMonth() - today.getMonth())
       setFormData({
         type: debt.type,
         name: debt.name,
@@ -155,164 +151,128 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     if (!formData.name || !formData.amount || !formData.duration) {
       toast.error('Please fill in all required fields')
       return
     }
-
-    const debtData = {
+    await onSave({
       ...formData,
       amount: parseFloat(formData.amount),
       interestRate: parseFloat(formData.interestRate) || 0,
       duration: parseInt(formData.duration),
       monthlyInstallment: parseFloat(formData.monthlyInstallment) || 0
-    }
-
-    await onSave(debtData)
+    })
   }
 
   if (!isOpen || !mounted) return null
 
   const modalContent = (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-200"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-200"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4" onClick={onClose}>
+      <div className="bg-white rounded-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold">
+          <h2 className="text-lg font-semibold text-slate-800">
             {debt ? 'Edit' : 'Add'} {type === 'taken' ? 'Debt Taken' : 'Debt Given'}
           </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 transition-colors"
-            aria-label="Close modal"
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1">
               {type === 'taken' ? 'Lender Name' : 'Borrower Name'} *
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder={type === 'taken' ? 'Enter lender name' : 'Enter borrower name'}
+              className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+              placeholder={type === 'taken' ? 'e.g., Bank Name' : 'e.g., Friend Name'}
               required
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Amount *</label>
-            <input
-              type="number"
-              value={formData.amount}
-              onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="Enter amount"
-              min="0"
-              step="0.01"
-              required
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Amount (₹) *</label>
+              <input
+                type="number"
+                value={formData.amount}
+                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+                placeholder="0"
+                min="0"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Interest Rate (%)</label>
+              <input
+                type="number"
+                value={formData.interestRate}
+                onChange={(e) => setFormData({ ...formData, interestRate: e.target.value })}
+                className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+                placeholder="0"
+                min="0"
+                max="100"
+                step="0.1"
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Interest Rate (% per annum)</label>
-            <input
-              type="number"
-              value={formData.interestRate}
-              onChange={(e) => setFormData({ ...formData, interestRate: e.target.value })}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="Enter interest rate"
-              min="0"
-              max="100"
-              step="0.01"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Duration (months) *</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Duration (months) *</label>
             <input
               type="number"
               value={formData.duration}
               onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="Enter duration in months"
+              className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+              placeholder="12"
               min="1"
-              max="600"
               required
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Monthly installment and due date will be calculated automatically
-            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-slate-500 mb-1">Monthly EMI</label>
+              <input
+                type="text"
+                value={formData.monthlyInstallment ? `₹${parseFloat(formData.monthlyInstallment).toLocaleString('en-IN')}` : ''}
+                className="w-full p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-sm text-slate-600"
+                disabled
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-500 mb-1">Due Date</label>
+              <input
+                type="text"
+                value={formData.dueDate ? new Date(formData.dueDate).toLocaleDateString('en-IN') : ''}
+                className="w-full p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-sm text-slate-600"
+                disabled
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Installment (Calculated)</label>
-            <input
-              type="number"
-              value={formData.monthlyInstallment}
-              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
-              placeholder="Auto-calculated"
-              disabled
-              step="0.01"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              This is automatically calculated based on amount, interest rate, and duration
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Final Due Date (Calculated)</label>
-            <input
-              type="date"
-              value={formData.dueDate}
-              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
-              disabled
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Final payment due date based on duration
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="Enter description (optional)"
-              rows="3"
+              className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+              placeholder="Optional notes..."
+              rows="2"
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              className="flex-1"
-            >
+          <div className="flex gap-3 pt-2">
+            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
             <Button
               type="submit"
-              className={`flex-1 ${type === 'taken'
-                ? 'bg-red-500 hover:bg-red-600'
-                : 'bg-green-500 hover:bg-green-600'
-                } text-white`}
+              className={`flex-1 text-white ${type === 'taken' ? 'bg-red-500 hover:bg-red-600' : 'bg-emerald-500 hover:bg-emerald-600'}`}
             >
               {debt ? 'Update' : 'Add'} Debt
             </Button>
@@ -322,7 +282,6 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
     </div>
   )
 
-  // Use portal to render modal outside the component tree
   return createPortal(modalContent, document.body)
 }
 
@@ -345,16 +304,12 @@ function DebtOverview() {
     try {
       const response = await fetch('/api/debt')
       const data = await response.json()
-
       if (response.ok) {
         setDebts(data.debts)
         setSummary(data.summary)
-      } else {
-        toast.error(data.error || 'Failed to fetch debts')
       }
     } catch (error) {
       console.error('Fetch error:', error)
-      toast.error('Failed to fetch debts')
     } finally {
       setLoading(false)
     }
@@ -364,10 +319,7 @@ function DebtOverview() {
     try {
       const response = await fetch('/api/user')
       const data = await response.json()
-
-      if (response.ok) {
-        setUserProfile(data.user)
-      }
+      if (response.ok) setUserProfile(data.user)
     } catch (error) {
       console.error('Profile fetch error:', error)
     }
@@ -389,74 +341,46 @@ function DebtOverview() {
     try {
       const url = editingDebt ? `/api/debt/${editingDebt._id}` : '/api/debt'
       const method = editingDebt ? 'PUT' : 'POST'
-
       const response = await fetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(debtData)
       })
-
       const data = await response.json()
-
       if (response.ok) {
-        toast.success(editingDebt ? 'Debt updated successfully' : 'Debt added successfully')
+        toast.success(editingDebt ? 'Debt updated' : 'Debt added')
         setShowModal(false)
         setEditingDebt(null)
         fetchDebts()
       } else {
-        toast.error(data.error || 'Failed to save debt')
+        toast.error(data.error || 'Failed to save')
       }
     } catch (error) {
-      console.error('Save error:', error)
       toast.error('Failed to save debt')
     }
   }
 
   const handleDeleteDebt = async (debtId) => {
-    if (!confirm('Are you sure you want to delete this debt?')) return
-
+    if (!confirm('Delete this debt?')) return
     try {
-      const response = await fetch(`/api/debt/${debtId}`, {
-        method: 'DELETE'
-      })
-
-      const data = await response.json()
-
+      const response = await fetch(`/api/debt/${debtId}`, { method: 'DELETE' })
       if (response.ok) {
-        toast.success('Debt deleted successfully')
+        toast.success('Debt deleted')
         fetchDebts()
-      } else {
-        toast.error(data.error || 'Failed to delete debt')
       }
     } catch (error) {
-      console.error('Delete error:', error)
-      toast.error('Failed to delete debt')
+      toast.error('Failed to delete')
     }
   }
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(amount)
-  }
+  const formatCurrency = (amount) => `₹${(amount || 0).toLocaleString('en-IN')}`
 
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-IN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
-  }
+  const formatDate = (date) => new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
 
   const getDaysUntilDue = (dueDate) => {
     const today = new Date()
     const due = new Date(dueDate)
-    const timeDiff = due.getTime() - today.getTime()
-    return Math.ceil(timeDiff / (1000 * 3600 * 24))
+    return Math.ceil((due.getTime() - today.getTime()) / (1000 * 3600 * 24))
   }
 
   const calculateDebtScore = () => {
@@ -464,18 +388,11 @@ function DebtOverview() {
     const totalDebtTaken = summary.taken.totalRemaining || 0
     const totalDebtGiven = summary.given.totalRemaining || 0
     const totalDebts = debts.length
-    const overdueDebts = debts.filter(debt => {
-      const dueDate = new Date(debt.dueDate)
-      const today = new Date()
-      return dueDate < today && debt.remainingBalance > 0
-    }).length
+    const overdueDebts = debts.filter(debt => new Date(debt.dueDate) < new Date() && debt.remainingBalance > 0).length
 
-    // If no debts at all, return excellent score
     if (totalDebts === 0) return 95
 
-    let score = 50 // Base score
-
-    // Factor 1: Debt-to-income ratio (40% weight) - only if income is available
+    let score = 50
     if (monthlyIncome > 0) {
       const debtRatio = (totalDebtTaken / monthlyIncome) * 100
       if (debtRatio <= 10) score += 40
@@ -484,87 +401,65 @@ function DebtOverview() {
       else if (debtRatio <= 40) score += 10
       else score -= 10
     } else {
-      // If no income data, use debt amount as indicator
-      if (totalDebtTaken <= 100000) score += 25      // Under 1L
-      else if (totalDebtTaken <= 500000) score += 15 // Under 5L
-      else if (totalDebtTaken <= 1000000) score += 5 // Under 10L
-      else score -= 10 // Above 10L
+      if (totalDebtTaken <= 100000) score += 25
+      else if (totalDebtTaken <= 500000) score += 15
+      else if (totalDebtTaken <= 1000000) score += 5
+      else score -= 10
     }
 
-    // Factor 2: Debt diversity (20% weight)
     const debtBalance = totalDebtTaken > 0 && totalDebtGiven > 0
-    if (debtBalance && totalDebtGiven >= totalDebtTaken * 0.5) {
-      score += 20 // Good balance between lending and borrowing
-    } else if (totalDebtTaken === 0 && totalDebtGiven > 0) {
-      score += 15 // Only lending, no borrowing
-    } else if (totalDebtTaken > 0 && totalDebtGiven === 0) {
-      score += 5 // Only borrowing
-    }
+    if (debtBalance && totalDebtGiven >= totalDebtTaken * 0.5) score += 20
+    else if (totalDebtTaken === 0 && totalDebtGiven > 0) score += 15
+    else if (totalDebtTaken > 0 && totalDebtGiven === 0) score += 5
 
-    // Factor 3: Overdue payments (20% weight)
-    if (overdueDebts === 0) {
-      score += 20 // No overdue payments
-    } else {
+    if (overdueDebts === 0) score += 20
+    else {
       const overdueRatio = overdueDebts / totalDebts
-      if (overdueRatio <= 0.1) score += 10      // Less than 10% overdue
-      else if (overdueRatio <= 0.25) score += 5 // Less than 25% overdue
-      else score -= 15 // More than 25% overdue
+      if (overdueRatio <= 0.1) score += 10
+      else if (overdueRatio <= 0.25) score += 5
+      else score -= 15
     }
 
-    // Factor 4: Number of active debts (10% weight)
-    if (totalDebts <= 2) score += 10        // Few debts to manage
-    else if (totalDebts <= 5) score += 5    // Moderate number
-    else score -= 5 // Too many debts
-
-    // Factor 5: Average debt size (10% weight)
-    const avgDebtSize = totalDebts > 0 ? totalDebtTaken / debts.filter(d => d.type === 'taken').length : 0
-    if (avgDebtSize <= 50000) score += 10      // Small average debt
-    else if (avgDebtSize <= 200000) score += 5 // Medium average debt
-    else score -= 5 // Large average debt
+    if (totalDebts <= 2) score += 10
+    else if (totalDebts <= 5) score += 5
+    else score -= 5
 
     return Math.max(0, Math.min(100, Math.round(score)))
   }
 
-  const getDebtScoreColor = (score) => {
-    if (score >= 80) return 'text-green-600'
+  const getScoreColor = (score) => {
+    if (score >= 80) return 'text-emerald-600'
     if (score >= 60) return 'text-blue-600'
     if (score >= 40) return 'text-yellow-600'
-    if (score >= 20) return 'text-orange-600'
     return 'text-red-600'
   }
 
-  const getDebtScoreLabel = (score) => {
-    if (score >= 80) return 'Excellent'
-    if (score >= 60) return 'Good'
-    if (score >= 40) return 'Fair'
-    if (score >= 20) return 'Poor'
-    return 'Critical'
+  const getScoreLabel = (score) => {
+    if (score >= 80) return t('debt.excellent')
+    if (score >= 60) return t('debt.good')
+    if (score >= 40) return t('debt.fair')
+    if (score >= 20) return t('debt.poor')
+    return t('debt.critical')
   }
 
-  const getDebtScoreDescription = (score) => {
-    if (score >= 80) return 'Your debt management is excellent! Keep it up.'
-    if (score >= 60) return 'Good debt management with room for minor improvements.'
-    if (score >= 40) return 'Fair debt situation. Consider optimizing your strategy.'
-    if (score >= 20) return 'Poor debt management. Immediate action recommended.'
-    return 'Critical debt situation. Seek professional financial advice.'
+  const getScoreRingColor = (score) => {
+    if (score >= 80) return '#10b981'
+    if (score >= 60) return '#3b82f6'
+    if (score >= 40) return '#f59e0b'
+    return '#ef4444'
   }
 
-  // Data for charts
   const pieChartData = [
-    { name: 'Debt Taken', value: summary.taken.totalRemaining || 0, color: '#ef4444' },
-    { name: 'Debt Given', value: summary.given.totalRemaining || 0, color: '#22c55e' }
+    { name: t('debt.debtsTaken'), value: summary.taken.totalRemaining || 0, color: '#ef4444' },
+    { name: t('debt.debtsGiven'), value: summary.given.totalRemaining || 0, color: '#10b981' }
   ]
 
   const lineChartData = debts.reduce((acc, debt) => {
     const month = new Date(debt.createdAt).toISOString().slice(0, 7)
     const existing = acc.find(item => item.month === month)
-
     if (existing) {
-      if (debt.type === 'taken') {
-        existing.taken += debt.amount
-      } else {
-        existing.given += debt.amount
-      }
+      if (debt.type === 'taken') existing.taken += debt.amount
+      else existing.given += debt.amount
     } else {
       acc.push({
         month,
@@ -572,7 +467,6 @@ function DebtOverview() {
         given: debt.type === 'given' ? debt.amount : 0
       })
     }
-
     return acc
   }, []).sort((a, b) => a.month.localeCompare(b.month)).slice(-6)
 
@@ -580,342 +474,239 @@ function DebtOverview() {
 
   return (
     <DashboardLayout title={t('debt.title')}>
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-slate-600 mt-1">
-              {t('debt.subtitle')}
-            </p>
-          </div>
-        </div>
+      <div className="space-y-6 max-w-6xl mx-auto">
 
         {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-          </div>
+          <DebtSkeleton />
         ) : (
           <>
-            {/* Debt Summary Cards */}
+            {/* Debt Summary Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Debt Taken Section */}
+              {/* Debt Taken */}
               <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <h2 className="text-lg sm:text-xl font-semibold text-red-600 flex items-center">
-                    <TrendingDown className="w-5 h-5 mr-2" />
-                    {t('debt.debtsTaken')} ({t('debt.liabilities')})
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-red-600 flex items-center gap-2">
+                    <TrendingDown className="w-5 h-5" />
+                    {t('debt.debtsTaken')}
+                    <span className="text-sm font-normal text-slate-400">({t('debt.liabilities')})</span>
                   </h2>
-                  <Button
-                    onClick={() => handleAddDebt('taken')}
-                    className="bg-red-500 hover:bg-red-600 text-white w-full sm:w-auto"
-                    size="sm"
-                  >
+                  <Button onClick={() => handleAddDebt('taken')} size="sm" className="bg-red-500 hover:bg-red-600 text-white h-9">
                     <Plus className="w-4 h-4 mr-1" />
                     {t('debt.addDebt')}
                   </Button>
                 </div>
 
-                <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4">
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 text-sm">
-                    <div>
-                      <p className="text-red-600 font-medium">{t('debt.totalAmount')}</p>
-                      <p className="text-red-800 font-bold text-base sm:text-lg">
-                        {formatCurrency(summary.taken.totalAmount || 0)}
-                      </p>
+                <Card className="border-red-200 bg-red-50/50">
+                  <CardContent className="p-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-red-600 font-medium">{t('debt.totalAmount')}</p>
+                        <p className="text-lg font-bold text-red-700">{formatCurrency(summary.taken.totalAmount)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-red-600 font-medium">{t('debt.remainingAmount')}</p>
+                        <p className="text-lg font-bold text-red-700">{formatCurrency(summary.taken.totalRemaining)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-red-600 font-medium">{t('debt.monthlyPayments')}</p>
+                        <p className="text-sm font-semibold text-red-700">{formatCurrency(summary.taken.totalMonthlyPayments)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-red-600 font-medium">{t('debt.activeDebts')}</p>
+                        <p className="text-sm font-semibold text-red-700">{summary.taken.count || 0}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-red-600 font-medium">{t('debt.remainingAmount')}</p>
-                      <p className="text-red-800 font-bold text-base sm:text-lg">
-                        {formatCurrency(summary.taken.totalRemaining || 0)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-red-600 font-medium">{t('debt.monthlyPayments')}</p>
-                      <p className="text-red-800 font-bold text-sm sm:text-base">
-                        {formatCurrency(summary.taken.totalMonthlyPayments || 0)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-red-600 font-medium">{t('debt.activeDebts')}</p>
-                      <p className="text-red-800 font-bold text-sm sm:text-base">{summary.taken.count || 0}</p>
-                    </div>
-                  </div>
-                </div>              <div className="space-y-3">
-                  {debts.filter(debt => debt.type === 'taken').slice(0, 3).map((debt) => {
-                    const daysUntilDue = getDaysUntilDue(debt.dueDate)
-                    const completionPercentage = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
+                  </CardContent>
+                </Card>
+
+                {/* Debt Taken List */}
+                <div className="space-y-2">
+                  {debts.filter(d => d.type === 'taken').slice(0, 3).map((debt) => {
+                    const daysLeft = getDaysUntilDue(debt.dueDate)
+                    const progress = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
 
                     return (
-                      <div key={debt._id} className="bg-white border border-red-200 rounded-lg p-4">
+                      <div key={debt._id} className="bg-white border border-slate-200 rounded-lg p-3 hover:shadow-sm transition-shadow">
                         <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-slate-800">{debt.name}</h3>
-                          <div className="flex gap-2">
-                            <Button
-                              onClick={() => handleEditDebt(debt)}
-                              variant="ghost"
-                              size="sm"
-                              className="text-slate-500 hover:text-slate-700"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              onClick={() => handleDeleteDebt(debt._id)}
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-500 hover:text-red-700"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                          <span className="font-medium text-slate-800 text-sm">{debt.name}</span>
+                          <div className="flex gap-1">
+                            <button onClick={() => handleEditDebt(debt)} className="p-1 text-slate-400 hover:text-slate-600">
+                              <Edit className="w-3.5 h-3.5" />
+                            </button>
+                            <button onClick={() => handleDeleteDebt(debt._id)} className="p-1 text-slate-400 hover:text-red-500">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
                           </div>
                         </div>
-
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-slate-600">Remaining:</span>
-                            <span className="font-medium text-red-600">
-                              {formatCurrency(debt.remainingBalance)}
-                            </span>
-                          </div>
-
-                          <div className="w-full bg-red-100 rounded-full h-2">
-                            <div
-                              className="bg-red-500 h-2 rounded-full transition-all duration-300"
-                              style={{ width: `${completionPercentage}%` }}
-                            />
-                          </div>
-
-                          <div className="flex justify-between text-xs text-slate-500">
-                            <span>Due: {formatDate(debt.dueDate)}</span>
-                            <span className={daysUntilDue < 30 ? 'text-red-600 font-medium' : ''}>
-                              {daysUntilDue > 0 ? `${daysUntilDue} days left` : 'Overdue'}
-                            </span>
-                          </div>
+                        <div className="flex items-center justify-between text-xs mb-2">
+                          <span className="text-slate-500">{t('debt.remaining')}: <span className="font-medium text-red-600">{formatCurrency(debt.remainingBalance)}</span></span>
+                          <span className={daysLeft < 30 ? 'text-red-600 font-medium' : 'text-slate-500'}>
+                            {daysLeft > 0 ? `${daysLeft} ${t('debt.days')}` : t('debt.overdue')}
+                          </span>
+                        </div>
+                        <div className="w-full bg-red-100 rounded-full h-1.5">
+                          <div className="bg-red-500 h-1.5 rounded-full" style={{ width: `${progress}%` }} />
                         </div>
                       </div>
                     )
                   })}
 
-                  {debts.filter(debt => debt.type === 'taken').length === 0 && (
-                    <div className="text-center py-8 text-slate-500">
-                      <Receipt className="w-12 h-12 mx-auto mb-2 text-slate-300" />
-                      <p>No debts taken yet</p>
+                  {debts.filter(d => d.type === 'taken').length === 0 && (
+                    <div className="text-center py-8 text-slate-400">
+                      <Receipt className="w-10 h-10 mx-auto mb-2 text-slate-200" />
+                      <p className="text-sm">{t('debt.noDebtsTaken')}</p>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Debt Given Section */}
+              {/* Debt Given */}
               <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <h2 className="text-lg sm:text-xl font-semibold text-green-600 flex items-center">
-                    <TrendingUp className="w-5 h-5 mr-2" />
-                    Debt Given (Assets)
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-emerald-600 flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5" />
+                    {t('debt.debtsGiven')}
+                    <span className="text-sm font-normal text-slate-400">({t('debt.assets')})</span>
                   </h2>
-                  <Button
-                    onClick={() => handleAddDebt('given')}
-                    className="bg-green-500 hover:bg-green-600 text-white w-full sm:w-auto"
-                    size="sm"
-                  >
+                  <Button onClick={() => handleAddDebt('given')} size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white h-9">
                     <Plus className="w-4 h-4 mr-1" />
-                    Add Debt
+                    {t('debt.addDebt')}
                   </Button>
                 </div>
 
-                <div className="bg-green-50 border-l-4 border-green-500 rounded-lg p-4">
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 text-sm">
-                    <div>
-                      <p className="text-green-600 font-medium">Total Amount</p>
-                      <p className="text-green-800 font-bold text-base sm:text-lg">
-                        {formatCurrency(summary.given.totalAmount || 0)}
-                      </p>
+                <Card className="border-emerald-200 bg-emerald-50/50">
+                  <CardContent className="p-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-emerald-600 font-medium">{t('debt.totalAmount')}</p>
+                        <p className="text-lg font-bold text-emerald-700">{formatCurrency(summary.given.totalAmount)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-emerald-600 font-medium">{t('debt.remainingAmount')}</p>
+                        <p className="text-lg font-bold text-emerald-700">{formatCurrency(summary.given.totalRemaining)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-emerald-600 font-medium">{t('debt.monthlyPayments')}</p>
+                        <p className="text-sm font-semibold text-emerald-700">{formatCurrency(summary.given.totalMonthlyPayments)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-emerald-600 font-medium">{t('debt.activeDebts')}</p>
+                        <p className="text-sm font-semibold text-emerald-700">{summary.given.count || 0}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-green-600 font-medium">Remaining</p>
-                      <p className="text-green-800 font-bold text-base sm:text-lg">
-                        {formatCurrency(summary.given.totalRemaining || 0)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-green-600 font-medium">Monthly Payments</p>
-                      <p className="text-green-800 font-bold text-sm sm:text-base">
-                        {formatCurrency(summary.given.totalMonthlyPayments || 0)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-green-600 font-medium">Active Debts</p>
-                      <p className="text-green-800 font-bold text-sm sm:text-base">{summary.given.count || 0}</p>
-                    </div>
-                  </div>
-                </div>              <div className="space-y-3">
-                  {debts.filter(debt => debt.type === 'given').slice(0, 3).map((debt) => {
-                    const daysUntilDue = getDaysUntilDue(debt.dueDate)
-                    const completionPercentage = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
+                  </CardContent>
+                </Card>
+
+                {/* Debt Given List */}
+                <div className="space-y-2">
+                  {debts.filter(d => d.type === 'given').slice(0, 3).map((debt) => {
+                    const daysLeft = getDaysUntilDue(debt.dueDate)
+                    const progress = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
 
                     return (
-                      <div key={debt._id} className="bg-white border border-green-200 rounded-lg p-4">
+                      <div key={debt._id} className="bg-white border border-slate-200 rounded-lg p-3 hover:shadow-sm transition-shadow">
                         <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-slate-800">{debt.name}</h3>
-                          <div className="flex gap-2">
-                            <Button
-                              onClick={() => handleEditDebt(debt)}
-                              variant="ghost"
-                              size="sm"
-                              className="text-slate-500 hover:text-slate-700"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              onClick={() => handleDeleteDebt(debt._id)}
-                              variant="ghost"
-                              size="sm"
-                              className="text-green-500 hover:text-green-700"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                          <span className="font-medium text-slate-800 text-sm">{debt.name}</span>
+                          <div className="flex gap-1">
+                            <button onClick={() => handleEditDebt(debt)} className="p-1 text-slate-400 hover:text-slate-600">
+                              <Edit className="w-3.5 h-3.5" />
+                            </button>
+                            <button onClick={() => handleDeleteDebt(debt._id)} className="p-1 text-slate-400 hover:text-red-500">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
                           </div>
                         </div>
-
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-slate-600">Remaining:</span>
-                            <span className="font-medium text-green-600">
-                              {formatCurrency(debt.remainingBalance)}
-                            </span>
-                          </div>
-
-                          <div className="w-full bg-green-100 rounded-full h-2">
-                            <div
-                              className="bg-green-500 h-2 rounded-full transition-all duration-300"
-                              style={{ width: `${completionPercentage}%` }}
-                            />
-                          </div>
-
-                          <div className="flex justify-between text-xs text-slate-500">
-                            <span>Due: {formatDate(debt.dueDate)}</span>
-                            <span className={daysUntilDue < 30 ? 'text-green-600 font-medium' : ''}>
-                              {daysUntilDue > 0 ? `${daysUntilDue} days left` : 'Overdue'}
-                            </span>
-                          </div>
+                        <div className="flex items-center justify-between text-xs mb-2">
+                          <span className="text-slate-500">{t('debt.remaining')}: <span className="font-medium text-emerald-600">{formatCurrency(debt.remainingBalance)}</span></span>
+                          <span className={daysLeft < 30 ? 'text-emerald-600 font-medium' : 'text-slate-500'}>
+                            {daysLeft > 0 ? `${daysLeft} ${t('debt.days')}` : t('debt.overdue')}
+                          </span>
+                        </div>
+                        <div className="w-full bg-emerald-100 rounded-full h-1.5">
+                          <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: `${progress}%` }} />
                         </div>
                       </div>
                     )
                   })}
 
-                  {debts.filter(debt => debt.type === 'given').length === 0 && (
-                    <div className="text-center py-8 text-slate-500">
-                      <DollarSign className="w-12 h-12 mx-auto mb-2 text-slate-300" />
-                      <p>No debts given yet</p>
+                  {debts.filter(d => d.type === 'given').length === 0 && (
+                    <div className="text-center py-8 text-slate-400">
+                      <DollarSign className="w-10 h-10 mx-auto mb-2 text-slate-200" />
+                      <p className="text-sm">{t('debt.noDebtsGiven')}</p>
                     </div>
                   )}
                 </div>
               </div>
             </div>
 
-            {/* Analytics Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Analytics Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Debt Score */}
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-4 sm:p-6">
-                <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                  <CheckCircle className="w-5 h-5 mr-2 text-emerald-500" />
-                  Debt Score
-                </h3>
-
-                <div className="text-center">
-                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4">
-                    <svg className="w-24 h-24 sm:w-32 sm:h-32 transform -rotate-90" viewBox="0 0 100 100">
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="#e5e7eb"
-                        strokeWidth="8"
-                        fill="none"
-                      />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke={
-                          debtScore >= 80 ? '#22c55e' :
-                            debtScore >= 60 ? '#3b82f6' :
-                              debtScore >= 40 ? '#f59e0b' :
-                                debtScore >= 20 ? '#f97316' : '#ef4444'
-                        }
-                        strokeWidth="8"
-                        fill="none"
-                        strokeDasharray={`${debtScore * 2.51} 251`}
-                        strokeLinecap="round"
-                        className="transition-all duration-1000"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className={`text-xl sm:text-2xl font-bold ${getDebtScoreColor(debtScore)}`}>
-                          {Math.round(debtScore)}
+              <Card className="border-slate-200">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-500" />
+                    {t('debt.debtScore')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex items-center justify-center">
+                    <div className="relative w-24 h-24">
+                      <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" stroke="#e5e7eb" strokeWidth="8" fill="none" />
+                        <circle
+                          cx="50" cy="50" r="40"
+                          stroke={getScoreRingColor(debtScore)}
+                          strokeWidth="8"
+                          fill="none"
+                          strokeDasharray={`${debtScore * 2.51} 251`}
+                          strokeLinecap="round"
+                          className="transition-all duration-700"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-center">
+                          <div className={`text-2xl font-bold ${getScoreColor(debtScore)}`}>{debtScore}</div>
+                          <div className="text-[10px] text-slate-400">{t('debt.outOf100')}</div>
                         </div>
-                        <div className="text-xs text-slate-500">out of 100</div>
                       </div>
                     </div>
                   </div>
-
-                  <div className={`text-base sm:text-lg font-semibold ${getDebtScoreColor(debtScore)}`}>
-                    {getDebtScoreLabel(debtScore)}
+                  <div className="text-center mt-2">
+                    <Badge className={`${debtScore >= 80 ? 'bg-emerald-100 text-emerald-700' : debtScore >= 60 ? 'bg-blue-100 text-blue-700' : debtScore >= 40 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
+                      {getScoreLabel(debtScore)}
+                    </Badge>
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-2">
-                    {getDebtScoreDescription(debtScore)}
-                  </p>
-                </div>
-
-                {/* Score Factors */}
-                <div className="mt-4 pt-4 border-t border-slate-200">
-                  <div className="space-y-2 text-xs">
+                  <div className="mt-3 pt-3 border-t border-slate-100 space-y-1.5 text-xs">
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Total Debts:</span>
+                      <span className="text-slate-500">{t('debt.totalDebts')}:</span>
                       <span className="font-medium">{debts.length}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Total Borrowed:</span>
-                      <span className="font-medium text-red-600">
-                        ₹{(summary.taken.totalRemaining || 0).toLocaleString()}
-                      </span>
+                      <span className="text-slate-500">{t('debt.totalBorrowed')}:</span>
+                      <span className="font-medium text-red-600">{formatCurrency(summary.taken.totalRemaining)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Total Lent:</span>
-                      <span className="font-medium text-green-600">
-                        ₹{(summary.given.totalRemaining || 0).toLocaleString()}
-                      </span>
+                      <span className="text-slate-500">{t('debt.totalLent')}:</span>
+                      <span className="font-medium text-emerald-600">{formatCurrency(summary.given.totalRemaining)}</span>
                     </div>
-                    {userProfile?.monthlyIncome && (
-                      <div className="flex justify-between">
-                        <span className="text-slate-600">Debt-to-Income:</span>
-                        <span className="font-medium">
-                          {((summary.taken.totalRemaining || 0) / userProfile.monthlyIncome * 100).toFixed(1)}%
-                        </span>
-                      </div>
-                    )}
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
 
-              {/* Debt Distribution Pie Chart */}
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-4 sm:p-6">
-                <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                  <PieChart className="w-5 h-5 mr-2 text-emerald-500" />
-                  Debt Distribution
-                </h3>
-
-                {pieChartData.some(item => item.value > 0) ? (
-                  <div className="h-36 sm:h-48">
-                    <ResponsiveContainer width="100%" height="100%">
+              {/* Distribution */}
+              <Card className="border-slate-200">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                    <PieChart className="w-4 h-4 text-blue-500" />
+                    {t('debt.debtDistribution')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  {pieChartData.some(d => d.value > 0) ? (
+                    <ResponsiveContainer width="100%" height={140}>
                       <RechartsPieChart>
-                        <Pie
-                          data={pieChartData.filter(item => item.value > 0)}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={30}
-                          outerRadius={60}
-                          dataKey="value"
-                        >
+                        <Pie data={pieChartData.filter(d => d.value > 0)} cx="50%" cy="50%" innerRadius={30} outerRadius={50} dataKey="value">
                           {pieChartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
@@ -923,86 +714,51 @@ function DebtOverview() {
                         <Tooltip formatter={(value) => formatCurrency(value)} />
                       </RechartsPieChart>
                     </ResponsiveContainer>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center h-36 sm:h-48 text-slate-500">
-                    <div className="text-center">
-                      <PieChart className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-2 text-slate-300" />
-                      <p className="text-xs sm:text-sm">No debt data available</p>
+                  ) : (
+                    <div className="flex items-center justify-center h-[140px] text-slate-400">
+                      <div className="text-center">
+                        <PieChart className="w-8 h-8 mx-auto mb-1 text-slate-200" />
+                        <p className="text-xs">{t('debt.noData')}</p>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </CardContent>
+              </Card>
 
-              {/* Debt Trend Line Chart */}
-              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-4 sm:p-6">
-                <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                  <LineChart className="w-5 h-5 mr-2 text-emerald-500" />
-                  Debt Trends
-                </h3>
-
-                {lineChartData.length > 0 ? (
-                  <div className="h-36 sm:h-48">
-                    <ResponsiveContainer width="100%" height="100%">
+              {/* Trends */}
+              <Card className="border-slate-200">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                    <LineChart className="w-4 h-4 text-purple-500" />
+                    {t('debt.debtTrends')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  {lineChartData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={140}>
                       <RechartsLineChart data={lineChartData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" fontSize={10} />
-                        <YAxis fontSize={10} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                        <XAxis dataKey="month" fontSize={9} stroke="#94a3b8" />
+                        <YAxis fontSize={9} stroke="#94a3b8" tickFormatter={(v) => `₹${(v/1000).toFixed(0)}k`} />
                         <Tooltip formatter={(value) => formatCurrency(value)} />
-                        <Line type="monotone" dataKey="taken" stroke="#ef4444" strokeWidth={2} />
-                        <Line type="monotone" dataKey="given" stroke="#22c55e" strokeWidth={2} />
+                        <Line type="monotone" dataKey="taken" stroke="#ef4444" strokeWidth={2} dot={{ r: 2 }} />
+                        <Line type="monotone" dataKey="given" stroke="#10b981" strokeWidth={2} dot={{ r: 2 }} />
                       </RechartsLineChart>
                     </ResponsiveContainer>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center h-36 sm:h-48 text-slate-500">
-                    <div className="text-center">
-                      <LineChart className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-2 text-slate-300" />
-                      <p className="text-xs sm:text-sm">No trend data available</p>
+                  ) : (
+                    <div className="flex items-center justify-center h-[140px] text-slate-400">
+                      <div className="text-center">
+                        <LineChart className="w-8 h-8 mx-auto mb-1 text-slate-200" />
+                        <p className="text-xs">{t('debt.noTrendData')}</p>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* AI Recommendations Card */}
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl shadow-lg border border-purple-200 p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                <Brain className="w-5 h-5 mr-2 text-purple-500" />
-                AI Debt Recommendations
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-white rounded-lg p-3 sm:p-4 border border-purple-100">
-                  <h4 className="font-medium text-purple-800 mb-2 text-sm sm:text-base">Debt Consolidation</h4>
-                  <p className="text-xs sm:text-sm text-slate-600">
-                    Consider consolidating high-interest debts to reduce monthly payments and save on interest.
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-3 sm:p-4 border border-purple-100">
-                  <h4 className="font-medium text-purple-800 mb-2 text-sm sm:text-base">Payment Priority</h4>
-                  <p className="text-xs sm:text-sm text-slate-600">
-                    Focus on paying off highest interest rate debts first to minimize total interest paid.
-                  </p>
-                </div>
-
-                <div className="bg-white rounded-lg p-3 sm:p-4 border border-purple-100 md:col-span-2 lg:col-span-1">
-                  <h4 className="font-medium text-purple-800 mb-2 text-sm sm:text-base">Emergency Fund</h4>
-                  <p className="text-xs sm:text-sm text-slate-600">
-                    Build an emergency fund to avoid taking on additional debt during unexpected expenses.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-4 text-xs text-slate-500">
-                * These are general recommendations. Consult with a financial advisor for personalized advice.
-              </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
           </>
         )}
 
-        {/* Debt Modal */}
         <DebtModal
           isOpen={showModal}
           onClose={() => setShowModal(false)}

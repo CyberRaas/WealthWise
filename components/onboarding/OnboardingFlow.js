@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@/lib/i18n'
 import { useLanguage } from '@/components/providers/LanguageProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -14,6 +14,9 @@ import { Badge } from '@/components/ui/badge'
 import LanguageSelector from '@/components/ui/LanguageSelector'
 import DetailedBudgetReport from '@/components/budget/DetailedBudgetReport'
 import LifestyleQuiz from '@/components/onboarding/LifestyleQuiz'
+import MultiIncomeStep from '@/components/onboarding/MultiIncomeStep'
+import FinancialPulseStep from '@/components/onboarding/FinancialPulseStep'
+import EnhancedDemographicsStep from '@/components/onboarding/EnhancedDemographicsStep'
 import {
   ArrowRight,
   ArrowLeft,
@@ -47,8 +50,8 @@ const INCOME_SOURCES = [
 const ONBOARDING_STEPS = [
   { key: 'language', title: 'Language', shortTitle: 'Language', icon: '🌐' },
   { key: 'income', title: 'Income Details', shortTitle: 'Income', icon: '💰' },
-  { key: 'demographics', title: 'Personal Info', shortTitle: 'Personal', icon: '👤' },
-  { key: 'lifestyle_quiz', title: 'Lifestyle Insights (Optional)', shortTitle: 'Lifestyle', icon: '✨' },
+  { key: 'demographics', title: 'About You', shortTitle: 'Profile', icon: '👤' },
+  { key: 'financial_pulse', title: 'Financial Pulse', shortTitle: 'Pulse', icon: '💡' },
   { key: 'budget_generation', title: 'AI Budget', shortTitle: 'Budget', icon: '🤖' },
   { key: 'review', title: 'Review', shortTitle: 'Review', icon: '✓' }
 ]
@@ -64,15 +67,23 @@ export default function OnboardingFlow() {
   const [profile, setProfile] = useState({
     monthlyIncome: '',
     incomeSource: 'salary',
+    incomeSources: [], // Multiple income sources support
     city: '',
     familySize: '',
     age: '',
     occupation: '',
+    // Enhanced demographics
+    livingSituation: '',
+    commuteMode: '',
+    hasKids: false,
+    monthlyRent: '',
+    // Financial Pulse (strategic questions)
+    financialPulse: {},
     budgetPreferences: {
       language: 'hinglish',
       notifications: true
     },
-    lifestyleAnswers: {} // Store quiz answers
+    lifestyleAnswers: {} // Legacy: Store quiz answers
   })
   const [generatedBudget, setGeneratedBudget] = useState(null)
   const [isGeneratingBudget, setIsGeneratingBudget] = useState(false)
@@ -176,15 +187,23 @@ export default function OnboardingFlow() {
         break
 
       case 'income':
-        if (!profile.monthlyIncome || profile.monthlyIncome < 1000) {
-          toast.error(t('income.validation'))
+        // Support both multi-income and legacy single income
+        const hasIncomeSources = profile.incomeSources && profile.incomeSources.length > 0
+        const hasLegacyIncome = profile.monthlyIncome && parseInt(profile.monthlyIncome) >= 1000
+
+        if (!hasIncomeSources && !hasLegacyIncome) {
+          toast.error('Please add at least one income source')
           return
         }
 
-        const incomeSuccess = await updateProfile('income', {
-          monthlyIncome: parseInt(profile.monthlyIncome),
-          incomeSource: profile.incomeSource
-        })
+        // Prepare income data for API
+        const incomeData = {
+          incomeSources: profile.incomeSources || [],
+          monthlyIncome: parseInt(profile.monthlyIncome) || 0,
+          incomeSource: profile.incomeSource || 'salary'
+        }
+
+        const incomeSuccess = await updateProfile('income', incomeData)
 
         if (incomeSuccess) {
           setCurrentStep(2)
@@ -192,8 +211,8 @@ export default function OnboardingFlow() {
         break
 
       case 'demographics':
-        if (!profile.city || !profile.familySize || !profile.age) {
-          toast.error(t('demographics.validation'))
+        if (!profile.city || !profile.familySize || !profile.age || !profile.livingSituation) {
+          toast.error('Please fill in all required fields (City, Age, Family Size, Living Situation)')
           return
         }
 
@@ -201,7 +220,12 @@ export default function OnboardingFlow() {
           city: profile.city,
           familySize: parseInt(profile.familySize),
           age: parseInt(profile.age),
-          occupation: profile.occupation
+          occupation: profile.occupation,
+          // Enhanced fields
+          livingSituation: profile.livingSituation,
+          commuteMode: profile.commuteMode,
+          hasKids: profile.hasKids,
+          monthlyRent: profile.monthlyRent ? parseInt(profile.monthlyRent) : 0
         })
 
         if (demoSuccess) {
@@ -209,13 +233,25 @@ export default function OnboardingFlow() {
         }
         break
 
-      case 'lifestyle_quiz':
-        // Quiz is optional, always allow progression
-        // Answers are already saved in profile.lifestyleAnswers
-        const lifestyleSuccess = await updateProfile('lifestyle_quiz', {
-          lifestyleAnswers: profile.lifestyleAnswers || {}
+      case 'financial_pulse':
+        // Financial pulse provides critical context for AI
+        const pulseData = profile.financialPulse || {}
+        const hasPulseData = Object.keys(pulseData).length > 0
+
+        const pulseSuccess = await updateProfile('financial_pulse', {
+          financialPulse: pulseData,
+          // Map pulse answers to budget preferences for AI
+          budgetPreferences: {
+            ...profile.budgetPreferences,
+            spendingStyle: pulseData.spending_style || 'balanced',
+            primaryGoal: pulseData.primary_goal || 'balance',
+            debtStatus: pulseData.debt_status || 'none',
+            savingsStatus: pulseData.savings_status || 'partial',
+            moneyStress: pulseData.money_stress || 'stable'
+          }
         })
-        if (lifestyleSuccess) {
+
+        if (pulseSuccess) {
           setCurrentStep(4)
         }
         break
@@ -289,8 +325,8 @@ export default function OnboardingFlow() {
             <p className="text-slate-600 text-sm">
               {currentStep === 0 && "Choose your preferred language"}
               {currentStep === 1 && "Tell us about your earnings"}
-              {currentStep === 2 && "Help us personalize your experience"}
-              {currentStep === 3 && "Answer 20 quick questions for better recommendations (Optional)"}
+              {currentStep === 2 && "Help us personalize your budget for your lifestyle"}
+              {currentStep === 3 && "5 quick questions for smarter AI recommendations"}
               {currentStep === 4 && "Let AI create your personalized budget"}
               {currentStep === 5 && "Review and finalize your setup"}
             </p>
@@ -301,10 +337,18 @@ export default function OnboardingFlow() {
         <div className="flex-1 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col mb-4">
           <div className="flex-1 overflow-y-auto p-6 sm:p-8">
             {currentStep === 0 && <LanguageStep />}
-            {currentStep === 1 && <IncomeStep profile={profile} setProfile={setProfile} />}
-            {currentStep === 2 && <DemographicsStep profile={profile} setProfile={setProfile} />}
-            {currentStep === 3 && <LifestyleQuizStep profile={profile} setProfile={setProfile} onSkip={() => setCurrentStep(4)} onComplete={() => setCurrentStep(4)} />}
-            {currentStep === 4 && <BudgetGenerationStep isGenerating={isGeneratingBudget} />}
+            {currentStep === 1 && <MultiIncomeStep profile={profile} setProfile={setProfile} />}
+            {currentStep === 2 && <EnhancedDemographicsStep profile={profile} setProfile={setProfile} />}
+            {currentStep === 3 && (
+              <FinancialPulseStep
+                profile={profile}
+                setProfile={setProfile}
+                onComplete={(answers) => {
+                  setProfile(prev => ({ ...prev, financialPulse: answers }))
+                }}
+              />
+            )}
+            {currentStep === 4 && <BudgetGenerationStep isGenerating={isGeneratingBudget} profile={profile} />}
             {currentStep === 5 && <ReviewStep profile={profile} budget={generatedBudget} />}
           </div>
         </div>
@@ -518,76 +562,140 @@ function DemographicsStep({ profile, setProfile }) {
   )
 }
 
-// Budget Generation Step Component
-function BudgetGenerationStep({ isGenerating }) {
+// Budget Generation Step Component - Enhanced with profile preview
+function BudgetGenerationStep({ isGenerating, profile }) {
   const { t } = useTranslation()
 
-  return (
-    <div className="text-center space-y-6">
-      <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto">
-        {isGenerating ? (
-          <Loader2 className="w-7 h-7 text-emerald-600 animate-spin" />
-        ) : (
-          <PieChart className="w-7 h-7 text-emerald-600" />
-        )}
-      </div>
+  // Calculate total income from sources
+  const totalIncome = profile?.incomeSources?.length > 0
+    ? profile.incomeSources.reduce((sum, s) => sum + (s.amount || 0), 0)
+    : parseInt(profile?.monthlyIncome) || 0
 
-      <div>
-        <p className="text-sm text-slate-600 mb-3">
+  // Get pulse insights for display
+  const pulse = profile?.financialPulse || {}
+  const pulseInsights = []
+
+  if (pulse.debt_status === 'high' || pulse.debt_status === 'medium') {
+    pulseInsights.push({ emoji: '🎯', text: 'Prioritizing debt repayment' })
+  }
+  if (pulse.savings_status === 'none' || pulse.savings_status === 'partial') {
+    pulseInsights.push({ emoji: '🛡️', text: 'Building emergency fund' })
+  }
+  if (pulse.primary_goal) {
+    const goalLabels = {
+      debt_free: 'Debt freedom focus',
+      emergency_fund: 'Safety-first budgeting',
+      big_purchase: 'Goal-based savings',
+      invest: 'Wealth-building mode',
+      balance: 'Balanced lifestyle'
+    }
+    pulseInsights.push({ emoji: '✨', text: goalLabels[pulse.primary_goal] || 'Personalized approach' })
+  }
+
+  return (
+    <div className="space-y-6 max-w-xl mx-auto">
+      {/* Header */}
+      <div className="text-center">
+        <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          {isGenerating ? (
+            <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+          ) : (
+            <PieChart className="w-8 h-8 text-emerald-600" />
+          )}
+        </div>
+        <h3 className="text-lg font-bold text-slate-900 mb-1">
+          {isGenerating ? 'Creating Your Budget...' : 'Ready to Generate'}
+        </h3>
+        <p className="text-sm text-slate-600">
           {isGenerating
-            ? 'Creating your personalized budget...'
-            : 'Ready to generate your AI-powered budget based on your profile'
+            ? 'AI is analyzing your financial profile'
+            : 'Click Continue to generate your personalized budget'
           }
         </p>
+      </div>
 
-        {isGenerating && (
-          <div className="space-y-1.5 text-xs text-slate-500">
-            <p>• Analyzing your income and expenses</p>
-            <p>• Matching with best practices</p>
-            <p>• Creating personalized recommendations</p>
+      {/* Profile Summary Card */}
+      <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200">
+        <h4 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+          <Target className="w-4 h-4" />
+          AI will consider:
+        </h4>
+        <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="bg-white rounded-lg p-3 border border-slate-200">
+            <p className="text-xs text-slate-500">Monthly Income</p>
+            <p className="font-bold text-emerald-600">₹{totalIncome.toLocaleString('en-IN')}</p>
+          </div>
+          <div className="bg-white rounded-lg p-3 border border-slate-200">
+            <p className="text-xs text-slate-500">Location</p>
+            <p className="font-bold text-slate-800">{profile?.city || 'India'}</p>
+          </div>
+          <div className="bg-white rounded-lg p-3 border border-slate-200">
+            <p className="text-xs text-slate-500">Family Size</p>
+            <p className="font-bold text-slate-800">{profile?.familySize || 1} members</p>
+          </div>
+          <div className="bg-white rounded-lg p-3 border border-slate-200">
+            <p className="text-xs text-slate-500">Living</p>
+            <p className="font-bold text-slate-800 text-xs">
+              {profile?.livingSituation?.replace(/_/g, ' ') || 'Not specified'}
+            </p>
+          </div>
+        </div>
+
+        {/* Pulse Insights */}
+        {pulseInsights.length > 0 && (
+          <div className="mt-4 pt-3 border-t border-slate-200">
+            <p className="text-xs text-slate-500 mb-2">Based on your financial pulse:</p>
+            <div className="flex flex-wrap gap-2">
+              {pulseInsights.map((insight, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-medium"
+                >
+                  {insight.emoji} {insight.text}
+                </span>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* AI Budget Tip */}
-      <div className="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-xl p-4 text-left border border-purple-100">
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <span className="text-lg">💡</span>
+      {/* Generation Progress */}
+      {isGenerating && (
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center gap-2 text-slate-600">
+            <div className="w-4 h-4 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Analyzing income sources...</span>
           </div>
-          <div className="flex-1 space-y-2">
-            <h3 className="font-semibold text-slate-900 text-sm">AI Budget Tip</h3>
-            <p className="text-xs text-slate-700 leading-relaxed">
-              Your budget will be automatically generated using the <span className="font-semibold text-purple-700">50-30-20 Rule</span> to help you manage your finances smarter.
-            </p>
-            <div className="flex items-start gap-2 bg-white/70 rounded-lg p-2">
-              <span className="text-xs">✨</span>
-              <p className="text-[11px] text-slate-600 leading-snug">
-                You can customize it anytime to better match your goals. AI suggestions may not always be perfect, so please review before finalizing.
-              </p>
-            </div>
+          <div className="flex items-center gap-2 text-slate-600">
+            <div className="w-4 h-4 rounded-full bg-emerald-300 animate-pulse" style={{ animationDelay: '0.2s' }} />
+            <span>Calculating {profile?.city} cost of living...</span>
+          </div>
+          <div className="flex items-center gap-2 text-slate-600">
+            <div className="w-4 h-4 rounded-full bg-emerald-200 animate-pulse" style={{ animationDelay: '0.4s' }} />
+            <span>Creating personalized allocations...</span>
           </div>
         </div>
-      </div>
+      )}
 
-      <div className="bg-slate-50 rounded-xl p-4 text-left">
-        <h3 className="font-semibold text-slate-900 mb-3 text-center text-sm">What you&apos;ll get</h3>
-        <div className="grid grid-cols-1 gap-2 text-xs">
-          <div className="flex items-start gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-            <span className="text-slate-700">Smart category allocations</span>
+      {/* What you'll get */}
+      <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+        <h4 className="font-semibold text-emerald-900 mb-3 text-sm">What you&apos;ll get:</h4>
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-600" />
+            <span className="text-emerald-800">Smart category budgets</span>
           </div>
-          <div className="flex items-start gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-            <span className="text-slate-700">Personalized savings goals</span>
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-600" />
+            <span className="text-emerald-800">Savings recommendations</span>
           </div>
-          <div className="flex items-start gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-            <span className="text-slate-700">AI-powered recommendations</span>
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-600" />
+            <span className="text-emerald-800">Investment advice</span>
           </div>
-          <div className="flex items-start gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-            <span className="text-slate-700">Detailed expense breakdown</span>
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-600" />
+            <span className="text-emerald-800">Tax-saving tips</span>
           </div>
         </div>
       </div>
