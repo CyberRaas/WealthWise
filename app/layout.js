@@ -117,7 +117,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable}>
+    <html lang="en" className={poppins.variable} suppressHydrationWarning>
       <head>
         {/* PWA Support */}
         <link rel="manifest" href="/manifest.json" />
@@ -188,9 +188,24 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className="font-poppins antialiased touch-manipulation"
+        className="font-poppins antialiased touch-manipulation bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200"
         style={{ fontFeatureSettings: "'kern' 1, 'liga' 1, 'calt' 1" }}
+        suppressHydrationWarning
       >
+        {/* Prevent flash of unstyled content */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('wealthwise-theme') || 'system';
+                  var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                  document.documentElement.classList.toggle('dark', isDark);
+                } catch (e) {}
+              })();
+            `
+          }}
+        />
         <PWARegister />
         <ClientProviders>
           {children}

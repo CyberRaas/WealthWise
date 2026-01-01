@@ -26,7 +26,7 @@ import { PieChart as RechartsPieChart, Cell, ResponsiveContainer, LineChart as R
 
 // Skeleton component
 function SkeletonBox({ className }) {
-  return <div className={`animate-pulse bg-slate-200 rounded ${className}`} />
+  return <div className={`animate-pulse bg-slate-200 dark:bg-slate-700 rounded ${className}`} />
 }
 
 function DebtSkeleton() {
@@ -39,7 +39,7 @@ function DebtSkeleton() {
               <SkeletonBox className="h-6 w-40" />
               <SkeletonBox className="h-9 w-24" />
             </div>
-            <div className="bg-white rounded-xl border p-4">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
               <div className="grid grid-cols-2 gap-4">
                 <SkeletonBox className="h-16" />
                 <SkeletonBox className="h-16" />
@@ -168,26 +168,26 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
 
   const modalContent = (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4" onClick={onClose}>
-      <div className="bg-white rounded-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-xl" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-slate-800">
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
             {debt ? 'Edit' : 'Add'} {type === 'taken' ? 'Debt Taken' : 'Debt Given'}
           </h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
               {type === 'taken' ? 'Lender Name' : 'Borrower Name'} *
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+              className="w-full p-2.5 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm bg-white dark:bg-slate-700 dark:text-white"
               placeholder={type === 'taken' ? 'e.g., Bank Name' : 'e.g., Friend Name'}
               required
             />
@@ -195,24 +195,24 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Amount (₹) *</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Amount (₹) *</label>
               <input
                 type="number"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+                className="w-full p-2.5 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm bg-white dark:bg-slate-700 dark:text-white"
                 placeholder="0"
                 min="0"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Interest Rate (%)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Interest Rate (%)</label>
               <input
                 type="number"
                 value={formData.interestRate}
                 onChange={(e) => setFormData({ ...formData, interestRate: e.target.value })}
-                className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+                className="w-full p-2.5 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm bg-white dark:bg-slate-700 dark:text-white"
                 placeholder="0"
                 min="0"
                 max="100"
@@ -222,12 +222,12 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Duration (months) *</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Duration (months) *</label>
             <input
               type="number"
               value={formData.duration}
               onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-              className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+              className="w-full p-2.5 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm bg-white dark:bg-slate-700 dark:text-white"
               placeholder="12"
               min="1"
               required
@@ -236,38 +236,38 @@ function DebtModal({ isOpen, onClose, onSave, debt = null, type = 'taken' }) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-500 mb-1">Monthly EMI</label>
+              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Monthly EMI</label>
               <input
                 type="text"
                 value={formData.monthlyInstallment ? `₹${parseFloat(formData.monthlyInstallment).toLocaleString('en-IN')}` : ''}
-                className="w-full p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-sm text-slate-600"
+                className="w-full p-2.5 border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-900 text-sm text-slate-600 dark:text-slate-400"
                 disabled
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-500 mb-1">Due Date</label>
+              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Due Date</label>
               <input
                 type="text"
                 value={formData.dueDate ? new Date(formData.dueDate).toLocaleDateString('en-IN') : ''}
-                className="w-full p-2.5 border border-slate-200 rounded-lg bg-slate-50 text-sm text-slate-600"
+                className="w-full p-2.5 border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-900 text-sm text-slate-600 dark:text-slate-400"
                 disabled
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+              className="w-full p-2.5 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm bg-white dark:bg-slate-700 dark:text-white"
               placeholder="Optional notes..."
               rows="2"
             />
           </div>
 
           <div className="flex gap-3 pt-2">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+            <Button type="button" variant="outline" onClick={onClose} className="flex-1 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
               Cancel
             </Button>
             <Button
@@ -496,24 +496,24 @@ function DebtOverview() {
                   </Button>
                 </div>
 
-                <Card className="border-red-200 bg-red-50/50">
+                <Card className="border-red-200 dark:border-red-900 bg-red-50/50 dark:bg-red-950/30">
                   <CardContent className="p-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-xs text-red-600 font-medium">{t('debt.totalAmount')}</p>
-                        <p className="text-lg font-bold text-red-700">{formatCurrency(summary.taken.totalAmount)}</p>
+                        <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.totalAmount')}</p>
+                        <p className="text-lg font-bold text-red-700 dark:text-red-400">{formatCurrency(summary.taken.totalAmount)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-red-600 font-medium">{t('debt.remainingAmount')}</p>
-                        <p className="text-lg font-bold text-red-700">{formatCurrency(summary.taken.totalRemaining)}</p>
+                        <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.remainingAmount')}</p>
+                        <p className="text-lg font-bold text-red-700 dark:text-red-400">{formatCurrency(summary.taken.totalRemaining)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-red-600 font-medium">{t('debt.monthlyPayments')}</p>
-                        <p className="text-sm font-semibold text-red-700">{formatCurrency(summary.taken.totalMonthlyPayments)}</p>
+                        <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.monthlyPayments')}</p>
+                        <p className="text-sm font-semibold text-red-700 dark:text-red-400">{formatCurrency(summary.taken.totalMonthlyPayments)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-red-600 font-medium">{t('debt.activeDebts')}</p>
-                        <p className="text-sm font-semibold text-red-700">{summary.taken.count || 0}</p>
+                        <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.activeDebts')}</p>
+                        <p className="text-sm font-semibold text-red-700 dark:text-red-400">{summary.taken.count || 0}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -526,11 +526,11 @@ function DebtOverview() {
                     const progress = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
 
                     return (
-                      <div key={debt._id} className="bg-white border border-slate-200 rounded-lg p-3 hover:shadow-sm transition-shadow">
+                      <div key={debt._id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-sm transition-shadow">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-slate-800 text-sm">{debt.name}</span>
+                          <span className="font-medium text-slate-800 dark:text-white text-sm">{debt.name}</span>
                           <div className="flex gap-1">
-                            <button onClick={() => handleEditDebt(debt)} className="p-1 text-slate-400 hover:text-slate-600">
+                            <button onClick={() => handleEditDebt(debt)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
                               <Edit className="w-3.5 h-3.5" />
                             </button>
                             <button onClick={() => handleDeleteDebt(debt._id)} className="p-1 text-slate-400 hover:text-red-500">
@@ -539,12 +539,12 @@ function DebtOverview() {
                           </div>
                         </div>
                         <div className="flex items-center justify-between text-xs mb-2">
-                          <span className="text-slate-500">{t('debt.remaining')}: <span className="font-medium text-red-600">{formatCurrency(debt.remainingBalance)}</span></span>
-                          <span className={daysLeft < 30 ? 'text-red-600 font-medium' : 'text-slate-500'}>
+                          <span className="text-slate-500 dark:text-slate-400">{t('debt.remaining')}: <span className="font-medium text-red-600 dark:text-red-400">{formatCurrency(debt.remainingBalance)}</span></span>
+                          <span className={daysLeft < 30 ? 'text-red-600 dark:text-red-400 font-medium' : 'text-slate-500 dark:text-slate-400'}>
                             {daysLeft > 0 ? `${daysLeft} ${t('debt.days')}` : t('debt.overdue')}
                           </span>
                         </div>
-                        <div className="w-full bg-red-100 rounded-full h-1.5">
+                        <div className="w-full bg-red-100 dark:bg-red-900/30 rounded-full h-1.5">
                           <div className="bg-red-500 h-1.5 rounded-full" style={{ width: `${progress}%` }} />
                         </div>
                       </div>
@@ -552,8 +552,8 @@ function DebtOverview() {
                   })}
 
                   {debts.filter(d => d.type === 'taken').length === 0 && (
-                    <div className="text-center py-8 text-slate-400">
-                      <Receipt className="w-10 h-10 mx-auto mb-2 text-slate-200" />
+                    <div className="text-center py-8 text-slate-400 dark:text-slate-500">
+                      <Receipt className="w-10 h-10 mx-auto mb-2 text-slate-200 dark:text-slate-600" />
                       <p className="text-sm">{t('debt.noDebtsTaken')}</p>
                     </div>
                   )}
@@ -574,24 +574,24 @@ function DebtOverview() {
                   </Button>
                 </div>
 
-                <Card className="border-emerald-200 bg-emerald-50/50">
+                <Card className="border-emerald-200 dark:border-emerald-900 bg-emerald-50/50 dark:bg-emerald-950/30">
                   <CardContent className="p-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-xs text-emerald-600 font-medium">{t('debt.totalAmount')}</p>
-                        <p className="text-lg font-bold text-emerald-700">{formatCurrency(summary.given.totalAmount)}</p>
+                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.totalAmount')}</p>
+                        <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(summary.given.totalAmount)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-emerald-600 font-medium">{t('debt.remainingAmount')}</p>
-                        <p className="text-lg font-bold text-emerald-700">{formatCurrency(summary.given.totalRemaining)}</p>
+                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.remainingAmount')}</p>
+                        <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(summary.given.totalRemaining)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-emerald-600 font-medium">{t('debt.monthlyPayments')}</p>
-                        <p className="text-sm font-semibold text-emerald-700">{formatCurrency(summary.given.totalMonthlyPayments)}</p>
+                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.monthlyPayments')}</p>
+                        <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">{formatCurrency(summary.given.totalMonthlyPayments)}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-emerald-600 font-medium">{t('debt.activeDebts')}</p>
-                        <p className="text-sm font-semibold text-emerald-700">{summary.given.count || 0}</p>
+                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.activeDebts')}</p>
+                        <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">{summary.given.count || 0}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -604,11 +604,11 @@ function DebtOverview() {
                     const progress = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
 
                     return (
-                      <div key={debt._id} className="bg-white border border-slate-200 rounded-lg p-3 hover:shadow-sm transition-shadow">
+                      <div key={debt._id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-sm transition-shadow">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-slate-800 text-sm">{debt.name}</span>
+                          <span className="font-medium text-slate-800 dark:text-white text-sm">{debt.name}</span>
                           <div className="flex gap-1">
-                            <button onClick={() => handleEditDebt(debt)} className="p-1 text-slate-400 hover:text-slate-600">
+                            <button onClick={() => handleEditDebt(debt)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
                               <Edit className="w-3.5 h-3.5" />
                             </button>
                             <button onClick={() => handleDeleteDebt(debt._id)} className="p-1 text-slate-400 hover:text-red-500">
@@ -617,12 +617,12 @@ function DebtOverview() {
                           </div>
                         </div>
                         <div className="flex items-center justify-between text-xs mb-2">
-                          <span className="text-slate-500">{t('debt.remaining')}: <span className="font-medium text-emerald-600">{formatCurrency(debt.remainingBalance)}</span></span>
-                          <span className={daysLeft < 30 ? 'text-emerald-600 font-medium' : 'text-slate-500'}>
+                          <span className="text-slate-500 dark:text-slate-400">{t('debt.remaining')}: <span className="font-medium text-emerald-600 dark:text-emerald-400">{formatCurrency(debt.remainingBalance)}</span></span>
+                          <span className={daysLeft < 30 ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-slate-500 dark:text-slate-400'}>
                             {daysLeft > 0 ? `${daysLeft} ${t('debt.days')}` : t('debt.overdue')}
                           </span>
                         </div>
-                        <div className="w-full bg-emerald-100 rounded-full h-1.5">
+                        <div className="w-full bg-emerald-100 dark:bg-emerald-900/30 rounded-full h-1.5">
                           <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: `${progress}%` }} />
                         </div>
                       </div>
@@ -630,8 +630,8 @@ function DebtOverview() {
                   })}
 
                   {debts.filter(d => d.type === 'given').length === 0 && (
-                    <div className="text-center py-8 text-slate-400">
-                      <DollarSign className="w-10 h-10 mx-auto mb-2 text-slate-200" />
+                    <div className="text-center py-8 text-slate-400 dark:text-slate-500">
+                      <DollarSign className="w-10 h-10 mx-auto mb-2 text-slate-200 dark:text-slate-600" />
                       <p className="text-sm">{t('debt.noDebtsGiven')}</p>
                     </div>
                   )}
@@ -642,10 +642,10 @@ function DebtOverview() {
             {/* Analytics Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Debt Score */}
-              <Card className="border-slate-200">
+              <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-emerald-500" />
+                  <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
                     {t('debt.debtScore')}
                   </CardTitle>
                 </CardHeader>
@@ -653,7 +653,7 @@ function DebtOverview() {
                   <div className="flex items-center justify-center">
                     <div className="relative w-24 h-24">
                       <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="40" stroke="#e5e7eb" strokeWidth="8" fill="none" />
+                        <circle cx="50" cy="50" r="40" stroke="#e5e7eb" className="dark:stroke-slate-700" strokeWidth="8" fill="none" />
                         <circle
                           cx="50" cy="50" r="40"
                           stroke={getScoreRingColor(debtScore)}
@@ -667,38 +667,38 @@ function DebtOverview() {
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center">
                           <div className={`text-2xl font-bold ${getScoreColor(debtScore)}`}>{debtScore}</div>
-                          <div className="text-[10px] text-slate-400">{t('debt.outOf100')}</div>
+                          <div className="text-[10px] text-slate-400 dark:text-slate-500">{t('debt.outOf100')}</div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="text-center mt-2">
-                    <Badge className={`${debtScore >= 80 ? 'bg-emerald-100 text-emerald-700' : debtScore >= 60 ? 'bg-blue-100 text-blue-700' : debtScore >= 40 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
+                    <Badge className={`${debtScore >= 80 ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400' : debtScore >= 60 ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400' : debtScore >= 40 ? 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-400' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400'}`}>
                       {getScoreLabel(debtScore)}
                     </Badge>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-slate-100 space-y-1.5 text-xs">
+                  <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 space-y-1.5 text-xs">
                     <div className="flex justify-between">
-                      <span className="text-slate-500">{t('debt.totalDebts')}:</span>
-                      <span className="font-medium">{debts.length}</span>
+                      <span className="text-slate-500 dark:text-slate-400">{t('debt.totalDebts')}:</span>
+                      <span className="font-medium dark:text-white">{debts.length}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">{t('debt.totalBorrowed')}:</span>
-                      <span className="font-medium text-red-600">{formatCurrency(summary.taken.totalRemaining)}</span>
+                      <span className="text-slate-500 dark:text-slate-400">{t('debt.totalBorrowed')}:</span>
+                      <span className="font-medium text-red-600 dark:text-red-400">{formatCurrency(summary.taken.totalRemaining)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">{t('debt.totalLent')}:</span>
-                      <span className="font-medium text-emerald-600">{formatCurrency(summary.given.totalRemaining)}</span>
+                      <span className="text-slate-500 dark:text-slate-400">{t('debt.totalLent')}:</span>
+                      <span className="font-medium text-emerald-600 dark:text-emerald-400">{formatCurrency(summary.given.totalRemaining)}</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Distribution */}
-              <Card className="border-slate-200">
+              <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                    <PieChart className="w-4 h-4 text-blue-500" />
+                  <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                    <PieChart className="w-4 h-4 text-blue-500 dark:text-blue-400" />
                     {t('debt.debtDistribution')}
                   </CardTitle>
                 </CardHeader>
@@ -715,9 +715,9 @@ function DebtOverview() {
                       </RechartsPieChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="flex items-center justify-center h-[140px] text-slate-400">
+                    <div className="flex items-center justify-center h-[140px] text-slate-400 dark:text-slate-500">
                       <div className="text-center">
-                        <PieChart className="w-8 h-8 mx-auto mb-1 text-slate-200" />
+                        <PieChart className="w-8 h-8 mx-auto mb-1 text-slate-200 dark:text-slate-600" />
                         <p className="text-xs">{t('debt.noData')}</p>
                       </div>
                     </div>
@@ -726,10 +726,10 @@ function DebtOverview() {
               </Card>
 
               {/* Trends */}
-              <Card className="border-slate-200">
+              <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                    <LineChart className="w-4 h-4 text-purple-500" />
+                  <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                    <LineChart className="w-4 h-4 text-purple-500 dark:text-purple-400" />
                     {t('debt.debtTrends')}
                   </CardTitle>
                 </CardHeader>
@@ -737,18 +737,18 @@ function DebtOverview() {
                   {lineChartData.length > 0 ? (
                     <ResponsiveContainer width="100%" height={140}>
                       <RechartsLineChart data={lineChartData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                        <XAxis dataKey="month" fontSize={9} stroke="#94a3b8" />
-                        <YAxis fontSize={9} stroke="#94a3b8" tickFormatter={(v) => `₹${(v/1000).toFixed(0)}k`} />
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
+                        <XAxis dataKey="month" fontSize={9} className="fill-slate-500 dark:fill-slate-400" />
+                        <YAxis fontSize={9} className="fill-slate-500 dark:fill-slate-400" tickFormatter={(v) => `₹${(v/1000).toFixed(0)}k`} />
                         <Tooltip formatter={(value) => formatCurrency(value)} />
                         <Line type="monotone" dataKey="taken" stroke="#ef4444" strokeWidth={2} dot={{ r: 2 }} />
                         <Line type="monotone" dataKey="given" stroke="#10b981" strokeWidth={2} dot={{ r: 2 }} />
                       </RechartsLineChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="flex items-center justify-center h-[140px] text-slate-400">
+                    <div className="flex items-center justify-center h-[140px] text-slate-400 dark:text-slate-500">
                       <div className="text-center">
-                        <LineChart className="w-8 h-8 mx-auto mb-1 text-slate-200" />
+                        <LineChart className="w-8 h-8 mx-auto mb-1 text-slate-200 dark:text-slate-600" />
                         <p className="text-xs">{t('debt.noTrendData')}</p>
                       </div>
                     </div>

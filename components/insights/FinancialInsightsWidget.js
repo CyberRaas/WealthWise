@@ -41,16 +41,16 @@ export default function FinancialInsightsWidget({ compact = false, maxInsights =
 
   if (loading) {
     return (
-      <Card>
+      <Card className="dark:bg-slate-800 dark:border-slate-700">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Brain className="w-5 h-5 text-purple-600" />
+          <CardTitle className="flex items-center gap-2 dark:text-white">
+            <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             AI Insights
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-8">
-            <div className="flex items-center gap-3 text-purple-600">
+            <div className="flex items-center gap-3 text-purple-600 dark:text-purple-400">
               <Sparkles className="w-5 h-5 animate-pulse" />
               <span className="text-sm font-medium">Analyzing your finances...</span>
             </div>
@@ -62,17 +62,17 @@ export default function FinancialInsightsWidget({ compact = false, maxInsights =
 
   if (error) {
     return (
-      <Card>
+      <Card className="dark:bg-slate-800 dark:border-slate-700">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Brain className="w-5 h-5 text-purple-600" />
+          <CardTitle className="flex items-center gap-2 dark:text-white">
+            <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             AI Insights
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-6">
-            <p className="text-gray-500 mb-3">{error}</p>
-            <Button variant="outline" size="sm" onClick={fetchInsights}>
+            <p className="text-gray-500 dark:text-gray-400 mb-3">{error}</p>
+            <Button variant="outline" size="sm" onClick={fetchInsights} className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
               <RefreshCw className="w-4 h-4 mr-2" />
               Try Again
             </Button>
@@ -84,17 +84,17 @@ export default function FinancialInsightsWidget({ compact = false, maxInsights =
 
   if (insights.length === 0) {
     return (
-      <Card>
+      <Card className="dark:bg-slate-800 dark:border-slate-700">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Brain className="w-5 h-5 text-purple-600" />
+          <CardTitle className="flex items-center gap-2 dark:text-white">
+            <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             AI Insights
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-6">
-            <Sparkles className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500">Add more expenses and goals to get personalized insights!</p>
+            <Sparkles className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+            <p className="text-gray-500 dark:text-gray-400">Add more expenses and goals to get personalized insights!</p>
           </div>
         </CardContent>
       </Card>
@@ -102,17 +102,17 @@ export default function FinancialInsightsWidget({ compact = false, maxInsights =
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Brain className="w-5 h-5 text-purple-600" />
+          <CardTitle className="flex items-center gap-2 dark:text-white">
+            <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             AI-Powered Insights
-            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-normal">
+            <span className="text-xs bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded-full font-normal">
               {insights.length} new
             </span>
           </CardTitle>
-          <Button variant="ghost" size="sm" onClick={fetchInsights}>
+          <Button variant="ghost" size="sm" onClick={fetchInsights} className="dark:text-slate-300 dark:hover:bg-slate-700">
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </Button>
         </div>
@@ -131,7 +131,7 @@ export default function FinancialInsightsWidget({ compact = false, maxInsights =
         {compact && insights.length > 3 && (
           <Link
             href="/dashboard/analytics"
-            className="flex items-center justify-center gap-2 mt-4 py-2 text-sm text-purple-600 hover:text-purple-700 font-medium"
+            className="flex items-center justify-center gap-2 mt-4 py-2 text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium"
           >
             View All {insights.length} Insights
             <ChevronRight className="w-4 h-4" />

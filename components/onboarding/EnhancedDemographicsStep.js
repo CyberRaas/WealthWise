@@ -70,12 +70,12 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
       {/* Header with AI context */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-purple-600" />
-          <span className="text-sm font-medium text-slate-600">
+          <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+          <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
             AI uses this to personalize your budget for your lifestyle
           </span>
         </div>
-        <Badge variant="outline" className={completion === 100 ? 'border-emerald-500 text-emerald-700' : ''}>
+        <Badge variant="outline" className={`${completion === 100 ? 'border-emerald-500 text-emerald-700 dark:text-emerald-400' : 'dark:border-slate-600 dark:text-slate-400'}`}>
           {completion}% complete
         </Badge>
       </div>
@@ -84,32 +84,32 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* City - Essential */}
         <div className="space-y-2">
-          <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-            <MapPin className="w-4 h-4 text-slate-500" />
+          <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+            <MapPin className="w-4 h-4 text-slate-500 dark:text-slate-400" />
             City <span className="text-red-500">*</span>
           </label>
           <Select
             value={localProfile.city}
             onValueChange={(value) => updateField('city', value)}
           >
-            <SelectTrigger className="h-11 border-slate-200 focus:border-emerald-500 rounded-lg">
+            <SelectTrigger className="h-11 border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-emerald-500 rounded-lg">
               <SelectValue placeholder="Select your city" />
             </SelectTrigger>
-            <SelectContent className="max-h-[280px]">
+            <SelectContent className="max-h-[280px] dark:bg-slate-800 dark:border-slate-700">
               {INDIAN_CITIES.map(city => (
-                <SelectItem key={city} value={city}>{city}</SelectItem>
+                <SelectItem key={city} value={city} className="dark:text-slate-200 dark:focus:bg-emerald-900/30">{city}</SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Adjusts budget for local cost of living
           </p>
         </div>
 
         {/* Age - Essential */}
         <div className="space-y-2">
-          <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-            <User className="w-4 h-4 text-slate-500" />
+          <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+            <User className="w-4 h-4 text-slate-500 dark:text-slate-400" />
             Age <span className="text-red-500">*</span>
           </label>
           <Input
@@ -117,19 +117,19 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
             placeholder="e.g., 28"
             value={localProfile.age}
             onChange={(e) => updateField('age', e.target.value)}
-            className="h-11 border-slate-200 focus:border-emerald-500 rounded-lg"
+            className="h-11 border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder:text-slate-500 focus:border-emerald-500 rounded-lg"
             min="18"
             max="100"
           />
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Tailors investment & insurance advice
           </p>
         </div>
 
         {/* Family Size - Essential */}
         <div className="space-y-2">
-          <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-            <Users className="w-4 h-4 text-slate-500" />
+          <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+            <Users className="w-4 h-4 text-slate-500 dark:text-slate-400" />
             Family Size <span className="text-red-500">*</span>
           </label>
           <Input
@@ -137,19 +137,19 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
             placeholder="How many members?"
             value={localProfile.familySize}
             onChange={(e) => updateField('familySize', e.target.value)}
-            className="h-11 border-slate-200 focus:border-emerald-500 rounded-lg"
+            className="h-11 border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder:text-slate-500 focus:border-emerald-500 rounded-lg"
             min="1"
             max="15"
           />
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Scales food, healthcare, insurance needs
           </p>
         </div>
 
         {/* Occupation - Optional but valuable */}
         <div className="space-y-2">
-          <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-            <Briefcase className="w-4 h-4 text-slate-500" />
+          <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+            <Briefcase className="w-4 h-4 text-slate-500 dark:text-slate-400" />
             Occupation
           </label>
           <Input
@@ -157,21 +157,21 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
             placeholder="e.g., Software Engineer"
             value={localProfile.occupation}
             onChange={(e) => updateField('occupation', e.target.value)}
-            className="h-11 border-slate-200 focus:border-emerald-500 rounded-lg"
+            className="h-11 border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder:text-slate-500 focus:border-emerald-500 rounded-lg"
           />
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Provides industry-specific tax & investment tips
           </p>
         </div>
       </div>
 
       {/* Living Situation - Critical for housing budget */}
-      <Card className="border-2 border-slate-200">
+      <Card className="border-2 border-slate-200 dark:border-slate-600 dark:bg-slate-800/50">
         <CardContent className="p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Home className="w-5 h-5 text-slate-600" />
-            <h3 className="font-semibold text-slate-800">Living Situation <span className="text-red-500">*</span></h3>
-            <Badge variant="outline" className="ml-auto text-xs">Major budget impact</Badge>
+            <Home className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+            <h3 className="font-semibold text-slate-800 dark:text-white">Living Situation <span className="text-red-500">*</span></h3>
+            <Badge variant="outline" className="ml-auto text-xs dark:border-slate-600 dark:text-slate-400">Major budget impact</Badge>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -183,17 +183,17 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
                   onClick={() => updateField('livingSituation', option.value)}
                   className={`p-3 rounded-lg border-2 text-left transition-all ${
                     isSelected
-                      ? 'border-emerald-500 bg-emerald-50'
-                      : 'border-slate-200 hover:border-emerald-300 hover:bg-slate-50'
+                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 dark:border-emerald-500'
+                      : 'border-slate-200 dark:border-slate-600 hover:border-emerald-300 dark:hover:border-emerald-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'
                   }`}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{option.emoji}</span>
                     <div>
-                      <p className={`font-medium text-sm ${isSelected ? 'text-emerald-900' : 'text-slate-700'}`}>
+                      <p className={`font-medium text-sm ${isSelected ? 'text-emerald-900 dark:text-emerald-300' : 'text-slate-700 dark:text-slate-200'}`}>
                         {option.label}
                       </p>
-                      <p className="text-xs text-slate-500">{option.impact}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{option.impact}</p>
                     </div>
                   </div>
                 </button>
@@ -203,18 +203,18 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
 
           {/* Show rent input if renting */}
           {(localProfile.livingSituation === 'renting_alone' || localProfile.livingSituation === 'renting_shared') && (
-            <div className="mt-4 pt-4 border-t border-slate-200">
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+            <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Monthly Rent (your share)
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">₹</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">₹</span>
                 <Input
                   type="number"
                   placeholder="15,000"
                   value={localProfile.monthlyRent}
                   onChange={(e) => updateField('monthlyRent', e.target.value)}
-                  className="pl-8 h-10"
+                  className="pl-8 h-10 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:placeholder:text-slate-500"
                 />
               </div>
             </div>
@@ -223,11 +223,11 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
       </Card>
 
       {/* Commute Mode - Important for transport budget */}
-      <Card className="border border-slate-200">
+      <Card className="border border-slate-200 dark:border-slate-600 dark:bg-slate-800/50">
         <CardContent className="p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Car className="w-5 h-5 text-slate-600" />
-            <h3 className="font-medium text-slate-800">Primary Commute Mode</h3>
+            <Car className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+            <h3 className="font-medium text-slate-800 dark:text-white">Primary Commute Mode</h3>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -239,8 +239,8 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
                   onClick={() => updateField('commuteMode', mode.value)}
                   className={`px-4 py-2 rounded-full border text-sm font-medium transition-all ${
                     isSelected
-                      ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                      : 'border-slate-200 hover:border-emerald-300 text-slate-600'
+                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+                      : 'border-slate-200 dark:border-slate-600 hover:border-emerald-300 dark:hover:border-emerald-700 text-slate-600 dark:text-slate-300'
                   }`}
                 >
                   {mode.emoji} {mode.label}
@@ -252,12 +252,12 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
       </Card>
 
       {/* Quick toggle - Kids */}
-      <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+      <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-600">
         <div className="flex items-center gap-3">
-          <Baby className="w-5 h-5 text-slate-600" />
+          <Baby className="w-5 h-5 text-slate-600 dark:text-slate-400" />
           <div>
-            <p className="font-medium text-slate-800">Do you have children?</p>
-            <p className="text-xs text-slate-500">Adds education & childcare categories</p>
+            <p className="font-medium text-slate-800 dark:text-white">Do you have children?</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Adds education & childcare categories</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -265,8 +265,8 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
             onClick={() => updateField('hasKids', false)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               localProfile.hasKids === false
-                ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-500'
-                : 'bg-white border-2 border-slate-200 text-slate-600'
+                ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-2 border-emerald-500'
+                : 'bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300'
             }`}
           >
             No
@@ -275,8 +275,8 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
             onClick={() => updateField('hasKids', true)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               localProfile.hasKids === true
-                ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-500'
-                : 'bg-white border-2 border-slate-200 text-slate-600'
+                ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-2 border-emerald-500'
+                : 'bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300'
             }`}
           >
             Yes
@@ -285,9 +285,9 @@ export default function EnhancedDemographicsStep({ profile, setProfile }) {
       </div>
 
       {/* Privacy note */}
-      <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
-        <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-        <p className="text-xs text-blue-700">
+      <div className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
+        <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+        <p className="text-xs text-blue-700 dark:text-blue-300">
           <span className="font-semibold">Your data is private.</span> This information is only used to
           generate your personalized budget and is never shared with anyone.
         </p>

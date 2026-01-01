@@ -206,10 +206,162 @@ function DashboardContent() {
   if (loading) {
     return (
       <DashboardLayout title="Dashboard Overview">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <RefreshCw className="h-8 w-8 animate-spin text-emerald-600 mx-auto mb-2" />
-            <p className="text-slate-600">{t('common.loadingFinancialData')}</p>
+        <div className="space-y-6 animate-pulse">
+          {/* Header Skeleton */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-700">
+            <div>
+              <div className="h-6 w-48 bg-slate-200 dark:bg-slate-700 rounded-lg mb-2" />
+              <div className="h-4 w-32 bg-slate-100 dark:bg-slate-800 rounded" />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded-full" />
+              <div className="h-8 w-24 bg-slate-100 dark:bg-slate-800 rounded-full" />
+              <div className="h-8 w-20 bg-slate-100 dark:bg-slate-800 rounded-full" />
+            </div>
+          </div>
+
+          {/* Primary Action Row Skeleton */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Financial Summary Card Skeleton */}
+            <div className="col-span-2 lg:col-span-1 bg-gradient-to-br from-emerald-500/80 to-teal-600/80 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="h-4 w-20 bg-white/30 rounded" />
+                <div className="h-5 w-5 bg-white/30 rounded" />
+              </div>
+              <div className="h-8 w-32 bg-white/30 rounded mb-2" />
+              <div className="h-4 w-40 bg-white/20 rounded mb-3" />
+              <div className="h-2 w-full bg-white/20 rounded-full" />
+            </div>
+
+            {/* Quick Add Skeleton */}
+            <div className="bg-white dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-4">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-700" />
+                <div>
+                  <div className="h-4 w-20 bg-slate-200 dark:bg-slate-700 rounded mb-1" />
+                  <div className="h-3 w-24 bg-slate-100 dark:bg-slate-800 rounded" />
+                </div>
+              </div>
+              <div className="h-3 w-20 bg-slate-100 dark:bg-slate-800 rounded" />
+            </div>
+
+            {/* Budget Status Skeleton */}
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-lg bg-violet-100 dark:bg-violet-900/40" />
+                <div>
+                  <div className="h-4 w-16 bg-slate-200 dark:bg-slate-700 rounded mb-1" />
+                  <div className="h-3 w-20 bg-slate-100 dark:bg-slate-800 rounded" />
+                </div>
+              </div>
+              <div className="h-3 w-24 bg-violet-100 dark:bg-violet-900/40 rounded" />
+            </div>
+
+            {/* Goals Status Skeleton */}
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/40" />
+                <div>
+                  <div className="h-4 w-14 bg-slate-200 dark:bg-slate-700 rounded mb-1" />
+                  <div className="h-3 w-24 bg-slate-100 dark:bg-slate-800 rounded" />
+                </div>
+              </div>
+              <div className="h-3 w-28 bg-purple-100 dark:bg-purple-900/40 rounded" />
+            </div>
+          </div>
+
+          {/* Daily Engagement Row Skeleton */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Daily Pulse Skeleton */}
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="h-5 w-32 bg-slate-200 dark:bg-slate-700 rounded" />
+                <div className="h-4 w-16 bg-slate-100 dark:bg-slate-800 rounded" />
+              </div>
+              <div className="space-y-3">
+                <div className="h-16 w-full bg-slate-100 dark:bg-slate-700 rounded-lg" />
+                <div className="flex gap-2">
+                  <div className="h-10 flex-1 bg-slate-100 dark:bg-slate-700 rounded-lg" />
+                  <div className="h-10 flex-1 bg-slate-100 dark:bg-slate-700 rounded-lg" />
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Activity Skeleton */}
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="h-5 w-32 bg-slate-200 dark:bg-slate-700 rounded" />
+                <div className="h-4 w-16 bg-emerald-100 dark:bg-emerald-900/40 rounded" />
+              </div>
+              <div className="space-y-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700 last:border-0">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700" />
+                      <div>
+                        <div className="h-4 w-28 bg-slate-200 dark:bg-slate-700 rounded mb-1" />
+                        <div className="h-3 w-16 bg-slate-100 dark:bg-slate-800 rounded" />
+                      </div>
+                    </div>
+                    <div className="h-4 w-16 bg-red-100 dark:bg-red-900/30 rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Daily Tip Skeleton */}
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-lg bg-amber-200 dark:bg-amber-800/50" />
+              <div className="flex-1">
+                <div className="h-4 w-24 bg-amber-200 dark:bg-amber-800/50 rounded mb-2" />
+                <div className="h-4 w-full bg-amber-100 dark:bg-amber-900/30 rounded mb-1" />
+                <div className="h-4 w-3/4 bg-amber-100 dark:bg-amber-900/30 rounded" />
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs Skeleton */}
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <div className="h-10 w-28 bg-slate-200 dark:bg-slate-700 rounded-lg" />
+              <div className="h-10 w-28 bg-slate-100 dark:bg-slate-800 rounded-lg" />
+            </div>
+
+            {/* Overview Content Skeleton */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* AI Insights Skeleton */}
+              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                <div className="h-5 w-36 bg-slate-200 dark:bg-slate-700 rounded mb-4" />
+                <div className="space-y-3">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                      <div className="h-4 w-full bg-slate-200 dark:bg-slate-600 rounded mb-2" />
+                      <div className="h-3 w-2/3 bg-slate-100 dark:bg-slate-700 rounded" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Budget Overview Skeleton */}
+              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                <div className="h-5 w-32 bg-slate-200 dark:bg-slate-700 rounded mb-4" />
+                <div className="space-y-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i}>
+                      <div className="flex justify-between mb-1">
+                        <div className="h-3 w-24 bg-slate-200 dark:bg-slate-700 rounded" />
+                        <div className="h-3 w-20 bg-slate-100 dark:bg-slate-800 rounded" />
+                      </div>
+                      <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-700 rounded-full">
+                        <div className="h-1.5 bg-emerald-300 dark:bg-emerald-700 rounded-full" style={{ width: `${Math.random() * 60 + 20}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </DashboardLayout>
@@ -221,29 +373,29 @@ function DashboardContent() {
       <div className="space-y-6">
 
         {/* Compact Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-700">
           <div>
-            <h1 className="text-lg font-semibold text-slate-800">
+            <h1 className="text-lg font-semibold text-slate-800 dark:text-white">
               {greetingData.greeting}, {session?.user?.name?.split(' ')[0] || 'Friend'}
             </h1>
-            <p className="text-sm text-slate-500">{greetingData.date}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{greetingData.date}</p>
           </div>
 
           {/* Quick Stats Pills */}
           <div className="flex items-center gap-2 flex-wrap">
             <div className={`px-3 py-1.5 rounded-full text-sm font-medium ${
-              financialHealthScore >= 75 ? 'bg-emerald-100 text-emerald-700' :
-              financialHealthScore >= 50 ? 'bg-blue-100 text-blue-700' :
-              'bg-amber-100 text-amber-700'
+              financialHealthScore >= 75 ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400' :
+              financialHealthScore >= 50 ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400' :
+              'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400'
             }`}>
               <span className="hidden sm:inline">Health: </span>{financialHealthScore}/100
             </div>
             {monthlyData.totalIncome > 0 && (
               <>
-                <div className="px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-sm font-medium">
+                <div className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-medium">
                   {monthlyData.savingsRate}% saved
                 </div>
-                <div className="px-3 py-1.5 rounded-full bg-purple-100 text-purple-700 text-sm font-medium">
+                <div className="px-3 py-1.5 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 text-sm font-medium">
                   {goals.filter(g => g.status === 'active').length} goals
                 </div>
               </>
@@ -290,18 +442,18 @@ function DashboardContent() {
           {/* Quick Add Expense */}
           <button
             onClick={() => setShowExpenseEntry(true)}
-            className="bg-white border-2 border-dashed border-slate-200 hover:border-emerald-400 hover:bg-emerald-50 rounded-xl p-4 transition-all group text-left"
+            className="bg-white dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-xl p-4 transition-all group text-left"
           >
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-emerald-100 group-hover:bg-emerald-200 flex items-center justify-center transition-colors">
-                <Mic className="w-5 h-5 text-emerald-600" />
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-800/50 flex items-center justify-center transition-colors">
+                <Mic className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
-                <div className="font-semibold text-slate-800">Quick Add</div>
-                <div className="text-xs text-slate-500">Voice or manual</div>
+                <div className="font-semibold text-slate-800 dark:text-white">Quick Add</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">Voice or manual</div>
               </div>
             </div>
-            <div className="text-xs text-slate-400 group-hover:text-emerald-600 transition-colors">
+            <div className="text-xs text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
               + Add expense
             </div>
           </button>
@@ -309,39 +461,39 @@ function DashboardContent() {
           {/* Budget Status */}
           <button
             onClick={handleViewBudget}
-            className="bg-white border border-slate-200 hover:border-violet-400 hover:shadow-sm rounded-xl p-4 transition-all text-left"
+            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 hover:shadow-sm rounded-xl p-4 transition-all text-left"
           >
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-violet-600" />
+              <div className="w-10 h-10 rounded-lg bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
+                <BarChart3 className="w-5 h-5 text-violet-600 dark:text-violet-400" />
               </div>
               <div>
-                <div className="font-semibold text-slate-800">Budget</div>
-                <div className="text-xs text-slate-500">
+                <div className="font-semibold text-slate-800 dark:text-white">Budget</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">
                   {budget ? `${Math.round((monthlyData.totalExpenses / budget.totalBudget) * 100)}% used` : 'Not set'}
                 </div>
               </div>
             </div>
-            <div className="text-xs text-violet-600 font-medium">View details →</div>
+            <div className="text-xs text-violet-600 dark:text-violet-400 font-medium">View details →</div>
           </button>
 
           {/* Goals Status */}
           <button
             onClick={handleViewGoals}
-            className="bg-white border border-slate-200 hover:border-purple-400 hover:shadow-sm rounded-xl p-4 transition-all text-left"
+            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-purple-400 dark:hover:border-purple-500 hover:shadow-sm rounded-xl p-4 transition-all text-left"
           >
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                <Target className="w-5 h-5 text-purple-600" />
+              <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
+                <Target className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <div className="font-semibold text-slate-800">Goals</div>
-                <div className="text-xs text-slate-500">
+                <div className="font-semibold text-slate-800 dark:text-white">Goals</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">
                   {goals.length > 0 ? `${goals.filter(g => g.status === 'completed').length}/${goals.length} complete` : 'None set'}
                 </div>
               </div>
             </div>
-            <div className="text-xs text-purple-600 font-medium">Track progress →</div>
+            <div className="text-xs text-purple-600 dark:text-purple-400 font-medium">Track progress →</div>
           </button>
         </div>
 
@@ -353,16 +505,16 @@ function DashboardContent() {
           />
 
           {/* Recent Activity Card - Expanded */}
-          <Card className="border-slate-200">
+          <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <CreditCard className="w-4 h-4 text-slate-500" />
+                <CardTitle className="text-sm font-semibold flex items-center gap-2 dark:text-white">
+                  <CreditCard className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                   Recent Activity
                 </CardTitle>
                 <button
                   onClick={() => router.push('/dashboard/expenses')}
-                  className="text-xs text-emerald-600 font-medium hover:underline"
+                  className="text-xs text-emerald-600 dark:text-emerald-400 font-medium hover:underline"
                 >
                   View all →
                 </button>
@@ -372,9 +524,9 @@ function DashboardContent() {
               {expenses.length > 0 ? (
                 <div className="space-y-2">
                   {expenses.slice(0, 5).map((expense) => (
-                    <div key={expense.id} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
+                    <div key={expense.id} className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700 last:border-0">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-base">
+                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-base">
                           {expense.category === 'Food & Dining' ? '🍕' :
                             expense.category === 'Transportation' ? '🚗' :
                             expense.category === 'Shopping' ? '🛒' :
@@ -383,15 +535,15 @@ function DashboardContent() {
                             expense.category === 'Home & Utilities' ? '🏠' : '💰'}
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-slate-800 truncate max-w-[180px]">
+                          <p className="text-sm font-medium text-slate-800 dark:text-white truncate max-w-[180px]">
                             {expense.description || expense.merchant || expense.category}
                           </p>
-                          <p className="text-xs text-slate-500">
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
                             {new Date(expense.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                           </p>
                         </div>
                       </div>
-                      <span className="text-sm font-semibold text-red-600">
+                      <span className="text-sm font-semibold text-red-600 dark:text-red-400">
                         -₹{expense.amount.toLocaleString('en-IN')}
                       </span>
                     </div>
@@ -399,11 +551,11 @@ function DashboardContent() {
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
-                    <CreditCard className="w-6 h-6 text-slate-400" />
+                  <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mx-auto mb-3">
+                    <CreditCard className="w-6 h-6 text-slate-400 dark:text-slate-500" />
                   </div>
-                  <p className="text-sm text-slate-600 mb-1">No transactions yet</p>
-                  <p className="text-xs text-slate-500 mb-3">Start tracking your expenses</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">No transactions yet</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Start tracking your expenses</p>
                   <Button onClick={() => setShowExpenseEntry(true)} size="sm" className="bg-emerald-600 hover:bg-emerald-700">
                     Add First Expense
                   </Button>
@@ -418,12 +570,12 @@ function DashboardContent() {
 
         {/* Main Dashboard Tabs */}
         <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList className="bg-slate-100 p-1 rounded-lg">
-            <TabsTrigger value="overview" className="flex items-center gap-2 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
+          <TabsList className="bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+            <TabsTrigger value="overview" className="flex items-center gap-2 rounded-md data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 data-[state=active]:shadow-sm dark:text-slate-300 dark:data-[state=active]:text-white">
               <BarChart3 className="h-4 w-4" />
               <span>Overview</span>
             </TabsTrigger>
-            <TabsTrigger value="ai-agents" className="flex items-center gap-2 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">
+            <TabsTrigger value="ai-agents" className="flex items-center gap-2 rounded-md data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 data-[state=active]:shadow-sm dark:text-slate-300 dark:data-[state=active]:text-white">
               <Sparkles className="h-4 w-4" />
               <span>AI Agents</span>
               <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded">
@@ -440,16 +592,16 @@ function DashboardContent() {
               <FinancialInsightsWidget compact={true} />
 
               {/* Budget Spending Overview */}
-              <Card className="border-slate-200">
+              <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-semibold flex items-center justify-between">
+                  <CardTitle className="text-sm font-semibold flex items-center justify-between dark:text-white">
                     <span className="flex items-center gap-2">
-                      <BarChart3 className="w-4 h-4 text-blue-600" />
+                      <BarChart3 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       Budget Overview
                     </span>
                     <button
                       onClick={handleViewBudget}
-                      className="text-xs text-emerald-600 hover:underline font-medium"
+                      className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
                     >
                       View all →
                     </button>
@@ -470,12 +622,12 @@ function DashboardContent() {
                           return (
                             <div key={key}>
                               <div className="flex items-center justify-between mb-1">
-                                <span className="text-xs font-medium text-slate-700">{category.englishName}</span>
-                                <span className="text-xs text-slate-500">
+                                <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{category.englishName}</span>
+                                <span className="text-xs text-slate-500 dark:text-slate-400">
                                   ₹{actualSpent.toLocaleString('en-IN')} / ₹{budgetAmount.toLocaleString('en-IN')}
                                 </span>
                               </div>
-                              <div className="w-full bg-slate-100 rounded-full h-1.5">
+                              <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5">
                                 <div
                                   className={`h-1.5 rounded-full transition-all ${
                                     spentPercentage > 90 ? 'bg-red-500' :
@@ -491,9 +643,9 @@ function DashboardContent() {
                     </div>
                   ) : (
                     <div className="text-center py-6">
-                      <BarChart3 className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-                      <p className="text-sm text-slate-500 mb-2">No budget data</p>
-                      <Button onClick={handleViewBudget} size="sm" variant="outline">
+                      <BarChart3 className="h-8 w-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">No budget data</p>
+                      <Button onClick={handleViewBudget} size="sm" variant="outline" className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
                         Create Budget
                       </Button>
                     </div>
@@ -512,16 +664,16 @@ function DashboardContent() {
             </div>
 
             {/* Goals Section */}
-            <Card className="border-slate-200">
+            <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold flex items-center justify-between">
+                <CardTitle className="text-sm font-semibold flex items-center justify-between dark:text-white">
                   <span className="flex items-center gap-2">
-                    <Target className="w-4 h-4 text-purple-600" />
+                    <Target className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                     Savings Goals
                   </span>
                   <button
                     onClick={handleViewGoals}
-                    className="text-xs text-emerald-600 hover:underline font-medium"
+                    className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
                   >
                     Manage goals →
                   </button>
@@ -538,16 +690,16 @@ function DashboardContent() {
                         <div
                           key={goal.id}
                           className={`p-3 rounded-lg border ${
-                            isCompleted ? 'bg-emerald-50 border-emerald-200' :
-                            progress > 50 ? 'bg-blue-50 border-blue-200' :
-                            'bg-slate-50 border-slate-200'
+                            isCompleted ? 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800' :
+                            progress > 50 ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800' :
+                            'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
                           }`}
                         >
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-slate-800 truncate">{goal.name}</span>
-                            {isCompleted && <span className="text-emerald-500">✓</span>}
+                            <span className="text-sm font-medium text-slate-800 dark:text-white truncate">{goal.name}</span>
+                            {isCompleted && <span className="text-emerald-500 dark:text-emerald-400">✓</span>}
                           </div>
-                          <div className="w-full bg-white rounded-full h-1.5 mb-1">
+                          <div className="w-full bg-white dark:bg-slate-700 rounded-full h-1.5 mb-1">
                             <div
                               className={`h-1.5 rounded-full ${
                                 isCompleted ? 'bg-emerald-500' :
@@ -557,7 +709,7 @@ function DashboardContent() {
                               style={{ width: `${Math.min(progress, 100)}%` }}
                             />
                           </div>
-                          <div className="flex justify-between text-xs text-slate-500">
+                          <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
                             <span>₹{(goal.currentAmount / 1000).toFixed(0)}k</span>
                             <span>{progress.toFixed(0)}%</span>
                           </div>
@@ -567,8 +719,8 @@ function DashboardContent() {
                   </div>
                 ) : (
                   <div className="text-center py-6">
-                    <Target className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-                    <p className="text-sm text-slate-500 mb-2">No goals set yet</p>
+                    <Target className="h-8 w-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">No goals set yet</p>
                     <Button onClick={handleViewGoals} size="sm" className="bg-purple-600 hover:bg-purple-700">
                       Create First Goal
                     </Button>
@@ -578,70 +730,70 @@ function DashboardContent() {
             </Card>
 
             {/* Quick Actions - Compact Grid */}
-            <Card className="border-slate-200">
+            <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold">Quick Actions</CardTitle>
+                <CardTitle className="text-sm font-semibold dark:text-white">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                   <button
                     onClick={handleAddExpense}
-                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-emerald-100 group-hover:bg-emerald-200 flex items-center justify-center mb-1 transition-colors">
-                      <Plus className="w-5 h-5 text-emerald-600" />
+                    <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-800/50 flex items-center justify-center mb-1 transition-colors">
+                      <Plus className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                     </div>
-                    <span className="text-xs text-slate-600">Add</span>
+                    <span className="text-xs text-slate-600 dark:text-slate-400">Add</span>
                   </button>
 
                   <button
                     onClick={() => router.push('/dashboard/debt')}
-                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-red-100 group-hover:bg-red-200 flex items-center justify-center mb-1 transition-colors">
-                      <CreditCard className="w-5 h-5 text-red-600" />
+                    <div className="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/40 group-hover:bg-red-200 dark:group-hover:bg-red-800/50 flex items-center justify-center mb-1 transition-colors">
+                      <CreditCard className="w-5 h-5 text-red-600 dark:text-red-400" />
                     </div>
-                    <span className="text-xs text-slate-600">Debt</span>
+                    <span className="text-xs text-slate-600 dark:text-slate-400">Debt</span>
                   </button>
 
                   <button
                     onClick={() => router.push('/dashboard/debt-calculator')}
-                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-amber-100 group-hover:bg-amber-200 flex items-center justify-center mb-1 transition-colors">
-                      <Calculator className="w-5 h-5 text-amber-600" />
+                    <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/40 group-hover:bg-amber-200 dark:group-hover:bg-amber-800/50 flex items-center justify-center mb-1 transition-colors">
+                      <Calculator className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                     </div>
-                    <span className="text-xs text-slate-600">Calculator</span>
+                    <span className="text-xs text-slate-600 dark:text-slate-400">Calculator</span>
                   </button>
 
                   <button
                     onClick={() => router.push('/dashboard/profile')}
-                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-indigo-100 group-hover:bg-indigo-200 flex items-center justify-center mb-1 transition-colors">
-                      <User className="w-5 h-5 text-indigo-600" />
+                    <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-800/50 flex items-center justify-center mb-1 transition-colors">
+                      <User className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                     </div>
-                    <span className="text-xs text-slate-600">Profile</span>
+                    <span className="text-xs text-slate-600 dark:text-slate-400">Profile</span>
                   </button>
 
                   <button
                     onClick={() => router.push('/dashboard/settings')}
-                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-slate-100 group-hover:bg-slate-200 flex items-center justify-center mb-1 transition-colors">
-                      <Settings className="w-5 h-5 text-slate-600" />
+                    <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 group-hover:bg-slate-200 dark:group-hover:bg-slate-600 flex items-center justify-center mb-1 transition-colors">
+                      <Settings className="w-5 h-5 text-slate-600 dark:text-slate-400" />
                     </div>
-                    <span className="text-xs text-slate-600">Settings</span>
+                    <span className="text-xs text-slate-600 dark:text-slate-400">Settings</span>
                   </button>
 
                   <button
                     onClick={() => router.push('/dashboard/help')}
-                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-green-100 group-hover:bg-green-200 flex items-center justify-center mb-1 transition-colors">
-                      <HelpCircle className="w-5 h-5 text-green-600" />
+                    <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/40 group-hover:bg-green-200 dark:group-hover:bg-green-800/50 flex items-center justify-center mb-1 transition-colors">
+                      <HelpCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
                     </div>
-                    <span className="text-xs text-slate-600">Help</span>
+                    <span className="text-xs text-slate-600 dark:text-slate-400">Help</span>
                   </button>
                 </div>
               </CardContent>

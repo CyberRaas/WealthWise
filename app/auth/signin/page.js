@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 import { Eye, EyeOff, TrendingUp, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -101,17 +102,18 @@ function SignInForm() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col transition-colors duration-200">
       {/* Header */}
-      <header className="p-4">
+      <header className="p-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 w-fit">
           <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
             <TrendingUp className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-slate-800">
-            Wealth<span className="text-emerald-600">Wise</span>
+          <span className="text-xl font-bold text-slate-800 dark:text-white">
+            Wealth<span className="text-emerald-600 dark:text-emerald-400">Wise</span>
           </span>
         </Link>
+        <ThemeToggle variant="icon" />
       </header>
 
       {/* Main Content */}
@@ -119,21 +121,21 @@ function SignInForm() {
         <div className="w-full max-w-sm">
           {/* Title */}
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
               {t('auth.signin.title')}
             </h1>
-            <p className="text-slate-600">
+            <p className="text-slate-600 dark:text-slate-400">
               {t('auth.signin.subtitle')}
             </p>
           </div>
 
           {/* Error Alert */}
           {authError && (
-            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div className="mb-6 p-3 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-2">
+              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm text-red-700">{authError}</p>
-                <p className="text-xs text-red-600 mt-1">
+                <p className="text-sm text-red-700 dark:text-red-300">{authError}</p>
+                <p className="text-xs text-red-600 dark:text-red-400 mt-1">
                   Try disabling ad blockers or use incognito mode.
                 </p>
               </div>
@@ -141,17 +143,17 @@ function SignInForm() {
           )}
 
           {/* Auth Card */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
             {/* Google Sign In */}
             <Button
               type="button"
               variant="outline"
-              className="w-full h-11 mb-4 border-slate-200 hover:bg-slate-50 font-medium"
+              className="w-full h-11 mb-4 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium"
               onClick={handleGoogleSignIn}
               disabled={isGoogleLoading || isLoading}
             >
               {isGoogleLoading ? (
-                <div className="w-5 h-5 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-slate-300 dark:border-slate-600 border-t-slate-600 dark:border-t-slate-300 rounded-full animate-spin" />
               ) : (
                 <>
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -168,17 +170,17 @@ function SignInForm() {
             {/* Divider */}
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200" />
+                <div className="w-full border-t border-slate-200 dark:border-slate-700" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-slate-500">{t('auth.signin.orContinue')}</span>
+                <span className="bg-white dark:bg-slate-900 px-2 text-slate-500 dark:text-slate-400">{t('auth.signin.orContinue')}</span>
               </div>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                   {t('auth.signin.email')}
                 </label>
                 <Input
@@ -188,21 +190,21 @@ function SignInForm() {
                   autoComplete="email"
                   disabled={isLoading}
                   {...register('email')}
-                  className="h-11"
+                  className="h-11 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
+                  <p className="text-sm text-red-600 dark:text-red-400 mt-1">{errors.email.message}</p>
                 )}
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+                  <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                     {t('auth.signin.password')}
                   </label>
                   <Link
                     href="/auth/forgot-password"
-                    className="text-sm text-emerald-600 hover:text-emerald-700"
+                    className="text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
                   >
                     {t('auth.signin.forgotPassword')}
                   </Link>
@@ -215,18 +217,18 @@ function SignInForm() {
                     autoComplete="current-password"
                     disabled={isLoading}
                     {...register('password')}
-                    className="h-11 pr-10"
+                    className="h-11 pr-10 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>
+                  <p className="text-sm text-red-600 dark:text-red-400 mt-1">{errors.password.message}</p>
                 )}
               </div>
 
@@ -235,9 +237,9 @@ function SignInForm() {
                   id="rememberMe"
                   type="checkbox"
                   {...register('rememberMe')}
-                  className="h-4 w-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500"
+                  className="h-4 w-4 text-emerald-600 border-slate-300 dark:border-slate-600 rounded focus:ring-emerald-500 dark:bg-slate-800"
                 />
-                <label htmlFor="rememberMe" className="ml-2 text-sm text-slate-600">
+                <label htmlFor="rememberMe" className="ml-2 text-sm text-slate-600 dark:text-slate-400">
                   {t('auth.signin.rememberMe')}
                 </label>
               </div>
@@ -257,9 +259,9 @@ function SignInForm() {
           </div>
 
           {/* Sign Up Link */}
-          <p className="text-center text-sm text-slate-600 mt-6">
+          <p className="text-center text-sm text-slate-600 dark:text-slate-400 mt-6">
             {t('auth.signin.noAccount')}{' '}
-            <Link href="/auth/signup" className="font-medium text-emerald-600 hover:text-emerald-700">
+            <Link href="/auth/signup" className="font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300">
               {t('auth.signin.createAccount')}
             </Link>
           </p>
@@ -272,7 +274,7 @@ function SignInForm() {
 export default function SignInPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
       </div>
     }>

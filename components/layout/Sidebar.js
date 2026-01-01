@@ -85,23 +85,23 @@ export default function Sidebar({ isOpen, onClose }) {
       {isOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
           {/* Background overlay */}
-          <div 
-            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+          <div
+            className="absolute inset-0 bg-black/20 dark:bg-black/50 backdrop-blur-sm"
             onClick={onClose}
           />
-          
+
           {/* Sidebar panel - Full height, slides from left */}
-          <div className="relative w-80 max-w-[85vw] h-full bg-white shadow-2xl animate-in slide-in-from-left duration-300">
+          <div className="relative w-80 max-w-[85vw] h-full bg-white dark:bg-slate-900 shadow-2xl animate-in slide-in-from-left duration-300">
             {/* Header with close button */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-white h-16">
+            <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 h-16">
               <Logo size="medium" textClassName="text-lg" />
-              
+
               {/* Close button - Top right like Codolio */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg w-8 h-8 p-0"
+                className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg w-8 h-8 p-0"
               >
                 <X className="h-5 w-5" />
               </Button>
@@ -118,8 +118,8 @@ export default function Sidebar({ isOpen, onClose }) {
                     <div
                       className={`group relative flex items-center px-3 py-3 rounded-lg transition-all duration-150 cursor-pointer ${
                         isActive
-                          ? 'bg-emerald-50 text-emerald-700'
-                          : 'text-slate-600 hover:bg-slate-50'
+                          ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
+                          : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                       }`}
                     >
                       {/* Active indicator bar */}
@@ -129,18 +129,18 @@ export default function Sidebar({ isOpen, onClose }) {
 
                       <Icon className={`h-5 w-5 ${
                         isActive
-                          ? 'text-emerald-600'
-                          : 'text-slate-400 group-hover:text-slate-600'
+                          ? 'text-emerald-600 dark:text-emerald-400'
+                          : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                       } transition-colors flex-shrink-0`} />
 
                       <div className="ml-3 flex-1 min-w-0">
                         <p className={`text-sm font-medium ${
-                          isActive ? 'text-emerald-700' : 'text-slate-700 group-hover:text-slate-900'
+                          isActive ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white'
                         }`}>
                           {t(item.name)}
                         </p>
                         <p className={`text-xs ${
-                          isActive ? 'text-emerald-600/70' : 'text-slate-400'
+                          isActive ? 'text-emerald-600/70 dark:text-emerald-500/70' : 'text-slate-400 dark:text-slate-500'
                         }`}>
                           {t(item.description)}
                         </p>
@@ -152,14 +152,14 @@ export default function Sidebar({ isOpen, onClose }) {
             </nav>
 
             {/* Bottom Signout Section for mobile */}
-            <div className="p-4 border-t border-slate-200">
+            <div className="p-4 border-t border-slate-200 dark:border-slate-700">
               <Button
                 onClick={() => {
                   signOut({ callbackUrl: window.location.origin })
                   onClose()
                 }}
                 variant="outline"
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-xl transition-all duration-200"
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 hover:border-red-300 dark:hover:border-red-800 rounded-xl transition-all duration-200"
               >
                 <LogOut className="w-5 h-5" />
                 <span className="font-medium">Sign Out</span>
@@ -172,44 +172,44 @@ export default function Sidebar({ isOpen, onClose }) {
       {/* Desktop Sidebar - Sticky and Enhanced */}
       <div className={`
         hidden lg:flex
-        bg-white border-r border-slate-200 
+        bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700
         transition-all duration-300 ease-in-out
-        ${isCollapsed ? 'w-20' : 'w-72'} 
+        ${isCollapsed ? 'w-20' : 'w-72'}
         h-screen
         flex-col
       `}>
-          
+
         {/* Header */}
-        <div className="p-4 border-b border-slate-200 bg-slate-50 h-16 flex items-center">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 h-16 flex items-center">
           <div className="flex items-center justify-between w-full">
             {!isCollapsed && (
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white">
+                <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white dark:border-slate-700">
                   <TrendingUp className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex flex-col justify-center">
                   <h1 className="text-xl font-bold leading-tight">
-                    <span className="text-slate-800">Wealth</span>
+                    <span className="text-slate-800 dark:text-white">Wealth</span>
                     <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">Wise</span>
                   </h1>
-                  <p className="text-xs text-slate-500 leading-tight">Smart Finance Platform</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-tight">Smart Finance Platform</p>
                 </div>
               </div>
             )}
 
             {/* Collapsed state - Show just the logo */}
             {isCollapsed && (
-              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white mx-auto">
+              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white dark:border-slate-700 mx-auto">
                 <TrendingUp className="w-6 h-6 text-white" />
               </div>
             )}
-            
+
             {/* Collapse Toggle - Desktop Only */}
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg w-8 h-8 p-0 flex-shrink-0"
+              className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg w-8 h-8 p-0 flex-shrink-0"
             >
               {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </Button>
@@ -227,8 +227,8 @@ export default function Sidebar({ isOpen, onClose }) {
                 <div
                   className={`group relative flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 cursor-pointer ${
                     isActive
-                      ? 'bg-emerald-50 text-emerald-700'
-                      : 'text-slate-600 hover:bg-slate-50'
+                      ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                   }`}
                 >
                   {/* Active indicator bar */}
@@ -238,19 +238,19 @@ export default function Sidebar({ isOpen, onClose }) {
 
                   <Icon className={`h-5 w-5 ${
                     isActive
-                      ? 'text-emerald-600'
-                      : 'text-slate-400 group-hover:text-slate-600'
+                      ? 'text-emerald-600 dark:text-emerald-400'
+                      : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                   } transition-colors flex-shrink-0`} />
 
                   {!isCollapsed && (
                     <div className="ml-3 flex-1 min-w-0">
                       <p className={`text-sm font-medium ${
-                        isActive ? 'text-emerald-700' : 'text-slate-700 group-hover:text-slate-900'
+                        isActive ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white'
                       }`}>
                         {t(item.name)}
                       </p>
                       <p className={`text-xs ${
-                        isActive ? 'text-emerald-600/70' : 'text-slate-400'
+                        isActive ? 'text-emerald-600/70 dark:text-emerald-500/70' : 'text-slate-400 dark:text-slate-500'
                       }`}>
                         {t(item.description)}
                       </p>
@@ -264,11 +264,11 @@ export default function Sidebar({ isOpen, onClose }) {
 
         {/* Bottom Signout Section */}
         {!isCollapsed && (
-          <div className="p-4 border-t border-slate-200">
+          <div className="p-4 border-t border-slate-200 dark:border-slate-700">
             <Button
               onClick={() => signOut({ callbackUrl: window.location.origin })}
               variant="outline"
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-xl transition-all duration-200"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 hover:border-red-300 dark:hover:border-red-800 rounded-xl transition-all duration-200"
             >
               <LogOut className="w-5 h-5" />
               <span className="font-medium">Sign Out</span>
@@ -278,11 +278,11 @@ export default function Sidebar({ isOpen, onClose }) {
 
         {/* Collapsed Signout Indicator */}
         {isCollapsed && (
-          <div className="p-4 border-t border-slate-200">
+          <div className="p-4 border-t border-slate-200 dark:border-slate-700">
             <Button
               onClick={() => signOut({ callbackUrl: window.location.origin })}
               variant="outline"
-              className="w-12 h-12 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-xl mx-auto flex items-center justify-center transition-all duration-200"
+              className="w-12 h-12 border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 hover:border-red-300 dark:hover:border-red-800 rounded-xl mx-auto flex items-center justify-center transition-all duration-200"
             >
               <LogOut className="w-6 h-6" />
             </Button>

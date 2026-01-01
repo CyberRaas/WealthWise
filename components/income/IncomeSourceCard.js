@@ -23,50 +23,50 @@ const INCOME_TYPE_CONFIG = {
   salary: {
     icon: Briefcase,
     label: 'Salary',
-    color: 'bg-blue-100 text-blue-700 border-blue-200',
-    iconColor: 'text-blue-600'
+    color: 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700',
+    iconColor: 'text-blue-600 dark:text-blue-400'
   },
   business: {
     icon: Building2,
     label: 'Business',
-    color: 'bg-purple-100 text-purple-700 border-purple-200',
-    iconColor: 'text-purple-600'
+    color: 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700',
+    iconColor: 'text-purple-600 dark:text-purple-400'
   },
   freelance: {
     icon: Laptop,
     label: 'Freelance',
-    color: 'bg-orange-100 text-orange-700 border-orange-200',
-    iconColor: 'text-orange-600'
+    color: 'bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-700',
+    iconColor: 'text-orange-600 dark:text-orange-400'
   },
   rental: {
     icon: Home,
     label: 'Rental',
-    color: 'bg-green-100 text-green-700 border-green-200',
-    iconColor: 'text-green-600'
+    color: 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700',
+    iconColor: 'text-green-600 dark:text-green-400'
   },
   investment: {
     icon: TrendingUp,
     label: 'Investment',
-    color: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-    iconColor: 'text-emerald-600'
+    color: 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700',
+    iconColor: 'text-emerald-600 dark:text-emerald-400'
   },
   pension: {
     icon: Wallet,
     label: 'Pension',
-    color: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-    iconColor: 'text-indigo-600'
+    color: 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700',
+    iconColor: 'text-indigo-600 dark:text-indigo-400'
   },
   side_hustle: {
     icon: Laptop,
     label: 'Side Hustle',
-    color: 'bg-pink-100 text-pink-700 border-pink-200',
-    iconColor: 'text-pink-600'
+    color: 'bg-pink-100 dark:bg-pink-900/50 text-pink-700 dark:text-pink-300 border-pink-200 dark:border-pink-700',
+    iconColor: 'text-pink-600 dark:text-pink-400'
   },
   other: {
     icon: Wallet,
     label: 'Other',
-    color: 'bg-slate-100 text-slate-700 border-slate-200',
-    iconColor: 'text-slate-600'
+    color: 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600',
+    iconColor: 'text-slate-600 dark:text-slate-400'
   }
 }
 
@@ -117,19 +117,19 @@ export default function IncomeSourceCard({
 
   if (compact) {
     return (
-      <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+      <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
         <div className="flex items-center gap-3">
           <div className={`p-2 rounded-lg ${typeConfig.color}`}>
             <IconComponent className={`h-4 w-4 ${typeConfig.iconColor}`} />
           </div>
           <div>
-            <p className="font-medium text-sm text-slate-900">{source.name}</p>
-            <p className="text-xs text-slate-500">{typeConfig.label}</p>
+            <p className="font-medium text-sm text-slate-900 dark:text-white">{source.name}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{typeConfig.label}</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="font-semibold text-slate-900">{formatCurrency(source.amount)}</p>
-          <p className="text-xs text-slate-500">{FREQUENCY_LABELS[source.frequency]}</p>
+          <p className="font-semibold text-slate-900 dark:text-white">{formatCurrency(source.amount)}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{FREQUENCY_LABELS[source.frequency]}</p>
         </div>
       </div>
     )
@@ -137,8 +137,8 @@ export default function IncomeSourceCard({
 
   return (
     <Card
-      className={`relative overflow-hidden transition-all hover:shadow-md ${
-        !source.isStable ? 'border-dashed border-2' : ''
+      className={`relative overflow-hidden transition-all hover:shadow-md dark:bg-slate-800 dark:border-slate-700 ${
+        !source.isStable ? 'border-dashed border-2 dark:border-slate-600' : ''
       }`}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
@@ -152,24 +152,24 @@ export default function IncomeSourceCard({
             </div>
 
             <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-slate-900 truncate">{source.name}</h3>
+              <h3 className="font-semibold text-slate-900 dark:text-white truncate">{source.name}</h3>
 
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <Badge variant="outline" className={`text-xs ${typeConfig.color}`}>
                   {typeConfig.label}
                 </Badge>
 
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs dark:border-slate-600 dark:text-slate-300">
                   {FREQUENCY_LABELS[source.frequency]}
                 </Badge>
 
                 {source.isStable ? (
-                  <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                  <Badge variant="outline" className="text-xs bg-green-50 dark:bg-green-900/50 text-green-700 dark:text-green-400 border-green-200 dark:border-green-700">
                     <CheckCircle2 className="h-3 w-3 mr-1" />
                     Stable
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
+                  <Badge variant="outline" className="text-xs bg-amber-50 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-700">
                     <AlertCircle className="h-3 w-3 mr-1" />
                     Variable
                   </Badge>
@@ -177,22 +177,22 @@ export default function IncomeSourceCard({
               </div>
 
               {source.description && (
-                <p className="text-sm text-slate-500 mt-2 line-clamp-2">{source.description}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">{source.description}</p>
               )}
             </div>
           </div>
 
           {/* Right: Amount */}
           <div className="text-right shrink-0">
-            <p className="text-xl font-bold text-slate-900">
+            <p className="text-xl font-bold text-slate-900 dark:text-white">
               {formatCurrency(source.amount)}
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               {FREQUENCY_LABELS[source.frequency]}
             </p>
 
             {showMonthlyEquivalent && source.frequency !== 'monthly' && (
-              <p className="text-sm text-emerald-600 font-medium mt-1">
+              <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium mt-1">
                 ≈ {formatCurrency(monthlyAmount)}/mo
               </p>
             )}
@@ -209,7 +209,7 @@ export default function IncomeSourceCard({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-slate-500 hover:text-blue-600 hover:bg-blue-50"
+              className="h-8 w-8 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
               onClick={() => onEdit?.(source)}
             >
               <Pencil className="h-4 w-4" />
@@ -217,7 +217,7 @@ export default function IncomeSourceCard({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-slate-500 hover:text-red-600 hover:bg-red-50"
+              className="h-8 w-8 text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30"
               onClick={() => onDelete?.(source)}
             >
               <Trash2 className="h-4 w-4" />

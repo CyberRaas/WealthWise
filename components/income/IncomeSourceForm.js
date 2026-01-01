@@ -165,21 +165,21 @@ export default function IncomeSourceForm({
   }
 
   return (
-    <Card className="w-full max-w-lg mx-auto">
+    <Card className="w-full max-w-lg mx-auto dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-lg">
+            <CardTitle className="text-lg dark:text-white">
               {mode === 'edit' ? 'Edit Income Source' : 'Add Income Source'}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="dark:text-slate-400">
               {mode === 'edit'
                 ? 'Update your income source details'
                 : 'Add a new source of income to your profile'}
             </CardDescription>
           </div>
           {onCancel && (
-            <Button variant="ghost" size="icon" onClick={onCancel}>
+            <Button variant="ghost" size="icon" onClick={onCancel} className="dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700">
               <X className="h-5 w-5" />
             </Button>
           )}
@@ -190,18 +190,18 @@ export default function IncomeSourceForm({
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Income Type */}
           <div className="space-y-2">
-            <Label htmlFor="type">Income Type</Label>
+            <Label htmlFor="type" className="dark:text-slate-200">Income Type</Label>
             <Select value={formData.type} onValueChange={handleTypeChange}>
-              <SelectTrigger>
+              <SelectTrigger className="dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                 <SelectValue placeholder="Select income type" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="dark:bg-slate-800 dark:border-slate-700">
                 {INCOME_TYPES.map((type) => {
                   const Icon = type.icon
                   return (
-                    <SelectItem key={type.value} value={type.value}>
+                    <SelectItem key={type.value} value={type.value} className="dark:text-slate-200 dark:focus:bg-slate-700">
                       <div className="flex items-center gap-2">
-                        <Icon className="h-4 w-4 text-slate-500" />
+                        <Icon className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                         <span>{type.label}</span>
                       </div>
                     </SelectItem>
@@ -209,20 +209,20 @@ export default function IncomeSourceForm({
                 })}
               </SelectContent>
             </Select>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               {INCOME_TYPES.find(t => t.value === formData.type)?.description}
             </p>
           </div>
 
           {/* Name */}
           <div className="space-y-2">
-            <Label htmlFor="name">Source Name</Label>
+            <Label htmlFor="name" className="dark:text-slate-200">Source Name</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => handleChange('name', e.target.value)}
               placeholder="e.g., ABC Company Salary"
-              className={errors.name ? 'border-red-500' : ''}
+              className={`dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:placeholder:text-slate-500 ${errors.name ? 'border-red-500' : ''}`}
             />
             {errors.name && (
               <p className="text-xs text-red-500">{errors.name}</p>
@@ -232,16 +232,16 @@ export default function IncomeSourceForm({
           {/* Amount and Frequency */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount</Label>
+              <Label htmlFor="amount" className="dark:text-slate-200">Amount</Label>
               <div className="relative">
-                <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
                 <Input
                   id="amount"
                   type="number"
                   value={formData.amount}
                   onChange={(e) => handleChange('amount', e.target.value)}
                   placeholder="50000"
-                  className={`pl-9 ${errors.amount ? 'border-red-500' : ''}`}
+                  className={`pl-9 dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:placeholder:text-slate-500 ${errors.amount ? 'border-red-500' : ''}`}
                   min="0"
                 />
               </div>
@@ -251,17 +251,17 @@ export default function IncomeSourceForm({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="frequency">Frequency</Label>
+              <Label htmlFor="frequency" className="dark:text-slate-200">Frequency</Label>
               <Select
                 value={formData.frequency}
                 onValueChange={(value) => handleChange('frequency', value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="dark:bg-slate-700 dark:border-slate-600 dark:text-white">
                   <SelectValue placeholder="Select frequency" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="dark:bg-slate-800 dark:border-slate-700">
                   {FREQUENCIES.map((freq) => (
-                    <SelectItem key={freq.value} value={freq.value}>
+                    <SelectItem key={freq.value} value={freq.value} className="dark:text-slate-200 dark:focus:bg-slate-700">
                       {freq.label}
                     </SelectItem>
                   ))}
@@ -272,21 +272,21 @@ export default function IncomeSourceForm({
 
           {/* Monthly Equivalent Preview */}
           {formData.amount && formData.frequency !== 'monthly' && (
-            <div className="flex items-center gap-2 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-              <Info className="h-4 w-4 text-emerald-600" />
-              <span className="text-sm text-emerald-700">
+            <div className="flex items-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg border border-emerald-200 dark:border-emerald-800">
+              <Info className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              <span className="text-sm text-emerald-700 dark:text-emerald-300">
                 Monthly equivalent: <strong>₹{getMonthlyEquivalent().toLocaleString('en-IN')}</strong>
               </span>
             </div>
           )}
 
           {/* Stability Toggle */}
-          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border dark:border-slate-600">
             <div className="space-y-1">
-              <Label htmlFor="isStable" className="text-sm font-medium">
+              <Label htmlFor="isStable" className="text-sm font-medium dark:text-slate-200">
                 Stable Income
               </Label>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Is this income consistent every month?
               </p>
             </div>
@@ -298,12 +298,12 @@ export default function IncomeSourceForm({
           </div>
 
           {/* Include in Budget Toggle */}
-          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border dark:border-slate-600">
             <div className="space-y-1">
-              <Label htmlFor="includeInBudget" className="text-sm font-medium">
+              <Label htmlFor="includeInBudget" className="text-sm font-medium dark:text-slate-200">
                 Include in Budget
               </Label>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Use this income for budget calculations
               </p>
             </div>
@@ -316,8 +316,8 @@ export default function IncomeSourceForm({
 
           {/* Description (Optional) */}
           <div className="space-y-2">
-            <Label htmlFor="description">
-              Description <span className="text-slate-400">(optional)</span>
+            <Label htmlFor="description" className="dark:text-slate-200">
+              Description <span className="text-slate-400 dark:text-slate-500">(optional)</span>
             </Label>
             <Input
               id="description"
@@ -325,6 +325,7 @@ export default function IncomeSourceForm({
               onChange={(e) => handleChange('description', e.target.value)}
               placeholder="Any additional notes..."
               maxLength={500}
+              className="dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:placeholder:text-slate-500"
             />
           </div>
 
@@ -334,7 +335,7 @@ export default function IncomeSourceForm({
               <Button
                 type="button"
                 variant="outline"
-                className="flex-1"
+                className="flex-1 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
                 onClick={onCancel}
                 disabled={isSubmitting}
               >
@@ -343,7 +344,7 @@ export default function IncomeSourceForm({
             )}
             <Button
               type="submit"
-              className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+              className="flex-1 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
               disabled={isSubmitting}
             >
               <Save className="h-4 w-4 mr-2" />

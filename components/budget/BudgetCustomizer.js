@@ -254,11 +254,11 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
 
   if (!customBudget) {
     return (
-      <Card>
+      <Card className="dark:bg-slate-800 dark:border-slate-700">
         <CardContent className="p-6 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500 mx-auto"></div>
-          <p className="mt-2 text-gray-500">{t('budget.loadingCustomizer')}</p>
-          <div className="mt-4 text-xs text-gray-400">
+          <p className="mt-2 text-gray-500 dark:text-gray-400">{t('budget.loadingCustomizer')}</p>
+          <div className="mt-4 text-xs text-gray-400 dark:text-gray-500">
             Debug: Budget={!!budget}, Categories={!!budget?.categories}, TotalBudget={budget?.totalBudget}
           </div>
         </CardContent>
@@ -273,14 +273,14 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card>
+      <Card className="dark:bg-slate-800 dark:border-slate-700">
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="text-xl font-bold text-slate-800">
+              <CardTitle className="text-xl font-bold text-slate-800 dark:text-white">
                 🎯 {t('Customize Title')}
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="dark:text-slate-400">
                 {t('Customize Description')}
               </CardDescription>
             </div>
@@ -289,6 +289,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowPercentages(!showPercentages)}
+                className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
               >
                 {showPercentages ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
                 {showPercentages ? t('Show Amounts') : t('Show Percentages')}
@@ -298,23 +299,23 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
         </CardHeader>
         <CardContent>
           {/* Budget Status */}
-          <div className="bg-gradient-to-r from-slate-50 to-emerald-50 rounded-lg p-4 mb-4">
+          <div className="bg-gradient-to-r from-slate-50 to-emerald-50 dark:from-slate-900 dark:to-emerald-950/30 rounded-lg p-4 mb-4 border dark:border-slate-700">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
-                <p className="text-sm text-slate-600">{t('Monthly Income')}</p>
-                <p className="text-2xl font-bold text-slate-800">
+                <p className="text-sm text-slate-600 dark:text-slate-400">{t('Monthly Income')}</p>
+                <p className="text-2xl font-bold text-slate-800 dark:text-white">
                   ₹{totalBudget.toLocaleString('en-IN')}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-600">{t('Total Allocated')}</p>
-                <p className={`text-2xl font-bold ${isBalanced ? 'text-emerald-600' : 'text-red-600'}`}>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{t('Total Allocated')}</p>
+                <p className={`text-2xl font-bold ${isBalanced ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                   ₹{totalAllocated.toLocaleString('en-IN')}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-600">{t('Budget Difference')}</p>
-                <p className={`text-lg font-bold ${Math.abs(difference) <= 500 ? 'text-emerald-600' : 'text-red-600'}`}>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{t('Budget Difference')}</p>
+                <p className={`text-lg font-bold ${Math.abs(difference) <= 500 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                   {difference > 0 ? '+' : ''}₹{difference.toLocaleString('en-IN')}
                 </p>
               </div>
@@ -322,17 +323,17 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
 
             {!isBalanced && (
               <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-orange-600">
+                <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                   <AlertTriangle className="h-4 w-4" />
                   <span className="text-sm">
                     Budget needs balancing (₹{Math.abs(difference).toLocaleString('en-IN')} {difference > 0 ? 'over' : 'under'})
                     <br />
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
                       Allocated: ₹{totalAllocated.toLocaleString('en-IN')} / Budget: ₹{totalBudget.toLocaleString('en-IN')}
                     </span>
                   </span>
                 </div>
-                <Button onClick={autoBalance} size="sm" variant="outline">
+                <Button onClick={autoBalance} size="sm" variant="outline" className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
                   Auto Balance
                 </Button>
               </div>
@@ -341,10 +342,15 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
 
           {/* Budget Health */}
           <div className="flex items-center gap-2 mb-4">
-            {budgetHealth.status === 'good' && <CheckCircle className="h-5 w-5 text-green-500" />}
-            {budgetHealth.status === 'warning' && <AlertTriangle className="h-5 w-5 text-orange-500" />}
-            {budgetHealth.status === 'concern' && <AlertTriangle className="h-5 w-5 text-red-500" />}
-            <span className={`text-sm font-medium text-${budgetHealth.color}-600`}>
+            {budgetHealth.status === 'good' && <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400" />}
+            {budgetHealth.status === 'warning' && <AlertTriangle className="h-5 w-5 text-orange-500 dark:text-orange-400" />}
+            {budgetHealth.status === 'concern' && <AlertTriangle className="h-5 w-5 text-red-500 dark:text-red-400" />}
+            <span className={`text-sm font-medium ${
+              budgetHealth.color === 'green' ? 'text-green-600 dark:text-green-400' :
+              budgetHealth.color === 'orange' ? 'text-orange-600 dark:text-orange-400' :
+              budgetHealth.color === 'red' ? 'text-red-600 dark:text-red-400' :
+              'text-gray-600 dark:text-gray-400'
+            }`}>
               {budgetHealth.message}
             </span>
           </div>
@@ -352,12 +358,12 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
       </Card>
 
       {/* Category Customization */}
-      <Card>
+      <Card className="dark:bg-slate-800 dark:border-slate-700">
         <CardHeader>
-          <CardTitle className="text-lg font-bold text-slate-800">
+          <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">
             {t('Adjust Categories')}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="dark:text-slate-400">
             {t('Modify Amounts')}
           </CardDescription>
         </CardHeader>
@@ -369,13 +375,13 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
               const isChanged = Math.abs(originalAmount - currentAmount) > 50
 
               return (
-                <div key={categoryKey} className="border rounded-lg p-4 space-y-4">
+                <div key={categoryKey} className="border dark:border-slate-700 rounded-lg p-4 space-y-4 bg-white dark:bg-slate-900">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">{category.emoji}</span>
                       <div>
-                        <h3 className="font-medium text-slate-800">{category.englishName}</h3>
-                        <p className="text-sm text-slate-500">{category.hinglishName}</p>
+                        <h3 className="font-medium text-slate-800 dark:text-white">{category.englishName}</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">{category.hinglishName}</p>
                       </div>
                       {isChanged && (
                         <Badge variant={currentAmount > originalAmount ? "default" : "secondary"}>
@@ -389,17 +395,17 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                       )}
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-slate-800">
+                      <p className="font-bold text-slate-800 dark:text-white">
                         ₹{category.amount.toLocaleString('en-IN')}
                       </p>
-                      <p className="text-sm text-slate-500">{category.percentage}%</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">{category.percentage}%</p>
                     </div>
                   </div>
 
                   {/* Amount Slider */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium text-slate-700">
+                      <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                         {showPercentages ? t('Percentage') : t('Amount')}
                       </label>
                       <div className="flex items-center gap-2">
@@ -411,7 +417,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                               max="100"
                               value={category.percentage}
                               onChange={(e) => updateCategoryPercentage(categoryKey, parseInt(e.target.value) || 0)}
-                              className="w-16 h-8 text-xs"
+                              className="w-16 h-8 text-xs dark:bg-slate-800 dark:border-slate-600 dark:text-white"
                             />
                             <Percent className="h-3 w-3 text-slate-400" />
                           </div>
@@ -424,7 +430,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                               max={totalBudget}
                               value={category.amount}
                               onChange={(e) => updateCategoryAmount(categoryKey, parseInt(e.target.value) || 0)}
-                              className="w-24 h-8 text-xs"
+                              className="w-24 h-8 text-xs dark:bg-slate-800 dark:border-slate-600 dark:text-white"
                             />
                           </div>
                         )}
@@ -445,7 +451,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
                       }}
                       className="w-full"
                     />
-                    <div className="flex justify-between text-xs text-slate-500">
+                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
                       <span>0{showPercentages ? '%' : ''}</span>
                       <span>{category.percentage}% of total budget</span>
                       <span>{showPercentages ? '100%' : `₹${totalBudget.toLocaleString('en-IN')}`}</span>
@@ -454,7 +460,7 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
 
                   {/* Original vs Current Comparison */}
                   {isChanged && (
-                    <div className="text-xs text-slate-500 bg-slate-50 p-2 rounded">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 p-2 rounded border dark:border-slate-700">
                       Original: ₹{originalAmount.toLocaleString('en-IN')} ({Math.round((originalAmount / totalBudget) * 100)}%)
                       {currentAmount > originalAmount ? ' → +' : ' → -'}₹{Math.abs(currentAmount - originalAmount).toLocaleString('en-IN')}
                     </div>
@@ -468,10 +474,10 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 justify-end">
-        <Button variant="outline" onClick={onCancel}>
+        <Button variant="outline" onClick={onCancel} className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
           {t('Cancel')}
         </Button>
-        <Button variant="outline" onClick={resetToOriginal}>
+        <Button variant="outline" onClick={resetToOriginal} className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
           <RotateCcw className="h-4 w-4 mr-2" />
           {t('Reset to Original')}
         </Button>

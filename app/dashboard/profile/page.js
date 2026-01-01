@@ -34,20 +34,20 @@ import Image from 'next/image'
 function ProfileSkeleton() {
   return (
     <div className="space-y-4 max-w-3xl mx-auto animate-pulse">
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
         <div className="flex items-start gap-6">
-          <div className="w-24 h-24 bg-slate-200 rounded-full" />
+          <div className="w-24 h-24 bg-slate-200 dark:bg-slate-700 rounded-full" />
           <div className="flex-1 space-y-3">
-            <div className="h-6 w-40 bg-slate-200 rounded" />
-            <div className="h-4 w-56 bg-slate-200 rounded" />
+            <div className="h-6 w-40 bg-slate-200 dark:bg-slate-700 rounded" />
+            <div className="h-4 w-56 bg-slate-200 dark:bg-slate-700 rounded" />
             <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="h-10 bg-slate-100 rounded" />
-              <div className="h-10 bg-slate-100 rounded" />
+              <div className="h-10 bg-slate-100 dark:bg-slate-700 rounded" />
+              <div className="h-10 bg-slate-100 dark:bg-slate-700 rounded" />
             </div>
           </div>
         </div>
       </div>
-      <div className="bg-white rounded-xl border border-slate-200 p-6 h-40" />
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 h-40" />
     </div>
   )
 }
@@ -172,11 +172,11 @@ function ProfileContent() {
     <DashboardLayout title={t('profile.title')}>
       <div className="max-w-3xl mx-auto space-y-4">
         {/* Profile Card */}
-        <Card className="border-slate-200">
+        <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                <User className="w-5 h-5 text-emerald-600" />
+              <CardTitle className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+                <User className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 {t('profile.myProfile')}
               </CardTitle>
               {!isEditing ? (
@@ -184,7 +184,7 @@ function ProfileContent() {
                   onClick={() => setIsEditing(true)}
                   variant="outline"
                   size="sm"
-                  className="gap-2"
+                  className="gap-2 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
                 >
                   <Edit3 className="h-4 w-4" />
                   {t('profile.editProfile')}
@@ -204,13 +204,13 @@ function ProfileContent() {
                     )}
                     {saving ? t('profile.saving') : t('common.save')}
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleCancel}>
+                  <Button variant="outline" size="sm" onClick={handleCancel} className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               )}
             </div>
-            <p className="text-sm text-slate-500 mt-1">{t('profile.managePersonalInfo')}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t('profile.managePersonalInfo')}</p>
           </CardHeader>
 
           <CardContent>
@@ -218,7 +218,7 @@ function ProfileContent() {
               {/* Profile Photo */}
               <div className="flex flex-col items-center">
                 <div className="relative">
-                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg relative">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white dark:border-slate-700 shadow-lg relative">
                     {localProfileImage ? (
                       <Image
                         src={localProfileImage}
@@ -247,7 +247,7 @@ function ProfileContent() {
                 {isEditing && (
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="text-xs text-emerald-600 hover:text-emerald-700 mt-2"
+                    className="text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 mt-2"
                   >
                     {t('profile.changePhoto')}
                   </button>
@@ -267,7 +267,7 @@ function ProfileContent() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Full Name */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-slate-500 flex items-center gap-1">
+                    <Label className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
                       <User className="w-3 h-3" />
                       {t('profile.fullName')}
                     </Label>
@@ -276,10 +276,10 @@ function ProfileContent() {
                         value={profile.name}
                         onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                         placeholder={t('profile.enterFullName')}
-                        className="h-9"
+                        className="h-9 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
                       />
                     ) : (
-                      <p className="text-sm font-medium text-slate-800">
+                      <p className="text-sm font-medium text-slate-800 dark:text-white">
                         {profile.name || t('profile.notProvided')}
                       </p>
                     )}
@@ -287,19 +287,19 @@ function ProfileContent() {
 
                   {/* Email */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-slate-500 flex items-center gap-1">
+                    <Label className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
                       <Mail className="w-3 h-3" />
                       {t('profile.emailAddress')}
                     </Label>
-                    <p className="text-sm text-slate-800">
+                    <p className="text-sm text-slate-800 dark:text-slate-200">
                       {profile.email}
-                      <span className="text-xs text-slate-400 ml-1">{t('profile.cannotBeChanged')}</span>
+                      <span className="text-xs text-slate-400 dark:text-slate-500 ml-1">{t('profile.cannotBeChanged')}</span>
                     </p>
                   </div>
 
                   {/* Phone */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-slate-500 flex items-center gap-1">
+                    <Label className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
                       <Phone className="w-3 h-3" />
                       {t('profile.phoneNumber')}
                     </Label>
@@ -308,18 +308,18 @@ function ProfileContent() {
                         value={profile.phone}
                         onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                         placeholder="+91 98765 43210"
-                        className="h-9"
+                        className="h-9 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
                       />
                     ) : (
-                      <p className="text-sm text-slate-800">
-                        {profile.phone || <span className="text-slate-400">{t('profile.notProvided')}</span>}
+                      <p className="text-sm text-slate-800 dark:text-slate-200">
+                        {profile.phone || <span className="text-slate-400 dark:text-slate-500">{t('profile.notProvided')}</span>}
                       </p>
                     )}
                   </div>
 
                   {/* Location */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-slate-500 flex items-center gap-1">
+                    <Label className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
                       <MapPin className="w-3 h-3" />
                       {t('profile.location')}
                     </Label>
@@ -328,18 +328,18 @@ function ProfileContent() {
                         value={profile.location}
                         onChange={(e) => setProfile({ ...profile, location: e.target.value })}
                         placeholder="Mumbai, Maharashtra"
-                        className="h-9"
+                        className="h-9 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
                       />
                     ) : (
-                      <p className="text-sm text-slate-800">
-                        {profile.location || <span className="text-slate-400">{t('profile.notProvided')}</span>}
+                      <p className="text-sm text-slate-800 dark:text-slate-200">
+                        {profile.location || <span className="text-slate-400 dark:text-slate-500">{t('profile.notProvided')}</span>}
                       </p>
                     )}
                   </div>
 
                   {/* Date of Birth */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-slate-500 flex items-center gap-1">
+                    <Label className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       {t('profile.dateOfBirth')}
                     </Label>
@@ -348,17 +348,17 @@ function ProfileContent() {
                         type="date"
                         value={profile.dateOfBirth}
                         onChange={(e) => setProfile({ ...profile, dateOfBirth: e.target.value })}
-                        className="h-9"
+                        className="h-9 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
                       />
                     ) : (
-                      <p className="text-sm text-slate-800">
+                      <p className="text-sm text-slate-800 dark:text-slate-200">
                         {profile.dateOfBirth
                           ? new Date(profile.dateOfBirth).toLocaleDateString('en-IN', {
                               day: 'numeric',
                               month: 'long',
                               year: 'numeric'
                             })
-                          : <span className="text-slate-400">{t('profile.notProvided')}</span>
+                          : <span className="text-slate-400 dark:text-slate-500">{t('profile.notProvided')}</span>
                         }
                       </p>
                     )}
@@ -366,7 +366,7 @@ function ProfileContent() {
 
                   {/* Occupation */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs text-slate-500 flex items-center gap-1">
+                    <Label className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
                       <Briefcase className="w-3 h-3" />
                       {t('profile.occupation')}
                     </Label>
@@ -375,11 +375,11 @@ function ProfileContent() {
                         value={profile.occupation}
                         onChange={(e) => setProfile({ ...profile, occupation: e.target.value })}
                         placeholder="Software Engineer"
-                        className="h-9"
+                        className="h-9 dark:bg-slate-800 dark:border-slate-600 dark:text-white"
                       />
                     ) : (
-                      <p className="text-sm text-slate-800">
-                        {profile.occupation || <span className="text-slate-400">{t('profile.notProvided')}</span>}
+                      <p className="text-sm text-slate-800 dark:text-slate-200">
+                        {profile.occupation || <span className="text-slate-400 dark:text-slate-500">{t('profile.notProvided')}</span>}
                       </p>
                     )}
                   </div>
@@ -387,18 +387,18 @@ function ProfileContent() {
 
                 {/* Bio */}
                 <div className="space-y-1.5 pt-2">
-                  <Label className="text-xs text-slate-500">{t('profile.aboutMe')}</Label>
+                  <Label className="text-xs text-slate-500 dark:text-slate-400">{t('profile.aboutMe')}</Label>
                   {isEditing ? (
                     <Textarea
                       value={profile.bio}
                       onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                       placeholder={t('profile.tellAboutYourself')}
                       rows={3}
-                      className="resize-none"
+                      className="resize-none dark:bg-slate-800 dark:border-slate-600 dark:text-white"
                     />
                   ) : (
-                    <div className="text-sm text-slate-700 bg-slate-50 p-3 rounded-lg min-h-[60px]">
-                      {profile.bio || <span className="text-slate-400">{t('profile.noBioProvided')}</span>}
+                    <div className="text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg min-h-[60px]">
+                      {profile.bio || <span className="text-slate-400 dark:text-slate-500">{t('profile.noBioProvided')}</span>}
                     </div>
                   )}
                 </div>
@@ -408,10 +408,10 @@ function ProfileContent() {
         </Card>
 
         {/* Notification Settings */}
-        <Card className="border-slate-200">
+        <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-slate-700 flex items-center gap-2">
-              <Bell className="w-4 h-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium text-slate-700 dark:text-white flex items-center gap-2">
+              <Bell className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Notification Preferences
             </CardTitle>
           </CardHeader>
@@ -419,32 +419,32 @@ function ProfileContent() {
             <div className="space-y-3">
               <div className="flex items-center justify-between py-2">
                 <div>
-                  <p className="text-sm font-medium text-slate-700">Email Notifications</p>
-                  <p className="text-xs text-slate-500">Receive financial alerts via email</p>
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Email Notifications</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Receive financial alerts via email</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" defaultChecked className="sr-only peer" />
-                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                  <div className="w-9 h-5 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
                 </label>
               </div>
-              <div className="flex items-center justify-between py-2 border-t border-slate-100">
+              <div className="flex items-center justify-between py-2 border-t border-slate-100 dark:border-slate-700">
                 <div>
-                  <p className="text-sm font-medium text-slate-700">Budget Alerts</p>
-                  <p className="text-xs text-slate-500">Get notified when approaching budget limits</p>
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Budget Alerts</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Get notified when approaching budget limits</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" defaultChecked className="sr-only peer" />
-                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                  <div className="w-9 h-5 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
                 </label>
               </div>
-              <div className="flex items-center justify-between py-2 border-t border-slate-100">
+              <div className="flex items-center justify-between py-2 border-t border-slate-100 dark:border-slate-700">
                 <div>
-                  <p className="text-sm font-medium text-slate-700">Weekly Summary</p>
-                  <p className="text-xs text-slate-500">Weekly financial summary report</p>
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Weekly Summary</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Weekly financial summary report</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" className="sr-only peer" />
-                  <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                  <div className="w-9 h-5 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
                 </label>
               </div>
             </div>
@@ -452,20 +452,20 @@ function ProfileContent() {
         </Card>
 
         {/* Account Actions */}
-        <Card className="border-slate-200">
+        <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-slate-700 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-500" />
+            <CardTitle className="text-sm font-medium text-slate-700 dark:text-white flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-500 dark:text-amber-400" />
               {t('profile.accountActions')}
             </CardTitle>
-            <p className="text-xs text-slate-500">{t('profile.manageAccountSettings')}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t('profile.manageAccountSettings')}</p>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 variant="outline"
                 onClick={() => signOut({ callbackUrl: '/' })}
-                className="gap-2 text-slate-600 hover:text-slate-800"
+                className="gap-2 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white dark:border-slate-600 dark:hover:bg-slate-700"
               >
                 <LogOut className="w-4 h-4" />
                 {t('profile.signOut')}
@@ -478,7 +478,7 @@ function ProfileContent() {
                     toast.error(t('profile.deleteAccountSoon'))
                   }
                 }}
-                className="gap-2 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                className="gap-2 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950 hover:border-red-300 dark:hover:border-red-800"
               >
                 <Trash2 className="w-4 h-4" />
                 {t('profile.deleteAccount')}

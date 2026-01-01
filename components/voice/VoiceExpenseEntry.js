@@ -128,6 +128,7 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const startListening = () => {
@@ -301,16 +302,16 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
       }}
     >
       <div
-        className={`bg-white rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl my-8 transition-all duration-300 ease-out ${isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'}`}
+        className={`bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl my-8 transition-all duration-300 ease-out ${isVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="text-center border-b pb-4">
+        <div className="text-center border-b dark:border-slate-700 pb-4">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Sparkles className="w-5 h-5 text-emerald-500" />
-            <h2 className="text-xl font-bold text-gray-900">Voice Expense Entry</h2>
+            <Sparkles className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Voice Expense Entry</h2>
           </div>
-          <p className="text-sm text-gray-600">Speak in Hindi, English, or Hinglish</p>
+          <p className="text-sm text-gray-600 dark:text-slate-400">Speak in Hindi, English, or Hinglish</p>
         </div>
 
         {/* Voice Input Section */}
@@ -370,26 +371,26 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
                 </div>
               )}
               {!isListening && !isProcessing && (
-                <p className="text-gray-500">Tap microphone to start</p>
+                <p className="text-gray-500 dark:text-slate-400">Tap microphone to start</p>
               )}
             </div>
 
             {/* Transcript Display */}
             {transcript && (
-              <div className="bg-gray-50 rounded-lg p-3 border">
-                <p className="text-xs text-gray-500 mb-1">You said:</p>
-                <p className="text-gray-900 font-medium">&quot;{transcript}&quot;</p>
+              <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-3 border dark:border-slate-700">
+                <p className="text-xs text-gray-500 dark:text-slate-400 mb-1">You said:</p>
+                <p className="text-gray-900 dark:text-white font-medium">&quot;{transcript}&quot;</p>
               </div>
             )}
 
             {/* Example Commands */}
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4">
-              <p className="text-sm text-emerald-700 font-semibold mb-2">Try saying:</p>
-              <div className="grid grid-cols-1 gap-1.5 text-xs text-emerald-600">
-                <p className="bg-white/60 rounded px-2 py-1">&quot;200 ka dosa khaya&quot;</p>
-                <p className="bg-white/60 rounded px-2 py-1">&quot;Metro में 45 rupees&quot;</p>
-                <p className="bg-white/60 rounded px-2 py-1">&quot;Swiggy से 180 ka order&quot;</p>
-                <p className="bg-white/60 rounded px-2 py-1">&quot;Bought shoes for 500 rupees&quot;</p>
+            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/50 dark:to-teal-950/50 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4">
+              <p className="text-sm text-emerald-700 dark:text-emerald-400 font-semibold mb-2">Try saying:</p>
+              <div className="grid grid-cols-1 gap-1.5 text-xs text-emerald-600 dark:text-emerald-400">
+                <p className="bg-white/60 dark:bg-slate-800/60 rounded px-2 py-1">&quot;200 ka dosa khaya&quot;</p>
+                <p className="bg-white/60 dark:bg-slate-800/60 rounded px-2 py-1">&quot;Metro में 45 rupees&quot;</p>
+                <p className="bg-white/60 dark:bg-slate-800/60 rounded px-2 py-1">&quot;Swiggy से 180 ka order&quot;</p>
+                <p className="bg-white/60 dark:bg-slate-800/60 rounded px-2 py-1">&quot;Bought shoes for 500 rupees&quot;</p>
               </div>
             </div>
           </div>
@@ -400,15 +401,15 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
           <div className="space-y-4">
             {/* Edit Toggle */}
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-gray-900">
+              <h3 className="font-semibold text-gray-900 dark:text-white">
                 {isEditing ? 'Edit Expense' : 'Confirm Expense'}
               </h3>
               <button
                 onClick={toggleEditMode}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   isEditing
-                    ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                    : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                    ? 'bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-300 dark:hover:bg-slate-600'
+                    : 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/70'
                 }`}
               >
                 <Edit3 className="w-3.5 h-3.5" />
@@ -418,15 +419,15 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
 
             {/* Expense Details Card */}
             <div className={`rounded-xl p-4 border-2 ${
-              isEditing ? 'bg-blue-50 border-blue-200' : 'bg-emerald-50 border-emerald-200'
+              isEditing ? 'bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800' : 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800'
             }`}>
               {/* Confidence Badge */}
               {!isEditing && (
                 <div className="flex justify-end mb-2">
                   <span className={`text-xs px-2 py-0.5 rounded-full ${
-                    confidence >= 0.8 ? 'bg-green-100 text-green-700' :
-                    confidence >= 0.6 ? 'bg-yellow-100 text-yellow-700' :
-                    'bg-orange-100 text-orange-700'
+                    confidence >= 0.8 ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400' :
+                    confidence >= 0.6 ? 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400' :
+                    'bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-400'
                   }`}>
                     {Math.round(confidence * 100)}% confident
                   </span>
@@ -436,39 +437,39 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
               <div className="space-y-3">
                 {/* Amount */}
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600 text-sm">Amount</span>
+                  <span className="text-gray-600 dark:text-slate-400 text-sm">Amount</span>
                   {isEditing ? (
                     <div className="flex items-center">
-                      <span className="text-gray-500 mr-1">₹</span>
+                      <span className="text-gray-500 dark:text-slate-400 mr-1">₹</span>
                       <input
                         type="number"
                         value={editAmount}
                         onChange={(e) => setEditAmount(e.target.value)}
-                        className="w-24 px-2 py-1 border rounded-lg text-right font-bold text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-24 px-2 py-1 border dark:border-slate-600 rounded-lg text-right font-bold text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:text-white"
                         placeholder="0"
                       />
                     </div>
                   ) : (
-                    <span className="font-bold text-xl text-emerald-700">₹{processedExpense.amount}</span>
+                    <span className="font-bold text-xl text-emerald-700 dark:text-emerald-400">₹{processedExpense.amount}</span>
                   )}
                 </div>
 
                 {/* Category */}
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600 text-sm">Category</span>
+                  <span className="text-gray-600 dark:text-slate-400 text-sm">Category</span>
                   {isEditing ? (
                     <div className="relative">
                       <button
                         onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                        className="flex items-center gap-2 px-3 py-1.5 border rounded-lg bg-white hover:bg-gray-50 transition-colors"
+                        className="flex items-center gap-2 px-3 py-1.5 border dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
                       >
                         <span>{getCategoryDisplay(editCategory).emoji}</span>
-                        <span className="font-medium">{getCategoryDisplay(editCategory).name}</span>
+                        <span className="font-medium dark:text-white">{getCategoryDisplay(editCategory).name}</span>
                         <ChevronDown className="w-4 h-4 text-gray-400" />
                       </button>
 
                       {showCategoryDropdown && (
-                        <div className="absolute right-0 mt-1 w-48 bg-white border rounded-xl shadow-lg z-10 py-1 max-h-60 overflow-y-auto">
+                        <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-xl shadow-lg z-10 py-1 max-h-60 overflow-y-auto">
                           {CATEGORY_OPTIONS.map((cat) => (
                             <button
                               key={cat.id}
@@ -476,8 +477,8 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
                                 setEditCategory(cat.id)
                                 setShowCategoryDropdown(false)
                               }}
-                              className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 transition-colors ${
-                                editCategory === cat.id ? 'bg-emerald-50 text-emerald-700' : ''
+                              className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors ${
+                                editCategory === cat.id ? 'bg-emerald-50 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400' : 'dark:text-slate-300'
                               }`}
                             >
                               <span>{cat.emoji}</span>
@@ -490,48 +491,48 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
                   ) : (
                     <div className="flex items-center gap-2">
                       <span className="text-lg">{processedExpense.categoryInfo?.emoji}</span>
-                      <span className="font-medium">{processedExpense.categoryInfo?.englishName}</span>
+                      <span className="font-medium dark:text-white">{processedExpense.categoryInfo?.englishName}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Description */}
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600 text-sm">Description</span>
+                  <span className="text-gray-600 dark:text-slate-400 text-sm">Description</span>
                   {isEditing ? (
                     <input
                       type="text"
                       value={editDescription}
                       onChange={(e) => setEditDescription(e.target.value)}
-                      className="w-40 px-2 py-1 border rounded-lg text-right text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-40 px-2 py-1 border dark:border-slate-600 rounded-lg text-right text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:text-white"
                       placeholder="Enter description"
                     />
                   ) : (
-                    <span className="font-medium text-sm">{processedExpense.description || '-'}</span>
+                    <span className="font-medium text-sm dark:text-white">{processedExpense.description || '-'}</span>
                   )}
                 </div>
 
                 {/* Merchant (if detected) */}
                 {processedExpense.merchant && !isEditing && (
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600 text-sm">Merchant</span>
-                    <span className="font-medium text-sm">{processedExpense.merchant}</span>
+                    <span className="text-gray-600 dark:text-slate-400 text-sm">Merchant</span>
+                    <span className="font-medium text-sm dark:text-white">{processedExpense.merchant}</span>
                   </div>
                 )}
               </div>
             </div>
 
             {/* Original Voice Text */}
-            <div className="bg-gray-50 rounded-lg p-2.5 border">
-              <p className="text-xs text-gray-500 mb-0.5">Original voice input:</p>
-              <p className="text-sm text-gray-700">&quot;{processedExpense.originalText}&quot;</p>
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-2.5 border dark:border-slate-700">
+              <p className="text-xs text-gray-500 dark:text-slate-400 mb-0.5">Original voice input:</p>
+              <p className="text-sm text-gray-700 dark:text-slate-300">&quot;{processedExpense.originalText}&quot;</p>
             </div>
 
             {/* Low Confidence Warning */}
             {confidence < 0.7 && !isEditing && (
-              <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg p-3">
-                <AlertCircle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                <div className="text-xs text-amber-700">
+              <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+                <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                <div className="text-xs text-amber-700 dark:text-amber-400">
                   <p className="font-medium">Low confidence detection</p>
                   <p>Please verify the details above or tap Edit to correct them.</p>
                 </div>
@@ -564,7 +565,7 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
                   setIsEditing(false)
                 }}
                 disabled={isSaving}
-                className="py-3 px-4 rounded-xl font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                className="py-3 px-4 rounded-xl font-medium bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-slate-300 transition-colors"
               >
                 <RefreshCw className="w-4 h-4" />
               </button>
@@ -574,18 +575,18 @@ export default function VoiceExpenseEntry({ onExpenseAdded, onClose }) {
 
         {/* Error Display */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
-            <p className="text-red-700 text-sm">{error}</p>
+          <div className="bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-lg p-3 flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 text-red-500 dark:text-red-400 mt-0.5 flex-shrink-0" />
+            <p className="text-red-700 dark:text-red-400 text-sm">{error}</p>
           </div>
         )}
 
         {/* Close Button */}
-        <div className="flex justify-center pt-2 border-t">
+        <div className="flex justify-center pt-2 border-t dark:border-slate-700">
           <button
             onClick={onClose}
             disabled={isListening || isSaving}
-            className={`text-gray-500 hover:text-gray-700 flex items-center py-2 px-4 rounded-lg transition-all hover:bg-gray-100 ${
+            className={`text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200 flex items-center py-2 px-4 rounded-lg transition-all hover:bg-gray-100 dark:hover:bg-slate-700 ${
               (isListening || isSaving) ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >

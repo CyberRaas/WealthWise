@@ -316,11 +316,11 @@ export default function GoalTracker({ userSavings = 0 }) {
 
   if (loading) {
     return (
-      <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+      <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 dark:border dark:border-slate-700 shadow-lg">
         <CardContent className="flex items-center justify-center p-8">
           <div className="text-center">
             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-600">{t('goals.loading')}</p>
+            <p className="text-gray-600 dark:text-gray-400">{t('goals.loading')}</p>
           </div>
         </CardContent>
       </Card>
@@ -358,8 +358,8 @@ export default function GoalTracker({ userSavings = 0 }) {
       {/* Add Goal Button - Clean & Simple */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">Manage Your Goals</h3>
-          <p className="text-sm text-gray-600">Create and track your financial goals</p>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Manage Your Goals</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Create and track your financial goals</p>
         </div>
         <Button
           onClick={() => setShowCreateGoal(true)}
@@ -372,13 +372,13 @@ export default function GoalTracker({ userSavings = 0 }) {
 
       {/* Goals List */}
       {goals.length === 0 ? (
-        <Card className="border-2 border-dashed border-gray-300">
+        <Card className="border-2 border-dashed border-gray-300 dark:border-slate-600 dark:bg-slate-800/50">
           <CardContent className="text-center p-8 sm:p-12">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Target className="w-8 h-8 text-gray-400" />
+            <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Target className="w-8 h-8 text-gray-400 dark:text-gray-500" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('goals.noGoalsYet')}</h3>
-            <p className="text-gray-600 mb-6 text-sm">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{t('goals.noGoalsYet')}</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">
               {t('goals.startJourney')}
             </p>
             <Button
@@ -406,27 +406,27 @@ export default function GoalTracker({ userSavings = 0 }) {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className={`border-2 hover:shadow-md transition-shadow ${isCompleted ? 'border-emerald-200 bg-emerald-50/30' : 'border-gray-200'}`}>
+                <Card className={`border-2 hover:shadow-md transition-shadow ${isCompleted ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50/30 dark:bg-emerald-950/30' : 'border-gray-200 dark:border-slate-700 dark:bg-slate-800'}`}>
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
+                        <div className="w-12 h-12 bg-gray-100 dark:bg-slate-700 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
                           {isCompleted ? '🏆' : template?.icon || '🎯'}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <CardTitle className="text-base font-semibold text-gray-900 truncate">
+                            <CardTitle className="text-base font-semibold text-gray-900 dark:text-white truncate">
                               {goal.name}
                             </CardTitle>
                             {isCompleted && (
-                              <span className="flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                              <span className="flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400">
                                 <CheckCircle className="w-3 h-3 mr-1" />
                                 Done
                               </span>
                             )}
                           </div>
                           {goal.description && (
-                            <CardDescription className="text-sm line-clamp-1">{goal.description}</CardDescription>
+                            <CardDescription className="text-sm line-clamp-1 dark:text-slate-400">{goal.description}</CardDescription>
                           )}
                         </div>
                       </div>
@@ -447,10 +447,10 @@ export default function GoalTracker({ userSavings = 0 }) {
                     {/* Progress Bar */}
                     <div>
                       <div className="flex justify-between text-sm mb-2">
-                        <span className="text-gray-600">{t('goals.progress')}</span>
-                        <span className="font-semibold text-gray-900">{analysis.progress.toFixed(0)}%</span>
+                        <span className="text-gray-600 dark:text-gray-400">{t('goals.progress')}</span>
+                        <span className="font-semibold text-gray-900 dark:text-white">{analysis.progress.toFixed(0)}%</span>
                       </div>
-                      <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="w-full h-2 bg-gray-100 dark:bg-slate-700 rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all ${isCompleted
                               ? 'bg-emerald-500'
@@ -464,20 +464,20 @@ export default function GoalTracker({ userSavings = 0 }) {
                         />
                       </div>
                       <div className="flex justify-between text-sm mt-2">
-                        <span className="text-gray-600">₹{goal.currentAmount.toLocaleString('en-IN')}</span>
-                        <span className="font-medium text-gray-900">₹{goal.targetAmount.toLocaleString('en-IN')}</span>
+                        <span className="text-gray-600 dark:text-gray-400">₹{goal.currentAmount.toLocaleString('en-IN')}</span>
+                        <span className="font-medium text-gray-900 dark:text-white">₹{goal.targetAmount.toLocaleString('en-IN')}</span>
                       </div>
                     </div>
 
                     {/* Timeline Info */}
-                    <div className="flex items-center justify-between text-sm pt-2 border-t">
-                      <div className="flex items-center gap-2 text-gray-600">
+                    <div className="flex items-center justify-between text-sm pt-2 border-t dark:border-slate-700">
+                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                         <Calendar className="w-4 h-4" />
                         <span>{new Date(goal.targetDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                       </div>
                       {!isCompleted && (
-                        <div className="text-gray-600">
-                          <span className="font-medium">{analysis.daysRemaining}</span> days left
+                        <div className="text-gray-600 dark:text-gray-400">
+                          <span className="font-medium dark:text-white">{analysis.daysRemaining}</span> days left
                         </div>
                       )}
                     </div>
@@ -489,7 +489,7 @@ export default function GoalTracker({ userSavings = 0 }) {
                           size="sm"
                           variant="outline"
                           onClick={() => addToGoal(goal.id, 1000)}
-                          className="flex-1"
+                          className="flex-1 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
                         >
                           +₹1K
                         </Button>
@@ -497,7 +497,7 @@ export default function GoalTracker({ userSavings = 0 }) {
                           size="sm"
                           variant="outline"
                           onClick={() => addToGoal(goal.id, 5000)}
-                          className="flex-1"
+                          className="flex-1 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
                         >
                           +₹5K
                         </Button>
@@ -625,26 +625,26 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl relative"
+        className="bg-white dark:bg-slate-800 rounded-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl relative"
       >
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <Target className="w-7 h-7 text-emerald-600" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <Target className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
               Create Financial Goal
             </h2>
-            <p className="text-sm text-gray-600 mt-1">Set your target and watch your dreams become reality</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Set your target and watch your dreams become reality</p>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
             <X className="w-6 h-6" />
           </button>
         </div>
 
         {/* Goal Templates */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-purple-600" />
+          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 dark:text-white">
+            <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             Choose a Goal Template
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -655,13 +655,13 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleTemplateSelect(template)}
                 className={`p-4 rounded-lg border-2 text-left transition-all ${selectedTemplate?.id === template.id
-                  ? 'border-blue-500 bg-blue-50 shadow-lg'
-                  : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/50 shadow-lg'
+                  : 'border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500 hover:shadow-md dark:bg-slate-700/50'
                   }`}
               >
                 <div className="text-2xl mb-2">{template.icon}</div>
-                <h4 className="font-medium text-sm">{template.name}</h4>
-                <p className="text-xs text-gray-600 mt-1">{template.category}</p>
+                <h4 className="font-medium text-sm dark:text-white">{template.name}</h4>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{template.category}</p>
               </motion.button>
             ))}
           </div>
@@ -670,33 +670,33 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
         {/* Goal Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Goal Name *
             </label>
             <Input
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="e.g., Emergency Fund"
-              className="w-full"
+              className="w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Description
             </label>
             <Input
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               placeholder="Brief description of your goal"
-              className="w-full"
+              className="w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Target Amount (₹) *
               </label>
               <Input
@@ -704,7 +704,7 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
                 value={formData.targetAmount}
                 onChange={(e) => setFormData(prev => ({ ...prev, targetAmount: e.target.value }))}
                 placeholder="100000"
-                className="w-full"
+                className="w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                 required
                 min="1000"
                 step="1000"
@@ -712,7 +712,7 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Time Frame (months) *
               </label>
               <Input
@@ -720,7 +720,7 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
                 value={formData.targetMonths}
                 onChange={(e) => setFormData(prev => ({ ...prev, targetMonths: e.target.value }))}
                 placeholder="12"
-                className="w-full"
+                className="w-full dark:bg-slate-700 dark:border-slate-600 dark:text-white"
                 required
                 min="1"
                 max="120"
@@ -733,22 +733,22 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200"
+              className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/50 dark:to-purple-950/50 rounded-lg p-4 border border-blue-200 dark:border-blue-800"
             >
-              <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
+              <h4 className="font-medium text-blue-900 dark:text-blue-300 mb-2 flex items-center gap-2">
                 <Sparkles className="w-4 h-4" />
                 Goal Summary
               </h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-blue-700">Monthly Savings Needed</p>
-                  <p className="font-bold text-blue-900 text-lg">
+                  <p className="text-blue-700 dark:text-blue-400">Monthly Savings Needed</p>
+                  <p className="font-bold text-blue-900 dark:text-blue-300 text-lg">
                     ₹{(parseFloat(formData.targetAmount) / parseInt(formData.targetMonths)).toLocaleString('en-IN')}
                   </p>
                 </div>
                 <div>
-                  <p className="text-blue-700">Target Date</p>
-                  <p className="font-bold text-blue-900 text-lg">
+                  <p className="text-blue-700 dark:text-blue-400">Target Date</p>
+                  <p className="font-bold text-blue-900 dark:text-blue-300 text-lg">
                     {new Date(Date.now() + (formData.targetMonths * 30 * 24 * 60 * 60 * 1000)).toLocaleDateString('en-IN')}
                   </p>
                 </div>
@@ -762,7 +762,7 @@ function CreateGoalModal({ onClose, onGoalCreated }) {
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1"
+              className="flex-1 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
             >
               Cancel
             </Button>

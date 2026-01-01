@@ -35,12 +35,12 @@ const EVENT_ICONS = {
 
 // Event type colors
 const EVENT_COLORS = {
-  festival: 'bg-orange-100 text-orange-700 border-orange-200',
-  education: 'bg-blue-100 text-blue-700 border-blue-200',
-  travel: 'bg-purple-100 text-purple-700 border-purple-200',
-  celebration: 'bg-pink-100 text-pink-700 border-pink-200',
-  custom: 'bg-slate-100 text-slate-700 border-slate-200',
-  tax: 'bg-green-100 text-green-700 border-green-200'
+  festival: 'bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800',
+  education: 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
+  travel: 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800',
+  celebration: 'bg-pink-100 dark:bg-pink-900/50 text-pink-700 dark:text-pink-300 border-pink-200 dark:border-pink-800',
+  custom: 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600',
+  tax: 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800'
 }
 
 export default function SeasonalPlanningWidget({
@@ -52,6 +52,31 @@ export default function SeasonalPlanningWidget({
   const [savingsData, setSavingsData] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [userProfile, setUserProfile] = useState(null)
+
+  // Fallback function for when API is unavailable
+  const fallbackToLocalData = useCallback(() => {
+    const defaultIncome = 50000
+    const defaultFamilySize = 1
+
+    const calendarEvents = getUpcomingEvents(6, new Date())
+    const allEvents = calendarEvents.map(e => ({
+      ...e,
+      estimatedCost: estimateEventExpense(e.id, { monthlyIncome: defaultIncome, familySize: defaultFamilySize }),
+      source: 'calendar'
+    }))
+
+    allEvents.sort((a, b) => new Date(a.date) - new Date(b.date))
+
+    const savings = seasonalPlanner.calculateMonthlySavingsRequired(
+      allEvents,
+      defaultIncome,
+      new Date()
+    )
+
+    setUpcomingEvents(allEvents.slice(0, compact ? 3 : 5))
+    setSavingsData(savings)
+    setUserProfile({ monthlyIncome: defaultIncome, familySize: defaultFamilySize })
+  }, [compact])
 
   const loadSeasonalData = useCallback(async () => {
     setIsLoading(true)
@@ -84,32 +109,7 @@ export default function SeasonalPlanningWidget({
     } finally {
       setIsLoading(false)
     }
-  }, [compact])
-
-  // Fallback function for when API is unavailable
-  const fallbackToLocalData = () => {
-    const defaultIncome = 50000
-    const defaultFamilySize = 1
-
-    const calendarEvents = getUpcomingEvents(6, new Date())
-    const allEvents = calendarEvents.map(e => ({
-      ...e,
-      estimatedCost: estimateEventExpense(e.id, { monthlyIncome: defaultIncome, familySize: defaultFamilySize }),
-      source: 'calendar'
-    }))
-
-    allEvents.sort((a, b) => new Date(a.date) - new Date(b.date))
-
-    const savings = seasonalPlanner.calculateMonthlySavingsRequired(
-      allEvents,
-      defaultIncome,
-      new Date()
-    )
-
-    setUpcomingEvents(allEvents.slice(0, compact ? 3 : 5))
-    setSavingsData(savings)
-    setUserProfile({ monthlyIncome: defaultIncome, familySize: defaultFamilySize })
-  }
+  }, [compact, fallbackToLocalData])
 
   useEffect(() => {
     loadSeasonalData()
@@ -141,18 +141,18 @@ export default function SeasonalPlanningWidget({
 
   const getUrgencyBadge = (daysUntil) => {
     if (daysUntil <= 30) {
-      return <Badge className="bg-red-100 text-red-700 border-0 text-xs">Urgent</Badge>
+      return <Badge className="bg-red-100 dark:bg-red-900/60 text-red-700 dark:text-red-300 border-0 text-xs">Urgent</Badge>
     } else if (daysUntil <= 60) {
-      return <Badge className="bg-amber-100 text-amber-700 border-0 text-xs">Soon</Badge>
+      return <Badge className="bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 border-0 text-xs">Soon</Badge>
     }
     return null
   }
 
   if (isLoading) {
     return (
-      <Card className="animate-pulse">
+      <Card className="animate-pulse dark:bg-slate-800 dark:border-slate-700">
         <CardContent className="p-6">
-          <div className="h-32 bg-slate-100 rounded-lg"></div>
+          <div className="h-32 bg-slate-100 dark:bg-slate-700 rounded-lg"></div>
         </CardContent>
       </Card>
     )
@@ -161,17 +161,17 @@ export default function SeasonalPlanningWidget({
   // Compact view for dashboard
   if (compact) {
     return (
-      <Card className="overflow-hidden">
-        <CardHeader className="pb-2 bg-gradient-to-r from-orange-50 to-amber-50">
+      <Card className="overflow-hidden dark:bg-slate-800 dark:border-slate-700">
+        <CardHeader className="pb-2 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/40 dark:to-amber-950/40">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <Calendar className="h-4 w-4 text-orange-600" />
+              <div className="p-2 bg-orange-100 dark:bg-orange-900/60 rounded-lg">
+                <Calendar className="h-4 w-4 text-orange-600 dark:text-orange-400" />
               </div>
-              <CardTitle className="text-base">Seasonal Planning</CardTitle>
+              <CardTitle className="text-base dark:text-white">Seasonal Planning</CardTitle>
             </div>
             {onViewAll && (
-              <Button variant="ghost" size="sm" onClick={onViewAll} className="text-xs">
+              <Button variant="ghost" size="sm" onClick={onViewAll} className="text-xs dark:text-slate-300 dark:hover:bg-slate-700">
                 View All
                 <ChevronRight className="h-3 w-3 ml-1" />
               </Button>
@@ -181,15 +181,15 @@ export default function SeasonalPlanningWidget({
         <CardContent className="p-4 space-y-3">
           {/* Monthly Savings Needed */}
           {savingsData && savingsData.totalMonthlySavingsRequired > 0 && (
-            <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+            <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-lg border border-emerald-200 dark:border-emerald-800">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-slate-600">Monthly Savings Needed</span>
-                <Sparkles className="h-3 w-3 text-emerald-600" />
+                <span className="text-xs text-slate-600 dark:text-slate-400">Monthly Savings Needed</span>
+                <Sparkles className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <p className="text-lg font-bold text-emerald-700">
+              <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">
                 {formatCurrency(savingsData.totalMonthlySavingsRequired)}
               </p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 For {upcomingEvents.length} upcoming event{upcomingEvents.length > 1 ? 's' : ''}
               </p>
             </div>
@@ -205,21 +205,21 @@ export default function SeasonalPlanningWidget({
                 return (
                   <div
                     key={event.id || index}
-                    className="flex items-center justify-between p-2 bg-slate-50 rounded-lg"
+                    className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-900/50 rounded-lg"
                   >
                     <div className="flex items-center gap-2">
                       <div className={`p-1.5 rounded-lg ${EVENT_COLORS[event.category] || EVENT_COLORS.custom}`}>
                         <EventIcon className="h-3 w-3" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-slate-900">{event.name}</p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-sm font-medium text-slate-900 dark:text-white">{event.name}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                           {formatDate(event.date)} ({daysUntil} days)
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold text-slate-700">
+                      <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                         {formatCurrency(event.estimatedCost || event.amount)}
                       </p>
                       {getUrgencyBadge(daysUntil)}
@@ -230,9 +230,9 @@ export default function SeasonalPlanningWidget({
             </div>
           ) : (
             <div className="text-center py-4">
-              <p className="text-sm text-slate-500">No upcoming events</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">No upcoming events</p>
               {onAddEvent && (
-                <Button variant="outline" size="sm" onClick={onAddEvent} className="mt-2">
+                <Button variant="outline" size="sm" onClick={onAddEvent} className="mt-2 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
                   Add Event
                 </Button>
               )}
@@ -245,16 +245,16 @@ export default function SeasonalPlanningWidget({
 
   // Full view
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-orange-50 via-amber-50 to-yellow-50 border-b">
+    <Card className="overflow-hidden dark:bg-slate-800 dark:border-slate-700">
+      <CardHeader className="bg-gradient-to-r from-orange-50 via-amber-50 to-yellow-50 dark:from-orange-950/40 dark:via-amber-950/40 dark:to-yellow-950/40 border-b dark:border-slate-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-orange-100 rounded-xl">
-              <Calendar className="h-6 w-6 text-orange-600" />
+            <div className="p-3 bg-orange-100 dark:bg-orange-900/60 rounded-xl">
+              <Calendar className="h-6 w-6 text-orange-600 dark:text-orange-400" />
             </div>
             <div>
-              <CardTitle className="text-lg">Seasonal Financial Planning</CardTitle>
-              <CardDescription>Plan ahead for festivals, celebrations & expenses</CardDescription>
+              <CardTitle className="text-lg dark:text-white">Seasonal Financial Planning</CardTitle>
+              <CardDescription className="dark:text-slate-400">Plan ahead for festivals, celebrations & expenses</CardDescription>
             </div>
           </div>
           {onAddEvent && (
@@ -269,45 +269,45 @@ export default function SeasonalPlanningWidget({
         {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Monthly Savings Needed */}
-          <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+          <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-800">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="h-4 w-4 text-emerald-600" />
-              <span className="text-xs font-medium text-emerald-700">Monthly Savings</span>
+              <TrendingUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">Monthly Savings</span>
             </div>
-            <p className="text-2xl font-bold text-emerald-700">
+            <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">
               {formatCurrency(savingsData?.totalMonthlySavingsRequired || 0)}
             </p>
-            <p className="text-xs text-emerald-600 mt-1">
+            <p className="text-xs text-emerald-600 dark:text-emerald-500 mt-1">
               {savingsData?.recommendation?.message || 'Start saving for upcoming events'}
             </p>
           </div>
 
           {/* Total Events */}
-          <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
+          <div className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-200 dark:border-blue-800">
             <div className="flex items-center gap-2 mb-2">
-              <Calendar className="h-4 w-4 text-blue-600" />
-              <span className="text-xs font-medium text-blue-700">Upcoming Events</span>
+              <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <span className="text-xs font-medium text-blue-700 dark:text-blue-400">Upcoming Events</span>
             </div>
-            <p className="text-2xl font-bold text-blue-700">{upcomingEvents.length}</p>
-            <p className="text-xs text-blue-600 mt-1">In the next 6 months</p>
+            <p className="text-2xl font-bold text-blue-700 dark:text-blue-400">{upcomingEvents.length}</p>
+            <p className="text-xs text-blue-600 dark:text-blue-500 mt-1">In the next 6 months</p>
           </div>
 
           {/* Total Budget */}
-          <div className="p-4 bg-purple-50 rounded-xl border border-purple-200">
+          <div className="p-4 bg-purple-50 dark:bg-purple-950/40 rounded-xl border border-purple-200 dark:border-purple-800">
             <div className="flex items-center gap-2 mb-2">
-              <IndianRupee className="h-4 w-4 text-purple-600" />
-              <span className="text-xs font-medium text-purple-700">Total Budget</span>
+              <IndianRupee className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+              <span className="text-xs font-medium text-purple-700 dark:text-purple-400">Total Budget</span>
             </div>
-            <p className="text-2xl font-bold text-purple-700">
+            <p className="text-2xl font-bold text-purple-700 dark:text-purple-400">
               {formatCurrency(upcomingEvents.reduce((sum, e) => sum + (e.estimatedCost || e.amount || 0), 0))}
             </p>
-            <p className="text-xs text-purple-600 mt-1">Across all events</p>
+            <p className="text-xs text-purple-600 dark:text-purple-500 mt-1">Across all events</p>
           </div>
         </div>
 
         {/* Event Timeline */}
         <div>
-          <h3 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
             <Clock className="h-4 w-4" />
             Upcoming Events Timeline
           </h3>
@@ -324,7 +324,7 @@ export default function SeasonalPlanningWidget({
                 return (
                   <div
                     key={event.id || index}
-                    className="p-4 bg-white border border-slate-200 rounded-xl hover:shadow-md transition-shadow"
+                    className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-start gap-3 flex-1">
@@ -333,21 +333,21 @@ export default function SeasonalPlanningWidget({
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="font-semibold text-slate-900">{event.name}</h4>
+                            <h4 className="font-semibold text-slate-900 dark:text-white">{event.name}</h4>
                             {event.hindiName && (
-                              <span className="text-sm text-slate-500">({event.hindiName})</span>
+                              <span className="text-sm text-slate-500 dark:text-slate-400">({event.hindiName})</span>
                             )}
                             {getUrgencyBadge(daysUntil)}
                           </div>
-                          <p className="text-sm text-slate-500 mt-0.5">
+                          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                             {formatDate(event.date)} - {daysUntil} days away
                           </p>
 
                           {/* Progress bar */}
                           <div className="mt-2">
                             <div className="flex items-center justify-between text-xs mb-1">
-                              <span className="text-slate-500">Time remaining</span>
-                              <span className="text-slate-600">{Math.round(100 - progress)}%</span>
+                              <span className="text-slate-500 dark:text-slate-400">Time remaining</span>
+                              <span className="text-slate-600 dark:text-slate-300">{Math.round(100 - progress)}%</span>
                             </div>
                             <Progress value={100 - progress} className="h-1.5" />
                           </div>
@@ -355,10 +355,10 @@ export default function SeasonalPlanningWidget({
                       </div>
 
                       <div className="text-right shrink-0">
-                        <p className="text-lg font-bold text-slate-900">
+                        <p className="text-lg font-bold text-slate-900 dark:text-white">
                           {formatCurrency(estimatedCost)}
                         </p>
-                        <p className="text-xs text-emerald-600 font-medium">
+                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                           Save {formatCurrency(monthlySaving)}/mo
                         </p>
                       </div>
@@ -366,16 +366,16 @@ export default function SeasonalPlanningWidget({
 
                     {/* Sub-categories if available */}
                     {event.subCategories && event.subCategories.length > 0 && (
-                      <div className="mt-3 pt-3 border-t border-slate-100">
-                        <p className="text-xs text-slate-500 mb-2">Typical expenses:</p>
+                      <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Typical expenses:</p>
                         <div className="flex flex-wrap gap-1.5">
                           {event.subCategories.slice(0, 4).map((sub, i) => (
-                            <Badge key={i} variant="outline" className="text-xs">
+                            <Badge key={i} variant="outline" className="text-xs dark:border-slate-600 dark:text-slate-300">
                               {typeof sub === 'object' ? sub.name : sub}
                             </Badge>
                           ))}
                           {event.subCategories.length > 4 && (
-                            <Badge variant="outline" className="text-xs text-slate-400">
+                            <Badge variant="outline" className="text-xs text-slate-400 dark:border-slate-600">
                               +{event.subCategories.length - 4} more
                             </Badge>
                           )}
@@ -387,14 +387,14 @@ export default function SeasonalPlanningWidget({
               })}
             </div>
           ) : (
-            <div className="text-center py-8 bg-slate-50 rounded-xl">
-              <Calendar className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-600 font-medium">No upcoming events</p>
-              <p className="text-sm text-slate-500 mt-1">
+            <div className="text-center py-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+              <Calendar className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+              <p className="text-slate-600 dark:text-slate-300 font-medium">No upcoming events</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                 Add custom events to start planning
               </p>
               {onAddEvent && (
-                <Button onClick={onAddEvent} variant="outline" className="mt-4">
+                <Button onClick={onAddEvent} variant="outline" className="mt-4 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
                   Add Your First Event
                 </Button>
               )}
@@ -404,12 +404,12 @@ export default function SeasonalPlanningWidget({
 
         {/* Tips */}
         {savingsData?.tips && savingsData.tips.length > 0 && (
-          <div className="p-4 bg-amber-50 rounded-xl border border-amber-200">
+          <div className="p-4 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-800">
             <div className="flex items-start gap-3">
-              <Sparkles className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+              <Sparkles className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-medium text-amber-900 mb-1">Smart Tip</h4>
-                <p className="text-sm text-amber-700">{savingsData.tips[0]}</p>
+                <h4 className="font-medium text-amber-900 dark:text-amber-300 mb-1">Smart Tip</h4>
+                <p className="text-sm text-amber-700 dark:text-amber-400">{savingsData.tips[0]}</p>
               </div>
             </div>
           </div>
@@ -418,7 +418,7 @@ export default function SeasonalPlanningWidget({
         {/* View All Button */}
         {onViewAll && upcomingEvents.length > 0 && (
           <div className="text-center">
-            <Button variant="outline" onClick={onViewAll}>
+            <Button variant="outline" onClick={onViewAll} className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
               View All Events & Calendar
               <ChevronRight className="h-4 w-4 ml-2" />
             </Button>

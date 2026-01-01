@@ -123,13 +123,13 @@ export default function FinancialPulseStep({ profile, setProfile, onComplete }) 
     <div className="max-w-2xl mx-auto">
       {/* Header with value proposition */}
       <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full mb-4">
-          <Sparkles className="w-4 h-4 text-purple-600" />
-          <span className="text-sm font-medium text-purple-700">5 Quick Questions = Smarter AI</span>
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40 rounded-full mb-4">
+          <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+          <span className="text-sm font-medium text-purple-700 dark:text-purple-300">5 Quick Questions = Smarter AI</span>
         </div>
-        <p className="text-slate-600 text-sm max-w-md mx-auto">
+        <p className="text-slate-600 dark:text-slate-400 text-sm max-w-md mx-auto">
           These questions help our AI understand your unique financial situation and give you
-          <span className="font-semibold text-emerald-600"> personalized recommendations</span>
+          <span className="font-semibold text-emerald-600 dark:text-emerald-400"> personalized recommendations</span>
         </p>
       </div>
 
@@ -143,15 +143,15 @@ export default function FinancialPulseStep({ profile, setProfile, onComplete }) 
                 idx < currentQuestion
                   ? 'bg-emerald-500 text-white'
                   : idx === currentQuestion
-                  ? 'bg-emerald-100 text-emerald-700 ring-2 ring-emerald-500'
-                  : 'bg-slate-100 text-slate-400'
+                  ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 ring-2 ring-emerald-500'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500'
               }`}
             >
               {idx < currentQuestion ? <Check className="w-4 h-4" /> : idx + 1}
             </div>
           ))}
         </div>
-        <span className="text-sm text-slate-500">{currentQuestion + 1} of {PULSE_QUESTIONS.length}</span>
+        <span className="text-sm text-slate-500 dark:text-slate-400">{currentQuestion + 1} of {PULSE_QUESTIONS.length}</span>
       </div>
 
       {/* Question Card */}
@@ -163,16 +163,16 @@ export default function FinancialPulseStep({ profile, setProfile, onComplete }) 
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <Card className="border-2 border-slate-200 shadow-lg overflow-hidden">
+          <Card className="border-2 border-slate-200 dark:border-slate-700 shadow-lg dark:shadow-slate-900/50 overflow-hidden dark:bg-slate-800">
             {/* Question Header */}
-            <div className="bg-gradient-to-r from-slate-50 to-slate-100 p-6 border-b">
+            <div className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-700/50 dark:to-slate-700/30 p-6 border-b dark:border-slate-700">
               <div className="flex items-start gap-4">
                 <div className="text-4xl">{question.icon}</div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-slate-900 mb-1">
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">
                     {question.question}
                   </h3>
-                  <p className="text-sm text-slate-600">{question.description}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">{question.description}</p>
                 </div>
               </div>
             </div>
@@ -190,18 +190,18 @@ export default function FinancialPulseStep({ profile, setProfile, onComplete }) 
                     onClick={() => handleAnswer(option.value)}
                     className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-200 ${
                       isSelected
-                        ? 'border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200'
-                        : 'border-slate-200 hover:border-emerald-300 hover:bg-slate-50'
+                        ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 ring-2 ring-emerald-200 dark:ring-emerald-800'
+                        : 'border-slate-200 dark:border-slate-600 hover:border-emerald-300 dark:hover:border-emerald-700 hover:bg-slate-50 dark:hover:bg-slate-700/50'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <span className="text-2xl">{option.emoji}</span>
                         <div>
-                          <p className={`font-medium ${isSelected ? 'text-emerald-900' : 'text-slate-800'}`}>
+                          <p className={`font-medium ${isSelected ? 'text-emerald-900 dark:text-emerald-300' : 'text-slate-800 dark:text-slate-200'}`}>
                             {option.label}
                           </p>
-                          <p className={`text-xs mt-0.5 ${isSelected ? 'text-emerald-600' : 'text-slate-500'}`}>
+                          <p className={`text-xs mt-0.5 ${isSelected ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}`}>
                             → {option.impact}
                           </p>
                         </div>
@@ -219,9 +219,9 @@ export default function FinancialPulseStep({ profile, setProfile, onComplete }) 
 
             {/* AI Impact Note */}
             <div className="px-4 pb-4">
-              <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
-                <Sparkles className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                <p className="text-xs text-blue-700">
+              <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
+                <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                <p className="text-xs text-blue-700 dark:text-blue-300">
                   <span className="font-semibold">AI Impact:</span> {question.aiImpact}
                 </p>
               </div>
@@ -236,7 +236,7 @@ export default function FinancialPulseStep({ profile, setProfile, onComplete }) 
           variant="ghost"
           onClick={handleBack}
           disabled={currentQuestion === 0}
-          className="text-slate-600"
+          className="text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-700"
         >
           ← Back
         </Button>
@@ -244,7 +244,7 @@ export default function FinancialPulseStep({ profile, setProfile, onComplete }) 
         {isLastQuestion && answers[question.id] && (
           <Button
             onClick={() => onComplete && onComplete(answers)}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white"
           >
             Generate My Budget <ChevronRight className="w-4 h-4 ml-1" />
           </Button>

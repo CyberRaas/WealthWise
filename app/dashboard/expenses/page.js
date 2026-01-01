@@ -232,40 +232,40 @@ function ExpensesContent() {
         <div className="flex flex-col gap-4">
           {/* Stats Row - Horizontal on mobile */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-3 sm:p-4">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
-                  <TrendingDown className="w-4 h-4 text-red-600" />
+                <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
+                  <TrendingDown className="w-4 h-4 text-red-600 dark:text-red-400" />
                 </div>
-                <span className="text-xs text-slate-500 hidden sm:inline">{t('expenses.thisMonth')}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">{t('expenses.thisMonth')}</span>
               </div>
-              <p className="text-lg sm:text-xl font-bold text-red-600">
+              <p className="text-lg sm:text-xl font-bold text-red-600 dark:text-red-400">
                 ₹{loading ? '...' : thisMonthExpenses.toLocaleString('en-IN')}
               </p>
               <p className="text-xs text-slate-400 sm:hidden">{t('expenses.thisMonth')}</p>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-3 sm:p-4">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                  <Wallet className="w-4 h-4 text-blue-600" />
+                <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                  <Wallet className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <span className="text-xs text-slate-500 hidden sm:inline">{t('expenses.total')}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">{t('expenses.total')}</span>
               </div>
-              <p className="text-lg sm:text-xl font-bold text-blue-600">
+              <p className="text-lg sm:text-xl font-bold text-blue-600 dark:text-blue-400">
                 ₹{loading ? '...' : totalExpenses.toLocaleString('en-IN')}
               </p>
               <p className="text-xs text-slate-400 sm:hidden">{t('expenses.total')}</p>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-3 sm:p-4">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <Receipt className="w-4 h-4 text-emerald-600" />
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+                  <Receipt className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <span className="text-xs text-slate-500 hidden sm:inline">{t('common.transactions')}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">{t('common.transactions')}</span>
               </div>
-              <p className="text-lg sm:text-xl font-bold text-emerald-600">
+              <p className="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400">
                 {loading ? '...' : expenses.length}
               </p>
               <p className="text-xs text-slate-400 sm:hidden">Entries</p>
@@ -300,13 +300,13 @@ function ExpensesContent() {
               onClick={() => setShowInsightsModal(true)}
               variant="outline"
               size="sm"
-              className="h-9 border-purple-200 text-purple-700 hover:bg-purple-50"
+              className="h-9 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950"
             >
               <Sparkles className="w-4 h-4 mr-1.5" />
               <span className="hidden sm:inline">AI Insights</span>
               <span className="sm:hidden">AI</span>
             </Button>
-            <Button onClick={handleExport} variant="outline" size="sm" className="h-9">
+            <Button onClick={handleExport} variant="outline" size="sm" className="h-9 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
               <Download className="w-4 h-4 sm:mr-1.5" />
               <span className="hidden sm:inline">{t('common.export')}</span>
             </Button>
@@ -315,16 +315,16 @@ function ExpensesContent() {
 
         {/* Collapsible Add Expense Form */}
         {showForm && (
-          <Card className="border-emerald-200 bg-emerald-50/30">
+          <Card className="border-emerald-200 dark:border-emerald-800 bg-emerald-50/30 dark:bg-emerald-950/30">
             <CardContent className="p-4">
               <form onSubmit={handleFormSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   <div>
-                    <label className="text-xs font-medium text-slate-600 mb-1 block">
+                    <label className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1 block">
                       {t('expenses.amount')} *
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">₹</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-sm">₹</span>
                       <Input
                         type="number"
                         step="0.01"
@@ -332,26 +332,26 @@ function ExpensesContent() {
                         value={formData.amount}
                         onChange={(e) => setFormData(prev => ({ ...prev, amount: e.target.value }))}
                         placeholder="0.00"
-                        className="pl-7 h-10 bg-white"
+                        className="pl-7 h-10 bg-white dark:bg-slate-800 dark:border-slate-600 dark:text-white"
                         required
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-xs font-medium text-slate-600 mb-1 block">
+                    <label className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1 block">
                       {t('expenses.category')} *
                     </label>
                     <Select
                       value={formData.category}
                       onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
                     >
-                      <SelectTrigger className="h-10 bg-white">
+                      <SelectTrigger className="h-10 bg-white dark:bg-slate-800 dark:border-slate-600 dark:text-white">
                         <SelectValue placeholder="Select..." />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="dark:bg-slate-800 dark:border-slate-700">
                         {categories.map(cat => (
-                          <SelectItem key={cat.key} value={cat.value}>
+                          <SelectItem key={cat.key} value={cat.value} className="dark:text-white dark:focus:bg-slate-700">
                             {categoryConfig[cat.value]?.icon} {cat.value}
                           </SelectItem>
                         ))}
@@ -360,32 +360,32 @@ function ExpensesContent() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-medium text-slate-600 mb-1 block">
+                    <label className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1 block">
                       {t('expenses.date')}
                     </label>
                     <Input
                       type="date"
                       value={formData.date}
                       onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                      className="h-10 bg-white"
+                      className="h-10 bg-white dark:bg-slate-800 dark:border-slate-600 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-medium text-slate-600 mb-1 block">
+                    <label className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1 block">
                       {t('expenses.description')}
                     </label>
                     <Input
                       value={formData.description}
                       onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                       placeholder={t('expenses.descriptionPlaceholder')}
-                      className="h-10 bg-white"
+                      className="h-10 bg-white dark:bg-slate-800 dark:border-slate-600 dark:text-white"
                     />
                   </div>
                 </div>
 
                 <div className="flex justify-end gap-2">
-                  <Button type="button" variant="outline" size="sm" onClick={() => setShowForm(false)}>
+                  <Button type="button" variant="outline" size="sm" onClick={() => setShowForm(false)} className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
                     {t('common.cancel')}
                   </Button>
                   <Button
@@ -415,22 +415,22 @@ function ExpensesContent() {
         {/* Search and Filter */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
             <Input
               placeholder={t('expenses.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 h-10 bg-white"
+              className="pl-9 h-10 bg-white dark:bg-slate-800 dark:border-slate-600 dark:text-white dark:placeholder:text-slate-500"
             />
           </div>
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full sm:w-44 h-10 bg-white">
+            <SelectTrigger className="w-full sm:w-44 h-10 bg-white dark:bg-slate-800 dark:border-slate-600 dark:text-white">
               <SelectValue placeholder={t('expenses.allCategories')} />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('expenses.allCategories')}</SelectItem>
+            <SelectContent className="dark:bg-slate-800 dark:border-slate-700">
+              <SelectItem value="all" className="dark:text-white dark:focus:bg-slate-700">{t('expenses.allCategories')}</SelectItem>
               {categories.map(cat => (
-                <SelectItem key={cat.key} value={cat.value}>
+                <SelectItem key={cat.key} value={cat.value} className="dark:text-white dark:focus:bg-slate-700">
                   {categoryConfig[cat.value]?.icon} {cat.value}
                 </SelectItem>
               ))}
@@ -439,20 +439,20 @@ function ExpensesContent() {
         </div>
 
         {/* Expenses List */}
-        <Card>
+        <Card className="dark:bg-slate-800 dark:border-slate-700">
           <CardContent className="p-0">
             {loading ? (
               <div className="flex items-center justify-center py-16">
                 <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                <span className="ml-3 text-sm text-slate-500">{t('common.loading')}</span>
+                <span className="ml-3 text-sm text-slate-500 dark:text-slate-400">{t('common.loading')}</span>
               </div>
             ) : filteredExpenses.length === 0 ? (
               <div className="text-center py-16 px-4">
-                <Wallet className="w-12 h-12 text-slate-200 mx-auto mb-3" />
-                <p className="text-slate-600 font-medium mb-1">
+                <Wallet className="w-12 h-12 text-slate-200 dark:text-slate-600 mx-auto mb-3" />
+                <p className="text-slate-600 dark:text-slate-300 font-medium mb-1">
                   {expenses.length === 0 ? t('expenses.noExpenses') : t('expenses.noResults')}
                 </p>
-                <p className="text-sm text-slate-400 mb-4">
+                <p className="text-sm text-slate-400 dark:text-slate-500 mb-4">
                   {expenses.length === 0 ? t('expenses.noExpensesDesc') : t('expenses.noResultsDesc')}
                 </p>
                 {expenses.length === 0 && (
@@ -464,7 +464,7 @@ function ExpensesContent() {
             ) : (
               <>
                 {/* List Header - Desktop */}
-                <div className="hidden sm:grid grid-cols-12 gap-4 px-4 py-3 bg-slate-50 border-b text-xs font-medium text-slate-500 uppercase tracking-wide">
+                <div className="hidden sm:grid grid-cols-12 gap-4 px-4 py-3 bg-slate-50 dark:bg-slate-900 border-b dark:border-slate-700 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                   <div className="col-span-5">Description</div>
                   <div className="col-span-2">Category</div>
                   <div className="col-span-2">Date</div>
@@ -473,7 +473,7 @@ function ExpensesContent() {
                 </div>
 
                 {/* Expense Items */}
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-700">
                   {paginatedExpenses.map((expense) => {
                     const catStyle = getCategoryStyle(expense.category)
                     const isExpanded = expandedExpense === expense.id
@@ -482,36 +482,36 @@ function ExpensesContent() {
                     return (
                       <div key={expense.id} className="group">
                         {/* Main Row */}
-                        <div className="px-4 py-3 hover:bg-slate-50/50 transition-colors">
+                        <div className="px-4 py-3 hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-colors">
                           {/* Mobile Layout */}
                           <div className="sm:hidden">
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 mb-1">
                                   <span className="text-lg">{catStyle.icon}</span>
-                                  <p className="font-medium text-slate-800 truncate text-sm">
+                                  <p className="font-medium text-slate-800 dark:text-white truncate text-sm">
                                     {expense.description || expense.category}
                                   </p>
                                   {isVoice && (
-                                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-blue-100 text-blue-700">
+                                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400">
                                       🎤
                                     </Badge>
                                   )}
                                 </div>
-                                <div className="flex items-center gap-2 text-xs text-slate-400">
+                                <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500">
                                   <span>{expense.category}</span>
                                   <span>•</span>
                                   <span>{new Date(expense.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
                                 </div>
                               </div>
                               <div className="flex items-center gap-2">
-                                <p className="font-semibold text-red-600">
+                                <p className="font-semibold text-red-600 dark:text-red-400">
                                   -₹{expense.amount.toLocaleString('en-IN')}
                                 </p>
                                 {isVoice && expense.originalText && (
                                   <button
                                     onClick={() => setExpandedExpense(isExpanded ? null : expense.id)}
-                                    className="p-1 text-slate-400 hover:text-slate-600"
+                                    className="p-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
                                   >
                                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                                   </button>
@@ -525,13 +525,13 @@ function ExpensesContent() {
                             <div className="col-span-5 flex items-center gap-3 min-w-0">
                               <span className="text-xl flex-shrink-0">{catStyle.icon}</span>
                               <div className="min-w-0">
-                                <p className="font-medium text-slate-800 truncate">
+                                <p className="font-medium text-slate-800 dark:text-white truncate">
                                   {expense.description || `${expense.category} expense`}
                                 </p>
                                 {isVoice && (
                                   <button
                                     onClick={() => setExpandedExpense(isExpanded ? null : expense.id)}
-                                    className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 mt-0.5"
+                                    className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1 mt-0.5"
                                   >
                                     🎤 Voice entry
                                     {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -544,7 +544,7 @@ function ExpensesContent() {
                                 {expense.category}
                               </Badge>
                             </div>
-                            <div className="col-span-2 text-sm text-slate-500">
+                            <div className="col-span-2 text-sm text-slate-500 dark:text-slate-400">
                               {new Date(expense.date).toLocaleDateString('en-IN', {
                                 day: 'numeric',
                                 month: 'short',
@@ -552,14 +552,14 @@ function ExpensesContent() {
                               })}
                             </div>
                             <div className="col-span-2 text-right">
-                              <p className="font-semibold text-red-600">
+                              <p className="font-semibold text-red-600 dark:text-red-400">
                                 -₹{expense.amount.toLocaleString('en-IN')}
                               </p>
                             </div>
                             <div className="col-span-1 flex justify-end">
                               <button
                                 onClick={() => handleDeleteExpense(expense.id)}
-                                className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all"
+                                className="p-1.5 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 opacity-0 group-hover:opacity-100 transition-all"
                                 title="Delete"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -571,11 +571,11 @@ function ExpensesContent() {
                         {/* Expanded Voice Details */}
                         {isExpanded && isVoice && expense.originalText && (
                           <div className="px-4 pb-3">
-                            <div className="ml-0 sm:ml-9 p-3 bg-blue-50 rounded-lg border border-blue-100">
-                              <p className="text-xs text-blue-600 font-medium mb-1">{t('expenses.voiceDetails')}:</p>
-                              <p className="text-sm text-blue-800 italic">&quot;{expense.originalText}&quot;</p>
+                            <div className="ml-0 sm:ml-9 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800">
+                              <p className="text-xs text-blue-600 dark:text-blue-400 font-medium mb-1">{t('expenses.voiceDetails')}:</p>
+                              <p className="text-sm text-blue-800 dark:text-blue-300 italic">&quot;{expense.originalText}&quot;</p>
                               {expense.confidence && (
-                                <p className="text-xs text-blue-500 mt-1.5">
+                                <p className="text-xs text-blue-500 dark:text-blue-400 mt-1.5">
                                   {t('expenses.confidence')}: {Math.round(expense.confidence * 100)}%
                                 </p>
                               )}
@@ -584,7 +584,7 @@ function ExpensesContent() {
                             <div className="sm:hidden mt-2 flex justify-end">
                               <button
                                 onClick={() => handleDeleteExpense(expense.id)}
-                                className="text-xs text-red-500 hover:text-red-600 flex items-center gap-1"
+                                className="text-xs text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 flex items-center gap-1"
                               >
                                 <Trash2 className="w-3 h-3" /> Delete
                               </button>
@@ -597,7 +597,7 @@ function ExpensesContent() {
                           <div className="sm:hidden px-4 pb-2">
                             <button
                               onClick={() => handleDeleteExpense(expense.id)}
-                              className="text-xs text-slate-400 hover:text-red-500 flex items-center gap-1"
+                              className="text-xs text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 flex items-center gap-1"
                             >
                               <Trash2 className="w-3 h-3" /> Delete
                             </button>
@@ -610,8 +610,8 @@ function ExpensesContent() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-between px-4 py-3 border-t bg-slate-50">
-                    <p className="text-sm text-slate-500">
+                  <div className="flex items-center justify-between px-4 py-3 border-t dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       {t('common.showing')} {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filteredExpenses.length)} {t('common.of')} {filteredExpenses.length}
                     </p>
                     <div className="flex items-center gap-1">
@@ -620,7 +620,7 @@ function ExpensesContent() {
                         size="sm"
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 dark:disabled:opacity-50"
                       >
                         <ChevronLeft className="w-4 h-4" />
                       </Button>
@@ -644,7 +644,7 @@ function ExpensesContent() {
                               variant={currentPage === pageNum ? "default" : "outline"}
                               size="sm"
                               onClick={() => setCurrentPage(pageNum)}
-                              className={`h-8 w-8 p-0 ${currentPage === pageNum ? 'bg-emerald-600 hover:bg-emerald-700' : ''}`}
+                              className={`h-8 w-8 p-0 ${currentPage === pageNum ? 'bg-emerald-600 hover:bg-emerald-700' : 'dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'}`}
                             >
                               {pageNum}
                             </Button>
@@ -653,7 +653,7 @@ function ExpensesContent() {
                       </div>
 
                       {/* Mobile page indicator */}
-                      <span className="sm:hidden text-sm text-slate-600 px-2">
+                      <span className="sm:hidden text-sm text-slate-600 dark:text-slate-400 px-2">
                         {currentPage} / {totalPages}
                       </span>
 
@@ -662,7 +662,7 @@ function ExpensesContent() {
                         size="sm"
                         onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                         disabled={currentPage === totalPages}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 dark:disabled:opacity-50"
                       >
                         <ChevronRight className="w-4 h-4" />
                       </Button>

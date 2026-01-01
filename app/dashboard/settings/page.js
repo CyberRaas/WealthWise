@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useTranslation } from '@/lib/i18n'
+import { useTheme } from '@/contexts/ThemeContext'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import OnboardingGuard from '@/components/OnboardingGuard'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -22,6 +23,7 @@ import {
   Globe,
   Moon,
   Sun,
+  Monitor,
   Shield,
   Download,
   Trash2,
@@ -37,6 +39,7 @@ import toast from 'react-hot-toast'
 function SettingsContent() {
   const { data: session } = useSession()
   const { t, i18n } = useTranslation()
+  const { theme, setTheme } = useTheme()
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
 
@@ -83,8 +86,11 @@ function SettingsContent() {
             currency: prefs.currency || 'INR',
             numberFormat: prefs.numberFormat || 'indian',
             dateFormat: prefs.dateFormat || 'DD/MM/YYYY',
-            theme: prefs.theme || 'system'
+            theme: theme || 'system'
           }))
+        } else {
+          // Sync with current theme from context
+          setSettings(prev => ({ ...prev, theme: theme }))
         }
       } catch (error) {
         console.error('Failed to load settings:', error)
@@ -98,7 +104,7 @@ function SettingsContent() {
     } else {
       setLoading(false)
     }
-  }, [session])
+  }, [session, theme])
 
   // Handle setting change
   const handleSettingChange = (key, value) => {
@@ -108,6 +114,11 @@ function SettingsContent() {
     if (key === 'language') {
       const langMap = { 'hindi': 'hi', 'english': 'en', 'hinglish': 'hinglish' }
       i18n.changeLanguage(langMap[value] || 'en')
+    }
+
+    // Handle theme change immediately
+    if (key === 'theme') {
+      setTheme(value)
     }
   }
 
@@ -193,7 +204,7 @@ function SettingsContent() {
     return (
       <DashboardLayout title="Settings">
         <div className="flex items-center justify-center h-64">
-          <RefreshCw className="h-8 w-8 animate-spin text-emerald-600" />
+          <RefreshCw className="h-8 w-8 animate-spin text-emerald-600 dark:text-emerald-400" />
         </div>
       </DashboardLayout>
     )
@@ -205,11 +216,11 @@ function SettingsContent() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-              <Settings className="h-6 w-6 text-emerald-600" />
+            <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+              <Settings className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
               Settings
             </h1>
-            <p className="text-slate-600 mt-1">Manage your preferences and account settings</p>
+            <p className="text-slate-600 dark:text-slate-400 mt-1">Manage your preferences and account settings</p>
           </div>
           <Button
             onClick={saveSettings}
@@ -399,17 +410,22 @@ function SettingsContent() {
                   <SelectContent>
                     <SelectItem value="light">
                       <div className="flex items-center gap-2">
-                        <Sun className="h-4 w-4" />
+                        <Sun className="h-4 w-4 text-amber-500" />
                         Light
                       </div>
                     </SelectItem>
                     <SelectItem value="dark">
                       <div className="flex items-center gap-2">
-                        <Moon className="h-4 w-4" />
+                        <Moon className="h-4 w-4 text-indigo-500" />
                         Dark
                       </div>
                     </SelectItem>
-                    <SelectItem value="system">System Default</SelectItem>
+                    <SelectItem value="system">
+                      <div className="flex items-center gap-2">
+                        <Monitor className="h-4 w-4 text-slate-500" />
+                        System Default
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -454,12 +470,12 @@ function SettingsContent() {
         </Card>
 
         {/* App Info */}
-        <Card className="bg-slate-50">
+        <Card className="bg-slate-50 dark:bg-slate-800/50 dark:border-slate-700">
           <CardContent className="pt-6">
             <div className="text-center space-y-2">
-              <h3 className="font-semibold text-slate-800">WealthWise</h3>
-              <p className="text-sm text-slate-600">AI-Powered Personal Finance for India</p>
-              <p className="text-xs text-slate-500">Version 2.0.0</p>
+              <h3 className="font-semibold text-slate-800 dark:text-white">WealthWise</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">AI-Powered Personal Finance for India</p>
+              <p className="text-xs text-slate-500 dark:text-slate-500">Version 2.0.0</p>
             </div>
           </CardContent>
         </Card>

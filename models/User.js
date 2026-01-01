@@ -311,8 +311,7 @@ const userSchema = new mongoose.Schema({
 })
 
 // Indexes for performance
-userSchema.index({ email: 1 }, { unique: true })
-userSchema.index({ 'preferences.language': 1 })
+// Note: email and preferences.language indexes are already defined in the schema with `index: true`
 userSchema.index({ 'preferences.currency': 1 })
 userSchema.index({ status: 1, createdAt: -1 })
 userSchema.index({ 'onboarding.completed': 1 })

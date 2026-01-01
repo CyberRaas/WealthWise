@@ -52,14 +52,14 @@ const CATEGORY_COLORS = {
 
 // Skeleton components
 function SkeletonBox({ className }) {
-  return <div className={`animate-pulse bg-slate-200 rounded ${className}`} />
+  return <div className={`animate-pulse bg-slate-200 dark:bg-slate-700 rounded ${className}`} />
 }
 
 function BudgetSkeleton() {
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {/* Header Skeleton */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-6">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <div className="space-y-3 flex-1">
             <SkeletonBox className="h-5 w-24" />
@@ -79,7 +79,7 @@ function BudgetSkeleton() {
       {/* Stats Skeleton */}
       <div className="grid grid-cols-3 gap-3">
         {[1, 2, 3].map(i => (
-          <div key={i} className="bg-white rounded-xl border border-slate-200 p-4">
+          <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
             <SkeletonBox className="h-4 w-20 mb-2" />
             <SkeletonBox className="h-7 w-28" />
           </div>
@@ -87,14 +87,14 @@ function BudgetSkeleton() {
       </div>
 
       {/* Categories Skeleton */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-6">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-6">
         <div className="flex justify-between items-center mb-6">
           <SkeletonBox className="h-6 w-40" />
           <SkeletonBox className="h-9 w-32" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="border border-slate-200 rounded-xl p-4">
+            <div key={i} className="border border-slate-200 dark:border-slate-700 rounded-xl p-4">
               <div className="flex justify-between mb-3">
                 <SkeletonBox className="h-5 w-24" />
                 <SkeletonBox className="h-5 w-12" />
@@ -177,9 +177,9 @@ export default function BudgetDisplay({ refreshTrigger }) {
   }
 
   const getHealthBadge = (score) => {
-    if (score >= 80) return { text: t('budget.excellent'), color: 'bg-emerald-100 text-emerald-700' }
-    if (score >= 60) return { text: t('budget.good'), color: 'bg-yellow-100 text-yellow-700' }
-    return { text: t('budget.needsImprovement'), color: 'bg-red-100 text-red-700' }
+    if (score >= 80) return { text: t('budget.excellent'), color: 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400' }
+    if (score >= 60) return { text: t('budget.good'), color: 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400' }
+    return { text: t('budget.needsImprovement'), color: 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400' }
   }
 
   // Chart data
@@ -232,15 +232,15 @@ export default function BudgetDisplay({ refreshTrigger }) {
   if (!budget) {
     return (
       <div className="max-w-2xl mx-auto">
-        <Card className="border-slate-200">
+        <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
           <CardContent className="p-8 sm:p-12 text-center">
             <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <BarChart3 className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white mb-2">
               {t('budget.noBudget')}
             </h2>
-            <p className="text-slate-500 mb-6 max-w-md mx-auto">
+            <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-md mx-auto">
               {t('budget.noBudgetDesc')}
             </p>
             <Button
@@ -269,10 +269,10 @@ export default function BudgetDisplay({ refreshTrigger }) {
   // Invalid budget state
   if (!budget.categories) {
     return (
-      <Card className="max-w-md mx-auto">
+      <Card className="max-w-md mx-auto dark:bg-slate-800 dark:border-slate-700">
         <CardContent className="p-8 text-center">
-          <AlertCircle className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <p className="text-slate-500">Budget data not available</p>
+          <AlertCircle className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+          <p className="text-slate-500 dark:text-slate-400">Budget data not available</p>
         </CardContent>
       </Card>
     )
@@ -285,37 +285,37 @@ export default function BudgetDisplay({ refreshTrigger }) {
     <div className="space-y-4 lg:space-y-6 max-w-6xl mx-auto">
 
       {/* Compact Budget Header */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-6">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           {/* Left: Budget Info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 bg-emerald-500 rounded-full" />
-              <span className="text-xs font-medium text-emerald-700">
+              <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
                 {budget.isCustomized ? t('budget.customBudget') : t('budget.smartBudget')}
               </span>
               {budget.isCustomized && (
-                <Badge className="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5">
+                <Badge className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-xs px-2 py-0.5">
                   {t('budget.personalized')}
                 </Badge>
               )}
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-800 mb-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white mb-1">
               {t('budget.budgetOverview')}
             </h1>
-            <p className="text-lg sm:text-xl font-semibold text-slate-700">
+            <p className="text-lg sm:text-xl font-semibold text-slate-700 dark:text-slate-200">
               ₹{(budget.totalBudget || 0).toLocaleString('en-IN')}
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
               {t('budget.lastUpdated')}: {budget.generatedAt ? new Date(budget.generatedAt).toLocaleDateString('en-IN') : 'N/A'}
             </p>
           </div>
 
           {/* Right: Health Score & Actions */}
           <div className="flex items-center gap-3">
-            <div className="bg-slate-50 rounded-xl p-3 sm:p-4 text-center min-w-[90px]">
-              <Star className="w-5 h-5 text-slate-500 mx-auto mb-1" />
-              <div className="text-xl sm:text-2xl font-bold text-slate-800">
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-3 sm:p-4 text-center min-w-[90px]">
+              <Star className="w-5 h-5 text-slate-500 dark:text-slate-400 mx-auto mb-1" />
+              <div className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">
                 {budget.healthScore || 0}%
               </div>
               <Badge className={`text-xs ${healthBadge.color}`}>
@@ -336,7 +336,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                 onClick={() => setShowGuide(true)}
                 variant="outline"
                 size="sm"
-                className="h-8 text-xs"
+                className="h-8 text-xs dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
               >
                 <Lightbulb className="w-3 h-3 mr-1" />
                 <span className="hidden sm:inline">{t('budget.learn')}</span>
@@ -349,48 +349,48 @@ export default function BudgetDisplay({ refreshTrigger }) {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-3 sm:p-4">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-              <Wallet className="w-4 h-4 text-emerald-600" />
+            <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+              <Wallet className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <span className="text-xs text-slate-500 hidden sm:inline">{t('budget.monthlyBudget')}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">{t('budget.monthlyBudget')}</span>
           </div>
-          <p className="text-lg sm:text-xl font-bold text-emerald-600">
+          <p className="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400">
             ₹{(budget.totalBudget || 0).toLocaleString('en-IN')}
           </p>
-          <p className="text-xs text-slate-400 sm:hidden">Budget</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 sm:hidden">Budget</p>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-3 sm:p-4">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-blue-600" />
+            <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+              <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
-            <span className="text-xs text-slate-500 hidden sm:inline">{t('budget.allocated')}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">{t('budget.allocated')}</span>
           </div>
-          <p className="text-lg sm:text-xl font-bold text-blue-600">
+          <p className="text-lg sm:text-xl font-bold text-blue-600 dark:text-blue-400">
             ₹{totalAllocated.toLocaleString('en-IN')}
           </p>
-          <p className="text-xs text-slate-400 sm:hidden">Allocated</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 sm:hidden">Allocated</p>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4">
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-3 sm:p-4">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
-              <BarChart3 className="w-4 h-4 text-purple-600" />
+            <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
+              <BarChart3 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
             </div>
-            <span className="text-xs text-slate-500 hidden sm:inline">{t('budget.categories')}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">{t('budget.categories')}</span>
           </div>
-          <p className="text-lg sm:text-xl font-bold text-purple-600">
+          <p className="text-lg sm:text-xl font-bold text-purple-600 dark:text-purple-400">
             {Object.keys(budget.categories).length}
           </p>
-          <p className="text-xs text-slate-400 sm:hidden">Categories</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 sm:hidden">Categories</p>
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex gap-1 p-1 bg-slate-100 rounded-xl">
+      <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
         {[
           { id: 'overview', label: 'Overview', icon: Eye },
           { id: 'tracking', label: t('budget.tracking'), icon: Activity },
@@ -403,8 +403,8 @@ export default function BudgetDisplay({ refreshTrigger }) {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg font-medium text-sm transition-all ${
                 activeTab === tab.id
-                  ? 'bg-white text-emerald-600 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-800'
+                  ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -416,15 +416,15 @@ export default function BudgetDisplay({ refreshTrigger }) {
 
       {/* Tab Content */}
       {activeTab === 'overview' && (
-        <Card className="border-slate-200">
+        <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
           <CardHeader className="pb-4">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <div>
-                <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                  <Wallet className="w-5 h-5 text-emerald-600" />
+                <CardTitle className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+                  <Wallet className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   {t('budget.budgetCategories')}
                 </CardTitle>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                   {budget.isCustomized ? t('budget.personalizedAllocation') : t('budget.aiRecommendedBreakdown')}
                 </p>
               </div>
@@ -432,7 +432,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
                 onClick={() => setShowCustomizer(true)}
                 variant="outline"
                 size="sm"
-                className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                className="border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950"
               >
                 <Settings className="w-4 h-4 mr-1.5" />
                 {budget.isCustomized ? t('budget.modifyBudget') : t('budget.customizeBudget')}
@@ -444,25 +444,25 @@ export default function BudgetDisplay({ refreshTrigger }) {
               {Object.entries(budget.categories).map(([key, category]) => (
                 <div
                   key={key}
-                  className="border border-slate-200 rounded-xl p-4 hover:shadow-md transition-shadow bg-white"
+                  className="border border-slate-200 dark:border-slate-700 rounded-xl p-4 hover:shadow-md transition-shadow bg-white dark:bg-slate-900"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <span className="text-xl">{category.emoji || '📦'}</span>
-                      <span className="font-medium text-slate-800 text-sm">
+                      <span className="font-medium text-slate-800 dark:text-white text-sm">
                         {category.englishName || key}
                       </span>
                     </div>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs dark:border-slate-600 dark:text-slate-300">
                       {category.percentage || 0}%
                     </Badge>
                   </div>
-                  <p className="text-xl font-bold text-slate-800 mb-2">
+                  <p className="text-xl font-bold text-slate-800 dark:text-white mb-2">
                     ₹{(category.amount || 0).toLocaleString('en-IN')}
                   </p>
                   <Progress value={category.percentage || 0} className="h-1.5 mb-2" />
                   {budget.explanations?.categories?.[key] && (
-                    <p className="text-xs text-slate-500 line-clamp-2">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
                       {budget.explanations.categories[key]}
                     </p>
                   )}
@@ -472,13 +472,13 @@ export default function BudgetDisplay({ refreshTrigger }) {
 
             {/* Success message for customized budget */}
             {budget.isCustomized && (
-              <div className="mt-4 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+              <div className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-950/50 rounded-xl border border-emerald-200 dark:border-emerald-800">
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-emerald-800 text-sm">Budget Customized</p>
+                    <p className="font-medium text-emerald-800 dark:text-emerald-300 text-sm">Budget Customized</p>
                     {budget.customizedAt && (
-                      <p className="text-xs text-emerald-600 mt-0.5">
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-0.5">
                         Last modified: {new Date(budget.customizedAt).toLocaleDateString('en-IN')}
                       </p>
                     )}
@@ -497,10 +497,10 @@ export default function BudgetDisplay({ refreshTrigger }) {
       {activeTab === 'analytics' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Pie Chart */}
-          <Card className="border-slate-200">
+          <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                <PieChartIcon className="w-4 h-4 text-emerald-600" />
+              <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                <PieChartIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 Distribution
               </CardTitle>
             </CardHeader>
@@ -523,11 +523,13 @@ export default function BudgetDisplay({ refreshTrigger }) {
                   <Tooltip
                     formatter={(value) => `₹${value.toLocaleString('en-IN')}`}
                     contentStyle={{
-                      backgroundColor: 'white',
-                      border: '1px solid #e2e8f0',
+                      backgroundColor: '#1e293b',
+                      border: '1px solid #334155',
                       borderRadius: '8px',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
                     }}
+                    labelStyle={{ color: '#f1f5f9' }}
+                    itemStyle={{ color: '#f1f5f9' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -535,38 +537,40 @@ export default function BudgetDisplay({ refreshTrigger }) {
           </Card>
 
           {/* Bar Chart */}
-          <Card className="border-slate-200">
+          <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-blue-600" />
+              <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 Category Breakdown
               </CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={chartData.barData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                   <XAxis
                     dataKey="name"
                     angle={-45}
                     textAnchor="end"
                     height={80}
                     fontSize={11}
-                    stroke="#64748b"
+                    tick={{ fill: '#94a3b8' }}
                   />
                   <YAxis
                     tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
-                    stroke="#64748b"
                     fontSize={11}
+                    tick={{ fill: '#94a3b8' }}
                   />
                   <Tooltip
                     formatter={(value) => `₹${value.toLocaleString('en-IN')}`}
                     contentStyle={{
-                      backgroundColor: 'white',
-                      border: '1px solid #e2e8f0',
+                      backgroundColor: '#1e293b',
+                      border: '1px solid #334155',
                       borderRadius: '8px',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
                     }}
+                    labelStyle={{ color: '#f1f5f9' }}
+                    itemStyle={{ color: '#f1f5f9' }}
                   />
                   <Bar dataKey="amount" fill="#10b981" radius={[4, 4, 0, 0]} />
                 </BarChart>
@@ -578,9 +582,9 @@ export default function BudgetDisplay({ refreshTrigger }) {
 
       {/* AI Tips - Simplified */}
       {budget.tips && budget.tips.length > 0 && activeTab === 'overview' && (
-        <Card className="border-slate-200 bg-amber-50/50">
+        <Card className="border-slate-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-950/30">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-semibold text-amber-800 flex items-center gap-2">
+            <CardTitle className="text-sm font-semibold text-amber-800 dark:text-amber-400 flex items-center gap-2">
               <Lightbulb className="w-4 h-4" />
               {t('budget.aiPoweredTips')}
             </CardTitle>
@@ -590,10 +594,10 @@ export default function BudgetDisplay({ refreshTrigger }) {
               {budget.tips.slice(0, 3).map((tip, index) => (
                 <div
                   key={index}
-                  className="flex items-start gap-2 p-3 bg-white rounded-lg border border-amber-200"
+                  className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-amber-200 dark:border-amber-900/50"
                 >
-                  <CheckCircle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-slate-700">{tip}</p>
+                  <CheckCircle className="w-4 h-4 text-amber-600 dark:text-amber-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-slate-700 dark:text-slate-300">{tip}</p>
                 </div>
               ))}
             </div>
@@ -608,7 +612,7 @@ export default function BudgetDisplay({ refreshTrigger }) {
           disabled={generating}
           variant="outline"
           size="sm"
-          className="text-slate-600"
+          className="text-slate-600 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700"
         >
           {generating ? (
             <>

@@ -21,12 +21,12 @@ function GoalsSkeleton() {
       {/* Stats Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="bg-white rounded-xl border border-slate-200 p-4">
+          <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-slate-200 rounded-lg" />
+              <div className="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-lg" />
               <div className="space-y-2">
-                <div className="h-6 w-12 bg-slate-200 rounded" />
-                <div className="h-3 w-16 bg-slate-100 rounded" />
+                <div className="h-6 w-12 bg-slate-200 dark:bg-slate-700 rounded" />
+                <div className="h-3 w-16 bg-slate-100 dark:bg-slate-600 rounded" />
               </div>
             </div>
           </div>
@@ -34,31 +34,31 @@ function GoalsSkeleton() {
       </div>
 
       {/* Summary Card */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
-            <div className="h-5 w-32 bg-slate-200 rounded" />
-            <div className="h-4 w-48 bg-slate-100 rounded" />
+            <div className="h-5 w-32 bg-slate-200 dark:bg-slate-700 rounded" />
+            <div className="h-4 w-48 bg-slate-100 dark:bg-slate-600 rounded" />
           </div>
-          <div className="h-8 w-24 bg-slate-200 rounded" />
+          <div className="h-8 w-24 bg-slate-200 dark:bg-slate-700 rounded" />
         </div>
       </div>
 
       {/* Goal Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[1, 2].map(i => (
-          <div key={i} className="bg-white rounded-xl border border-slate-200 p-4">
+          <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
             <div className="flex items-start gap-3 mb-4">
-              <div className="w-12 h-12 bg-slate-200 rounded-lg" />
+              <div className="w-12 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg" />
               <div className="flex-1 space-y-2">
-                <div className="h-5 w-3/4 bg-slate-200 rounded" />
-                <div className="h-3 w-1/2 bg-slate-100 rounded" />
+                <div className="h-5 w-3/4 bg-slate-200 dark:bg-slate-700 rounded" />
+                <div className="h-3 w-1/2 bg-slate-100 dark:bg-slate-600 rounded" />
               </div>
             </div>
-            <div className="h-2 w-full bg-slate-100 rounded-full" />
+            <div className="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full" />
             <div className="flex justify-between mt-2">
-              <div className="h-3 w-20 bg-slate-100 rounded" />
-              <div className="h-3 w-20 bg-slate-100 rounded" />
+              <div className="h-3 w-20 bg-slate-100 dark:bg-slate-600 rounded" />
+              <div className="h-3 w-20 bg-slate-100 dark:bg-slate-600 rounded" />
             </div>
           </div>
         ))}
@@ -121,67 +121,67 @@ function GoalsContent() {
         {/* Page Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
-              <Target className="w-5 h-5 text-purple-600" />
+            <h2 className="text-xl font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+              <Target className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               {t('goals.title')}
             </h2>
-            <p className="text-sm text-slate-500">{t('goals.subtitle') || 'Track and achieve your financial goals'}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t('goals.subtitle') || 'Track and achieve your financial goals'}</p>
           </div>
         </div>
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <Card className="border-slate-200">
+          <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <Target className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/40 rounded-lg flex items-center justify-center">
+                  <Target className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-800">{goalsData.totalGoals}</p>
-                  <p className="text-xs text-slate-500">{t('goals.totalGoals') || 'Total Goals'}</p>
+                  <p className="text-2xl font-bold text-slate-800 dark:text-white">{goalsData.totalGoals}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{t('goals.totalGoals') || 'Total Goals'}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-slate-200">
+          <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-emerald-600" />
+                <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/40 rounded-lg flex items-center justify-center">
+                  <Zap className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-800">{activeGoals}</p>
-                  <p className="text-xs text-slate-500">{t('goals.active') || 'Active'}</p>
+                  <p className="text-2xl font-bold text-slate-800 dark:text-white">{activeGoals}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{t('goals.active') || 'Active'}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-slate-200">
+          <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
-                  <Trophy className="w-5 h-5 text-amber-600" />
+                <div className="w-10 h-10 bg-amber-50 dark:bg-amber-900/40 rounded-lg flex items-center justify-center">
+                  <Trophy className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-800">{completedGoals}</p>
-                  <p className="text-xs text-slate-500">{t('goals.completed') || 'Completed'}</p>
+                  <p className="text-2xl font-bold text-slate-800 dark:text-white">{completedGoals}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{t('goals.completed') || 'Completed'}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-slate-200">
+          <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-purple-600" />
+                <div className="w-10 h-10 bg-purple-50 dark:bg-purple-900/40 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-800">{totalProgress.toFixed(0)}%</p>
-                  <p className="text-xs text-slate-500">{t('goals.progress') || 'Progress'}</p>
+                  <p className="text-2xl font-bold text-slate-800 dark:text-white">{totalProgress.toFixed(0)}%</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{t('goals.progress') || 'Progress'}</p>
                 </div>
               </div>
             </CardContent>
@@ -190,16 +190,16 @@ function GoalsContent() {
 
         {/* Summary Card - Only show if there are goals */}
         {goalsData.totalGoals > 0 && (
-          <Card className="border-slate-200 border-l-4 border-l-emerald-500">
+          <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800 border-l-4 border-l-emerald-500">
             <CardContent className="p-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                    <PiggyBank className="w-5 h-5 text-emerald-600" />
+                  <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg flex items-center justify-center">
+                    <PiggyBank className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-800">{t('goals.financialProgress') || 'Financial Progress'}</h3>
-                    <p className="text-sm text-slate-600">
+                    <h3 className="font-semibold text-slate-800 dark:text-white">{t('goals.financialProgress') || 'Financial Progress'}</h3>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
                       {t('goals.savedProgress', {
                         saved: goalsData.totalCurrentAmount.toLocaleString('en-IN'),
                         target: goalsData.totalTargetAmount.toLocaleString('en-IN')
@@ -208,13 +208,13 @@ function GoalsContent() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-24 sm:w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="w-24 sm:w-32 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-emerald-500 rounded-full transition-all"
                       style={{ width: `${Math.min(totalProgress, 100)}%` }}
                     />
                   </div>
-                  <span className="text-sm font-semibold text-slate-700 whitespace-nowrap">
+                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 whitespace-nowrap">
                     {totalProgress.toFixed(0)}%
                   </span>
                 </div>

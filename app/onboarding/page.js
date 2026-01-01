@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow'
 import Logo from '@/components/ui/Logo'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 import { Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -60,15 +61,15 @@ export default function OnboardingPage() {
 
   if (status === 'loading' || checkingOnboarding) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-emerald-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-emerald-50 to-blue-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800">
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <Loader2 className="w-8 h-8 animate-spin text-white" />
           </div>
-          <h2 className="text-xl font-semibold text-slate-800 mb-2">
+          <h2 className="text-xl font-semibold text-slate-800 dark:text-white mb-2">
             {checkingOnboarding ? 'Checking your profile...' : 'Setting up your experience...'}
           </h2>
-          <p className="text-slate-600">Please wait while we prepare your profile</p>
+          <p className="text-slate-600 dark:text-slate-400">Please wait while we prepare your profile</p>
         </div>
       </div>
     )
@@ -79,23 +80,25 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
       {/* Minimal Header */}
-      <div className="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-slate-100">
+      <div className="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-slate-100 dark:border-slate-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center space-x-2">
               <Logo size="large" />
-              {/* <span className="text-lg font-bold text-slate-900">WealthWise</span> */}
             </div>
 
-            {/* User Avatar */}
+            {/* Theme Toggle & User Avatar */}
             <div className="flex items-center space-x-3">
-              <span className="text-sm text-slate-600 hidden sm:block">
+              {/* Theme Toggle */}
+              <ThemeToggle variant="icon" />
+
+              <span className="text-sm text-slate-600 dark:text-slate-400 hidden sm:block">
                 {session?.user?.name?.split(' ')[0] || 'User'}
               </span>
-              <div className="w-9 h-9 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center text-white font-semibold text-sm">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center text-white font-semibold text-sm shadow-lg">
                 {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
               </div>
             </div>

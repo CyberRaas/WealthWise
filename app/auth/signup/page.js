@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 import { Eye, EyeOff, TrendingUp, ArrowLeft, Mail, CheckCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -187,17 +188,18 @@ export default function SignUpPage() {
   // Signup Form
   if (step === 'signup') {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col transition-colors duration-200">
         {/* Header */}
-        <header className="p-4">
+        <header className="p-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 w-fit">
             <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-slate-800">
-              Wealth<span className="text-emerald-600">Wise</span>
+            <span className="text-xl font-bold text-slate-800 dark:text-white">
+              Wealth<span className="text-emerald-600 dark:text-emerald-400">Wise</span>
             </span>
           </Link>
+          <ThemeToggle variant="icon" />
         </header>
 
         {/* Main Content */}
@@ -205,20 +207,20 @@ export default function SignUpPage() {
           <div className="w-full max-w-sm">
             {/* Title */}
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-slate-900 mb-2">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
                 {t('auth.signup.title')}
               </h1>
-              <p className="text-slate-600">
+              <p className="text-slate-600 dark:text-slate-400">
                 {t('auth.signup.subtitle')}
               </p>
             </div>
 
             {/* Auth Card */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
               <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-4">
                 {/* Name Field */}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('auth.signup.fullName')}
                   </label>
                   <Input
@@ -228,16 +230,16 @@ export default function SignUpPage() {
                     autoComplete="name"
                     disabled={isLoading}
                     {...signupForm.register('name')}
-                    className="h-11"
+                    className="h-11 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
                   />
                   {signupForm.formState.errors.name && (
-                    <p className="text-sm text-red-600 mt-1">{signupForm.formState.errors.name.message}</p>
+                    <p className="text-sm text-red-600 dark:text-red-400 mt-1">{signupForm.formState.errors.name.message}</p>
                   )}
                 </div>
 
                 {/* Email Field */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('auth.signup.email')}
                   </label>
                   <Input
@@ -247,16 +249,16 @@ export default function SignUpPage() {
                     autoComplete="email"
                     disabled={isLoading}
                     {...signupForm.register('email')}
-                    className="h-11"
+                    className="h-11 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
                   />
                   {signupForm.formState.errors.email && (
-                    <p className="text-sm text-red-600 mt-1">{signupForm.formState.errors.email.message}</p>
+                    <p className="text-sm text-red-600 dark:text-red-400 mt-1">{signupForm.formState.errors.email.message}</p>
                   )}
                 </div>
 
                 {/* Password Field */}
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('auth.signup.password')}
                   </label>
                   <div className="relative">
@@ -267,24 +269,24 @@ export default function SignUpPage() {
                       autoComplete="new-password"
                       disabled={isLoading}
                       {...signupForm.register('password')}
-                      className="h-11 pr-10"
+                      className="h-11 pr-10 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
                     />
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                   {signupForm.formState.errors.password && (
-                    <p className="text-sm text-red-600 mt-1">{signupForm.formState.errors.password.message}</p>
+                    <p className="text-sm text-red-600 dark:text-red-400 mt-1">{signupForm.formState.errors.password.message}</p>
                   )}
                 </div>
 
                 {/* Confirm Password Field */}
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 mb-1.5">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                     {t('auth.signup.confirmPassword')}
                   </label>
                   <div className="relative">
@@ -295,18 +297,18 @@ export default function SignUpPage() {
                       autoComplete="new-password"
                       disabled={isLoading}
                       {...signupForm.register('confirmPassword')}
-                      className="h-11 pr-10"
+                      className="h-11 pr-10 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
                     />
                     <button
                       type="button"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
                       {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                   {signupForm.formState.errors.confirmPassword && (
-                    <p className="text-sm text-red-600 mt-1">{signupForm.formState.errors.confirmPassword.message}</p>
+                    <p className="text-sm text-red-600 dark:text-red-400 mt-1">{signupForm.formState.errors.confirmPassword.message}</p>
                   )}
                 </div>
 
@@ -317,17 +319,17 @@ export default function SignUpPage() {
                     type="checkbox"
                     disabled={isLoading}
                     {...signupForm.register('acceptPrivacyPolicy')}
-                    className="mt-1 h-4 w-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500"
+                    className="mt-1 h-4 w-4 text-emerald-600 border-slate-300 dark:border-slate-600 rounded focus:ring-emerald-500 dark:bg-slate-800"
                   />
-                  <label htmlFor="acceptPrivacyPolicy" className="text-sm text-slate-600">
+                  <label htmlFor="acceptPrivacyPolicy" className="text-sm text-slate-600 dark:text-slate-400">
                     I agree to the{' '}
-                    <Link href="/privacy-policy" target="_blank" className="text-emerald-600 hover:text-emerald-700 font-medium">
+                    <Link href="/privacy-policy" target="_blank" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-medium">
                       Privacy Policy
                     </Link>
                   </label>
                 </div>
                 {signupForm.formState.errors.acceptPrivacyPolicy && (
-                  <p className="text-sm text-red-600">{signupForm.formState.errors.acceptPrivacyPolicy.message}</p>
+                  <p className="text-sm text-red-600 dark:text-red-400">{signupForm.formState.errors.acceptPrivacyPolicy.message}</p>
                 )}
 
                 {/* Submit Button */}
@@ -346,9 +348,9 @@ export default function SignUpPage() {
             </div>
 
             {/* Sign In Link */}
-            <p className="text-center text-sm text-slate-600 mt-6">
+            <p className="text-center text-sm text-slate-600 dark:text-slate-400 mt-6">
               {t('auth.signup.alreadyHaveAccount')}{' '}
-              <Link href="/auth/signin" className="font-medium text-emerald-600 hover:text-emerald-700">
+              <Link href="/auth/signin" className="font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300">
                 {t('auth.signup.signIn')}
               </Link>
             </p>
@@ -361,17 +363,18 @@ export default function SignUpPage() {
   // OTP Verification
   if (step === 'otp') {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col transition-colors duration-200">
         {/* Header */}
-        <header className="p-4">
+        <header className="p-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 w-fit">
             <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-slate-800">
-              Wealth<span className="text-emerald-600">Wise</span>
+            <span className="text-xl font-bold text-slate-800 dark:text-white">
+              Wealth<span className="text-emerald-600 dark:text-emerald-400">Wise</span>
             </span>
           </Link>
+          <ThemeToggle variant="icon" />
         </header>
 
         {/* Main Content */}
@@ -379,23 +382,23 @@ export default function SignUpPage() {
           <div className="w-full max-w-sm">
             {/* Title */}
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-8 h-8 text-emerald-600" />
+              <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <h1 className="text-2xl font-bold text-slate-900 mb-2">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
                 {t('auth.otp.verifyYourEmail')}
               </h1>
-              <p className="text-slate-600">
+              <p className="text-slate-600 dark:text-slate-400">
                 {t('auth.otp.enterCode')}<br />
-                <span className="font-medium text-slate-800">{userData?.email}</span>
+                <span className="font-medium text-slate-800 dark:text-slate-200">{userData?.email}</span>
               </p>
             </div>
 
             {/* OTP Card */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
               <form onSubmit={otpForm.handleSubmit(onOtpSubmit)} className="space-y-4">
                 <div>
-                  <label htmlFor="otp" className="block text-sm font-medium text-slate-700 mb-1.5 text-center">
+                  <label htmlFor="otp" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 text-center">
                     {t('auth.otp.verificationCode')}
                   </label>
                   <Input
@@ -403,27 +406,27 @@ export default function SignUpPage() {
                     type="text"
                     placeholder="000000"
                     maxLength={6}
-                    className="h-12 text-center text-xl font-mono tracking-widest"
+                    className="h-12 text-center text-xl font-mono tracking-widest dark:bg-slate-800 dark:border-slate-700 dark:text-white"
                     disabled={isLoading}
                     {...otpForm.register('otp')}
                   />
                   {otpForm.formState.errors.otp && (
-                    <p className="text-sm text-red-600 mt-1 text-center">{otpForm.formState.errors.otp.message}</p>
+                    <p className="text-sm text-red-600 dark:text-red-400 mt-1 text-center">{otpForm.formState.errors.otp.message}</p>
                   )}
                 </div>
 
                 {/* Timer / Resend */}
                 <div className="text-center">
                   {otpTimer > 0 ? (
-                    <p className="text-sm text-slate-600">
-                      {t('auth.otp.resendTimer')} <span className="font-medium text-emerald-600">{formatTime(otpTimer)}</span>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                      {t('auth.otp.resendTimer')} <span className="font-medium text-emerald-600 dark:text-emerald-400">{formatTime(otpTimer)}</span>
                     </p>
                   ) : (
                     <button
                       type="button"
                       onClick={handleResendOtp}
                       disabled={isLoading}
-                      className="text-sm text-emerald-600 hover:text-emerald-700 font-medium"
+                      className="text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-medium"
                     >
                       {t('auth.otp.resendCode')}
                     </button>
@@ -451,7 +454,7 @@ export default function SignUpPage() {
                   type="button"
                   variant="outline"
                   onClick={() => setStep('signup')}
-                  className="w-full h-11"
+                  className="w-full h-11 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
                   disabled={isLoading}
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />

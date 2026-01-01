@@ -30,7 +30,7 @@ import remarkGfm from 'remark-gfm'
 
 // Skeleton components
 function SkeletonBox({ className }) {
-  return <div className={`animate-pulse bg-slate-200 rounded ${className}`} />
+  return <div className={`animate-pulse bg-slate-200 dark:bg-slate-700 rounded ${className}`} />
 }
 
 // EMI Calculator Component
@@ -132,28 +132,28 @@ function EMICalculator({ onCalculate }) {
   return (
     <div className="space-y-4">
       {/* Calculator Form */}
-      <Card className="border-slate-200">
+      <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold text-slate-800 flex items-center gap-2">
-            <Calculator className="w-5 h-5 text-emerald-600" />
+          <CardTitle className="text-base font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+            <Calculator className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             {t('debtCalculator.title')}
           </CardTitle>
-          <p className="text-xs text-slate-500">{t('debtCalculator.subtitle')}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('debtCalculator.subtitle')}</p>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Amount and Interest Row */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1.5">
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">
                 {t('debtCalculator.loanAmount')} (₹) *
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">₹</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-sm">₹</span>
                 <input
                   type="number"
                   value={formData.principal}
                   onChange={(e) => setFormData({ ...formData, principal: e.target.value })}
-                  className={`w-full pl-7 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm ${errors.principal ? 'border-red-400' : 'border-slate-300'}`}
+                  className={`w-full pl-7 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm bg-white dark:bg-slate-900 dark:text-white ${errors.principal ? 'border-red-400' : 'border-slate-300 dark:border-slate-600'}`}
                   placeholder="500000"
                 />
               </div>
@@ -161,7 +161,7 @@ function EMICalculator({ onCalculate }) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1.5">
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">
                 {t('debtCalculator.interestRate')} (%) *
               </label>
               <div className="relative">
@@ -169,11 +169,11 @@ function EMICalculator({ onCalculate }) {
                   type="number"
                   value={formData.interestRate}
                   onChange={(e) => setFormData({ ...formData, interestRate: e.target.value })}
-                  className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm ${errors.interestRate ? 'border-red-400' : 'border-slate-300'}`}
+                  className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm bg-white dark:bg-slate-900 dark:text-white ${errors.interestRate ? 'border-red-400' : 'border-slate-300 dark:border-slate-600'}`}
                   placeholder="10.5"
                   step="0.1"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">{t('common.perAnnum')}</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-xs">{t('common.perAnnum')}</span>
               </div>
               {errors.interestRate && <p className="text-red-500 text-xs mt-1">{errors.interestRate}</p>}
             </div>
@@ -182,7 +182,7 @@ function EMICalculator({ onCalculate }) {
           {/* Duration Row */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1.5">
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">
                 {t('debtCalculator.loanTerm')} *
               </label>
               <div className="flex gap-2">
@@ -190,30 +190,23 @@ function EMICalculator({ onCalculate }) {
                   type="number"
                   value={formData.duration}
                   onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                  className={`flex-1 px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm ${errors.duration ? 'border-red-400' : 'border-slate-300'}`}
+                  className={`flex-1 px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm bg-white dark:bg-slate-900 dark:text-white ${errors.duration ? 'border-red-400' : 'border-slate-300 dark:border-slate-600'}`}
                   placeholder="36"
                   min="1"
                 />
-                <select
-                  value={formData.durationType}
-                  onChange={(e) => setFormData({ ...formData, durationType: e.target.value })}
-                  className="px-2 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-white text-sm"
-                >
-                  <option value="months">{t('common.months')}</option>
-                  <option value="years">{t('common.years')}</option>
-                </select>
+              
               </div>
               {errors.duration && <p className="text-red-500 text-xs mt-1">{errors.duration}</p>}
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1.5">
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">
                 {t('debtCalculator.compoundingFrequency')}
               </label>
               <select
                 value={formData.compoundingFrequency}
                 onChange={(e) => setFormData({ ...formData, compoundingFrequency: e.target.value })}
-                className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-white text-sm"
+                className="w-full px-3 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-slate-900 dark:text-white text-sm"
               >
                 <option value="monthly">{t('common.monthly')}</option>
                 <option value="quarterly">{t('common.quarterly')}</option>
@@ -245,27 +238,27 @@ function EMICalculator({ onCalculate }) {
       {/* Results Cards */}
       {results && (
         <div className="grid grid-cols-3 gap-3">
-          <Card className="border-blue-200 bg-blue-50/50">
+          <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/30">
             <CardContent className="p-3 text-center">
-              <IndianRupee className="w-6 h-6 mx-auto mb-1 text-blue-600" />
-              <p className="text-[10px] text-blue-600 font-medium">{t('debtCalculator.monthlyEmi')}</p>
-              <p className="text-lg font-bold text-blue-700">{formatCurrency(results.emi)}</p>
+              <IndianRupee className="w-6 h-6 mx-auto mb-1 text-blue-600 dark:text-blue-400" />
+              <p className="text-[10px] text-blue-600 dark:text-blue-400 font-medium">{t('debtCalculator.monthlyEmi')}</p>
+              <p className="text-lg font-bold text-blue-700 dark:text-blue-300">{formatCurrency(results.emi)}</p>
             </CardContent>
           </Card>
 
-          <Card className="border-emerald-200 bg-emerald-50/50">
+          <Card className="border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/30">
             <CardContent className="p-3 text-center">
-              <TrendingUp className="w-6 h-6 mx-auto mb-1 text-emerald-600" />
-              <p className="text-[10px] text-emerald-600 font-medium">{t('debtCalculator.totalPayable')}</p>
-              <p className="text-lg font-bold text-emerald-700">{formatCurrency(results.totalPayable)}</p>
+              <TrendingUp className="w-6 h-6 mx-auto mb-1 text-emerald-600 dark:text-emerald-400" />
+              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">{t('debtCalculator.totalPayable')}</p>
+              <p className="text-lg font-bold text-emerald-700 dark:text-emerald-300">{formatCurrency(results.totalPayable)}</p>
             </CardContent>
           </Card>
 
-          <Card className="border-red-200 bg-red-50/50">
+          <Card className="border-red-200 dark:border-red-800 bg-red-50/50 dark:bg-red-950/30">
             <CardContent className="p-3 text-center">
-              <PieChart className="w-6 h-6 mx-auto mb-1 text-red-600" />
-              <p className="text-[10px] text-red-600 font-medium">{t('debtCalculator.totalInterest')}</p>
-              <p className="text-lg font-bold text-red-700">{formatCurrency(results.totalInterest)}</p>
+              <PieChart className="w-6 h-6 mx-auto mb-1 text-red-600 dark:text-red-400" />
+              <p className="text-[10px] text-red-600 dark:text-red-400 font-medium">{t('debtCalculator.totalInterest')}</p>
+              <p className="text-lg font-bold text-red-700 dark:text-red-300">{formatCurrency(results.totalInterest)}</p>
             </CardContent>
           </Card>
         </div>
@@ -273,22 +266,22 @@ function EMICalculator({ onCalculate }) {
 
       {/* Chart */}
       {chartData.length > 0 && (
-        <Card className="border-slate-200">
+        <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-purple-600" />
+            <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-purple-600 dark:text-purple-400" />
               {t('debtCalculator.repaymentTimeline')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="month" fontSize={10} stroke="#94a3b8" tickLine={false} />
-                <YAxis fontSize={10} stroke="#94a3b8" tickLine={false} tickFormatter={(v) => `₹${(v/1000).toFixed(0)}k`} />
+                <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
+                <XAxis dataKey="month" fontSize={10} className="fill-slate-500 dark:fill-slate-400" tickLine={false} />
+                <YAxis fontSize={10} className="fill-slate-500 dark:fill-slate-400" tickLine={false} tickFormatter={(v) => `₹${(v/1000).toFixed(0)}k`} />
                 <Tooltip
                   formatter={(value) => [formatCurrency(value)]}
-                  contentStyle={{ backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '12px' }}
+                  contentStyle={{ backgroundColor: 'var(--tooltip-bg, white)', border: '1px solid var(--tooltip-border, #e2e8f0)', borderRadius: '8px', fontSize: '12px' }}
                 />
                 <Area type="monotone" dataKey="remainingPrincipal" stroke="#3b82f6" fill="#93c5fd" fillOpacity={0.5} name={t('debtCalculator.remainingPrincipal')} />
                 <Area type="monotone" dataKey="cumulativeInterest" stroke="#ef4444" fill="#fca5a5" fillOpacity={0.5} name={t('debtCalculator.cumulativeInterest')} />
@@ -417,26 +410,26 @@ What would you like to know?`,
   ]
 
   return (
-    <Card className="border-slate-200 h-full flex flex-col">
-      <CardHeader className="pb-3 border-b">
-        <CardTitle className="text-base font-semibold text-slate-800 flex items-center gap-2">
-          <Bot className="w-5 h-5 text-blue-600" />
+    <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800 h-full flex flex-col">
+      <CardHeader className="pb-3 border-b dark:border-slate-700">
+        <CardTitle className="text-base font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+          <Bot className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           {t('debtCalculator.aiAdvisor')}
         </CardTitle>
-        <p className="text-xs text-slate-500">{t('debtCalculator.aiAdvisorDesc')}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">{t('debtCalculator.aiAdvisorDesc')}</p>
       </CardHeader>
 
       <CardContent className="flex-1 flex flex-col p-0 min-h-0">
         {/* Quick Actions */}
         {messages.length <= 1 && (
-          <div className="p-3 border-b bg-slate-50">
-            <p className="text-xs text-slate-500 mb-2">{t('debtCalculator.quickQuestions')}:</p>
+          <div className="p-3 border-b dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{t('debtCalculator.quickQuestions')}:</p>
             <div className="flex flex-wrap gap-1.5">
               {quickActions.map((action, i) => (
                 <button
                   key={i}
                   onClick={() => setNewMessage(action)}
-                  className="text-xs px-2 py-1 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 hover:border-blue-200 transition-colors"
+                  className="text-xs px-2 py-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-200 dark:hover:border-blue-700 transition-colors dark:text-slate-300"
                 >
                   {action}
                 </button>
@@ -454,21 +447,21 @@ What would you like to know?`,
                   {message.type === 'user' ? <User className="w-3.5 h-3.5 text-white" /> : <Bot className="w-3.5 h-3.5 text-white" />}
                 </div>
 
-                <div className={`group rounded-xl px-3 py-2 ${message.type === 'user' ? 'bg-emerald-500 text-white rounded-br-sm' : 'bg-white border border-slate-200 rounded-bl-sm'}`}>
+                <div className={`group rounded-xl px-3 py-2 ${message.type === 'user' ? 'bg-emerald-500 text-white rounded-br-sm' : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-bl-sm'}`}>
                   {message.type === 'bot' ? (
-                    <div className="prose prose-sm max-w-none">
+                    <div className="prose prose-sm max-w-none dark:prose-invert">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                          p: ({ children }) => <p className="mb-1.5 last:mb-0 text-xs leading-relaxed text-slate-700">{children}</p>,
-                          ul: ({ children }) => <ul className="mb-1.5 text-xs space-y-0.5 text-slate-700">{children}</ul>,
+                          p: ({ children }) => <p className="mb-1.5 last:mb-0 text-xs leading-relaxed text-slate-700 dark:text-slate-300">{children}</p>,
+                          ul: ({ children }) => <ul className="mb-1.5 text-xs space-y-0.5 text-slate-700 dark:text-slate-300">{children}</ul>,
                           li: ({ children }) => <li className="ml-3">{children}</li>,
-                          strong: ({ children }) => <strong className="font-semibold text-slate-800">{children}</strong>,
-                          h2: ({ children }) => <h2 className="text-sm font-semibold mb-1.5 text-slate-800">{children}</h2>,
-                          h3: ({ children }) => <h3 className="text-xs font-semibold mb-1 text-slate-800">{children}</h3>,
+                          strong: ({ children }) => <strong className="font-semibold text-slate-800 dark:text-slate-200">{children}</strong>,
+                          h2: ({ children }) => <h2 className="text-sm font-semibold mb-1.5 text-slate-800 dark:text-slate-200">{children}</h2>,
+                          h3: ({ children }) => <h3 className="text-xs font-semibold mb-1 text-slate-800 dark:text-slate-200">{children}</h3>,
                           table: ({ children }) => <table className="text-xs border-collapse my-2">{children}</table>,
-                          th: ({ children }) => <th className="border border-slate-200 px-2 py-1 bg-slate-50 text-left font-medium">{children}</th>,
-                          td: ({ children }) => <td className="border border-slate-200 px-2 py-1">{children}</td>
+                          th: ({ children }) => <th className="border border-slate-200 dark:border-slate-600 px-2 py-1 bg-slate-50 dark:bg-slate-800 text-left font-medium dark:text-slate-300">{children}</th>,
+                          td: ({ children }) => <td className="border border-slate-200 dark:border-slate-600 px-2 py-1 dark:text-slate-300">{children}</td>
                         }}
                       >
                         {message.content}
@@ -498,7 +491,7 @@ What would you like to know?`,
                 <div className="w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center">
                   <Bot className="w-3.5 h-3.5 text-white" />
                 </div>
-                <div className="bg-white border border-slate-200 rounded-xl rounded-bl-sm px-3 py-2">
+                <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl rounded-bl-sm px-3 py-2">
                   <div className="flex space-x-1">
                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" />
                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
@@ -512,14 +505,14 @@ What would you like to know?`,
         </div>
 
         {/* Input */}
-        <div className="p-3 border-t bg-slate-50">
+        <div className="p-3 border-t dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
           <div className="flex gap-2">
             <input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={t('debtCalculator.askAboutLoans')}
-              className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white dark:bg-slate-800 dark:text-white dark:placeholder-slate-400"
               disabled={isLoading}
             />
             <Button
@@ -590,21 +583,21 @@ function SmartInsights({ calculationResults }) {
 
   const getInsightStyle = (type) => {
     switch (type) {
-      case 'success': return 'border-emerald-200 bg-emerald-50'
-      case 'warning': return 'border-yellow-200 bg-yellow-50'
-      case 'tip': return 'border-blue-200 bg-blue-50'
-      default: return 'border-slate-200 bg-slate-50'
+      case 'success': return 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/30'
+      case 'warning': return 'border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950/30'
+      case 'tip': return 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30'
+      default: return 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800'
     }
   }
 
   return (
-    <Card className="border-slate-200">
+    <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-purple-600" />
+        <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
           {t('debtCalculator.smartInsights')}
         </CardTitle>
-        <p className="text-xs text-slate-500">{t('debtCalculator.smartInsightsDesc')}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">{t('debtCalculator.smartInsightsDesc')}</p>
       </CardHeader>
       <CardContent>
         {allInsights.length > 0 ? (
@@ -614,8 +607,8 @@ function SmartInsights({ calculationResults }) {
                 <div className="flex items-start gap-2">
                   <span className="text-base">{insight.icon}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-slate-800 text-xs mb-0.5">{insight.title}</p>
-                    <p className="text-xs text-slate-600">{insight.content}</p>
+                    <p className="font-medium text-slate-800 dark:text-slate-200 text-xs mb-0.5">{insight.title}</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">{insight.content}</p>
                   </div>
                 </div>
               </div>
@@ -623,8 +616,8 @@ function SmartInsights({ calculationResults }) {
           </div>
         ) : (
           <div className="text-center py-6 text-slate-400">
-            <Lightbulb className="w-8 h-8 mx-auto mb-2 text-slate-200" />
-            <p className="text-xs">Calculate a loan to get personalized insights</p>
+            <Lightbulb className="w-8 h-8 mx-auto mb-2 text-slate-200 dark:text-slate-600" />
+            <p className="text-xs dark:text-slate-400">Calculate a loan to get personalized insights</p>
           </div>
         )}
       </CardContent>
@@ -653,37 +646,37 @@ export default function DebtCalculatorPage() {
         </div>
 
         {/* How to Use */}
-        <Card className="border-slate-200">
+        <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
           <CardContent className="p-4">
-            <h3 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-slate-800 dark:text-white mb-3 flex items-center gap-2">
               <Lightbulb className="w-4 h-4 text-amber-500" />
               {t('debtCalculator.howToUse')}
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-600">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-600 dark:text-slate-400">
               <div className="flex items-start gap-2">
-                <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                  <Calculator className="w-3 h-3 text-emerald-600" />
+                <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center flex-shrink-0">
+                  <Calculator className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div>
-                  <p className="font-medium text-slate-800 mb-0.5">Calculate EMI</p>
+                  <p className="font-medium text-slate-800 dark:text-slate-200 mb-0.5">Calculate EMI</p>
                   <p>Enter loan amount, interest rate, and duration for accurate EMI calculations.</p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-3 h-3 text-blue-600" />
+                <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0">
+                  <Bot className="w-3 h-3 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <p className="font-medium text-slate-800 mb-0.5">Ask AI Advisor</p>
+                  <p className="font-medium text-slate-800 dark:text-slate-200 mb-0.5">Ask AI Advisor</p>
                   <p>Get personalized advice on repayment strategies and loan optimization.</p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-3 h-3 text-purple-600" />
+                <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-3 h-3 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
-                  <p className="font-medium text-slate-800 mb-0.5">Smart Insights</p>
+                  <p className="font-medium text-slate-800 dark:text-slate-200 mb-0.5">Smart Insights</p>
                   <p>View automated recommendations for prepayment and interest optimization.</p>
                 </div>
               </div>

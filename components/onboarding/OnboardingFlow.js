@@ -281,8 +281,8 @@ export default function OnboardingFlow() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+      <div className="min-h-screen flex items-center justify-center dark:bg-slate-900">
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-600 dark:text-emerald-400" />
       </div>
     )
   }
@@ -295,21 +295,21 @@ export default function OnboardingFlow() {
   const progressPercentage = ((currentStep + 1) / ONBOARDING_STEPS.length) * 100
 
   return (
-    <div className="h-[calc(100vh-80px)] bg-white overflow-hidden">
+    <div className="h-[calc(100vh-80px)] bg-white dark:bg-slate-900 overflow-hidden transition-colors duration-300">
       <div className="max-w-3xl mx-auto px-4 h-full flex flex-col py-4">
         {/* Compact Progress Section */}
         <div className="flex-shrink-0 mb-4">
           {/* Step Counter Badge & Progress Bar Combined */}
           <div className="flex items-center gap-4 mb-3">
-            <div className="inline-flex items-center space-x-2 bg-slate-100 rounded-full px-4 py-1.5 flex-shrink-0">
-              <span className="text-xs font-medium text-slate-600">Step</span>
-              <span className="text-xs font-bold text-slate-900">{currentStep + 1}</span>
-              <span className="text-xs text-slate-400">/</span>
-              <span className="text-xs text-slate-500">{ONBOARDING_STEPS.length}</span>
+            <div className="inline-flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 rounded-full px-4 py-1.5 flex-shrink-0">
+              <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Step</span>
+              <span className="text-xs font-bold text-slate-900 dark:text-white">{currentStep + 1}</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">/</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">{ONBOARDING_STEPS.length}</span>
             </div>
 
             {/* Progress Bar */}
-            <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progressPercentage}%` }}
@@ -319,10 +319,10 @@ export default function OnboardingFlow() {
 
           {/* Step Title - Compact */}
           <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-1">
               {ONBOARDING_STEPS[currentStep].title}
             </h1>
-            <p className="text-slate-600 text-sm">
+            <p className="text-slate-600 dark:text-slate-400 text-sm">
               {currentStep === 0 && "Choose your preferred language"}
               {currentStep === 1 && "Tell us about your earnings"}
               {currentStep === 2 && "Help us personalize your budget for your lifestyle"}
@@ -334,7 +334,7 @@ export default function OnboardingFlow() {
         </div>
 
         {/* Content Card - Flexible Height */}
-        <div className="flex-1 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col mb-4">
+        <div className="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm dark:shadow-slate-900/50 overflow-hidden flex flex-col mb-4">
           <div className="flex-1 overflow-y-auto p-6 sm:p-8">
             {currentStep === 0 && <LanguageStep />}
             {currentStep === 1 && <MultiIncomeStep profile={profile} setProfile={setProfile} />}
@@ -360,7 +360,7 @@ export default function OnboardingFlow() {
               onClick={handleBack}
               disabled={currentStep === 0 || loading}
               variant="outline"
-              className="group border-2 border-slate-200 hover:border-slate-300 text-slate-700 hover:bg-slate-50 font-medium px-6 py-2.5 h-11 rounded-xl transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="group border-2 border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium px-6 py-2.5 h-11 rounded-xl transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-0.5 transition-transform duration-200" />
               Back
@@ -369,7 +369,7 @@ export default function OnboardingFlow() {
             <Button
               onClick={handleNext}
               disabled={loading || isGeneratingBudget}
-              className="group bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-2.5 h-11 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white font-semibold px-8 py-2.5 h-11 rounded-xl shadow-sm hover:shadow-md dark:shadow-emerald-900/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading || isGeneratingBudget ? (
                 <div className="flex items-center">
@@ -393,8 +393,8 @@ export default function OnboardingFlow() {
                 className={`h-1.5 rounded-full transition-all duration-300 ${index < currentStep
                   ? 'w-8 bg-emerald-500'
                   : index === currentStep
-                    ? 'w-12 bg-emerald-600'
-                    : 'w-8 bg-slate-200'
+                    ? 'w-12 bg-emerald-600 dark:bg-emerald-500'
+                    : 'w-8 bg-slate-200 dark:bg-slate-700'
                   }`}
               ></div>
             ))}
@@ -418,38 +418,38 @@ function IncomeStep({ profile, setProfile }) {
     <div className="space-y-5">
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             Monthly Income <span className="text-red-500">*</span>
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">₹</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-medium">₹</span>
             <Input
               type="number"
               placeholder="50,000"
               value={profile.monthlyIncome}
               onChange={(e) => setProfile(prev => ({ ...prev, monthlyIncome: e.target.value }))}
-              className="h-11 pl-10 text-base border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
+              className="h-11 pl-10 text-base border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
               min="1000"
               step="1000"
             />
           </div>
-          <p className="text-xs text-slate-500 mt-1">Minimum ₹1,000 required</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Minimum ₹1,000 required</p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             Income Source
           </label>
           <Select value={profile.incomeSource} onValueChange={(value) => setProfile(prev => ({ ...prev, incomeSource: value }))}>
-            <SelectTrigger className="h-11 border-slate-200 focus:border-emerald-500 rounded-lg">
+            <SelectTrigger className="h-11 border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-emerald-500 rounded-lg">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="rounded-lg">
+            <SelectContent className="rounded-lg dark:bg-slate-800 dark:border-slate-700">
               {INCOME_SOURCES.map(source => (
                 <SelectItem
                   key={source.value}
                   value={source.value}
-                  className="cursor-pointer focus:bg-emerald-50 rounded-md"
+                  className="cursor-pointer focus:bg-emerald-50 dark:focus:bg-emerald-900/30 dark:text-slate-200 rounded-md"
                 >
                   {source.label}
                 </SelectItem>
@@ -459,12 +459,12 @@ function IncomeStep({ profile, setProfile }) {
         </div>
       </div>
 
-      <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3">
+      <div className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-100 dark:border-emerald-800 rounded-xl p-3">
         <div className="flex gap-2.5">
           <div className="flex-shrink-0 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold mt-0.5">i</div>
           <div>
-            <p className="text-xs font-medium text-emerald-900 mb-0.5">Why we need this</p>
-            <p className="text-[11px] text-emerald-700 leading-snug">Your income helps us create a personalized budget that matches your financial situation.</p>
+            <p className="text-xs font-medium text-emerald-900 dark:text-emerald-300 mb-0.5">Why we need this</p>
+            <p className="text-[11px] text-emerald-700 dark:text-emerald-400 leading-snug">Your income helps us create a personalized budget that matches your financial situation.</p>
           </div>
         </div>
       </div>
@@ -481,19 +481,19 @@ function DemographicsStep({ profile, setProfile }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* City */}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             City <span className="text-red-500">*</span>
           </label>
           <Select value={profile.city} onValueChange={(value) => setProfile(prev => ({ ...prev, city: value }))}>
-            <SelectTrigger className="h-11 border-slate-200 focus:border-emerald-500 rounded-lg">
+            <SelectTrigger className="h-11 border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-emerald-500 rounded-lg">
               <SelectValue placeholder="Select your city" />
             </SelectTrigger>
-            <SelectContent className="rounded-lg max-h-[300px]">
+            <SelectContent className="rounded-lg max-h-[300px] dark:bg-slate-800 dark:border-slate-700">
               {INDIAN_CITIES.map(city => (
                 <SelectItem
                   key={city}
                   value={city}
-                  className="cursor-pointer focus:bg-emerald-50 rounded-md"
+                  className="cursor-pointer focus:bg-emerald-50 dark:focus:bg-emerald-900/30 dark:text-slate-200 rounded-md"
                 >
                   {city}
                 </SelectItem>
@@ -504,7 +504,7 @@ function DemographicsStep({ profile, setProfile }) {
 
         {/* Family Size */}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             Family Size <span className="text-red-500">*</span>
           </label>
           <Input
@@ -512,7 +512,7 @@ function DemographicsStep({ profile, setProfile }) {
             placeholder="e.g., 4"
             value={profile.familySize}
             onChange={(e) => setProfile(prev => ({ ...prev, familySize: e.target.value }))}
-            className="h-11 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
+            className="h-11 border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
             min="1"
             max="20"
           />
@@ -520,7 +520,7 @@ function DemographicsStep({ profile, setProfile }) {
 
         {/* Age */}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             Age <span className="text-red-500">*</span>
           </label>
           <Input
@@ -528,7 +528,7 @@ function DemographicsStep({ profile, setProfile }) {
             placeholder="e.g., 30"
             value={profile.age}
             onChange={(e) => setProfile(prev => ({ ...prev, age: e.target.value }))}
-            className="h-11 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
+            className="h-11 border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
             min="18"
             max="100"
           />
@@ -536,7 +536,7 @@ function DemographicsStep({ profile, setProfile }) {
 
         {/* Occupation */}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             Occupation
           </label>
           <Input
@@ -544,17 +544,17 @@ function DemographicsStep({ profile, setProfile }) {
             placeholder="e.g., Software Engineer"
             value={profile.occupation}
             onChange={(e) => setProfile(prev => ({ ...prev, occupation: e.target.value }))}
-            className="h-11 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
+            className="h-11 border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-emerald-500 focus:ring-emerald-500 rounded-lg"
           />
         </div>
       </div>
 
-      <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
+      <div className="bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl p-3">
         <div className="flex gap-2.5">
-          <div className="flex-shrink-0 w-4 h-4 bg-slate-400 rounded-full flex items-center justify-center text-white text-[10px] font-bold mt-0.5">🔒</div>
+          <div className="flex-shrink-0 w-4 h-4 bg-slate-400 dark:bg-slate-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold mt-0.5">🔒</div>
           <div>
-            <p className="text-xs font-medium text-slate-900 mb-0.5">Your data is secure</p>
-            <p className="text-[11px] text-slate-600 leading-snug">We use this information only to create accurate financial recommendations tailored to your location.</p>
+            <p className="text-xs font-medium text-slate-900 dark:text-white mb-0.5">Your data is secure</p>
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">We use this information only to create accurate financial recommendations tailored to your location.</p>
           </div>
         </div>
       </div>
@@ -596,17 +596,17 @@ function BudgetGenerationStep({ isGenerating, profile }) {
     <div className="space-y-6 max-w-xl mx-auto">
       {/* Header */}
       <div className="text-center">
-        <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/50 dark:to-teal-900/50 rounded-2xl flex items-center justify-center mx-auto mb-4">
           {isGenerating ? (
-            <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+            <Loader2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400 animate-spin" />
           ) : (
-            <PieChart className="w-8 h-8 text-emerald-600" />
+            <PieChart className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
           )}
         </div>
-        <h3 className="text-lg font-bold text-slate-900 mb-1">
+        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
           {isGenerating ? 'Creating Your Budget...' : 'Ready to Generate'}
         </h3>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
           {isGenerating
             ? 'AI is analyzing your financial profile'
             : 'Click Continue to generate your personalized budget'
@@ -615,27 +615,27 @@ function BudgetGenerationStep({ isGenerating, profile }) {
       </div>
 
       {/* Profile Summary Card */}
-      <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200">
-        <h4 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+      <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-700/50 dark:to-slate-700/30 rounded-xl p-4 border border-slate-200 dark:border-slate-600">
+        <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
           <Target className="w-4 h-4" />
           AI will consider:
         </h4>
         <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="bg-white rounded-lg p-3 border border-slate-200">
-            <p className="text-xs text-slate-500">Monthly Income</p>
-            <p className="font-bold text-emerald-600">₹{totalIncome.toLocaleString('en-IN')}</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-600">
+            <p className="text-xs text-slate-500 dark:text-slate-400">Monthly Income</p>
+            <p className="font-bold text-emerald-600 dark:text-emerald-400">₹{totalIncome.toLocaleString('en-IN')}</p>
           </div>
-          <div className="bg-white rounded-lg p-3 border border-slate-200">
-            <p className="text-xs text-slate-500">Location</p>
-            <p className="font-bold text-slate-800">{profile?.city || 'India'}</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-600">
+            <p className="text-xs text-slate-500 dark:text-slate-400">Location</p>
+            <p className="font-bold text-slate-800 dark:text-white">{profile?.city || 'India'}</p>
           </div>
-          <div className="bg-white rounded-lg p-3 border border-slate-200">
-            <p className="text-xs text-slate-500">Family Size</p>
-            <p className="font-bold text-slate-800">{profile?.familySize || 1} members</p>
+          <div className="bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-600">
+            <p className="text-xs text-slate-500 dark:text-slate-400">Family Size</p>
+            <p className="font-bold text-slate-800 dark:text-white">{profile?.familySize || 1} members</p>
           </div>
-          <div className="bg-white rounded-lg p-3 border border-slate-200">
-            <p className="text-xs text-slate-500">Living</p>
-            <p className="font-bold text-slate-800 text-xs">
+          <div className="bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-600">
+            <p className="text-xs text-slate-500 dark:text-slate-400">Living</p>
+            <p className="font-bold text-slate-800 dark:text-white text-xs">
               {profile?.livingSituation?.replace(/_/g, ' ') || 'Not specified'}
             </p>
           </div>
@@ -643,13 +643,13 @@ function BudgetGenerationStep({ isGenerating, profile }) {
 
         {/* Pulse Insights */}
         {pulseInsights.length > 0 && (
-          <div className="mt-4 pt-3 border-t border-slate-200">
-            <p className="text-xs text-slate-500 mb-2">Based on your financial pulse:</p>
+          <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-600">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Based on your financial pulse:</p>
             <div className="flex flex-wrap gap-2">
               {pulseInsights.map((insight, idx) => (
                 <span
                   key={idx}
-                  className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-medium"
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium"
                 >
                   {insight.emoji} {insight.text}
                 </span>
@@ -662,40 +662,40 @@ function BudgetGenerationStep({ isGenerating, profile }) {
       {/* Generation Progress */}
       {isGenerating && (
         <div className="space-y-2 text-sm">
-          <div className="flex items-center gap-2 text-slate-600">
+          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
             <div className="w-4 h-4 rounded-full bg-emerald-500 animate-pulse" />
             <span>Analyzing income sources...</span>
           </div>
-          <div className="flex items-center gap-2 text-slate-600">
-            <div className="w-4 h-4 rounded-full bg-emerald-300 animate-pulse" style={{ animationDelay: '0.2s' }} />
+          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+            <div className="w-4 h-4 rounded-full bg-emerald-300 dark:bg-emerald-600 animate-pulse" style={{ animationDelay: '0.2s' }} />
             <span>Calculating {profile?.city} cost of living...</span>
           </div>
-          <div className="flex items-center gap-2 text-slate-600">
-            <div className="w-4 h-4 rounded-full bg-emerald-200 animate-pulse" style={{ animationDelay: '0.4s' }} />
+          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+            <div className="w-4 h-4 rounded-full bg-emerald-200 dark:bg-emerald-700 animate-pulse" style={{ animationDelay: '0.4s' }} />
             <span>Creating personalized allocations...</span>
           </div>
         </div>
       )}
 
       {/* What you'll get */}
-      <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-        <h4 className="font-semibold text-emerald-900 mb-3 text-sm">What you&apos;ll get:</h4>
+      <div className="bg-emerald-50 dark:bg-emerald-900/30 rounded-xl p-4 border border-emerald-100 dark:border-emerald-800">
+        <h4 className="font-semibold text-emerald-900 dark:text-emerald-300 mb-3 text-sm">What you&apos;ll get:</h4>
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600" />
-            <span className="text-emerald-800">Smart category budgets</span>
+            <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-emerald-800 dark:text-emerald-300">Smart category budgets</span>
           </div>
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600" />
-            <span className="text-emerald-800">Savings recommendations</span>
+            <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-emerald-800 dark:text-emerald-300">Savings recommendations</span>
           </div>
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600" />
-            <span className="text-emerald-800">Investment advice</span>
+            <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-emerald-800 dark:text-emerald-300">Investment advice</span>
           </div>
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600" />
-            <span className="text-emerald-800">Tax-saving tips</span>
+            <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-emerald-800 dark:text-emerald-300">Tax-saving tips</span>
           </div>
         </div>
       </div>
@@ -735,14 +735,14 @@ function LifestyleQuizStep({ profile, setProfile, onSkip, onComplete }) {
   )
 }
 
-// Review Step Component  
+// Review Step Component
 function ReviewStep({ profile, budget }) {
   const { t } = useTranslation()
 
   if (!budget) {
     return (
       <div className="text-center py-8">
-        <p className="text-slate-600 text-sm">Budget not generated yet. Please go back and generate your budget.</p>
+        <p className="text-slate-600 dark:text-slate-400 text-sm">Budget not generated yet. Please go back and generate your budget.</p>
       </div>
     )
   }
@@ -760,7 +760,7 @@ function ReviewStep({ profile, budget }) {
       {/* Use new detailed budget report component */}
       <DetailedBudgetReport budget={budget} profile={profile} />
 
-      <p className="text-center text-sm text-slate-500 pt-4 pb-2">
+      <p className="text-center text-sm text-slate-500 dark:text-slate-400 pt-4 pb-2">
         Click &apos;Complete Setup&apos; below to start managing your finances
       </p>
     </div>

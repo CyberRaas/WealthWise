@@ -22,6 +22,7 @@ import {
   ChevronDown,
   Bell
 } from 'lucide-react'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 
 export default function DashboardLayout({ children, title = "Dashboard", onRefresh }) {
   const { data: session } = useSession()
@@ -74,7 +75,7 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
   ].some(path => pathname === path)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-200">
       <div className="flex">
         {/* Desktop Sidebar - Hidden on Mobile */}
         <div className="hidden lg:block">
@@ -94,7 +95,7 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
         {/* Main Content */}
         <div className="flex-1 min-w-0">
           {/* Fixed Header with Consistent Height */}
-          <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
+          <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm transition-colors duration-200">
             <div className="h-16 px-3 sm:px-4 lg:px-6">
               <div className="flex items-center justify-between h-full">
                 {/* Left Section: Logo (Mobile) or Title (Desktop) */}
@@ -111,11 +112,11 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-800 truncate"
+                      className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-800 dark:text-white truncate"
                     >
                       {title}
                     </motion.h1>
-                    <p className="text-xs sm:text-sm text-slate-500 hidden sm:block truncate">
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 hidden sm:block truncate">
                       {new Date().toLocaleDateString('en-US', {
                         weekday: 'long',
                         month: 'long',
@@ -128,6 +129,9 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
 
                 {/* Right Section: Actions */}
                 <div className="flex items-center space-x-2">
+                  {/* Theme Toggle */}
+                  <ThemeToggle variant="icon" />
+
                   {/* Language Selector */}
                   <LanguageSelector variant="dashboard" />
 
@@ -136,9 +140,9 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
                     variant="ghost"
                     size="icon"
                     onClick={() => router.push('/dashboard/notifications')}
-                    className="relative h-10 w-10 rounded-xl hover:bg-slate-100 transition-colors active:scale-95"
+                    className="relative h-10 w-10 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95"
                   >
-                    <Bell className="h-5 w-5 text-slate-600" />
+                    <Bell className="h-5 w-5 text-slate-600 dark:text-slate-400" />
                     {/* Optional: Add notification badge */}
                     {/* <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span> */}
                   </Button>
@@ -147,21 +151,21 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
                   <div className="relative hidden lg:block" ref={dropdownRef}>
                     <Button
                       variant="ghost"
-                      className="flex items-center space-x-2 bg-slate-100/50 hover:bg-slate-200/50 rounded-xl px-3 py-2 h-10 transition-all duration-200 active:scale-95"
+                      className="flex items-center space-x-2 bg-slate-100/50 dark:bg-slate-800/50 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-xl px-3 py-2 h-10 transition-all duration-200 active:scale-95"
                       onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                     >
-                      <Avatar className="h-7 w-7 sm:h-8 sm:w-8 ring-2 ring-emerald-100">
+                      <Avatar className="h-7 w-7 sm:h-8 sm:w-8 ring-2 ring-emerald-100 dark:ring-emerald-900">
                         <AvatarImage src={profileImage} />
                         <AvatarFallback className="text-sm bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold">
                           {session?.user?.name?.[0] || 'A'}
                         </AvatarFallback>
                       </Avatar>
                       <div className="hidden sm:block text-left">
-                        <p className="text-sm font-semibold text-slate-700 truncate max-w-24 lg:max-w-none">
+                        <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate max-w-24 lg:max-w-none">
                           {session?.user?.name?.split(' ')[0] || 'User'}
                         </p>
                       </div>
-                      <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform duration-200 ${showProfileDropdown ? 'rotate-180' : ''} hidden sm:block`} />
+                      <ChevronDown className={`h-4 w-4 text-slate-500 dark:text-slate-400 transition-transform duration-200 ${showProfileDropdown ? 'rotate-180' : ''} hidden sm:block`} />
                     </Button>
 
                     {/* Profile Dropdown Menu */}
@@ -172,22 +176,22 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95, y: -10 }}
                           transition={{ duration: 0.15 }}
-                          className="absolute right-0 mt-2 w-64 sm:w-72 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-50"
+                          className="absolute right-0 mt-2 w-64 sm:w-72 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 py-2 z-50"
                         >
                           {/* User Info Header */}
-                          <div className="px-4 py-3 border-b border-slate-100">
+                          <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-700">
                             <div className="flex items-center space-x-3">
-                              <Avatar className="h-12 w-12 ring-2 ring-emerald-100">
+                              <Avatar className="h-12 w-12 ring-2 ring-emerald-100 dark:ring-emerald-900">
                                 <AvatarImage src={profileImage} />
                                 <AvatarFallback className="text-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold">
                                   {session?.user?.name?.[0] || 'A'}
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1 min-w-0">
-                                <p className="text-lg font-bold text-slate-900 truncate">
+                                <p className="text-lg font-bold text-slate-900 dark:text-white truncate">
                                   {session?.user?.name || 'User'}
                                 </p>
-                                <p className="text-sm text-slate-500 truncate">
+                                <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
                                   {session?.user?.email || 'user@example.com'}
                                 </p>
                               </div>
@@ -220,7 +224,7 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
                                 router.push('/dashboard/help')
                               }}
                             />
-                            <div className="border-t border-slate-100 my-2"></div>
+                            <div className="border-t border-slate-100 dark:border-slate-700 my-2"></div>
                             <MenuItem
                               icon={LogOut}
                               label="Sign Out"
@@ -274,9 +278,9 @@ function MenuItem({ icon: Icon, label, onClick, className = "" }) {
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center space-x-3 px-4 py-3 text-left text-slate-700 hover:bg-slate-50 active:bg-slate-100 transition-colors duration-150 ${className}`}
+      className={`w-full flex items-center space-x-3 px-4 py-3 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150 ${className}`}
     >
-      <Icon className="h-5 w-5 text-slate-500" />
+      <Icon className="h-5 w-5 text-slate-500 dark:text-slate-400" />
       <span className="font-medium">{label}</span>
     </button>
   )

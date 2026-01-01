@@ -65,11 +65,11 @@ export default function IncomeRecommendations({ compact = false }) {
 
   if (loading) {
     return (
-      <Card>
+      <Card className="dark:bg-slate-800 dark:border-slate-700">
         <CardContent className="py-12">
           <div className="flex flex-col items-center justify-center space-y-4">
-            <RefreshCw className="h-8 w-8 animate-spin text-emerald-600" />
-            <p className="text-slate-600">Loading personalized recommendations...</p>
+            <RefreshCw className="h-8 w-8 animate-spin text-emerald-600 dark:text-emerald-400" />
+            <p className="text-slate-600 dark:text-slate-400">Loading personalized recommendations...</p>
           </div>
         </CardContent>
       </Card>
@@ -78,12 +78,12 @@ export default function IncomeRecommendations({ compact = false }) {
 
   if (error) {
     return (
-      <Card>
+      <Card className="dark:bg-slate-800 dark:border-slate-700">
         <CardContent className="py-12">
           <div className="flex flex-col items-center justify-center space-y-4">
-            <AlertCircle className="h-8 w-8 text-red-500" />
-            <p className="text-slate-600">{error}</p>
-            <Button onClick={fetchRecommendations} variant="outline">
+            <AlertCircle className="h-8 w-8 text-red-500 dark:text-red-400" />
+            <p className="text-slate-600 dark:text-slate-400">{error}</p>
+            <Button onClick={fetchRecommendations} variant="outline" className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
               Try Again
             </Button>
           </div>
@@ -94,11 +94,11 @@ export default function IncomeRecommendations({ compact = false }) {
 
   if (!data?.incomeReport) {
     return (
-      <Card>
+      <Card className="dark:bg-slate-800 dark:border-slate-700">
         <CardContent className="py-12">
           <div className="flex flex-col items-center justify-center space-y-4">
-            <Wallet className="h-8 w-8 text-slate-400" />
-            <p className="text-slate-600">Complete your profile to get personalized recommendations</p>
+            <Wallet className="h-8 w-8 text-slate-400 dark:text-slate-500" />
+            <p className="text-slate-600 dark:text-slate-400">Complete your profile to get personalized recommendations</p>
           </div>
         </CardContent>
       </Card>
@@ -110,20 +110,20 @@ export default function IncomeRecommendations({ compact = false }) {
   }
 
   return (
-    <Card>
+    <Card className="dark:bg-slate-800 dark:border-slate-700">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-emerald-600" />
+        <CardTitle className="flex items-center gap-2 dark:text-white">
+          <Sparkles className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
           Income-Based Insights
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="dark:text-slate-400">
           Personalized recommendations based on your {data.incomeReport?.summary?.incomeBracket || 'income bracket'}
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
         {/* Tab Navigation */}
-        <div className="flex flex-wrap gap-2 border-b pb-4">
+        <div className="flex flex-wrap gap-2 border-b dark:border-slate-700 pb-4">
           {TABS.map((tab) => {
             const Icon = tab.icon
             return (
@@ -132,7 +132,7 @@ export default function IncomeRecommendations({ compact = false }) {
                 variant={activeTab === tab.id ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setActiveTab(tab.id)}
-                className="flex items-center gap-2"
+                className={`flex items-center gap-2 ${activeTab !== tab.id ? 'dark:text-slate-300 dark:hover:bg-slate-700' : ''}`}
               >
                 <Icon className="h-4 w-4" />
                 <span className="hidden sm:inline">{tab.label}</span>
@@ -159,10 +159,10 @@ function CompactView({ data }) {
   if (!peer) return null
 
   return (
-    <Card>
+    <Card className="dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base flex items-center gap-2">
-          <Users className="h-4 w-4 text-emerald-600" />
+        <CardTitle className="text-base flex items-center gap-2 dark:text-white">
+          <Users className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
           How You Compare
         </CardTitle>
       </CardHeader>
@@ -170,32 +170,32 @@ function CompactView({ data }) {
         {/* Savings Comparison */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-slate-600">Your savings rate</span>
-            <span className="font-medium">{peer.userSavingsRate}%</span>
+            <span className="text-slate-600 dark:text-slate-400">Your savings rate</span>
+            <span className="font-medium dark:text-white">{peer.userSavingsRate}%</span>
           </div>
           <Progress value={peer.userSavingsRate} max={peer.topPerformerRate} className="h-2" />
-          <div className="flex justify-between text-xs text-slate-500">
+          <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>Peer avg: {peer.peerAverageSavingsRate}%</span>
             <span>Top: {peer.topPerformerRate}%</span>
           </div>
         </div>
 
         {/* Percentile Badge */}
-        <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-emerald-50 dark:bg-emerald-950/50 rounded-lg border border-emerald-200 dark:border-emerald-800">
           <div className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-emerald-600" />
-            <span className="text-sm font-medium text-emerald-800">
+            <Trophy className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-sm font-medium text-emerald-800 dark:text-emerald-300">
               Top {100 - peer.percentile}%
             </span>
           </div>
-          <span className="text-xs text-emerald-600">of your bracket</span>
+          <span className="text-xs text-emerald-600 dark:text-emerald-400">of your bracket</span>
         </div>
 
         {/* Quick Tip */}
         {peer.successStrategies?.[0] && (
-          <div className="p-3 bg-slate-50 rounded-lg">
-            <p className="text-xs text-slate-500 mb-1">Success Strategy</p>
-            <p className="text-sm text-slate-700">{peer.successStrategies[0]}</p>
+          <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border dark:border-slate-700">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Success Strategy</p>
+            <p className="text-sm text-slate-700 dark:text-slate-300">{peer.successStrategies[0]}</p>
           </div>
         )}
       </CardContent>

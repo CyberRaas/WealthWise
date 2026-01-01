@@ -56,7 +56,7 @@ const Logo = ({
       {showText && (
         <div>
           <h1 className={`${config.text} font-bold ${textClassName}`}>
-            <span className="text-slate-800">Wealth</span>
+            <span className="text-slate-800 dark:text-white">Wealth</span>
             <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">Wise</span>
           </h1>
         </div>
