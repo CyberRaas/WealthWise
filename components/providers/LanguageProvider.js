@@ -26,39 +26,107 @@ export const SUPPORTED_LANGUAGES = [
   { code: 'pa', name: 'Punjabi', nativeName: 'ਪੰਜਾਬੀ' }
 ]
 
-// Clear all Google Translate cookies
+// Get all domain variations for cookie setting
+const getDomainVariations = () => {
+  if (typeof window === 'undefined') return ['']
+
+  const hostname = window.location.hostname
+
+  // For localhost, just use empty domain
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return ['']
+  }
+
+  // For production domains, set cookies on multiple variations
+  // Google Translate checks cookies on: hostname, .hostname, and root domain
+  const parts = hostname.split('.')
+  const domains = ['', hostname]
+
+  // Add root domain with dot prefix (e.g., .mywealthwise.tech)
+  if (parts.length >= 2) {
+    const rootDomain = parts.slice(-2).join('.')
+    domains.push('.' + rootDomain)
+    domains.push(rootDomain)
+  }
+
+  // Add full hostname with dot prefix
+  domains.push('.' + hostname)
+
+  return [...new Set(domains)] // Remove duplicates
+}
+
+// Clear all Google Translate cookies on all domain variations
 const clearGoogleTranslateCookies = () => {
   if (typeof document === 'undefined') return
 
-  const domains = ['', window.location.hostname, '.' + window.location.hostname]
+  const domains = getDomainVariations()
+  const paths = ['/', '']
+
   domains.forEach(domain => {
-    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;${domain ? ` domain=${domain};` : ''}`
+    paths.forEach(path => {
+      const domainPart = domain ? ` domain=${domain};` : ''
+      const pathPart = path ? ` path=${path};` : ' path=/;'
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC;${pathPart}${domainPart}`
+    })
   })
+
+  // Also try to clear without any domain/path
+  document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
+}
+
+// Set Google Translate cookie on all necessary domain variations
+const setGoogleTranslateCookie = (langCode) => {
+  if (typeof document === 'undefined') return
+
+  const cookieValue = `/en/${langCode}`
+  const domains = getDomainVariations()
+
+  // Set cookie on all domain variations
+  domains.forEach(domain => {
+    const domainPart = domain ? ` domain=${domain};` : ''
+    document.cookie = `googtrans=${cookieValue}; path=/;${domainPart}`
+  })
+
+  // Also set without domain for maximum compatibility
+  document.cookie = `googtrans=${cookieValue}; path=/;`
+
+  console.log(`[Language] Set googtrans cookie to ${cookieValue} on domains:`, domains)
 }
 
 export const LanguageProvider = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState('en')
   const [isLoaded, setIsLoaded] = useState(false)
 
-  // Initialize - clear cookies and set English as default on first load
+  // Initialize - restore saved language and set up cookies
   useEffect(() => {
     const saved = localStorage.getItem('wealthwise-language')
+
     if (saved && saved !== 'en') {
       setCurrentLanguage(saved)
+      // Ensure the cookie is set correctly for the saved language
+      setGoogleTranslateCookie(saved)
     } else {
       // Default to English - clear any existing translation cookies
       clearGoogleTranslateCookies()
       localStorage.setItem('wealthwise-language', 'en')
     }
+
     setIsLoaded(true)
+    console.log(`[Language] Initialized with language: ${saved || 'en'}`)
   }, [])
 
   // Load Google Translate script only when needed (not English)
   useEffect(() => {
     if (!isLoaded || currentLanguage === 'en') return
 
-    // Don't reload if already loaded
-    if (document.getElementById('gt-script')) return
+    // Remove existing script if language changed
+    const existingScript = document.getElementById('gt-script')
+    if (existingScript) {
+      existingScript.remove()
+    }
+
+    // Ensure cookie is set before loading script
+    setGoogleTranslateCookie(currentLanguage)
 
     const script = document.createElement('script')
     script.id = 'gt-script'
@@ -72,22 +140,45 @@ export const LanguageProvider = ({ children }) => {
           includedLanguages: 'hi,ta,te,bn,mr,gu,kn,ml,pa',
           autoDisplay: false
         }, 'gt-element')
+
+        console.log(`[Language] Google Translate initialized for: ${currentLanguage}`)
       }
     }
 
     document.body.appendChild(script)
+
+    return () => {
+      // Cleanup on unmount
+      const scriptToRemove = document.getElementById('gt-script')
+      if (scriptToRemove) {
+        scriptToRemove.remove()
+      }
+    }
   }, [isLoaded, currentLanguage])
 
   // Function to change language
   const changeLanguage = (langCode) => {
     if (langCode === currentLanguage) return
 
+    console.log(`[Language] Changing language from ${currentLanguage} to ${langCode}`)
+
+    // Save to localStorage first
     localStorage.setItem('wealthwise-language', langCode)
 
     if (langCode === 'en') {
+      // Clear all cookies for English
       clearGoogleTranslateCookies()
     } else {
-      document.cookie = `googtrans=/en/${langCode}; path=/`
+      // First clear old cookies, then set new ones
+      clearGoogleTranslateCookies()
+
+      // Small delay to ensure cookies are cleared before setting new ones
+      setTimeout(() => {
+        setGoogleTranslateCookie(langCode)
+        // Reload after cookies are set
+        window.location.reload()
+      }, 100)
+      return // Don't reload immediately, wait for setTimeout
     }
 
     window.location.reload()
