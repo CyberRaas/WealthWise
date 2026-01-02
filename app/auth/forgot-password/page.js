@@ -62,9 +62,6 @@ export default function ForgotPasswordPage() {
   }
 
   const handleOtpVerified = (data) => {
-    console.log('🎯 OTP verified successfully:', data)
-    console.log('🎯 Full response data:', JSON.stringify(data, null, 2))
-    
     // Store the actual OTP value that was verified
     setVerifiedOtp(data.otp || '')
     setVerificationToken(data.verificationToken || '')
@@ -80,20 +77,14 @@ export default function ForgotPasswordPage() {
   }
 
   const onSubmit = async (data) => {
-    console.log('🔥 Form submitted with data:', data)
-    console.log('🔑 Verified OTP:', verifiedOtp)
-    console.log('🎫 Verification Token:', verificationToken)
-    console.log('📧 Email:', email)
-    
     if (!verifiedOtp) {
-      console.error('❌ No verified OTP found!')
       toast.error('OTP verification required. Please verify your OTP first')
       setStep('otp')
       return
     }
-    
+
     setIsLoading(true)
-    
+
     try {
       const payload = {
         email: email,
@@ -101,9 +92,7 @@ export default function ForgotPasswordPage() {
         confirmPassword: data.confirmPassword,
         otp: verifiedOtp
       }
-      
-      console.log('📤 Sending payload:', payload)
-      
+
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -111,16 +100,13 @@ export default function ForgotPasswordPage() {
       })
 
       const result = await response.json()
-      console.log('📥 Response status:', response.status)
-      console.log('📥 Response:', result)
 
       if (response.ok) {
-        toast.success('🎉 Password reset successfully! You can now sign in with your new password', {
+        toast.success('Password reset successfully! You can now sign in with your new password', {
           duration: 5000
         })
         router.push('/auth/signin?message=password-reset-complete&email=' + encodeURIComponent(email))
       } else {
-        console.error('❌ Reset failed:', result)
         toast.error(`Password reset failed. ${result.message || 'Something went wrong'}`)
         if (result.code === 'OTP_VERIFICATION_REQUIRED') {
           toast.error('OTP Expired. Please verify your OTP again')
@@ -128,20 +114,10 @@ export default function ForgotPasswordPage() {
         }
       }
     } catch (error) {
-      console.error('💥 Network error:', error)
       toast.error('Network error. Please check your connection and try again')
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const handleButtonClick = () => {
-    console.log('🔘 Reset Password button clicked!')
-    console.log('🔑 Current verified OTP:', verifiedOtp)
-    console.log('🎫 Current verification token:', verificationToken)
-    console.log('📧 Current email:', email)
-    console.log('⚡ Form errors:', errors)
-    console.log('📝 Current step:', step)
   }
 
   // Step 1: Email verification
@@ -278,11 +254,10 @@ export default function ForgotPasswordPage() {
             </CardContent>
 
             <div className="px-6 pb-6 space-y-4">
-              <Button 
-                type="submit" 
-                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-700 hover:to-rose-700 text-white shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:scale-[1.02] focus:ring-4 focus:ring-amber-500/20 rounded-xl" 
+              <Button
+                type="submit"
+                className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-700 hover:to-rose-700 text-white shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:scale-[1.02] focus:ring-4 focus:ring-amber-500/20 rounded-xl"
                 disabled={isLoading}
-                onClick={handleButtonClick}
               >
                 {isLoading ? (
                   <div className="flex items-center space-x-2">

@@ -89,8 +89,6 @@ const setGoogleTranslateCookie = (langCode) => {
 
   // Also set without domain for maximum compatibility
   document.cookie = `googtrans=${cookieValue}; path=/;`
-
-  console.log(`[Language] Set googtrans cookie to ${cookieValue} on domains:`, domains)
 }
 
 export const LanguageProvider = ({ children }) => {
@@ -112,7 +110,6 @@ export const LanguageProvider = ({ children }) => {
     }
 
     setIsLoaded(true)
-    console.log(`[Language] Initialized with language: ${saved || 'en'}`)
   }, [])
 
   // Load Google Translate script only when needed (not English)
@@ -140,8 +137,6 @@ export const LanguageProvider = ({ children }) => {
           includedLanguages: 'hi,ta,te,bn,mr,gu,kn,ml,pa',
           autoDisplay: false
         }, 'gt-element')
-
-        console.log(`[Language] Google Translate initialized for: ${currentLanguage}`)
       }
     }
 
@@ -159,8 +154,6 @@ export const LanguageProvider = ({ children }) => {
   // Function to change language
   const changeLanguage = (langCode) => {
     if (langCode === currentLanguage) return
-
-    console.log(`[Language] Changing language from ${currentLanguage} to ${langCode}`)
 
     // Save to localStorage first
     localStorage.setItem('wealthwise-language', langCode)

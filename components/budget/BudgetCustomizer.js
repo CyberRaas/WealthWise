@@ -37,14 +37,9 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
   const [saving, setSaving] = useState(false)
 
   const calculateTotals = useCallback((categories) => {
-    if (!categories) {
-      console.warn('calculateTotals called with no categories')
-      return
-    }
+    if (!categories) return
 
-    console.log('Calculating totals for categories:', categories)
     const total = Object.values(categories).reduce((sum, category) => {
-      console.log(`Category: ${category.englishName || 'unknown'}, Amount: ${category.amount || 0}`)
       return sum + (category.amount || 0)
     }, 0)
 
@@ -52,28 +47,16 @@ export default function BudgetCustomizer({ budget, onSave, onCancel }) {
     const difference = Math.abs(total - budgetTotal)
     const balanced = difference <= 5000 || (difference / budgetTotal) <= 0.1 // Allow ₹5000 or 10% difference
 
-    console.log('Budget calculation:', {
-      total,
-      budgetTotal,
-      difference,
-      balanced,
-      percentageDiff: ((difference / budgetTotal) * 100).toFixed(2) + '%'
-    })
-
     setTotalAllocated(total)
     setIsBalanced(balanced)
   }, [budget])
 
   useEffect(() => {
-    console.log('BudgetCustomizer received budget:', budget)
     if (budget && budget.categories) {
-      console.log('Budget categories:', Object.keys(budget.categories))
       const budgetCopy = JSON.parse(JSON.stringify(budget))
       setCustomBudget(budgetCopy)
       setOriginalBudget(JSON.parse(JSON.stringify(budget)))
       calculateTotals(budgetCopy.categories)
-    } else {
-      console.error('Budget or categories missing:', { budget, hasCategories: !!budget?.categories })
     }
   }, [budget, calculateTotals])
 

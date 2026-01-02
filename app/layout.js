@@ -3,9 +3,6 @@ import "./globals.css";
 import ClientProviders from '@/components/providers/ClientProviders'
 import PWARegister from '@/components/PWARegister'
 import PWAInstallPrompt from '@/components/PWAInstallPrompt'
-// import  VAPIVoiceAgent  from "@/components/vapi";
-// import { VAPIVoiceAgent } from '@/components/vapi'
-
 
 // Poppins font - clean, modern, highly readable for financial apps
 const poppins = Poppins({
