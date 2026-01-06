@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { signIn } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -78,7 +78,17 @@ function SignInForm() {
         toast.error(t('auth.signin.invalidCredentials'))
       } else {
         toast.success(t('auth.signin.welcomeBack'))
-        router.push(callbackUrl)
+
+        // Get the updated session to check user role
+        const session = await getSession()
+        const userRole = session?.user?.role
+
+        // Redirect admin users to /admin, regular users to callbackUrl
+        if (['moderator', 'admin', 'super_admin'].includes(userRole)) {
+          router.push('/admin')
+        } else {
+          router.push(callbackUrl)
+        }
         router.refresh()
       }
     } catch (error) {

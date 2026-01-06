@@ -32,7 +32,9 @@ import {
   CheckCircle,
   Smartphone,
   Mail,
-  IndianRupee
+  IndianRupee,
+  FileJson,
+  FileSpreadsheet
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -161,27 +163,17 @@ function SettingsContent() {
     }
   }
 
-  // Export data
-  const exportData = async () => {
+  // Export data as JSON
+  const exportJSON = async () => {
     try {
-      toast.loading('Preparing your data export...')
+      toast.loading('Preparing JSON export...')
 
-      const response = await fetch('/api/profile')
+      const response = await fetch('/api/export?format=json&type=all')
       const data = await response.json()
 
       if (data.success) {
-        const exportData = {
-          exportDate: new Date().toISOString(),
-          profile: data.profile,
-          // Remove sensitive data
-          user: {
-            name: session?.user?.name,
-            email: session?.user?.email
-          }
-        }
-
         // Create downloadable file
-        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
@@ -192,11 +184,43 @@ function SettingsContent() {
         URL.revokeObjectURL(url)
 
         toast.dismiss()
-        toast.success('Data exported successfully!')
+        toast.success('JSON data exported successfully!')
+      } else {
+        toast.dismiss()
+        toast.error(data.error || 'Failed to export data')
       }
     } catch (error) {
       toast.dismiss()
       toast.error('Failed to export data')
+    }
+  }
+
+  // Export data as CSV
+  const exportCSV = async () => {
+    try {
+      toast.loading('Preparing CSV export...')
+
+      const response = await fetch('/api/export?format=csv&type=all')
+
+      if (!response.ok) {
+        throw new Error('Export failed')
+      }
+
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `wealthwise-export-${new Date().toISOString().split('T')[0]}.csv`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      toast.dismiss()
+      toast.success('CSV data exported successfully!')
+    } catch (error) {
+      toast.dismiss()
+      toast.error('Failed to export CSV data')
     }
   }
 
@@ -455,15 +479,22 @@ function SettingsContent() {
             </div>
 
             <div className="pt-4 border-t space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="font-medium">Export Your Data</Label>
-                  <p className="text-sm text-slate-500">Download all your financial data</p>
+              <div>
+                <Label className="font-medium">Export Your Data</Label>
+                <p className="text-sm text-slate-500 mb-3">Download all your financial data in your preferred format</p>
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="outline" onClick={exportJSON} className="flex items-center">
+                    <FileJson className="h-4 w-4 mr-2 text-blue-600" />
+                    Export as JSON
+                  </Button>
+                  <Button variant="outline" onClick={exportCSV} className="flex items-center">
+                    <FileSpreadsheet className="h-4 w-4 mr-2 text-emerald-600" />
+                    Export as CSV
+                  </Button>
                 </div>
-                <Button variant="outline" onClick={exportData}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Export
-                </Button>
+                <p className="text-xs text-slate-400 mt-2">
+                  CSV format works great with Excel and Google Sheets
+                </p>
               </div>
             </div>
           </CardContent>

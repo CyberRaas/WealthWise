@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { useTranslation } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,7 +19,8 @@ import {
   BarChart3,
   X,
   LogOut,
-  Calculator
+  Calculator,
+  Shield
 } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 
@@ -76,8 +77,12 @@ const navigationItems = [
 
 export default function Sidebar({ isOpen, onClose }) {
   const { t } = useTranslation()
+  const { data: session } = useSession()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const pathname = usePathname()
+
+  // Check if user is admin
+  const isAdmin = ['moderator', 'admin', 'super_admin'].includes(session?.user?.role)
 
   return (
     <>

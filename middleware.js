@@ -1,10 +1,22 @@
 
 // middleware.js
 import { NextResponse } from "next/server"
+import { applyRateLimit } from "@/lib/rateLimit"
 
 export default async function middleware(request) {
   const { pathname } = request.nextUrl
-  
+
+  // Apply rate limiting for API routes first
+  if (pathname.startsWith('/api/')) {
+    const rateLimitResult = applyRateLimit(request)
+
+    if (!rateLimitResult.allowed) {
+      return rateLimitResult.response
+    }
+
+    // Continue with rate limit headers added to response later
+  }
+
   // Public routes that don't require authentication
   const publicRoutes = [
     "/",
@@ -51,6 +63,11 @@ export default async function middleware(request) {
   // Redirect authenticated users away from auth pages to onboarding
   if (sessionToken && pathname.startsWith("/auth/") && !pathname.includes("/signout") && !pathname.includes("/verify")) {
     return NextResponse.redirect(new URL("/onboarding", request.url))
+  }
+
+  // Allow /admin routes - let client-side AdminContext handle permission checks
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    return NextResponse.next()
   }
 
   // For dashboard routes, redirect to onboarding first (let client-side handle completion check)

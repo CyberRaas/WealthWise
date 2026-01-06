@@ -11,6 +11,14 @@ export default function OnboardingGuard({ children }) {
 
   useEffect(() => {
     const checkAndRedirect = async () => {
+      // Check if user is an admin - redirect to admin panel
+      const userRole = session?.user?.role
+      if (['moderator', 'admin', 'super_admin'].includes(userRole)) {
+        console.log('OnboardingGuard: Admin user detected, redirecting to admin panel')
+        router.replace('/admin')
+        return
+      }
+
       try {
         const response = await fetch('/api/onboarding')
         const data = await response.json()

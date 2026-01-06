@@ -17,6 +17,14 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
+      // Check if user is an admin - redirect to admin panel (skip onboarding)
+      const userRole = session?.user?.role
+      if (['moderator', 'admin', 'super_admin'].includes(userRole)) {
+        console.log('Admin user detected, redirecting to admin panel')
+        router.replace('/admin')
+        return
+      }
+
       try {
         console.log('Checking onboarding status...')
         const response = await fetch('/api/onboarding', {

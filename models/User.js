@@ -292,6 +292,51 @@ const userSchema = new mongoose.Schema({
     default: 'active',
     index: true
   },
+
+  // Role-based access control for admin panel
+  role: {
+    type: String,
+    enum: ['user', 'moderator', 'admin', 'super_admin'],
+    default: 'user',
+    index: true
+  },
+
+  // Admin-specific profile (only populated for admin roles)
+  adminProfile: {
+    // Custom permissions beyond role defaults
+    permissions: {
+      type: [String],
+      default: []
+    },
+    // Department for organizational structure
+    department: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    // Internal notes about the admin
+    adminNotes: {
+      type: String,
+      maxlength: 1000,
+      default: ''
+    },
+    // Tracking admin activity
+    lastAdminAction: {
+      type: Date,
+      default: null
+    },
+    // When admin privileges were granted
+    adminCreatedAt: {
+      type: Date,
+      default: null
+    },
+    // Who granted admin privileges
+    adminCreatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null
+    }
+  },
   
   // Metadata
   createdAt: {
@@ -317,6 +362,9 @@ userSchema.index({ status: 1, createdAt: -1 })
 userSchema.index({ 'onboarding.completed': 1 })
 userSchema.index({ 'activity.lastActiveAt': -1 })
 userSchema.index({ 'subscription.plan': 1, 'subscription.status': 1 })
+// Admin-related indexes
+userSchema.index({ role: 1, status: 1 })
+userSchema.index({ 'adminProfile.department': 1 })
 
 // Virtual for full name
 userSchema.virtual('displayName').get(function() {
@@ -334,6 +382,16 @@ userSchema.virtual('onboardingProgress').get(function() {
   const totalSteps = 4 // welcome, profile, preferences, budget_setup
   const completedSteps = this.onboarding.completedSteps.length
   return Math.round((completedSteps / totalSteps) * 100)
+})
+
+// Virtual for checking if user is admin (moderator or higher)
+userSchema.virtual('isAdmin').get(function() {
+  return ['moderator', 'admin', 'super_admin'].includes(this.role)
+})
+
+// Virtual for checking if user is super admin
+userSchema.virtual('isSuperAdmin').get(function() {
+  return this.role === 'super_admin'
 })
 
 // Pre-save middleware

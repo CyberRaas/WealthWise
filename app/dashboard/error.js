@@ -2,9 +2,15 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
+import * as Sentry from '@sentry/nextjs'
 
 export default function Error({ error, reset }) {
   useEffect(() => {
+    // Report error to Sentry
+    Sentry.captureException(error, {
+      tags: { location: 'dashboard' }
+    })
+
     // Log error to console in development
     if (process.env.NODE_ENV === 'development') {
       console.error('Dashboard Error:', error)

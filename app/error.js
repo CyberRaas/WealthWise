@@ -1,8 +1,17 @@
 'use client'
 
+import { useEffect } from 'react'
 import Link from 'next/link'
+import * as Sentry from '@sentry/nextjs'
 
 export default function GlobalError({ error, reset }) {
+  useEffect(() => {
+    // Report global error to Sentry
+    Sentry.captureException(error, {
+      tags: { location: 'global', severity: 'critical' }
+    })
+  }, [error])
+
   return (
     <html>
       <body>
