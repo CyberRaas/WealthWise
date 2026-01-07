@@ -20,7 +20,9 @@ import {
   X,
   LogOut,
   Calculator,
-  Shield
+  Shield,
+  Users,
+  Coins
 } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 

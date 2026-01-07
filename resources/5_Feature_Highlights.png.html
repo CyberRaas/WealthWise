@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WealthWise - Feature Highlights</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8B5CF6 0%, #A855F7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 18px;
+            color: #6B7280;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid #E5E7EB;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);
+            border-color: #8B5CF6;
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 10px;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.5;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            background: linear-gradient(135deg, #8B5CF6 0%, #A855F7 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .languages-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .languages-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 20px;
+        }
+        
+        .languages-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .language-badge {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 2px solid #E5E7EB;
+        }
+        
+        .url {
+            font-size: 24px;
+            font-weight: 700;
+            color: #8B5CF6;
+        }
+        
+        .print-note {
+            margin-top: 30px;
+            padding: 20px;
+            background: #FEF3C7;
+            border-radius: 10px;
+            text-align: center;
+            color: #92400E;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">💰 WealthWise</div>
+            <div class="tagline">AI-Powered Financial Planner for India</div>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <div class="feature-title">AI Budget Generator</div>
+                <div class="feature-desc">Personalized budgets using Gemini AI with city-specific cost calculations for 15+ Indian cities</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎤</div>
+                <div class="feature-title">Voice Expense Entry</div>
+                <div class="feature-desc">Speak naturally: "Spent 500 on Swiggy" - auto-categorizes Indian merchants</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <div class="feature-title">10 Indian Languages</div>
+                <div class="feature-desc">Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, Punjabi, English</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-title">Goal Tracking</div>
+                <div class="feature-desc">Set savings goals with visual progress tracking and smart reminders</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">💳</div>
+                <div class="feature-title">Debt Manager</div>
+                <div class="feature-desc">Track multiple loans, EMI calculations, and payment reminders</div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-title">Bank-Grade Security</div>
+                <div class="feature-desc">AES-256 encryption, OTP verification, and secure HTTP-only sessions</div>
+            </div>
+        </div>
+        
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-number">42</div>
+                <div class="stat-label">API Endpoints</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">10</div>
+                <div class="stat-label">Languages</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Cities Data</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">₹0</div>
+                <div class="stat-label">Cost to Users</div>
+            </div>
+        </div>
+        
+        <div class="languages-section">
+            <div class="languages-title">🌐 Supported Languages</div>
+            <div class="languages-grid">
+                <span class="language-badge">English</span>
+                <span class="language-badge">हिंदी (Hindi)</span>
+                <span class="language-badge">தமிழ் (Tamil)</span>
+                <span class="language-badge">తెలుగు (Telugu)</span>
+                <span class="language-badge">বাংলা (Bengali)</span>
+                <span class="language-badge">मराठी (Marathi)</span>
+                <span class="language-badge">ગુજરાતી (Gujarati)</span>
+                <span class="language-badge">ಕನ್ನಡ (Kannada)</span>
+                <span class="language-badge">മലയാളം (Malayalam)</span>
+                <span class="language-badge">ਪੰਜਾਬੀ (Punjabi)</span>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="url">🌐 wealthwise.vercel.app</div>
+            <p style="margin-top: 10px; color: #6B7280;">Anveshana 2025 | Making Financial Planning Accessible to Every Indian</p>
+        </div>
+    </div>
+    
+    <div class="print-note">
+        <strong>📸 How to save as image:</strong><br>
+        Open this file in Chrome → Press Ctrl+P → Select "Save as PDF" or use a screenshot tool (Win+Shift+S)<br>
+        Or use browser extension like "Full Page Screen Capture"
+    </div>
+</body>
+</html>

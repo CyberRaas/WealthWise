@@ -35,6 +35,7 @@ import {
 import BudgetCustomizer from '@/components/budget/BudgetCustomizer'
 import BudgetCustomizationGuide from '@/components/budget/BudgetCustomizationGuide'
 import ExpenseTrackingDashboard from '@/components/dashboard/ExpenseTrackingDashboard'
+import SmartInvestmentRecommendations from '@/components/investment/SmartInvestmentRecommendations'
 import toast from 'react-hot-toast'
 
 // Category colors for charts
@@ -488,6 +489,22 @@ export default function BudgetDisplay({ refreshTrigger }) {
             )}
           </CardContent>
         </Card>
+      )}
+
+      {/* Investment & Savings Recommendations Section */}
+      {activeTab === 'overview' && (
+        <div className="space-y-6">
+          {/* Section Header */}
+          <div className="flex items-center gap-3">
+            <TrendingUp className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+              Investment & Savings Schemes
+            </h2>
+          </div>
+
+          {/* Smart Recommendations */}
+          <SmartInvestmentRecommendations />
+        </div>
       )}
 
       {activeTab === 'tracking' && (

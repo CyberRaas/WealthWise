@@ -373,6 +373,7 @@ userSchema.virtual('displayName').get(function() {
 
 // Virtual for subscription status
 userSchema.virtual('isSubscriptionActive').get(function() {
+  if (!this.subscription) return false
   return this.subscription.status === 'active' && 
          (!this.subscription.endDate || this.subscription.endDate > new Date())
 })
@@ -380,17 +381,19 @@ userSchema.virtual('isSubscriptionActive').get(function() {
 // Virtual for onboarding progress
 userSchema.virtual('onboardingProgress').get(function() {
   const totalSteps = 4 // welcome, profile, preferences, budget_setup
-  const completedSteps = this.onboarding.completedSteps.length
+  const completedSteps = this.onboarding?.completedSteps?.length || 0
   return Math.round((completedSteps / totalSteps) * 100)
 })
 
 // Virtual for checking if user is admin (moderator or higher)
 userSchema.virtual('isAdmin').get(function() {
+  if (!this.role) return false
   return ['moderator', 'admin', 'super_admin'].includes(this.role)
 })
 
 // Virtual for checking if user is super admin
 userSchema.virtual('isSuperAdmin').get(function() {
+  if (!this.role) return false
   return this.role === 'super_admin'
 })
 

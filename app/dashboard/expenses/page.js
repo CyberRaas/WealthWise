@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import ExpenseEntryModal from '@/components/expenses/ExpenseEntryModal'
 import {
   Wallet,
@@ -26,10 +27,12 @@ import {
   Calendar,
   TrendingDown,
   Receipt,
-  X
+  X,
+  Users
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import AIInsightsModal from '@/components/expenses/AIInsightsModal'
+import SplitExpensesContent from '@/components/split/SplitExpensesContent'
 
 const ITEMS_PER_PAGE = 8
 
@@ -47,6 +50,7 @@ const categoryConfig = {
 
 function ExpensesContent() {
   const { t } = useTranslation()
+  const [activeTab, setActiveTab] = useState('personal')
   const [expenses, setExpenses] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -226,7 +230,29 @@ function ExpensesContent() {
 
   return (
     <DashboardLayout title={t('expenses.title')}>
-      <div className="space-y-4 lg:space-y-6 max-w-6xl mx-auto">
+      <div className="space-y-6 max-w-6xl mx-auto">
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="bg-slate-100 dark:bg-slate-800 p-1 w-full sm:w-auto">
+            <TabsTrigger 
+              value="personal" 
+              className="gap-2 flex-1 sm:flex-none data-[state=active]:bg-white data-[state=active]:text-emerald-600 dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-emerald-400"
+            >
+              <Wallet className="h-4 w-4" />
+              <span>{t('expenses.personal', 'Personal Expenses')}</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="split" 
+              className="gap-2 flex-1 sm:flex-none data-[state=active]:bg-white data-[state=active]:text-emerald-600 dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-emerald-400"
+            >
+              <Users className="h-4 w-4" />
+              <span>{t('expenses.split', 'Split Expenses')}</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="personal" className="space-y-4 mt-6">
+            {/* Personal Expenses Content */}
+            <div className="space-y-4 lg:space-y-6">
 
         {/* Compact Header with Stats */}
         <div className="flex flex-col gap-4">
@@ -687,6 +713,14 @@ function ExpensesContent() {
         isOpen={showInsightsModal}
         onClose={() => setShowInsightsModal(false)}
       />
+          </TabsContent>
+
+          <TabsContent value="split" className="space-y-4 mt-6">
+            {/* Split Expenses Content */}
+            <SplitExpensesContent />
+          </TabsContent>
+        </Tabs>
+      </div>
     </DashboardLayout>
   )
 }
