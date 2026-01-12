@@ -191,7 +191,7 @@ function ErrorContent() {
             <p className="text-sm text-slate-500">
               Need help?{' '}
               <a
-                href="mailto:support@mywealthwise.tech"
+                href="mailto:support@mywealthwise.in"
                 className="text-emerald-600 hover:text-emerald-700 font-semibold"
               >
                 Contact Support

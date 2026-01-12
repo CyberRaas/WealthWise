@@ -36,15 +36,15 @@ function ExpensesPage() {
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="bg-slate-100 dark:bg-slate-800 p-1">
-              <TabsTrigger 
-                value="personal" 
+              <TabsTrigger
+                value="personal"
                 className="gap-2 data-[state=active]:bg-white data-[state=active]:text-emerald-600 dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-emerald-400"
               >
                 <Wallet className="h-4 w-4" />
                 <span>Personal Expenses</span>
               </TabsTrigger>
-              <TabsTrigger 
-                value="split" 
+              <TabsTrigger
+                value="split"
                 className="gap-2 data-[state=active]:bg-white data-[state=active]:text-emerald-600 dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-emerald-400"
               >
                 <Users className="h-4 w-4" />

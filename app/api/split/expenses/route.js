@@ -17,7 +17,7 @@ import { emailService } from '@/lib/emailService'
 export async function GET(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -96,7 +96,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -142,7 +142,7 @@ export async function POST(request) {
         select: 'name email'
       })
       .lean()
-      
+
     if (!group) {
       return NextResponse.json(
         { error: 'Group not found' },
@@ -165,7 +165,7 @@ export async function POST(request) {
     const payerMember = group.members.find(
       m => m.user?._id?.toString() === (paidBy || session.user.id)
     )
-    
+
     if (!payerMember) {
       return NextResponse.json(
         { error: 'Payer must be a member of the group' },
@@ -228,7 +228,7 @@ export async function POST(request) {
 
     // Reload group as document to update it
     const groupDoc = await SplitGroup.findById(groupId)
-    
+
     // Update group stats
     groupDoc.totalExpenses = (groupDoc.totalExpenses || 0) + amount
     groupDoc.expenseCount = (groupDoc.expenseCount || 0) + 1
@@ -237,7 +237,7 @@ export async function POST(request) {
     // The payer's balance increases (others owe them)
     // Each participant's balance decreases (they owe)
     const payerId = payerMember.user._id.toString()
-    
+
     expense.splitAmong.forEach(split => {
       const member = groupDoc.members.find(
         m => m.user?.toString() === split.memberId.toString()
@@ -263,11 +263,11 @@ export async function POST(request) {
     // Send notifications to group members (async, don't block response)
     const addedByUser = await SplitExpense.findById(expense._id).populate('addedBy', 'name').lean()
     const addedByName = addedByUser?.addedBy?.name || 'Someone'
-    
+
     groupDoc.members.forEach(member => {
       // Skip the person who added the expense
       if (member.user?.toString() === session.user.id) return
-      
+
       // Send email to registered users
       if (member.user && member.email) {
         emailService.sendExpenseAddedNotification({

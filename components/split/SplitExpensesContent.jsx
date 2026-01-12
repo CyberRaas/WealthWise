@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useTranslation } from '@/lib/i18n'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { useState, useEffect } from "react";
+import { useTranslation } from "@/lib/i18n";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Users,
   Plus,
@@ -12,76 +12,78 @@ import {
   TrendingDown,
   Receipt,
   Loader2,
-  ArrowRight
-} from 'lucide-react'
-import toast from 'react-hot-toast'
-import CreateGroupModal from './CreateGroupModal'
-import GroupDetail from './GroupDetail'
+  ArrowRight,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import CreateGroupModal from "./CreateGroupModal";
+import GroupDetail from "./GroupDetail";
 
 export default function SplitExpensesContent() {
-  const { t } = useTranslation()
-  const [groups, setGroups] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showCreateModal, setShowCreateModal] = useState(false)
-  const [selectedGroup, setSelectedGroup] = useState(null)
+  const { t } = useTranslation();
+  const [groups, setGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState(null);
 
   useEffect(() => {
-    fetchGroups()
-  }, [])
+    fetchGroups();
+  }, []);
 
   const fetchGroups = async () => {
     try {
-      setLoading(true)
-      const response = await fetch('/api/split/groups')
-      const data = await response.json()
-      
+      setLoading(true);
+      const response = await fetch("/api/split/groups");
+      const data = await response.json();
+
       if (data.success) {
-        setGroups(data.groups || [])
+        setGroups(data.groups || []);
       } else {
-        toast.error(data.error || 'Failed to fetch groups')
+        toast.error(data.error || "Failed to fetch groups");
       }
     } catch (error) {
-      console.error('Error fetching groups:', error)
-      toast.error('Failed to fetch groups')
+      console.error("Error fetching groups:", error);
+      toast.error("Failed to fetch groups");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleGroupCreated = (newGroup) => {
-    setGroups(prev => [newGroup, ...prev])
-    setShowCreateModal(false)
-    toast.success('Group created successfully!')
-  }
+    setGroups((prev) => [newGroup, ...prev]);
+    setShowCreateModal(false);
+    toast.success("Group created successfully!");
+  };
 
   const handleGroupClick = (group) => {
-    setSelectedGroup(group)
-  }
+    setSelectedGroup(group);
+  };
 
   const handleBackToList = () => {
-    setSelectedGroup(null)
-    fetchGroups() // Refresh to get updated balances
-  }
+    setSelectedGroup(null);
+    fetchGroups(); // Refresh to get updated balances
+  };
 
   // Show group detail if one is selected
   if (selectedGroup) {
     return (
-      <GroupDetail 
-        group={selectedGroup} 
+      <GroupDetail
+        group={selectedGroup}
         onBack={handleBackToList}
         onUpdate={fetchGroups}
       />
-    )
+    );
   }
 
   // Calculate stats
-  const activeGroups = groups.filter(g => g.status !== 'archived')
-  const totalOwed = groups.reduce((sum, g) => 
-    g.userBalance > 0 ? sum + g.userBalance : sum, 0
-  )
-  const totalOwe = groups.reduce((sum, g) => 
-    g.userBalance < 0 ? sum + Math.abs(g.userBalance) : sum, 0
-  )
+  const activeGroups = groups.filter((g) => g.status !== "archived");
+  const totalOwed = groups.reduce(
+    (sum, g) => (g.userBalance > 0 ? sum + g.userBalance : sum),
+    0
+  );
+  const totalOwe = groups.reduce(
+    (sum, g) => (g.userBalance < 0 ? sum + Math.abs(g.userBalance) : sum),
+    0
+  );
 
   return (
     <div className="space-y-6">
@@ -95,10 +97,10 @@ export default function SplitExpensesContent() {
               </div>
               <div className="min-w-0">
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-0.5">
-                  {t('split.activeGroups', 'Active Groups')}
+                  {t("split.activeGroups", "Active Groups")}
                 </p>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
-                  {loading ? '-' : activeGroups.length}
+                  {loading ? "-" : activeGroups.length}
                 </p>
               </div>
             </div>
@@ -113,10 +115,10 @@ export default function SplitExpensesContent() {
               </div>
               <div className="min-w-0">
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-0.5">
-                  {t('split.youAreOwed', 'You are owed')}
+                  {t("split.youAreOwed", "You are owed")}
                 </p>
                 <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                  {loading ? '-' : `₹${totalOwed.toLocaleString('en-IN')}`}
+                  {loading ? "-" : `₹${totalOwed.toLocaleString("en-IN")}`}
                 </p>
               </div>
             </div>
@@ -131,10 +133,10 @@ export default function SplitExpensesContent() {
               </div>
               <div className="min-w-0">
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-0.5">
-                  {t('split.youOwe', 'You owe')}
+                  {t("split.youOwe", "You owe")}
                 </p>
                 <p className="text-2xl font-bold text-red-600 dark:text-red-400">
-                  {loading ? '-' : `₹${totalOwe.toLocaleString('en-IN')}`}
+                  {loading ? "-" : `₹${totalOwe.toLocaleString("en-IN")}`}
                 </p>
               </div>
             </div>
@@ -146,10 +148,13 @@ export default function SplitExpensesContent() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-            {t('split.groups', 'Your Groups')}
+            {t("split.groups", "Your Groups")}
           </h2>
           <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-            {t('split.groupsDesc', 'Manage shared expenses with friends and family')}
+            {t(
+              "split.groupsDesc",
+              "Manage shared expenses with friends and family"
+            )}
           </p>
         </div>
         <Button
@@ -157,7 +162,9 @@ export default function SplitExpensesContent() {
           className="bg-emerald-600 hover:bg-emerald-700 text-white"
         >
           <Plus className="h-4 w-4 mr-2" />
-          <span className="hidden sm:inline">{t('split.newGroup', 'New Group')}</span>
+          <span className="hidden sm:inline">
+            {t("split.newGroup", "New Group")}
+          </span>
           <span className="sm:hidden">New</span>
         </Button>
       </div>
@@ -169,7 +176,7 @@ export default function SplitExpensesContent() {
             <div className="flex flex-col items-center justify-center">
               <Loader2 className="h-8 w-8 text-emerald-500 animate-spin mb-4" />
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                {t('common.loading', 'Loading...')}
+                {t("common.loading", "Loading...")}
               </p>
             </div>
           </CardContent>
@@ -182,17 +189,20 @@ export default function SplitExpensesContent() {
                 <Users className="h-8 w-8 text-slate-400 dark:text-slate-600" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-                {t('split.noGroups', 'No groups yet')}
+                {t("split.noGroups", "No groups yet")}
               </h3>
               <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-sm">
-                {t('split.noGroupsDesc', 'Create your first group to start splitting expenses with friends and family')}
+                {t(
+                  "split.noGroupsDesc",
+                  "Create your first group to start splitting expenses with friends and family"
+                )}
               </p>
               <Button
                 onClick={() => setShowCreateModal(true)}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                {t('split.createFirstGroup', 'Create First Group')}
+                {t("split.createFirstGroup", "Create First Group")}
               </Button>
             </div>
           </CardContent>
@@ -200,9 +210,9 @@ export default function SplitExpensesContent() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {groups.map((group) => {
-            const balance = group.userBalance || 0
-            const isOwed = balance > 0
-            const owes = balance < 0
+            const balance = group.userBalance || 0;
+            const isOwed = balance > 0;
+            const owes = balance < 0;
 
             return (
               <Card
@@ -226,7 +236,8 @@ export default function SplitExpensesContent() {
                       variant="secondary"
                       className="ml-2 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 flex-shrink-0"
                     >
-                      {group.memberCount} {group.memberCount === 1 ? 'member' : 'members'}
+                      {group.memberCount}{" "}
+                      {group.memberCount === 1 ? "member" : "members"}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -236,20 +247,24 @@ export default function SplitExpensesContent() {
                     {balance === 0 ? (
                       <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                         <Receipt className="h-4 w-4" />
-                        <span className="text-sm">{t('split.settled', 'All settled up')}</span>
+                        <span className="text-sm">
+                          {t("split.settled", "All settled up")}
+                        </span>
                       </div>
                     ) : isOwed ? (
                       <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
                         <TrendingUp className="h-4 w-4" />
                         <span className="text-sm font-medium">
-                          {t('split.youGetBack', 'You get back')} ₹{Math.abs(balance).toLocaleString('en-IN')}
+                          {t("split.youGetBack", "You get back")} ₹
+                          {Math.abs(balance).toLocaleString("en-IN")}
                         </span>
                       </div>
                     ) : (
                       <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
                         <TrendingDown className="h-4 w-4" />
                         <span className="text-sm font-medium">
-                          {t('split.youOwe', 'You owe')} ₹{Math.abs(balance).toLocaleString('en-IN')}
+                          {t("split.youOwe", "You owe")} ₹
+                          {Math.abs(balance).toLocaleString("en-IN")}
                         </span>
                       </div>
                     )}
@@ -257,10 +272,15 @@ export default function SplitExpensesContent() {
                     {/* Group Stats */}
                     <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                       <span>
-                        {group.stats?.expenseCount || 0} {t('split.expenses', 'expenses')}
+                        {group.stats?.expenseCount || 0}{" "}
+                        {t("split.expenses", "expenses")}
                       </span>
                       <span>
-                        ₹{(group.stats?.totalExpenses || 0).toLocaleString('en-IN')} {t('split.total', 'total')}
+                        ₹
+                        {(group.stats?.totalExpenses || 0).toLocaleString(
+                          "en-IN"
+                        )}{" "}
+                        {t("split.total", "total")}
                       </span>
                     </div>
 
@@ -270,13 +290,13 @@ export default function SplitExpensesContent() {
                       size="sm"
                       className="w-full group-hover:bg-emerald-50 dark:group-hover:bg-emerald-950/30 group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
                     >
-                      {t('split.viewDetails', 'View Details')}
+                      {t("split.viewDetails", "View Details")}
                       <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-            )
+            );
           })}
         </div>
       )}
@@ -288,5 +308,5 @@ export default function SplitExpensesContent() {
         onGroupCreated={handleGroupCreated}
       />
     </div>
-  )
+  );
 }

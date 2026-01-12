@@ -18,7 +18,7 @@ import { simplifyDebts, calculateBalances } from '@/lib/debtSimplifier'
 export async function GET(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -72,7 +72,7 @@ export async function GET(request) {
     // If simplified view is requested, calculate optimal settlements
     if (simplified) {
       const expenses = await SplitExpense.find({ group: groupId }).lean()
-      
+
       const expenseData = expenses.map(e => ({
         paidBy: e.paidBy.toString(),
         amount: e.amount,
@@ -144,7 +144,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -239,7 +239,7 @@ export async function POST(request) {
 export async function PATCH(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -296,7 +296,7 @@ export async function PATCH(request) {
 
       // Update group balances
       const group = await SplitGroup.findById(settlement.group)
-      
+
       const fromMember = group.members.find(
         m => m.user?.toString() === settlement.from.toString()
       )

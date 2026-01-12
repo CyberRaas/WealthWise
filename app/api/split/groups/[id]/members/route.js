@@ -17,7 +17,7 @@ import { emailService } from '@/lib/emailService'
 export async function POST(request, { params }) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -102,7 +102,7 @@ export async function POST(request, { params }) {
     // Send invitation email to non-registered member
     if (!user && normalizedEmail) {
       await group.populate({ path: 'createdBy', select: 'name email avatar', options: { virtuals: false } })
-      
+
       emailService.sendSplitGroupInvitation({
         email: normalizedEmail,
         groupName: group.name,
@@ -132,7 +132,7 @@ export async function POST(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -238,7 +238,7 @@ export async function DELETE(request, { params }) {
 export async function PATCH(request, { params }) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },

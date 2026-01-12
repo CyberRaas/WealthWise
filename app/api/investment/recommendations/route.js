@@ -19,7 +19,7 @@ import { getDisclaimersForScheme, DISCLAIMERS } from '@/lib/investmentCompliance
 export async function GET(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -70,7 +70,7 @@ export async function GET(request) {
 
     // Get user's financial data
     const userProfile = await UserProfile.findOne({ user: session.user.id }).lean()
-    
+
     const financialData = {
       monthlyIncome: userProfile?.monthlyIncome || riskProfile.financialDetails?.monthlyIncome || 50000,
       monthlyExpenses: userProfile?.monthlyExpenses || riskProfile.financialDetails?.monthlyExpenses || 35000,
@@ -103,7 +103,7 @@ export async function GET(request) {
           reason: r.reason,
           type: r.type,
           riskLevel: r.scheme.riskLevel,
-          expectedReturn: r.scheme.currentRate || 
+          expectedReturn: r.scheme.currentRate ||
             (r.scheme.returnRange ? (r.scheme.returnRange.min + r.scheme.returnRange.max) / 2 : 8),
           projection: result.projections?.scenarios?.expected ? {
             years: parseInt(result.projections.timeframe),
@@ -143,7 +143,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -165,7 +165,7 @@ export async function POST(request) {
 
     // Get user's financial data
     const userProfile = await UserProfile.findOne({ user: session.user.id }).lean()
-    
+
     const financialData = {
       monthlyIncome: userProfile?.monthlyIncome || 50000,
       monthlyExpenses: userProfile?.monthlyExpenses || 35000,
@@ -223,7 +223,7 @@ function calculateGoalProjection(recommendations, monthlyAmount, years) {
 
   recommendations.forEach(rec => {
     const monthlyInv = (rec.allocation / 100) * monthlyAmount
-    const avgReturn = rec.scheme.currentRate || 
+    const avgReturn = rec.scheme.currentRate ||
       (rec.scheme.returnRange ? (rec.scheme.returnRange.min + rec.scheme.returnRange.max) / 2 : 8)
     const monthlyRate = avgReturn / 100 / 12
 

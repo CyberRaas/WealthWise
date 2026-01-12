@@ -65,7 +65,7 @@ export default function Error({ error, reset }) {
         {/* Support Link */}
         <p className="text-sm text-slate-500">
           If the problem persists, please{' '}
-          <a href="mailto:support@mywealthwise.tech" className="text-emerald-600 hover:underline">
+          <a href="mailto:support@mywealthwise.in" className="text-emerald-600 hover:underline">
             contact support
           </a>
         </p>

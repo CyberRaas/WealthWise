@@ -16,7 +16,7 @@ import SplitExpense from '@/models/SplitExpense'
 export async function GET(request, { params }) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -72,7 +72,7 @@ export async function GET(request, { params }) {
 export async function PATCH(request, { params }) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -94,7 +94,7 @@ export async function PATCH(request, { params }) {
     }
 
     // Only creator or payer can update
-    const isAuthorized = 
+    const isAuthorized =
       expense.addedBy.toString() === session.user.id ||
       expense.paidBy.memberId.toString() === session.user.id
 
@@ -122,7 +122,7 @@ export async function PATCH(request, { params }) {
     // Handle amount/split changes
     if (amount !== undefined && amount !== oldAmount) {
       expense.amount = amount
-      
+
       // Recalculate splits
       if (expense.splitType === 'equal') {
         const memberIds = oldSplits.map(s => s.memberId.toString())
@@ -144,7 +144,7 @@ export async function PATCH(request, { params }) {
             percentage: s.percentage
           }
         })
-        
+
         if (splitType === 'exact') {
           expense.setExactSplit(formattedSplits)
         } else if (splitType === 'percentage') {
@@ -218,7 +218,7 @@ export async function PATCH(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },

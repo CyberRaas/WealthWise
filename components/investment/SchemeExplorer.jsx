@@ -1,13 +1,24 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   Shield,
@@ -23,103 +34,105 @@ import {
   ArrowLeft,
   BarChart3,
   Percent,
-  Clock
-} from 'lucide-react'
-import toast from 'react-hot-toast'
+  Clock,
+} from "lucide-react";
+import toast from "react-hot-toast";
 
 const CATEGORY_TABS = [
-  { id: 'all', label: 'All Schemes' },
-  { id: 'government', label: 'Government' },
-  { id: 'mutual_fund', label: 'Mutual Funds' },
-  { id: 'fixed_income', label: 'Fixed Income' },
-  { id: 'gold', label: 'Gold' }
-]
+  { id: "all", label: "All Schemes" },
+  { id: "government", label: "Government" },
+  { id: "mutual_fund", label: "Mutual Funds" },
+  { id: "fixed_income", label: "Fixed Income" },
+  { id: "gold", label: "Gold" },
+];
 
 const RISK_COLORS = {
-  very_low: 'bg-green-100 text-green-800',
-  low: 'bg-teal-100 text-teal-800',
-  moderate: 'bg-yellow-100 text-yellow-800',
-  high: 'bg-orange-100 text-orange-800',
-  very_high: 'bg-red-100 text-red-800'
-}
+  very_low: "bg-green-100 text-green-800",
+  low: "bg-teal-100 text-teal-800",
+  moderate: "bg-yellow-100 text-yellow-800",
+  high: "bg-orange-100 text-orange-800",
+  very_high: "bg-red-100 text-red-800",
+};
 
 const CATEGORY_ICONS = {
   government: Shield,
   mutual_fund: TrendingUp,
   fixed_income: Lock,
   gold: Sparkles,
-  liquid: IndianRupee
-}
+  liquid: IndianRupee,
+};
 
 export default function SchemeExplorer({ onBack }) {
-  const [schemes, setSchemes] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [activeCategory, setActiveCategory] = useState('all')
-  const [selectedScheme, setSelectedScheme] = useState(null)
+  const [schemes, setSchemes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [selectedScheme, setSelectedScheme] = useState(null);
 
   useEffect(() => {
-    fetchSchemes()
-  }, [])
+    fetchSchemes();
+  }, []);
 
   const fetchSchemes = async () => {
     try {
-      const response = await fetch('/api/investment/schemes')
-      const data = await response.json()
+      const response = await fetch("/api/investment/schemes");
+      const data = await response.json();
 
       if (data.success) {
-        setSchemes(data.allSchemes || [])
+        setSchemes(data.allSchemes || []);
       }
     } catch (error) {
-      console.error('Error fetching schemes:', error)
-      toast.error('Failed to load schemes')
+      console.error("Error fetching schemes:", error);
+      toast.error("Failed to load schemes");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const filteredSchemes = schemes.filter(scheme => {
-    const matchesSearch = !searchQuery || 
+  const filteredSchemes = schemes.filter((scheme) => {
+    const matchesSearch =
+      !searchQuery ||
       scheme.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      scheme.description?.toLowerCase().includes(searchQuery.toLowerCase())
-    
-    const matchesCategory = activeCategory === 'all' || scheme.category === activeCategory
+      scheme.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesSearch && matchesCategory
-  })
+    const matchesCategory =
+      activeCategory === "all" || scheme.category === activeCategory;
+
+    return matchesSearch && matchesCategory;
+  });
 
   const formatCurrency = (value) => {
     if (value >= 10000000) {
-      return `₹${(value / 10000000).toFixed(1)} Cr`
+      return `₹${(value / 10000000).toFixed(1)} Cr`;
     } else if (value >= 100000) {
-      return `₹${(value / 100000).toFixed(1)} L`
+      return `₹${(value / 100000).toFixed(1)} L`;
     } else if (value >= 1000) {
-      return `₹${(value / 1000).toFixed(0)}K`
+      return `₹${(value / 1000).toFixed(0)}K`;
     }
-    return `₹${value}`
-  }
+    return `₹${value}`;
+  };
 
   const getReturnDisplay = (scheme) => {
     if (scheme.currentRate) {
-      return `${scheme.currentRate}%`
+      return `${scheme.currentRate}%`;
     }
     if (scheme.returnRange) {
-      return `${scheme.returnRange.min}-${scheme.returnRange.max}%`
+      return `${scheme.returnRange.min}-${scheme.returnRange.max}%`;
     }
     if (scheme.historicalReturn) {
-      return `~${scheme.historicalReturn}%`
+      return `~${scheme.historicalReturn}%`;
     }
-    return 'Variable'
-  }
+    return "Variable";
+  };
 
   if (loading) {
     return (
       <div className="space-y-4">
-        {[1, 2, 3, 4].map(i => (
+        {[1, 2, 3, 4].map((i) => (
           <div key={i} className="h-24 bg-muted animate-pulse rounded-lg" />
         ))}
       </div>
-    )
+    );
   }
 
   return (
@@ -153,12 +166,8 @@ export default function SchemeExplorer({ onBack }) {
       {/* Category Tabs */}
       <Tabs value={activeCategory} onValueChange={setActiveCategory}>
         <TabsList className="flex-wrap h-auto gap-1 p-1">
-          {CATEGORY_TABS.map(tab => (
-            <TabsTrigger 
-              key={tab.id} 
-              value={tab.id}
-              className="text-xs px-3"
-            >
+          {CATEGORY_TABS.map((tab) => (
+            <TabsTrigger key={tab.id} value={tab.id} className="text-xs px-3">
               {tab.label}
             </TabsTrigger>
           ))}
@@ -176,8 +185,9 @@ export default function SchemeExplorer({ onBack }) {
             <div className="grid gap-4">
               <AnimatePresence>
                 {filteredSchemes.map((scheme, index) => {
-                  const CategoryIcon = CATEGORY_ICONS[scheme.category] || TrendingUp
-                  
+                  const CategoryIcon =
+                    CATEGORY_ICONS[scheme.category] || TrendingUp;
+
                   return (
                     <motion.div
                       key={scheme.key || scheme.id || index}
@@ -185,7 +195,7 @@ export default function SchemeExplorer({ onBack }) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
                     >
-                      <Card 
+                      <Card
                         className="cursor-pointer hover:border-primary/50 transition-colors"
                         onClick={() => setSelectedScheme(scheme)}
                       >
@@ -197,14 +207,19 @@ export default function SchemeExplorer({ onBack }) {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap mb-1">
                                 <h4 className="font-semibold">{scheme.name}</h4>
-                                <Badge className={RISK_COLORS[scheme.riskLevel] || ''} variant="secondary">
-                                  {scheme.riskLevel?.replace('_', ' ')}
+                                <Badge
+                                  className={
+                                    RISK_COLORS[scheme.riskLevel] || ""
+                                  }
+                                  variant="secondary"
+                                >
+                                  {scheme.riskLevel?.replace("_", " ")}
                                 </Badge>
                               </div>
                               <p className="text-sm text-muted-foreground line-clamp-1">
                                 {scheme.description}
                               </p>
-                              
+
                               <div className="flex flex-wrap gap-4 mt-2 text-sm">
                                 <div className="flex items-center gap-1">
                                   <TrendingUp className="h-3 w-3 text-muted-foreground" />
@@ -221,7 +236,9 @@ export default function SchemeExplorer({ onBack }) {
                                 {scheme.taxBenefit && (
                                   <div className="flex items-center gap-1">
                                     <Percent className="h-3 w-3 text-muted-foreground" />
-                                    <span className="text-blue-600">Tax Benefit</span>
+                                    <span className="text-blue-600">
+                                      Tax Benefit
+                                    </span>
                                   </div>
                                 )}
                               </div>
@@ -230,7 +247,7 @@ export default function SchemeExplorer({ onBack }) {
                         </CardContent>
                       </Card>
                     </motion.div>
-                  )
+                  );
                 })}
               </AnimatePresence>
             </div>
@@ -239,32 +256,32 @@ export default function SchemeExplorer({ onBack }) {
       </Tabs>
 
       {/* Scheme Detail Modal */}
-      <SchemeDetailModal 
+      <SchemeDetailModal
         scheme={selectedScheme}
         onClose={() => setSelectedScheme(null)}
       />
     </div>
-  )
+  );
 }
 
 // Scheme Detail Modal Component
 function SchemeDetailModal({ scheme, onClose }) {
-  if (!scheme) return null
+  if (!scheme) return null;
 
-  const CategoryIcon = CATEGORY_ICONS[scheme.category] || TrendingUp
+  const CategoryIcon = CATEGORY_ICONS[scheme.category] || TrendingUp;
 
   const getReturnDisplay = (scheme) => {
     if (scheme.currentRate) {
-      return `${scheme.currentRate}% p.a.`
+      return `${scheme.currentRate}% p.a.`;
     }
     if (scheme.returnRange) {
-      return `${scheme.returnRange.min}-${scheme.returnRange.max}% p.a.`
+      return `${scheme.returnRange.min}-${scheme.returnRange.max}% p.a.`;
     }
     if (scheme.historicalReturn) {
-      return `~${scheme.historicalReturn}% p.a. (historical)`
+      return `~${scheme.historicalReturn}% p.a. (historical)`;
     }
-    return 'Variable'
-  }
+    return "Variable";
+  };
 
   return (
     <Dialog open={!!scheme} onOpenChange={onClose}>
@@ -276,8 +293,11 @@ function SchemeDetailModal({ scheme, onClose }) {
             </div>
             <div>
               <span className="block">{scheme.name}</span>
-              <Badge className={RISK_COLORS[scheme.riskLevel] || ''} variant="secondary">
-                {scheme.riskLevel?.replace('_', ' ')} risk
+              <Badge
+                className={RISK_COLORS[scheme.riskLevel] || ""}
+                variant="secondary"
+              >
+                {scheme.riskLevel?.replace("_", " ")} risk
               </Badge>
             </div>
           </DialogTitle>
@@ -291,7 +311,9 @@ function SchemeDetailModal({ scheme, onClose }) {
           <div className="grid grid-cols-2 gap-4">
             <Card className="bg-muted/50">
               <CardContent className="p-3">
-                <p className="text-xs text-muted-foreground">Expected Returns</p>
+                <p className="text-xs text-muted-foreground">
+                  Expected Returns
+                </p>
                 <p className="text-lg font-bold text-green-600">
                   {getReturnDisplay(scheme)}
                 </p>
@@ -301,7 +323,7 @@ function SchemeDetailModal({ scheme, onClose }) {
               <CardContent className="p-3">
                 <p className="text-xs text-muted-foreground">Lock-in Period</p>
                 <p className="text-lg font-bold">
-                  {scheme.lockInPeriod || 'None'}
+                  {scheme.lockInPeriod || "None"}
                 </p>
               </CardContent>
             </Card>
@@ -309,7 +331,7 @@ function SchemeDetailModal({ scheme, onClose }) {
               <CardContent className="p-3">
                 <p className="text-xs text-muted-foreground">Min. Investment</p>
                 <p className="text-lg font-bold">
-                  ₹{scheme.minInvestment?.toLocaleString('en-IN') || '500'}
+                  ₹{scheme.minInvestment?.toLocaleString("en-IN") || "500"}
                 </p>
               </CardContent>
             </Card>
@@ -317,7 +339,7 @@ function SchemeDetailModal({ scheme, onClose }) {
               <CardContent className="p-3">
                 <p className="text-xs text-muted-foreground">Tax Benefit</p>
                 <p className="text-lg font-bold text-blue-600">
-                  {scheme.taxBenefit || 'None'}
+                  {scheme.taxBenefit || "None"}
                 </p>
               </CardContent>
             </Card>
@@ -327,7 +349,9 @@ function SchemeDetailModal({ scheme, onClose }) {
           {scheme.eligibility && (
             <div>
               <h4 className="font-semibold mb-2">Eligibility</h4>
-              <p className="text-sm text-muted-foreground">{scheme.eligibility}</p>
+              <p className="text-sm text-muted-foreground">
+                {scheme.eligibility}
+              </p>
             </div>
           )}
 
@@ -337,7 +361,9 @@ function SchemeDetailModal({ scheme, onClose }) {
               <h4 className="font-semibold mb-2">Best For</h4>
               <div className="flex flex-wrap gap-2">
                 {scheme.bestFor.map((item, index) => (
-                  <Badge key={index} variant="outline">{item}</Badge>
+                  <Badge key={index} variant="outline">
+                    {item}
+                  </Badge>
                 ))}
               </div>
             </div>
@@ -384,8 +410,8 @@ function SchemeDetailModal({ scheme, onClose }) {
             <CardContent className="p-3 flex items-start gap-2">
               <Info className="h-4 w-4 text-yellow-600 flex-shrink-0 mt-0.5" />
               <p className="text-xs text-yellow-800 dark:text-yellow-200">
-                This information is for educational purposes only. 
-                Please verify current rates and terms with official sources before investing.
+                This information is for educational purposes only. Please verify
+                current rates and terms with official sources before investing.
               </p>
             </CardContent>
           </Card>
@@ -396,5 +422,5 @@ function SchemeDetailModal({ scheme, onClose }) {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

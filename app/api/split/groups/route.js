@@ -17,7 +17,7 @@ import { emailService } from '@/lib/emailService'
 export async function GET(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -92,7 +92,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -180,7 +180,7 @@ export async function POST(request) {
     const pendingMembers = group.members.filter(m => m.status === 'pending' && m.email)
     if (pendingMembers.length > 0) {
       const creatorName = group.createdBy.name || 'Someone'
-      
+
       pendingMembers.forEach(member => {
         emailService.sendSplitGroupInvitation({
           email: member.email,

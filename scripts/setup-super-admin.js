@@ -120,7 +120,7 @@ async function setupSuperAdmin() {
       console.log('')
       console.log('Admin Panel URLs:')
       console.log('  - Local:      http://localhost:3000/admin')
-      console.log('  - Production: https://www.mywealthwise.tech/admin')
+      console.log('  - Production: https://www.mywealthwise.in/admin')
     } else {
       console.error('❌ Failed to update user. No documents modified.')
       process.exit(1)

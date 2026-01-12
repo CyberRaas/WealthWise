@@ -19,7 +19,7 @@ import { simplifyDebts, calculateBalances } from '@/lib/debtSimplifier'
 export async function GET(request, { params }) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -136,7 +136,7 @@ export async function GET(request, { params }) {
 export async function PATCH(request, { params }) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -181,7 +181,7 @@ export async function PATCH(request, { params }) {
     }
 
     await group.save()
-    
+
     await group.populate({ path: 'createdBy', select: 'name email avatar', options: { virtuals: false } })
     await group.populate({ path: 'members.user', select: 'name email avatar', options: { virtuals: false } })
 
@@ -206,7 +206,7 @@ export async function PATCH(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -237,7 +237,7 @@ export async function DELETE(request, { params }) {
 
     // Check for unsettled balances
     const hasUnsettledBalances = group.members.some(m => Math.abs(m.balance) > 0.01)
-    
+
     if (hasUnsettledBalances) {
       return NextResponse.json(
         { error: 'Cannot delete group with unsettled balances' },

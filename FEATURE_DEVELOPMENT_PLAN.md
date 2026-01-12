@@ -1,4 +1,5 @@
 # 🚀 WealthWise Feature Development Plan
+
 ## Expense Splitting + Investment Recommendations
 
 ---
@@ -15,24 +16,28 @@ This document outlines the development plan for two major features requested by 
 ## 🎯 Development Phases
 
 ### Phase 1: MVP Foundation (Week 1-2)
+
 - [x] Create data models (SplitGroup, SplitExpense, Settlement, RiskProfile, InvestmentRecommendation)
 - [x] Implement core APIs for expense splitting
 - [x] Implement core APIs for investment recommendations
 - [x] Build basic UI components
 
 ### Phase 2: Core Features (Week 3-4)
+
 - [x] Unequal and percentage splits
 - [x] Debt simplification algorithm
 - [x] Full investment scheme database
 - [x] AI-powered insights integration
 
 ### Phase 3: Polish & Advanced (Week 5-6)
+
 - [ ] Non-registered member handling
 - [ ] Email notifications
 - [ ] Goal-based recommendations
 - [ ] Investment tracking
 
 ### Phase 4: Production Hardening (Week 7)
+
 - [ ] Testing & security audit
 - [ ] Performance optimization
 - [ ] Documentation
@@ -94,11 +99,13 @@ NEW FILES CREATED:
 ## 🔧 Feature 1: Expense Splitting
 
 ### User Flow
+
 ```
 Create Group → Add Members → Add Expenses → View Balances → Settle Up
 ```
 
 ### Core Functionality
+
 - Create named groups with emoji icons
 - Add members (registered or by name/email)
 - Add expenses with payer and split configuration
@@ -110,18 +117,21 @@ Create Group → Add Members → Add Expenses → View Balances → Settle Up
 ### Data Models
 
 #### SplitGroup
+
 - name, emoji, type
 - members[] with role (admin/member)
 - balances (calculated)
 - totalExpenses, expenseCount
 
 #### SplitExpense
+
 - groupId, description, amount, category
 - paidBy (memberId, name)
 - splitType (equal/exact/percentage)
 - splitAmong[] with individual amounts
 
 #### Settlement
+
 - from, to (member info)
 - amount, method (cash/upi/bank)
 - status (pending/completed)
@@ -131,11 +141,13 @@ Create Group → Add Members → Add Expenses → View Balances → Settle Up
 ## 💰 Feature 2: Investment Recommendations
 
 ### User Flow
+
 ```
 Detect Savings → Risk Assessment (3 questions) → Generate Recommendations → Show Projections
 ```
 
 ### Core Functionality
+
 - Detect available savings from budget
 - 3-question risk assessment quiz
 - Generate risk profile (conservative/moderate/aggressive)
@@ -145,14 +157,16 @@ Detect Savings → Risk Assessment (3 questions) → Generate Recommendations �
 - Display required disclaimers
 
 ### Investment Schemes Covered
-| Category | Schemes |
-|----------|---------|
-| Government | PPF, NPS, SSY |
-| Fixed Income | Bank FD, RD |
+
+| Category     | Schemes                                     |
+| ------------ | ------------------------------------------- |
+| Government   | PPF, NPS, SSY                               |
+| Fixed Income | Bank FD, RD                                 |
 | Mutual Funds | Index Funds, ELSS, Debt Funds, Liquid Funds |
-| Gold | SGB, Gold ETF |
+| Gold         | SGB, Gold ETF                               |
 
 ### Compliance Requirements
+
 - Clear "not investment advice" disclaimers
 - "Market-linked, returns not guaranteed" warnings
 - SEBI mutual fund disclaimer
@@ -162,12 +176,12 @@ Detect Savings → Risk Assessment (3 questions) → Generate Recommendations �
 
 ## 🔐 Security Considerations
 
-| Feature | Security Measure |
-|---------|------------------|
-| Group Access | Only members can view/edit |
-| Balance Calculation | Server-side only |
-| Investment Data | Encrypted at rest |
-| API Access | Rate limiting, authentication |
+| Feature             | Security Measure              |
+| ------------------- | ----------------------------- |
+| Group Access        | Only members can view/edit    |
+| Balance Calculation | Server-side only              |
+| Investment Data     | Encrypted at rest             |
+| API Access          | Rate limiting, authentication |
 
 ---
 
@@ -194,11 +208,13 @@ Detect Savings → Risk Assessment (3 questions) → Generate Recommendations �
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - MongoDB Atlas connection
 - Gemini API key (for AI features)
 
 ### Development Commands
+
 ```bash
 # Start development server
 npm run dev
@@ -212,6 +228,7 @@ npm test
 ## 📝 Implementation Log
 
 ### January 7, 2026
+
 - Created development plan
 - Implemented Phase 1 data models:
   - SplitGroup.js
@@ -225,10 +242,11 @@ npm test
 ## 👥 Contributing
 
 Follow the phase-wise development approach:
+
 1. Complete current phase before moving to next
 2. Test each module independently
 3. Document changes in this file
 
 ---
 
-*WealthWise - Making Financial Planning Accessible to Every Indian*
+_WealthWise - Making Financial Planning Accessible to Every Indian_

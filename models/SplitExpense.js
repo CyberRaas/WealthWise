@@ -44,7 +44,7 @@ const splitExpenseSchema = new mongoose.Schema({
     required: [true, 'Group ID is required'],
     index: true
   },
-  
+
   // Expense description
   description: {
     type: String,
@@ -52,14 +52,14 @@ const splitExpenseSchema = new mongoose.Schema({
     trim: true,
     maxlength: [200, 'Description cannot exceed 200 characters']
   },
-  
+
   // Total expense amount
   amount: {
     type: Number,
     required: [true, 'Amount is required'],
     min: [0.01, 'Amount must be greater than 0']
   },
-  
+
   // Expense category
   category: {
     type: String,
@@ -78,14 +78,14 @@ const splitExpenseSchema = new mongoose.Schema({
     ],
     default: 'other'
   },
-  
+
   // Date of expense
   date: {
     type: Date,
     default: Date.now,
     index: true
   },
-  
+
   // Who paid for this expense
   paidBy: {
     memberId: {
@@ -97,25 +97,25 @@ const splitExpenseSchema = new mongoose.Schema({
       required: [true, 'Payer name is required']
     }
   },
-  
+
   // How to split the expense
   splitType: {
     type: String,
     enum: ['equal', 'exact', 'percentage'],
     default: 'equal'
   },
-  
+
   // Who shares this expense and their amounts
   splitAmong: {
     type: [splitAmongSchema],
     validate: {
-      validator: function(splits) {
+      validator: function (splits) {
         return splits.length >= 1
       },
       message: 'At least one person must be included in the split'
     }
   },
-  
+
   // Receipt/proof image URL (optional)
   receipt: {
     url: {
@@ -127,52 +127,52 @@ const splitExpenseSchema = new mongoose.Schema({
       default: null
     }
   },
-  
+
   // Additional notes
   notes: {
     type: String,
     trim: true,
     maxlength: [500, 'Notes cannot exceed 500 characters']
   },
-  
+
   // Who added this expense
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
-  
+
   // Currency
   currency: {
     type: String,
     enum: ['INR', 'USD', 'EUR', 'GBP'],
     default: 'INR'
   },
-  
+
   // Whether this expense has been synced to personal expense tracker
   syncedToExpenses: {
     type: Boolean,
     default: false
   },
-  
+
   // Reference to personal expense (if synced)
   personalExpenseId: {
     type: mongoose.Schema.Types.ObjectId,
     default: null
   },
-  
+
   // Soft delete flag
   isDeleted: {
     type: Boolean,
     default: false,
     index: true
   },
-  
+
   deletedAt: {
     type: Date,
     default: null
   },
-  
+
   deletedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -190,19 +190,19 @@ splitExpenseSchema.index({ 'splitAmong.memberId': 1 })
 splitExpenseSchema.index({ addedBy: 1, createdAt: -1 })
 
 // Virtual: Check if split amounts equal total
-splitExpenseSchema.virtual('isBalanced').get(function() {
+splitExpenseSchema.virtual('isBalanced').get(function () {
   const splitTotal = this.splitAmong.reduce((sum, s) => sum + s.amount, 0)
   return Math.abs(splitTotal - this.amount) < 0.01
 })
 
 // Method: Calculate equal split
-splitExpenseSchema.methods.calculateEqualSplit = function(memberIds, memberNames) {
+splitExpenseSchema.methods.calculateEqualSplit = function (memberIds, memberNames) {
   const perPerson = this.amount / memberIds.length
   const roundedPerPerson = Math.floor(perPerson * 100) / 100
-  
+
   // Calculate remainder for rounding adjustment
   const remainder = this.amount - (roundedPerPerson * memberIds.length)
-  
+
   this.splitAmong = memberIds.map((memberId, index) => ({
     memberId,
     memberName: memberNames[index],
@@ -210,45 +210,45 @@ splitExpenseSchema.methods.calculateEqualSplit = function(memberIds, memberNames
     amount: index === 0 ? roundedPerPerson + remainder : roundedPerPerson,
     percentage: 100 / memberIds.length
   }))
-  
+
   this.splitType = 'equal'
 }
 
 // Method: Set exact amounts split
-splitExpenseSchema.methods.setExactSplit = function(splits) {
+splitExpenseSchema.methods.setExactSplit = function (splits) {
   const totalSplit = splits.reduce((sum, s) => sum + s.amount, 0)
-  
+
   if (Math.abs(totalSplit - this.amount) > 0.01) {
     throw new Error(`Split amounts (${totalSplit}) don't match total (${this.amount})`)
   }
-  
+
   this.splitAmong = splits.map(s => ({
     memberId: s.memberId,
     memberName: s.memberName,
     amount: s.amount,
     percentage: (s.amount / this.amount) * 100
   }))
-  
+
   this.splitType = 'exact'
 }
 
 // Method: Set percentage split
-splitExpenseSchema.methods.setPercentageSplit = function(splits) {
+splitExpenseSchema.methods.setPercentageSplit = function (splits) {
   const totalPercentage = splits.reduce((sum, s) => sum + s.percentage, 0)
-  
+
   if (Math.abs(totalPercentage - 100) > 0.01) {
     throw new Error('Percentages must add up to 100%')
   }
-  
+
   this.splitAmong = splits.map(s => ({
     memberId: s.memberId,
     memberName: s.memberName,
     amount: Math.round((this.amount * s.percentage / 100) * 100) / 100,
     percentage: s.percentage
   }))
-  
+
   this.splitType = 'percentage'
-  
+
   // Adjust for rounding
   const actualTotal = this.splitAmong.reduce((sum, s) => sum + s.amount, 0)
   if (Math.abs(actualTotal - this.amount) > 0) {
@@ -257,7 +257,7 @@ splitExpenseSchema.methods.setPercentageSplit = function(splits) {
 }
 
 // Method: Get share for a specific member
-splitExpenseSchema.methods.getMemberShare = function(memberId) {
+splitExpenseSchema.methods.getMemberShare = function (memberId) {
   const share = this.splitAmong.find(
     s => s.memberId.toString() === memberId.toString()
   )
@@ -265,43 +265,43 @@ splitExpenseSchema.methods.getMemberShare = function(memberId) {
 }
 
 // Method: Check if member paid
-splitExpenseSchema.methods.didMemberPay = function(memberId) {
+splitExpenseSchema.methods.didMemberPay = function (memberId) {
   return this.paidBy.memberId.toString() === memberId.toString()
 }
 
 // Method: Soft delete
-splitExpenseSchema.methods.softDelete = function(userId) {
+splitExpenseSchema.methods.softDelete = function (userId) {
   this.isDeleted = true
   this.deletedAt = new Date()
   this.deletedBy = userId
 }
 
 // Static: Get expenses by group
-splitExpenseSchema.statics.getByGroup = function(groupId, options = {}) {
+splitExpenseSchema.statics.getByGroup = function (groupId, options = {}) {
   const query = {
     groupId,
     isDeleted: false
   }
-  
+
   if (options.startDate) {
     query.date = { $gte: options.startDate }
   }
-  
+
   if (options.endDate) {
     query.date = { ...query.date, $lte: options.endDate }
   }
-  
+
   if (options.category) {
     query.category = options.category
   }
-  
+
   return this.find(query)
     .sort({ date: -1 })
     .limit(options.limit || 100)
 }
 
 // Static: Get expenses by member (paid by)
-splitExpenseSchema.statics.getByMember = function(groupId, memberId) {
+splitExpenseSchema.statics.getByMember = function (groupId, memberId) {
   return this.find({
     groupId,
     'paidBy.memberId': memberId,
@@ -310,7 +310,7 @@ splitExpenseSchema.statics.getByMember = function(groupId, memberId) {
 }
 
 // Static: Calculate total expenses for a group
-splitExpenseSchema.statics.getGroupTotal = function(groupId) {
+splitExpenseSchema.statics.getGroupTotal = function (groupId) {
   return this.aggregate([
     { $match: { groupId: new mongoose.Types.ObjectId(groupId), isDeleted: false } },
     { $group: { _id: null, total: { $sum: '$amount' }, count: { $sum: 1 } } }
@@ -318,7 +318,7 @@ splitExpenseSchema.statics.getGroupTotal = function(groupId) {
 }
 
 // Pre-save validation
-splitExpenseSchema.pre('save', function(next) {
+splitExpenseSchema.pre('save', function (next) {
   // Ensure split amounts equal total
   if (!this.isBalanced) {
     const splitTotal = this.splitAmong.reduce((sum, s) => sum + s.amount, 0)

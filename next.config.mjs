@@ -71,7 +71,7 @@ const nextConfig = {
 
     // Image optimization
     images: {
-        domains: ['www.mywealthwise.tech', 'mywealthwise.tech', 'lh3.googleusercontent.com'],
+        domains: ['www.mywealthwise.in', 'mywealthwise.in', 'lh3.googleusercontent.com'],
         formats: ['image/avif', 'image/webp'],
     },
 

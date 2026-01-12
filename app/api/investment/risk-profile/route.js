@@ -15,7 +15,7 @@ import RiskProfile from '@/models/RiskProfile'
 export async function GET(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -65,7 +65,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -87,7 +87,7 @@ export async function POST(request) {
     // Validate required questions
     const requiredQuestions = [
       'investmentHorizon',
-      'riskTolerance', 
+      'riskTolerance',
       'incomeStability',
       'emergencyFund',
       'investmentExperience',
@@ -142,7 +142,7 @@ export async function POST(request) {
 export async function DELETE(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },

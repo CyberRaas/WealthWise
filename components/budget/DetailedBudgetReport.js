@@ -197,8 +197,8 @@ Framework: ${budget.framework || 'Advanced Realistic Model'}
 Generated: ${budget.generatedAt ? new Date(budget.generatedAt).toLocaleString('en-IN') : date}
 Confidence: ${budget.confidence ? Math.round(budget.confidence * 100) + '%' : 'High'}
 
-Visit: https://www.mywealthwise.tech
-Support: support@mywealthwise.tech
+Visit: https://www.mywealthwise.in
+Support: support@mywealthwise.in
 
 ═══════════════════════════════════════════════════════════════
 `

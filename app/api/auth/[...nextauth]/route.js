@@ -43,8 +43,8 @@ export const { GET, POST } = handlers
 export async function OPTIONS(request) {
   const origin = request.headers.get('origin')
   const allowedOrigins = [
-    'https://www.mywealthwise.tech',
-    'https://mywealthwise.tech',
+    'https://www.mywealthwise.in',
+    'https://mywealthwise.in',
     process.env.NEXTAUTH_URL
   ].filter(Boolean)
 
@@ -59,7 +59,7 @@ export async function OPTIONS(request) {
   if (origin && allowedOrigins.includes(origin)) {
     responseHeaders['Access-Control-Allow-Origin'] = origin
   } else {
-    responseHeaders['Access-Control-Allow-Origin'] = process.env.NEXTAUTH_URL || 'https://www.mywealthwise.tech'
+    responseHeaders['Access-Control-Allow-Origin'] = process.env.NEXTAUTH_URL || 'https://www.mywealthwise.in'
   }
 
   return new Response(null, {

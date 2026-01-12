@@ -1,14 +1,19 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { 
-  HandCoins, 
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  HandCoins,
   ChevronRight,
   IndianRupee,
   Loader2,
@@ -16,97 +21,110 @@ import {
   CreditCard,
   Banknote,
   Wallet,
-  CheckCircle
-} from 'lucide-react'
-import toast from 'react-hot-toast'
+  CheckCircle,
+} from "lucide-react";
+import toast from "react-hot-toast";
 
 const PAYMENT_METHODS = [
-  { id: 'upi', name: 'UPI', icon: Smartphone },
-  { id: 'cash', name: 'Cash', icon: Banknote },
-  { id: 'bank_transfer', name: 'Bank Transfer', icon: CreditCard },
-  { id: 'wallet', name: 'Wallet', icon: Wallet }
-]
+  { id: "upi", name: "UPI", icon: Smartphone },
+  { id: "cash", name: "Cash", icon: Banknote },
+  { id: "bank_transfer", name: "Bank Transfer", icon: CreditCard },
+  { id: "wallet", name: "Wallet", icon: Wallet },
+];
 
-export default function SettleUpModal({ isOpen, onClose, group, simplifiedDebts, onSettlementRecorded }) {
-  const [selectedDebt, setSelectedDebt] = useState(null)
-  const [amount, setAmount] = useState('')
-  const [paymentMethod, setPaymentMethod] = useState('upi')
-  const [notes, setNotes] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [step, setStep] = useState('select') // 'select' | 'details' | 'success'
+export default function SettleUpModal({
+  isOpen,
+  onClose,
+  group,
+  simplifiedDebts,
+  onSettlementRecorded,
+}) {
+  const [selectedDebt, setSelectedDebt] = useState(null);
+  const [amount, setAmount] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("upi");
+  const [notes, setNotes] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState("select"); // 'select' | 'details' | 'success'
 
   const getInitials = (name) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?'
-  }
+    return (
+      name
+        ?.split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2) || "?"
+    );
+  };
 
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(value)
-  }
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
 
   const handleDebtSelect = (debt) => {
-    setSelectedDebt(debt)
-    setAmount(debt.amount.toString())
-    setStep('details')
-  }
+    setSelectedDebt(debt);
+    setAmount(debt.amount.toString());
+    setStep("details");
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!selectedDebt || !amount) {
-      toast.error('Please enter an amount')
-      return
+      toast.error("Please enter an amount");
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     try {
-      const response = await fetch('/api/split/settlements', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/split/settlements", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           groupId: group._id,
           to: selectedDebt.to._id,
           amount: parseFloat(amount),
           paymentMethod,
-          notes: notes.trim()
-        })
-      })
+          notes: notes.trim(),
+        }),
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (data.success) {
-        setStep('success')
+        setStep("success");
         setTimeout(() => {
-          onSettlementRecorded?.(data.settlement)
-          resetForm()
-        }, 2000)
+          onSettlementRecorded?.(data.settlement);
+          resetForm();
+        }, 2000);
       } else {
-        toast.error(data.error || 'Failed to record settlement')
+        toast.error(data.error || "Failed to record settlement");
       }
     } catch (error) {
-      console.error('Error recording settlement:', error)
-      toast.error('Failed to record settlement')
+      console.error("Error recording settlement:", error);
+      toast.error("Failed to record settlement");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const resetForm = () => {
-    setSelectedDebt(null)
-    setAmount('')
-    setPaymentMethod('upi')
-    setNotes('')
-    setStep('select')
-  }
+    setSelectedDebt(null);
+    setAmount("");
+    setPaymentMethod("upi");
+    setNotes("");
+    setStep("select");
+  };
 
   const handleClose = () => {
-    resetForm()
-    onClose?.()
-  }
+    resetForm();
+    onClose?.();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -119,12 +137,12 @@ export default function SettleUpModal({ isOpen, onClose, group, simplifiedDebts,
         </DialogHeader>
 
         {/* Step 1: Select who to pay */}
-        {step === 'select' && (
+        {step === "select" && (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
               Select a payment to settle:
             </p>
-            
+
             {simplifiedDebts?.length === 0 ? (
               <div className="text-center py-8">
                 <CheckCircle className="h-16 w-16 mx-auto text-green-500 mb-4" />
@@ -145,7 +163,9 @@ export default function SettleUpModal({ isOpen, onClose, group, simplifiedDebts,
                     <div className="flex items-center gap-3">
                       <Avatar>
                         <AvatarImage src={debt.from?.avatar} />
-                        <AvatarFallback>{getInitials(debt.from?.name)}</AvatarFallback>
+                        <AvatarFallback>
+                          {getInitials(debt.from?.name)}
+                        </AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="font-medium">{debt.from?.name}</p>
@@ -167,7 +187,7 @@ export default function SettleUpModal({ isOpen, onClose, group, simplifiedDebts,
         )}
 
         {/* Step 2: Payment details */}
-        {step === 'details' && selectedDebt && (
+        {step === "details" && selectedDebt && (
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Payment summary */}
             <div className="p-4 bg-muted/50 rounded-lg">
@@ -175,15 +195,21 @@ export default function SettleUpModal({ isOpen, onClose, group, simplifiedDebts,
                 <div className="text-center">
                   <Avatar className="mx-auto mb-1">
                     <AvatarImage src={selectedDebt.from?.avatar} />
-                    <AvatarFallback>{getInitials(selectedDebt.from?.name)}</AvatarFallback>
+                    <AvatarFallback>
+                      {getInitials(selectedDebt.from?.name)}
+                    </AvatarFallback>
                   </Avatar>
-                  <p className="text-sm font-medium">{selectedDebt.from?.name}</p>
+                  <p className="text-sm font-medium">
+                    {selectedDebt.from?.name}
+                  </p>
                 </div>
                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
                 <div className="text-center">
                   <Avatar className="mx-auto mb-1">
                     <AvatarImage src={selectedDebt.to?.avatar} />
-                    <AvatarFallback>{getInitials(selectedDebt.to?.name)}</AvatarFallback>
+                    <AvatarFallback>
+                      {getInitials(selectedDebt.to?.name)}
+                    </AvatarFallback>
                   </Avatar>
                   <p className="text-sm font-medium">{selectedDebt.to?.name}</p>
                 </div>
@@ -214,21 +240,27 @@ export default function SettleUpModal({ isOpen, onClose, group, simplifiedDebts,
             {/* Payment Method */}
             <div className="space-y-2">
               <Label>Payment Method</Label>
-              <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="grid grid-cols-2 gap-2">
-                {PAYMENT_METHODS.map(method => {
-                  const IconComponent = method.icon
+              <RadioGroup
+                value={paymentMethod}
+                onValueChange={setPaymentMethod}
+                className="grid grid-cols-2 gap-2"
+              >
+                {PAYMENT_METHODS.map((method) => {
+                  const IconComponent = method.icon;
                   return (
                     <label
                       key={method.id}
                       className={`flex items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                        paymentMethod === method.id ? 'border-primary bg-primary/10' : 'border-border'
+                        paymentMethod === method.id
+                          ? "border-primary bg-primary/10"
+                          : "border-border"
                       }`}
                     >
                       <RadioGroupItem value={method.id} className="sr-only" />
                       <IconComponent className="h-4 w-4" />
                       <span className="text-sm">{method.name}</span>
                     </label>
-                  )
+                  );
                 })}
               </RadioGroup>
             </div>
@@ -249,7 +281,7 @@ export default function SettleUpModal({ isOpen, onClose, group, simplifiedDebts,
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setStep('select')}
+                onClick={() => setStep("select")}
                 disabled={loading}
                 className="flex-1"
               >
@@ -262,7 +294,7 @@ export default function SettleUpModal({ isOpen, onClose, group, simplifiedDebts,
                     Recording...
                   </>
                 ) : (
-                  'Record Payment'
+                  "Record Payment"
                 )}
               </Button>
             </div>
@@ -270,7 +302,7 @@ export default function SettleUpModal({ isOpen, onClose, group, simplifiedDebts,
         )}
 
         {/* Step 3: Success */}
-        {step === 'success' && (
+        {step === "success" && (
           <div className="text-center py-8">
             <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-4">
               <CheckCircle className="h-10 w-10 text-green-600" />
@@ -283,5 +315,5 @@ export default function SettleUpModal({ isOpen, onClose, group, simplifiedDebts,
         )}
       </DialogContent>
     </Dialog>
-  )
+  );
 }

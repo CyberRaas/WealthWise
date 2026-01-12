@@ -58,7 +58,7 @@ export default function InvestmentPage() {
   if (!riskProfile && activeView !== 'explore') {
     return (
       <div className="container max-w-2xl mx-auto py-6 px-4">
-        <RiskAssessment 
+        <RiskAssessment
           onComplete={handleAssessmentComplete}
         />
       </div>
@@ -69,7 +69,7 @@ export default function InvestmentPage() {
   if (activeView === 'assessment') {
     return (
       <div className="container max-w-2xl mx-auto py-6 px-4">
-        <RiskAssessment 
+        <RiskAssessment
           onComplete={handleAssessmentComplete}
           onBack={() => setActiveView('overview')}
         />
@@ -105,7 +105,7 @@ export default function InvestmentPage() {
         </div>
 
         <TabsContent value="recommendations">
-          <RecommendationDisplay 
+          <RecommendationDisplay
             riskProfile={riskProfile}
             onRetakeAssessment={() => setActiveView('assessment')}
           />

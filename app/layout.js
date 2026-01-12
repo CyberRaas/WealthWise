@@ -14,7 +14,7 @@ const poppins = Poppins({
 
 
 export const metadata = {
-  metadataBase: new URL('https://www.mywealthwise.tech'),
+  metadataBase: new URL('https://www.mywealthwise.in'),
   title: {
     default: 'WealthWise - Smart Financial Planner | Track Expenses, Set Goals & Manage Budget',
     template: '%s | WealthWise'
@@ -53,7 +53,7 @@ export const metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://www.mywealthwise.tech',
+    url: 'https://www.mywealthwise.in',
     siteName: 'WealthWise',
     title: 'WealthWise - Smart Financial Planner',
     description: 'Take control of your finances with WealthWise. Track expenses, set financial goals, create budgets, and get AI-powered insights.',
@@ -160,7 +160,7 @@ export default function RootLayout({ children }) {
               name: 'WealthWise',
               applicationCategory: 'FinanceApplication',
               description: 'Smart financial planning and expense tracking application with AI-powered insights',
-              url: 'https://www.mywealthwise.tech',
+              url: 'https://www.mywealthwise.in',
               operatingSystem: 'All',
               offers: {
                 '@type': 'Offer',

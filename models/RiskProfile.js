@@ -16,7 +16,7 @@ const riskProfileSchema = new mongoose.Schema({
     unique: true,
     index: true
   },
-  
+
   // Risk Assessment Answers
   assessment: {
     // Question 1: Age group
@@ -25,7 +25,7 @@ const riskProfileSchema = new mongoose.Schema({
       enum: ['18-25', '26-35', '36-45', '46-55', '55+'],
       required: true
     },
-    
+
     // Question 2: Income stability
     incomeStability: {
       type: String,
@@ -37,7 +37,7 @@ const riskProfileSchema = new mongoose.Schema({
       ],
       required: true
     },
-    
+
     // Question 3: Investment time horizon
     investmentHorizon: {
       type: String,
@@ -50,7 +50,7 @@ const riskProfileSchema = new mongoose.Schema({
       ],
       required: true
     },
-    
+
     // Question 4: Reaction to market drop
     riskTolerance: {
       type: String,
@@ -61,7 +61,7 @@ const riskProfileSchema = new mongoose.Schema({
       ],
       required: true
     },
-    
+
     // Question 5: Primary investment goal
     primaryGoal: {
       type: String,
@@ -77,7 +77,7 @@ const riskProfileSchema = new mongoose.Schema({
       ],
       required: true
     },
-    
+
     // Question 6: Current investment experience
     investmentExperience: {
       type: String,
@@ -89,7 +89,7 @@ const riskProfileSchema = new mongoose.Schema({
       ],
       default: 'beginner'
     },
-    
+
     // Question 7: Monthly investable amount
     monthlyInvestable: {
       type: String,
@@ -102,33 +102,33 @@ const riskProfileSchema = new mongoose.Schema({
       ],
       default: '5000_15000'
     },
-    
+
     // Additional: Existing investments (multiple select)
     existingInvestments: [{
       type: String,
-      enum: ['savings_account', 'fd', 'rd', 'ppf', 'nps', 'mutual_funds', 
-             'stocks', 'gold', 'real_estate', 'crypto', 'insurance', 'none']
+      enum: ['savings_account', 'fd', 'rd', 'ppf', 'nps', 'mutual_funds',
+        'stocks', 'gold', 'real_estate', 'crypto', 'insurance', 'none']
     }],
-    
+
     // Additional: Has emergency fund?
     hasEmergencyFund: {
       type: Boolean,
       default: false
     },
-    
+
     // Additional: Has dependents?
     hasDependents: {
       type: Boolean,
       default: false
     },
-    
+
     // Additional: Has loans/EMIs?
     hasLoans: {
       type: Boolean,
       default: false
     }
   },
-  
+
   // Calculated Risk Profile Type
   profileType: {
     type: String,
@@ -136,7 +136,7 @@ const riskProfileSchema = new mongoose.Schema({
     required: true,
     index: true
   },
-  
+
   // Numeric risk score (1-10)
   riskScore: {
     type: Number,
@@ -144,13 +144,13 @@ const riskProfileSchema = new mongoose.Schema({
     max: 10,
     required: true
   },
-  
+
   // Profile description
   profileDescription: {
     type: String,
     default: ''
   },
-  
+
   // Recommended asset allocation percentages
   recommendedAllocation: {
     government: {      // PPF, NPS, SSY
@@ -184,31 +184,31 @@ const riskProfileSchema = new mongoose.Schema({
       default: 5
     }
   },
-  
+
   // Assessment completion status
   isComplete: {
     type: Boolean,
     default: false
   },
-  
+
   // When assessment was completed
   assessedAt: {
     type: Date,
     default: null
   },
-  
+
   // When profile was last updated
   lastUpdated: {
     type: Date,
     default: null
   },
-  
+
   // Number of times assessment taken
   assessmentCount: {
     type: Number,
     default: 1
   },
-  
+
   // Profile validity (suggest reassessment after 1 year)
   validUntil: {
     type: Date,
@@ -219,9 +219,9 @@ const riskProfileSchema = new mongoose.Schema({
 })
 
 // Static method: Calculate risk profile from answers
-riskProfileSchema.statics.calculateProfile = function(assessment) {
+riskProfileSchema.statics.calculateProfile = function (assessment) {
   let score = 0
-  
+
   // Age scoring (younger = more risk capacity)
   const ageScores = {
     '18-25': 3,
@@ -231,7 +231,7 @@ riskProfileSchema.statics.calculateProfile = function(assessment) {
     '55+': 0
   }
   score += ageScores[assessment.ageGroup] || 0
-  
+
   // Income stability scoring
   const incomeScores = {
     'very_stable': 2,
@@ -240,7 +240,7 @@ riskProfileSchema.statics.calculateProfile = function(assessment) {
     'unstable': 0
   }
   score += incomeScores[assessment.incomeStability] || 0
-  
+
   // Time horizon scoring (longer = more risk capacity)
   const horizonScores = {
     'less_than_1': 0,
@@ -250,7 +250,7 @@ riskProfileSchema.statics.calculateProfile = function(assessment) {
     '10_plus': 4
   }
   score += horizonScores[assessment.investmentHorizon] || 0
-  
+
   // Risk tolerance scoring
   const toleranceScores = {
     'sell_immediately': 0,
@@ -258,7 +258,7 @@ riskProfileSchema.statics.calculateProfile = function(assessment) {
     'buy_more': 4
   }
   score += toleranceScores[assessment.riskTolerance] || 0
-  
+
   // Experience scoring
   const experienceScores = {
     'none': 0,
@@ -267,14 +267,14 @@ riskProfileSchema.statics.calculateProfile = function(assessment) {
     'advanced': 3
   }
   score += experienceScores[assessment.investmentExperience] || 0
-  
+
   // Normalize to 1-10 scale
   const maxScore = 16 // 3 + 2 + 4 + 4 + 3
   const normalizedScore = Math.round((score / maxScore) * 9) + 1
-  
+
   // Determine profile type
   let profileType, profileDescription, allocation
-  
+
   if (normalizedScore <= 3) {
     profileType = 'conservative'
     profileDescription = 'You prefer stability over high returns. Focus on guaranteed, low-risk investments.'
@@ -306,19 +306,19 @@ riskProfileSchema.statics.calculateProfile = function(assessment) {
       liquid: 5
     }
   }
-  
+
   // Adjust for emergency fund
   if (!assessment.hasEmergencyFund) {
     allocation.liquid += 10
     allocation.equity -= 10
   }
-  
+
   // Adjust for loans
   if (assessment.hasLoans) {
     allocation.government += 5
     allocation.equity -= 5
   }
-  
+
   return {
     profileType,
     riskScore: normalizedScore,
@@ -328,17 +328,17 @@ riskProfileSchema.statics.calculateProfile = function(assessment) {
 }
 
 // Method: Update assessment
-riskProfileSchema.methods.updateAssessment = function(newAssessment) {
+riskProfileSchema.methods.updateAssessment = function (newAssessment) {
   this.assessment = { ...this.assessment, ...newAssessment }
-  
+
   // Recalculate profile
   const calculated = this.constructor.calculateProfile(this.assessment)
-  
+
   this.profileType = calculated.profileType
   this.riskScore = calculated.riskScore
   this.profileDescription = calculated.profileDescription
   this.recommendedAllocation = calculated.recommendedAllocation
-  
+
   this.lastUpdated = new Date()
   this.assessmentCount += 1
   this.validUntil = new Date(+new Date() + 365 * 24 * 60 * 60 * 1000)
@@ -347,18 +347,18 @@ riskProfileSchema.methods.updateAssessment = function(newAssessment) {
 }
 
 // Method: Check if reassessment needed
-riskProfileSchema.methods.needsReassessment = function() {
+riskProfileSchema.methods.needsReassessment = function () {
   if (!this.validUntil) return true
   return new Date() > this.validUntil
 }
 
 // Virtual: Is expired
-riskProfileSchema.virtual('isExpired').get(function() {
+riskProfileSchema.virtual('isExpired').get(function () {
   return this.needsReassessment()
 })
 
 // Virtual: Days until expiry
-riskProfileSchema.virtual('daysUntilExpiry').get(function() {
+riskProfileSchema.virtual('daysUntilExpiry').get(function () {
   if (!this.validUntil) return 0
   const diff = this.validUntil - new Date()
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))

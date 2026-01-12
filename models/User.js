@@ -10,24 +10,24 @@ const userSchema = new mongoose.Schema({
     trim: true,
     index: true
   },
-  
+
   name: {
     type: String,
     required: true,
     trim: true
   },
-  
+
   image: {
     type: String,
     default: null
   },
-  
+
   // Email verification
   emailVerified: {
     type: Date,
     default: null
   },
-  
+
   // Enhanced user preferences
   preferences: {
     // Language and localization
@@ -37,31 +37,31 @@ const userSchema = new mongoose.Schema({
       default: 'en',
       index: true
     },
-    
+
     // Regional settings
     currency: {
       type: String,
       enum: ['INR', 'USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD'],
       default: 'INR'
     },
-    
+
     timezone: {
       type: String,
       default: 'Asia/Kolkata'
     },
-    
+
     dateFormat: {
       type: String,
       enum: ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD'],
       default: 'DD/MM/YYYY'
     },
-    
+
     numberFormat: {
       type: String,
       enum: ['indian', 'international'],
       default: 'indian' // 1,00,000 vs 100,000
     },
-    
+
     // Notification preferences
     notifications: {
       email: {
@@ -89,7 +89,7 @@ const userSchema = new mongoose.Schema({
         default: true
       }
     },
-    
+
     // Privacy settings
     privacy: {
       shareData: {
@@ -106,14 +106,14 @@ const userSchema = new mongoose.Schema({
         default: 'private'
       }
     },
-    
+
     // UI preferences
     theme: {
       type: String,
       enum: ['light', 'dark', 'system'],
       default: 'system'
     },
-    
+
     // Dashboard preferences
     dashboard: {
       defaultView: {
@@ -127,7 +127,7 @@ const userSchema = new mongoose.Schema({
       }
     }
   },
-  
+
   // User profile information
   profile: {
     city: {
@@ -135,56 +135,56 @@ const userSchema = new mongoose.Schema({
       trim: true,
       default: ''
     },
-    
+
     country: {
       type: String,
       trim: true,
       default: 'India'
     },
-    
+
     familySize: {
       type: Number,
       min: 1,
       max: 20,
       default: 1
     },
-    
+
     ageRange: {
       type: String,
       enum: ['18-25', '26-35', '36-45', '46-55', '56-65', '65+'],
       default: '26-35'
     },
-    
+
     occupation: {
       type: String,
       trim: true,
       default: ''
     },
-    
+
     financialExperience: {
       type: String,
       enum: ['beginner', 'intermediate', 'advanced'],
       default: 'beginner'
     },
-    
+
     bio: {
       type: String,
       maxlength: 500,
       default: ''
     },
-    
+
     phone: {
       type: String,
       trim: true,
       default: ''
     },
-    
+
     dateOfBirth: {
       type: Date,
       default: null
     }
   },
-  
+
   // Subscription information
   subscription: {
     plan: {
@@ -192,99 +192,99 @@ const userSchema = new mongoose.Schema({
       enum: ['free', 'premium', 'family'],
       default: 'free'
     },
-    
+
     status: {
       type: String,
       enum: ['active', 'inactive', 'cancelled', 'expired'],
       default: 'active'
     },
-    
+
     startDate: {
       type: Date,
       default: null
     },
-    
+
     endDate: {
       type: Date,
       default: null
     },
-    
+
     features: {
       type: [String],
       default: ['basic_budgeting', 'expense_tracking']
     }
   },
-  
+
   // Security and authentication
   security: {
     lastLogin: {
       type: Date,
       default: null
     },
-    
+
     loginCount: {
       type: Number,
       default: 0
     },
-    
+
     twoFactorEnabled: {
       type: Boolean,
       default: false
     },
-    
+
     passwordChangedAt: {
       type: Date,
       default: null
     }
   },
-  
+
   // Onboarding and user journey
   onboarding: {
     completed: {
       type: Boolean,
       default: false
     },
-    
+
     currentStep: {
       type: String,
       enum: ['welcome', 'profile', 'preferences', 'budget_setup', 'completed'],
       default: 'welcome'
     },
-    
+
     completedSteps: {
       type: [String],
       default: []
     },
-    
+
     skippedSteps: {
       type: [String],
       default: []
     }
   },
-  
+
   // User activity and engagement
   activity: {
     lastActiveAt: {
       type: Date,
       default: Date.now
     },
-    
+
     totalSessions: {
       type: Number,
       default: 0
     },
-    
+
     averageSessionDuration: {
       type: Number,
       default: 0 // in minutes
     },
-    
+
     featuresUsed: {
       type: [String],
       default: []
     }
   },
-  
+
   // Account status
   status: {
     type: String,
@@ -337,14 +337,14 @@ const userSchema = new mongoose.Schema({
       default: null
     }
   },
-  
+
   // Metadata
   createdAt: {
     type: Date,
     default: Date.now,
     index: true
   },
-  
+
   updatedAt: {
     type: Date,
     default: Date.now
@@ -367,89 +367,89 @@ userSchema.index({ role: 1, status: 1 })
 userSchema.index({ 'adminProfile.department': 1 })
 
 // Virtual for full name
-userSchema.virtual('displayName').get(function() {
+userSchema.virtual('displayName').get(function () {
   return this.name || this.email.split('@')[0]
 })
 
 // Virtual for subscription status
-userSchema.virtual('isSubscriptionActive').get(function() {
+userSchema.virtual('isSubscriptionActive').get(function () {
   if (!this.subscription) return false
-  return this.subscription.status === 'active' && 
-         (!this.subscription.endDate || this.subscription.endDate > new Date())
+  return this.subscription.status === 'active' &&
+    (!this.subscription.endDate || this.subscription.endDate > new Date())
 })
 
 // Virtual for onboarding progress
-userSchema.virtual('onboardingProgress').get(function() {
+userSchema.virtual('onboardingProgress').get(function () {
   const totalSteps = 4 // welcome, profile, preferences, budget_setup
   const completedSteps = this.onboarding?.completedSteps?.length || 0
   return Math.round((completedSteps / totalSteps) * 100)
 })
 
 // Virtual for checking if user is admin (moderator or higher)
-userSchema.virtual('isAdmin').get(function() {
+userSchema.virtual('isAdmin').get(function () {
   if (!this.role) return false
   return ['moderator', 'admin', 'super_admin'].includes(this.role)
 })
 
 // Virtual for checking if user is super admin
-userSchema.virtual('isSuperAdmin').get(function() {
+userSchema.virtual('isSuperAdmin').get(function () {
   if (!this.role) return false
   return this.role === 'super_admin'
 })
 
 // Pre-save middleware
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
   this.updatedAt = new Date()
-  
+
   // Update activity
   if (this.isModified() && !this.isNew) {
     this.activity.lastActiveAt = new Date()
   }
-  
+
   next()
 })
 
 // Instance methods
-userSchema.methods.updateActivity = function(feature) {
+userSchema.methods.updateActivity = function (feature) {
   this.activity.lastActiveAt = new Date()
   this.activity.totalSessions += 1
-  
+
   if (feature && !this.activity.featuresUsed.includes(feature)) {
     this.activity.featuresUsed.push(feature)
   }
-  
+
   return this.save()
 }
 
-userSchema.methods.completeOnboardingStep = function(step) {
+userSchema.methods.completeOnboardingStep = function (step) {
   if (!this.onboarding.completedSteps.includes(step)) {
     this.onboarding.completedSteps.push(step)
   }
-  
+
   // Remove from skipped if it was there
   this.onboarding.skippedSteps = this.onboarding.skippedSteps.filter(s => s !== step)
-  
+
   // Check if onboarding is complete
   const requiredSteps = ['profile', 'preferences', 'budget_setup']
   const isComplete = requiredSteps.every(step => this.onboarding.completedSteps.includes(step))
-  
+
   if (isComplete) {
     this.onboarding.completed = true
     this.onboarding.currentStep = 'completed'
   }
-  
+
   return this.save()
 }
 
-userSchema.methods.getLocalizedContent = function(content) {
+userSchema.methods.getLocalizedContent = function (content) {
   const language = this.preferences.language || 'en'
   return content[language] || content.en || content
 }
 
-userSchema.methods.formatCurrency = function(amount) {
+userSchema.methods.formatCurrency = function (amount) {
   const currency = this.preferences.currency || 'INR'
   const locale = this.preferences.language === 'hi' ? 'hi-IN' : 'en-IN'
-  
+
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: currency,
@@ -457,23 +457,23 @@ userSchema.methods.formatCurrency = function(amount) {
   }).format(amount)
 }
 
-userSchema.methods.formatNumber = function(number) {
+userSchema.methods.formatNumber = function (number) {
   const format = this.preferences.numberFormat || 'indian'
   const locale = format === 'indian' ? 'en-IN' : 'en-US'
-  
+
   return new Intl.NumberFormat(locale).format(number)
 }
 
 // Static methods
-userSchema.statics.findByLanguage = function(language) {
+userSchema.statics.findByLanguage = function (language) {
   return this.find({ 'preferences.language': language, status: 'active' })
 }
 
-userSchema.statics.getActiveUsers = function() {
+userSchema.statics.getActiveUsers = function () {
   return this.find({ status: 'active' })
 }
 
-userSchema.statics.getUserStats = function() {
+userSchema.statics.getUserStats = function () {
   return this.aggregate([
     {
       $group: {

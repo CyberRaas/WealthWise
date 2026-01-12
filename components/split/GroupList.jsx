@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useTranslation } from '@/lib/i18n'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from "react";
+import { useTranslation } from "@/lib/i18n";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Users,
   Plus,
@@ -18,10 +18,10 @@ import {
   MoreHorizontal,
   IndianRupee,
   TrendingUp,
-  TrendingDown
-} from 'lucide-react'
-import toast from 'react-hot-toast'
-import CreateGroupModal from './CreateGroupModal'
+  TrendingDown,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import CreateGroupModal from "./CreateGroupModal";
 
 const GROUP_TYPE_ICONS = {
   trip: Plane,
@@ -29,67 +29,67 @@ const GROUP_TYPE_ICONS = {
   couple: Heart,
   event: Calendar,
   project: Briefcase,
-  other: Users
-}
+  other: Users,
+};
 
 const GROUP_TYPE_COLORS = {
-  trip: 'bg-blue-500',
-  home: 'bg-green-500',
-  couple: 'bg-pink-500',
-  event: 'bg-purple-500',
-  project: 'bg-orange-500',
-  other: 'bg-gray-500'
-}
+  trip: "bg-blue-500",
+  home: "bg-green-500",
+  couple: "bg-pink-500",
+  event: "bg-purple-500",
+  project: "bg-orange-500",
+  other: "bg-gray-500",
+};
 
 export default function GroupList({ onSelectGroup }) {
-  const { t } = useTranslation()
-  const [groups, setGroups] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showCreateModal, setShowCreateModal] = useState(false)
+  const { t } = useTranslation();
+  const [groups, setGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {
-    fetchGroups()
-  }, [])
+    fetchGroups();
+  }, []);
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch('/api/split/groups')
-      const data = await response.json()
+      const response = await fetch("/api/split/groups");
+      const data = await response.json();
 
       if (data.success) {
-        setGroups(data.groups || [])
+        setGroups(data.groups || []);
       }
     } catch (error) {
-      console.error('Failed to fetch groups:', error)
-      toast.error('Failed to load groups')
+      console.error("Failed to fetch groups:", error);
+      toast.error("Failed to load groups");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleGroupCreated = (newGroup) => {
-    setGroups(prev => [newGroup, ...prev])
-    setShowCreateModal(false)
-    toast.success('Group created successfully!')
-  }
+    setGroups((prev) => [newGroup, ...prev]);
+    setShowCreateModal(false);
+    toast.success("Group created successfully!");
+  };
 
   const formatBalance = (balance) => {
-    const absBalance = Math.abs(balance)
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(absBalance)
-  }
+    const absBalance = Math.abs(balance);
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(absBalance);
+  };
 
   if (loading) {
     return (
       <div className="space-y-4">
-        {[1, 2, 3].map(i => (
+        {[1, 2, 3].map((i) => (
           <div key={i} className="h-24 bg-muted animate-pulse rounded-lg" />
         ))}
       </div>
-    )
+    );
   }
 
   return (
@@ -98,7 +98,9 @@ export default function GroupList({ onSelectGroup }) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Split Expenses</h2>
-          <p className="text-muted-foreground">Manage shared expenses with friends & family</p>
+          <p className="text-muted-foreground">
+            Manage shared expenses with friends & family
+          </p>
         </div>
         <Button onClick={() => setShowCreateModal(true)} className="gap-2">
           <Plus className="h-4 w-4" />
@@ -125,9 +127,9 @@ export default function GroupList({ onSelectGroup }) {
         <div className="grid gap-4">
           <AnimatePresence>
             {groups.map((group, index) => {
-              const IconComponent = GROUP_TYPE_ICONS[group.type] || Users
-              const colorClass = GROUP_TYPE_COLORS[group.type] || 'bg-gray-500'
-              
+              const IconComponent = GROUP_TYPE_ICONS[group.type] || Users;
+              const colorClass = GROUP_TYPE_COLORS[group.type] || "bg-gray-500";
+
               return (
                 <motion.div
                   key={group._id}
@@ -136,29 +138,44 @@ export default function GroupList({ onSelectGroup }) {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <Card 
+                  <Card
                     className="cursor-pointer hover:border-primary/50 transition-colors"
                     onClick={() => onSelectGroup?.(group)}
                   >
                     <CardContent className="p-4">
                       <div className="flex items-center gap-4">
                         {/* Group Icon */}
-                        <div className={`w-12 h-12 rounded-full ${colorClass} flex items-center justify-center`}>
+                        <div
+                          className={`w-12 h-12 rounded-full ${colorClass} flex items-center justify-center`}
+                        >
                           <IconComponent className="h-6 w-6 text-white" />
                         </div>
 
                         {/* Group Info */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-semibold truncate">{group.name}</h3>
-                            <Badge variant={group.status === 'active' ? 'default' : 'secondary'}>
+                            <h3 className="font-semibold truncate">
+                              {group.name}
+                            </h3>
+                            <Badge
+                              variant={
+                                group.status === "active"
+                                  ? "default"
+                                  : "secondary"
+                              }
+                            >
                               {group.status}
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            {group.memberCount} member{group.memberCount !== 1 ? 's' : ''}
+                            {group.memberCount} member
+                            {group.memberCount !== 1 ? "s" : ""}
                             {group.stats?.expenseCount > 0 && (
-                              <> • {group.stats.expenseCount} expense{group.stats.expenseCount !== 1 ? 's' : ''}</>
+                              <>
+                                {" "}
+                                • {group.stats.expenseCount} expense
+                                {group.stats.expenseCount !== 1 ? "s" : ""}
+                              </>
                             )}
                           </p>
                         </div>
@@ -166,9 +183,13 @@ export default function GroupList({ onSelectGroup }) {
                         {/* Balance */}
                         <div className="text-right">
                           {group.userBalance !== 0 ? (
-                            <div className={`flex items-center gap-1 ${
-                              group.userBalance > 0 ? 'text-green-600' : 'text-red-600'
-                            }`}>
+                            <div
+                              className={`flex items-center gap-1 ${
+                                group.userBalance > 0
+                                  ? "text-green-600"
+                                  : "text-red-600"
+                              }`}
+                            >
                               {group.userBalance > 0 ? (
                                 <>
                                   <TrendingUp className="h-4 w-4" />
@@ -186,10 +207,16 @@ export default function GroupList({ onSelectGroup }) {
                               )}
                             </div>
                           ) : (
-                            <span className="text-muted-foreground text-sm">Settled</span>
+                            <span className="text-muted-foreground text-sm">
+                              Settled
+                            </span>
                           )}
                           <p className="text-xs text-muted-foreground">
-                            {group.userBalance > 0 ? 'you get back' : group.userBalance < 0 ? 'you owe' : ''}
+                            {group.userBalance > 0
+                              ? "you get back"
+                              : group.userBalance < 0
+                              ? "you owe"
+                              : ""}
                           </p>
                         </div>
 
@@ -198,7 +225,7 @@ export default function GroupList({ onSelectGroup }) {
                     </CardContent>
                   </Card>
                 </motion.div>
-              )
+              );
             })}
           </AnimatePresence>
         </div>
@@ -221,8 +248,13 @@ export default function GroupList({ onSelectGroup }) {
                 </div>
               </div>
               <div className="text-right text-sm text-muted-foreground">
-                <p>{groups.length} group{groups.length !== 1 ? 's' : ''}</p>
-                <p>{groups.filter(g => g.userBalance !== 0).length} with pending</p>
+                <p>
+                  {groups.length} group{groups.length !== 1 ? "s" : ""}
+                </p>
+                <p>
+                  {groups.filter((g) => g.userBalance !== 0).length} with
+                  pending
+                </p>
               </div>
             </div>
           </CardContent>
@@ -236,5 +268,5 @@ export default function GroupList({ onSelectGroup }) {
         onGroupCreated={handleGroupCreated}
       />
     </div>
-  )
+  );
 }

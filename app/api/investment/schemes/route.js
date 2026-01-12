@@ -5,9 +5,9 @@
 
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { 
-  INVESTMENT_SCHEMES, 
-  getSchemesForRiskProfile, 
+import {
+  INVESTMENT_SCHEMES,
+  getSchemesForRiskProfile,
   getScheme,
   getSchemesByCategory,
   searchSchemes
@@ -21,7 +21,7 @@ import { getRiskDescription, DISCLAIMERS } from '@/lib/investmentCompliance'
 export async function GET(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -92,7 +92,7 @@ export async function GET(request) {
 
     // Return all schemes grouped by category
     const allSchemes = Object.values(INVESTMENT_SCHEMES)
-    
+
     const groupedSchemes = {
       government: allSchemes.filter(s => s.category === 'government'),
       mutual_fund: allSchemes.filter(s => s.category === 'mutual_fund'),
@@ -124,7 +124,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const session = await auth()
-    
+
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -160,14 +160,14 @@ export async function POST(request) {
 
     // Build comparison data
     const comparison = schemes.map(scheme => {
-      const avgReturn = scheme.currentRate || 
+      const avgReturn = scheme.currentRate ||
         (scheme.returnRange ? (scheme.returnRange.min + scheme.returnRange.max) / 2 : 8)
 
       let projection = null
       if (monthlyInvestment && years) {
         const months = years * 12
         const monthlyRate = avgReturn / 100 / 12
-        
+
         let futureValue
         if (monthlyRate > 0) {
           futureValue = monthlyInvestment * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate)

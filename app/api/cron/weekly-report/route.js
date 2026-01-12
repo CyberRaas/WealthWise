@@ -88,7 +88,7 @@ export async function GET(request) {
           topCategories: reportData.topCategories,
           highlights: reportData.highlights,
           tipOfWeek: reportData.tipOfWeek,
-          dashboardUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://mywealthwise.tech/dashboard'
+          dashboardUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://mywealthwise.in/dashboard'
         })
 
         // Send email
@@ -199,7 +199,7 @@ export async function POST(request) {
       topCategories: reportData.topCategories,
       highlights: reportData.highlights,
       tipOfWeek: reportData.tipOfWeek,
-      dashboardUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://mywealthwise.tech/dashboard'
+      dashboardUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://mywealthwise.in/dashboard'
     })
 
     // Send email

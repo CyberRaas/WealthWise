@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   Plus,
@@ -21,86 +21,93 @@ import {
   ChevronRight,
   CheckCircle,
   Clock,
-  AlertCircle
-} from 'lucide-react'
-import toast from 'react-hot-toast'
-import AddExpenseModal from './AddExpenseModal'
-import SettleUpModal from './SettleUpModal'
+  AlertCircle,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import AddExpenseModal from "./AddExpenseModal";
+import SettleUpModal from "./SettleUpModal";
 
 export default function GroupDetail({ group, onBack }) {
-  const [groupData, setGroupData] = useState(group)
-  const [expenses, setExpenses] = useState([])
-  const [settlements, setSettlements] = useState([])
-  const [simplifiedDebts, setSimplifiedDebts] = useState([])
-  const [balances, setBalances] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showAddExpense, setShowAddExpense] = useState(false)
-  const [showSettleUp, setShowSettleUp] = useState(false)
-  const [activeTab, setActiveTab] = useState('expenses')
+  const [groupData, setGroupData] = useState(group);
+  const [expenses, setExpenses] = useState([]);
+  const [settlements, setSettlements] = useState([]);
+  const [simplifiedDebts, setSimplifiedDebts] = useState([]);
+  const [balances, setBalances] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showAddExpense, setShowAddExpense] = useState(false);
+  const [showSettleUp, setShowSettleUp] = useState(false);
+  const [activeTab, setActiveTab] = useState("expenses");
 
   useEffect(() => {
-    fetchGroupDetails()
-  }, [group._id])
+    fetchGroupDetails();
+  }, [group._id]);
 
   const fetchGroupDetails = async () => {
     try {
       const [groupRes, settlementsRes] = await Promise.all([
         fetch(`/api/split/groups/${group._id}`),
-        fetch(`/api/split/settlements?groupId=${group._id}&simplified=true`)
-      ])
+        fetch(`/api/split/settlements?groupId=${group._id}&simplified=true`),
+      ]);
 
-      const groupData = await groupRes.json()
-      const settlementsData = await settlementsRes.json()
+      const groupData = await groupRes.json();
+      const settlementsData = await settlementsRes.json();
 
       if (groupData.success) {
-        setGroupData(groupData.group)
-        setExpenses(groupData.recentExpenses || [])
+        setGroupData(groupData.group);
+        setExpenses(groupData.recentExpenses || []);
       }
 
       if (settlementsData.success) {
-        setSettlements(settlementsData.settlements || [])
-        setSimplifiedDebts(settlementsData.simplifiedDebts || [])
-        setBalances(settlementsData.balances || [])
+        setSettlements(settlementsData.settlements || []);
+        setSimplifiedDebts(settlementsData.simplifiedDebts || []);
+        setBalances(settlementsData.balances || []);
       }
     } catch (error) {
-      console.error('Failed to fetch group details:', error)
-      toast.error('Failed to load group details')
+      console.error("Failed to fetch group details:", error);
+      toast.error("Failed to load group details");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleExpenseAdded = (expense) => {
-    setExpenses(prev => [expense, ...prev])
-    setShowAddExpense(false)
-    fetchGroupDetails() // Refresh balances
-    toast.success('Expense added!')
-  }
+    setExpenses((prev) => [expense, ...prev]);
+    setShowAddExpense(false);
+    fetchGroupDetails(); // Refresh balances
+    toast.success("Expense added!");
+  };
 
   const handleSettlementRecorded = () => {
-    setShowSettleUp(false)
-    fetchGroupDetails()
-    toast.success('Settlement recorded!')
-  }
+    setShowSettleUp(false);
+    fetchGroupDetails();
+    toast.success("Settlement recorded!");
+  };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(Math.abs(amount))
-  }
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(Math.abs(amount));
+  };
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short'
-    })
-  }
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+    });
+  };
 
   const getInitials = (name) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?'
-  }
+    return (
+      name
+        ?.split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2) || "?"
+    );
+  };
 
   if (loading) {
     return (
@@ -108,7 +115,7 @@ export default function GroupDetail({ group, onBack }) {
         <div className="h-24 bg-muted animate-pulse rounded-lg" />
         <div className="h-64 bg-muted animate-pulse rounded-lg" />
       </div>
-    )
+    );
   }
 
   return (
@@ -121,7 +128,8 @@ export default function GroupDetail({ group, onBack }) {
         <div className="flex-1">
           <h2 className="text-2xl font-bold">{groupData.name}</h2>
           <p className="text-muted-foreground">
-            {groupData.members?.length} members • {groupData.stats?.expenseCount || 0} expenses
+            {groupData.members?.length} members •{" "}
+            {groupData.stats?.expenseCount || 0} expenses
           </p>
         </div>
         <Button variant="ghost" size="icon">
@@ -141,11 +149,17 @@ export default function GroupDetail({ group, onBack }) {
             </div>
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Your Balance</p>
-              <p className={`text-2xl font-bold ${
-                groupData.userBalance > 0 ? 'text-green-600' : 
-                groupData.userBalance < 0 ? 'text-red-600' : ''
-              }`}>
-                {groupData.userBalance > 0 ? '+' : ''}{formatCurrency(groupData.userBalance || 0)}
+              <p
+                className={`text-2xl font-bold ${
+                  groupData.userBalance > 0
+                    ? "text-green-600"
+                    : groupData.userBalance < 0
+                    ? "text-red-600"
+                    : ""
+                }`}
+              >
+                {groupData.userBalance > 0 ? "+" : ""}
+                {formatCurrency(groupData.userBalance || 0)}
               </p>
             </div>
           </div>
@@ -171,7 +185,9 @@ export default function GroupDetail({ group, onBack }) {
                   <div className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={debt.from?.avatar} />
-                      <AvatarFallback>{getInitials(debt.from?.name)}</AvatarFallback>
+                      <AvatarFallback>
+                        {getInitials(debt.from?.name)}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{debt.from?.name}</span>
@@ -219,8 +235,14 @@ export default function GroupDetail({ group, onBack }) {
         {/* Expenses Tab */}
         <TabsContent value="expenses" className="mt-4">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="font-semibold text-slate-900 dark:text-white">Recent Expenses</h3>
-            <Button size="sm" onClick={() => setShowAddExpense(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+            <h3 className="font-semibold text-slate-900 dark:text-white">
+              Recent Expenses
+            </h3>
+            <Button
+              size="sm"
+              onClick={() => setShowAddExpense(true)}
+              className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+            >
               <Plus className="h-4 w-4" />
               Add Expense
             </Button>
@@ -256,9 +278,12 @@ export default function GroupDetail({ group, onBack }) {
                             <Receipt className="h-5 w-5 text-primary" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium truncate">{expense.description}</p>
+                            <p className="font-medium truncate">
+                              {expense.description}
+                            </p>
                             <p className="text-sm text-muted-foreground">
-                              Paid by {expense.paidBy?.name} • {formatDate(expense.date)}
+                              Paid by {expense.paidBy?.name} •{" "}
+                              {formatDate(expense.date)}
                             </p>
                           </div>
                           <p className="font-semibold">
@@ -283,16 +308,25 @@ export default function GroupDetail({ group, onBack }) {
                   <div className="flex items-center gap-4">
                     <Avatar>
                       <AvatarImage src={balance.user?.avatar} />
-                      <AvatarFallback>{getInitials(balance.user?.name)}</AvatarFallback>
+                      <AvatarFallback>
+                        {getInitials(balance.user?.name)}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
                       <p className="font-medium">{balance.user?.name}</p>
-                      <p className="text-sm text-muted-foreground">{balance.user?.email}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {balance.user?.email}
+                      </p>
                     </div>
-                    <div className={`text-right ${
-                      balance.balance > 0 ? 'text-green-600' :
-                      balance.balance < 0 ? 'text-red-600' : ''
-                    }`}>
+                    <div
+                      className={`text-right ${
+                        balance.balance > 0
+                          ? "text-green-600"
+                          : balance.balance < 0
+                          ? "text-red-600"
+                          : ""
+                      }`}
+                    >
                       <div className="flex items-center gap-1">
                         {balance.balance > 0 ? (
                           <TrendingUp className="h-4 w-4" />
@@ -300,12 +334,16 @@ export default function GroupDetail({ group, onBack }) {
                           <TrendingDown className="h-4 w-4" />
                         ) : null}
                         <span className="font-semibold">
-                          {balance.balance > 0 ? '+' : ''}{formatCurrency(balance.balance)}
+                          {balance.balance > 0 ? "+" : ""}
+                          {formatCurrency(balance.balance)}
                         </span>
                       </div>
                       <p className="text-xs">
-                        {balance.balance > 0 ? 'gets back' : 
-                         balance.balance < 0 ? 'owes' : 'settled'}
+                        {balance.balance > 0
+                          ? "gets back"
+                          : balance.balance < 0
+                          ? "owes"
+                          : "settled"}
                       </p>
                     </div>
                   </div>
@@ -333,15 +371,15 @@ export default function GroupDetail({ group, onBack }) {
                         <p className="font-medium">
                           {member.user?.name || member.email}
                         </p>
-                        {member.role === 'admin' && (
+                        {member.role === "admin" && (
                           <Badge variant="secondary">Admin</Badge>
                         )}
-                        {member.status === 'pending' && (
+                        {member.status === "pending" && (
                           <Badge variant="outline">Pending</Badge>
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {member.user?.email || 'Invitation sent'}
+                        {member.user?.email || "Invitation sent"}
                       </p>
                     </div>
                   </div>
@@ -369,5 +407,5 @@ export default function GroupDetail({ group, onBack }) {
         onSettlementRecorded={handleSettlementRecorded}
       />
     </div>
-  )
+  );
 }

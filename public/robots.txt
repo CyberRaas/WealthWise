@@ -11,4 +11,4 @@ Disallow: /api/*
 Disallow: /onboarding/*
 
 # Sitemap
-Sitemap: https://www.mywealthwise.tech/sitemap.xml
+Sitemap: https://www.mywealthwise.in/sitemap.xml

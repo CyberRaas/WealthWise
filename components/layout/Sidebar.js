@@ -123,32 +123,28 @@ export default function Sidebar({ isOpen, onClose }) {
                 return (
                   <Link key={item.name} href={item.href} onClick={onClose}>
                     <div
-                      className={`group relative flex items-center px-3 py-3 rounded-lg transition-all duration-150 cursor-pointer ${
-                        isActive
+                      className={`group relative flex items-center px-3 py-3 rounded-lg transition-all duration-150 cursor-pointer ${isActive
                           ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
                           : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-                      }`}
+                        }`}
                     >
                       {/* Active indicator bar */}
                       {isActive && (
                         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-7 bg-emerald-500 rounded-r-full" />
                       )}
 
-                      <Icon className={`h-5 w-5 ${
-                        isActive
+                      <Icon className={`h-5 w-5 ${isActive
                           ? 'text-emerald-600 dark:text-emerald-400'
                           : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
-                      } transition-colors flex-shrink-0`} />
+                        } transition-colors flex-shrink-0`} />
 
                       <div className="ml-3 flex-1 min-w-0">
-                        <p className={`text-sm font-medium ${
-                          isActive ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white'
-                        }`}>
+                        <p className={`text-sm font-medium ${isActive ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white'
+                          }`}>
                           {t(item.name)}
                         </p>
-                        <p className={`text-xs ${
-                          isActive ? 'text-emerald-600/70 dark:text-emerald-500/70' : 'text-slate-400 dark:text-slate-500'
-                        }`}>
+                        <p className={`text-xs ${isActive ? 'text-emerald-600/70 dark:text-emerald-500/70' : 'text-slate-400 dark:text-slate-500'
+                          }`}>
                           {t(item.description)}
                         </p>
                       </div>
@@ -232,33 +228,29 @@ export default function Sidebar({ isOpen, onClose }) {
             return (
               <Link key={item.name} href={item.href}>
                 <div
-                  className={`group relative flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 cursor-pointer ${
-                    isActive
+                  className={`group relative flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 cursor-pointer ${isActive
                       ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
                       : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-                  }`}
+                    }`}
                 >
                   {/* Active indicator bar */}
                   {isActive && (
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-emerald-500 rounded-r-full" />
                   )}
 
-                  <Icon className={`h-5 w-5 ${
-                    isActive
+                  <Icon className={`h-5 w-5 ${isActive
                       ? 'text-emerald-600 dark:text-emerald-400'
                       : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
-                  } transition-colors flex-shrink-0`} />
+                    } transition-colors flex-shrink-0`} />
 
                   {!isCollapsed && (
                     <div className="ml-3 flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${
-                        isActive ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white'
-                      }`}>
+                      <p className={`text-sm font-medium ${isActive ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white'
+                        }`}>
                         {t(item.name)}
                       </p>
-                      <p className={`text-xs ${
-                        isActive ? 'text-emerald-600/70 dark:text-emerald-500/70' : 'text-slate-400 dark:text-slate-500'
-                      }`}>
+                      <p className={`text-xs ${isActive ? 'text-emerald-600/70 dark:text-emerald-500/70' : 'text-slate-400 dark:text-slate-500'
+                        }`}>
                         {t(item.description)}
                       </p>
                     </div>
