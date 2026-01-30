@@ -22,58 +22,99 @@ import {
   Calculator,
   Shield,
   Users,
-  Coins
+  CircleDollarSign,
+  BookOpen,
+  Sparkles,
+  LayoutDashboard
 } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 
-const navigationItems = [
+const navigationGroups = [
   {
-    name: 'sidebar.dashboard',
-    href: '/dashboard',
-    icon: Home,
-    description: 'sidebar.dashboard_desc'
+    title: 'Overview',
+    items: [
+      {
+        name: 'sidebar.dashboard',
+        href: '/dashboard',
+        icon: LayoutDashboard,
+        description: 'sidebar.dashboard_desc'
+      },
+      {
+        name: 'sidebar.analytics',
+        href: '/dashboard/analytics',
+        icon: BarChart3,
+        description: 'sidebar.analytics_desc'
+      },
+      {
+        name: 'AI Insights',
+        href: '/dashboard/insights',
+        icon: Sparkles,
+        description: 'AI-powered financial analysis'
+      }
+    ]
   },
   {
-    name: 'sidebar.expenses',
-    href: '/dashboard/expenses',
-    icon: Wallet,
-    description: 'sidebar.expenses_desc'
+    title: 'Finance',
+    items: [
+      {
+        name: 'Omni-Channel Model',
+        href: '/dashboard/financial-model',
+        icon: TrendingUp, // Using imported TrendingUp
+        description: 'Advanced financial IQ'
+      },
+      {
+        name: 'Investment',
+        href: '/dashboard/investment',
+        icon: CircleDollarSign,
+        description: 'Plan & Visualize Wealth'
+      },
+      {
+        name: 'sidebar.expenses',
+        href: '/dashboard/expenses',
+        icon: Wallet,
+        description: 'sidebar.expenses_desc'
+      },
+      {
+        name: 'sidebar.budget',
+        href: '/dashboard/budget',
+        icon: PieChart,
+        description: 'sidebar.budget_desc'
+      },
+      {
+        name: 'sidebar.debt',
+        href: '/dashboard/debt',
+        icon: CreditCard,
+        description: 'sidebar.debt_desc'
+      }
+    ]
   },
   {
-    name: 'sidebar.budget',
-    href: '/dashboard/budget',
-    icon: PieChart,
-    description: 'sidebar.budget_desc'
+    title: 'Growth',
+    items: [
+      {
+        name: 'sidebar.goals',
+        href: '/dashboard/goals',
+        icon: Target,
+        description: 'sidebar.goals_desc'
+      },
+      {
+        name: 'Learning Hub',
+        href: '/dashboard/learning',
+        icon: BookOpen,
+        description: 'Master financial concepts'
+      }
+    ]
   },
   {
-    name: 'sidebar.debt',
-    href: '/dashboard/debt',
-    icon: CreditCard,
-    description: 'sidebar.debt_desc'
-  },
-  {
-    name: 'sidebar.debt_calculator',
-    href: '/dashboard/debt-calculator',
-    icon: Calculator,
-    description: 'sidebar.debt_calculator_desc'
-  },
-  {
-    name: 'sidebar.goals',
-    href: '/dashboard/goals',
-    icon: Target,
-    description: 'sidebar.goals_desc'
-  },
-  {
-    name: 'sidebar.analytics',
-    href: '/dashboard/analytics',
-    icon: BarChart3,
-    description: 'sidebar.analytics_desc'
-  },
-  {
-    name: 'sidebar.profile',
-    href: '/dashboard/profile',
-    icon: User,
-    description: 'sidebar.profile_desc'
+    title: 'Account',
+    items: [
+      {
+        name: 'sidebar.profile',
+        href: '/dashboard/profile',
+        icon: User,
+        description: 'sidebar.profile_desc'
+      }
+    ]
   }
 ]
 
@@ -124,8 +165,8 @@ export default function Sidebar({ isOpen, onClose }) {
                   <Link key={item.name} href={item.href} onClick={onClose}>
                     <div
                       className={`group relative flex items-center px-3 py-3 rounded-lg transition-all duration-150 cursor-pointer ${isActive
-                          ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
-                          : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
+                        : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                         }`}
                     >
                       {/* Active indicator bar */}
@@ -134,8 +175,8 @@ export default function Sidebar({ isOpen, onClose }) {
                       )}
 
                       <Icon className={`h-5 w-5 ${isActive
-                          ? 'text-emerald-600 dark:text-emerald-400'
-                          : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
+                        ? 'text-emerald-600 dark:text-emerald-400'
+                        : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                         } transition-colors flex-shrink-0`} />
 
                       <div className="ml-3 flex-1 min-w-0">
@@ -220,45 +261,51 @@ export default function Sidebar({ isOpen, onClose }) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {navigationItems.map((item) => {
-            const isActive = pathname === item.href
-            const Icon = item.icon
+        <nav className="flex-1 px-4 py-6 space-y-8 overflow-y-auto">
+          {navigationGroups.map((group, index) => (
+            <div key={index}>
+              {!isCollapsed && group.title && (
+                <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-2">
+                  {group.title}
+                </h3>
+              )}
+              <div className="space-y-1">
+                {group.items.map((item) => {
+                  const isActive = pathname === item.href
+                  const Icon = item.icon
 
-            return (
-              <Link key={item.name} href={item.href}>
-                <div
-                  className={`group relative flex items-center px-3 py-2.5 rounded-lg transition-all duration-150 cursor-pointer ${isActive
-                      ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-                    }`}
-                >
-                  {/* Active indicator bar */}
-                  {isActive && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-emerald-500 rounded-r-full" />
-                  )}
+                  return (
+                    <Link key={item.name} href={item.href}>
+                      <div
+                        className={`group relative flex items-center px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer ${isActive
+                          ? 'bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white font-medium'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'
+                          }`}
+                      >
+                        {/* Active indicator dot */}
+                        {isActive && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-blue-600 dark:bg-blue-500 rounded-r-full" />
+                        )}
 
-                  <Icon className={`h-5 w-5 ${isActive
-                      ? 'text-emerald-600 dark:text-emerald-400'
-                      : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
-                    } transition-colors flex-shrink-0`} />
+                        <Icon className={`h-[18px] w-[18px] ${isActive
+                          ? 'text-blue-600 dark:text-blue-400'
+                          : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
+                          } transition-colors flex-shrink-0`} />
 
-                  {!isCollapsed && (
-                    <div className="ml-3 flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${isActive ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white'
-                        }`}>
-                        {t(item.name)}
-                      </p>
-                      <p className={`text-xs ${isActive ? 'text-emerald-600/70 dark:text-emerald-500/70' : 'text-slate-400 dark:text-slate-500'
-                        }`}>
-                        {t(item.description)}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </Link>
-            )
-          })}
+                        {!isCollapsed && (
+                          <div className="ml-3 flex-1 min-w-0">
+                            <span className="text-sm truncate">
+                              {t(item.name)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         {/* Bottom Signout Section */}

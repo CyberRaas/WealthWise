@@ -170,7 +170,7 @@ function ProfileContent() {
 
   return (
     <DashboardLayout title={t('profile.title')}>
-      <div className="max-w-3xl mx-auto space-y-4">
+      <div className="w-full space-y-4">
         {/* Profile Card */}
         <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
           <CardHeader className="pb-4">
@@ -354,10 +354,10 @@ function ProfileContent() {
                       <p className="text-sm text-slate-800 dark:text-slate-200">
                         {profile.dateOfBirth
                           ? new Date(profile.dateOfBirth).toLocaleDateString('en-IN', {
-                              day: 'numeric',
-                              month: 'long',
-                              year: 'numeric'
-                            })
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                          })
                           : <span className="text-slate-400 dark:text-slate-500">{t('profile.notProvided')}</span>
                         }
                       </p>

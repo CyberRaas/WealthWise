@@ -1,19 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Loader2, TrendingUp, Search } from 'lucide-react'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import RiskAssessment from '@/components/investment/RiskAssessment'
-import RecommendationDisplay from '@/components/investment/RecommendationDisplay'
 import SchemeExplorer from '@/components/investment/SchemeExplorer'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import {
-  Target,
-  TrendingUp,
-  Search,
-  Loader2,
-  ChevronLeft
-} from 'lucide-react'
+import RecommendationDisplay from '@/components/investment/RecommendationDisplay'
 
 export default function InvestmentPage() {
   const [riskProfile, setRiskProfile] = useState(null)

@@ -24,26 +24,26 @@ export default function AdminAnalyticsPage() {
   const [timeRange, setTimeRange] = useState('30')
 
   useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/admin/analytics/overview?days=${timeRange}`)
+        const data = await response.json()
+
+        if (data.success) {
+          setStats(data.data)
+        } else {
+          setError(data.error || 'Failed to fetch analytics')
+        }
+      } catch (err) {
+        setError('Failed to connect to server')
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchAnalytics()
   }, [timeRange])
-
-  const fetchAnalytics = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch(`/api/admin/analytics/overview?days=${timeRange}`)
-      const data = await response.json()
-
-      if (data.success) {
-        setStats(data.data)
-      } else {
-        setError(data.error || 'Failed to fetch analytics')
-      }
-    } catch (err) {
-      setError('Failed to connect to server')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   if (loading) {
     return (

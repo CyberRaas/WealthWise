@@ -4,23 +4,24 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { useTranslation } from '@/lib/i18n'
-import LanguageSelector from '@/components/ui/LanguageSelector'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import {
   TrendingUp,
   Shield,
   Zap,
   ArrowRight,
-  BarChart3,
-  PieChart,
-  Target,
   Menu,
   X,
   CheckCircle,
-  Brain,
-  Wallet,
-  Calculator
+  MessageSquare,
+  BookOpen,
+  Sparkles,
+  PieChart,
+  Target,
+  Users,
+  ChevronRight
 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Home() {
   const { data: session } = useSession()
@@ -36,83 +37,85 @@ export default function Home() {
 
   const features = [
     {
-      icon: Brain,
-      title: t('features.ai.title'),
-      description: t('features.ai.description'),
-      color: 'text-purple-600 dark:text-purple-400',
-      bg: 'bg-purple-50 dark:bg-purple-950'
+      icon: MessageSquare,
+      title: t('features.ai_chatbot.title'),
+      description: t('features.ai_chatbot.description'),
+      color: 'text-violet-600 dark:text-violet-400',
+      bgGlow: 'from-violet-500/20'
+    },
+    {
+      icon: BookOpen,
+      title: t('features.education.title'),
+      description: t('features.education.description'),
+      color: 'text-amber-600 dark:text-amber-400',
+      bgGlow: 'from-amber-500/20'
+    },
+    {
+      icon: Sparkles,
+      title: t('features.worth_it.title'),
+      description: t('features.worth_it.description'),
+      color: 'text-indigo-600 dark:text-indigo-400',
+      bgGlow: 'from-indigo-500/20'
     },
     {
       icon: PieChart,
       title: t('features.budgeting.title'),
       description: t('features.budgeting.description'),
       color: 'text-blue-600 dark:text-blue-400',
-      bg: 'bg-blue-50 dark:bg-blue-950'
+      bgGlow: 'from-blue-500/20'
     },
     {
       icon: Target,
       title: t('features.goals.title'),
       description: t('features.goals.description'),
       color: 'text-emerald-600 dark:text-emerald-400',
-      bg: 'bg-emerald-50 dark:bg-emerald-950'
-    },
-    {
-      icon: Calculator,
-      title: t('features.investment.title'),
-      description: t('features.investment.description'),
-      color: 'text-amber-600 dark:text-amber-400',
-      bg: 'bg-amber-50 dark:bg-amber-950'
+      bgGlow: 'from-emerald-500/20'
     },
     {
       icon: Shield,
       title: t('features.security.title'),
       description: t('features.security.description'),
       color: 'text-slate-600 dark:text-slate-400',
-      bg: 'bg-slate-100 dark:bg-slate-800'
-    },
-    {
-      icon: Zap,
-      title: t('features.automation.title'),
-      description: t('features.automation.description'),
-      color: 'text-orange-600 dark:text-orange-400',
-      bg: 'bg-orange-50 dark:bg-orange-950'
+      bgGlow: 'from-slate-500/20'
     }
   ]
 
+
+
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 antialiased selection:bg-emerald-100 dark:selection:bg-emerald-900 selection:text-emerald-900 dark:selection:text-emerald-100 transition-colors duration-300">
+      {/* Background Gradients */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-emerald-500/10 dark:bg-emerald-500/10 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-normal" />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-teal-500/10 dark:bg-teal-500/10 rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-normal" />
+      </div>
+
       {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-200 ${
-        isScrolled
-          ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm shadow-sm'
-          : 'bg-transparent'
-      }`}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <nav className={`fixed top-4 left-4 right-4 z-50 transition-all duration-300 rounded-2xl ${isScrolled
+        ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 shadow-lg'
+        : 'bg-transparent'
+        }`}>
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-white" />
+            <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform duration-200">
+                <TrendingUp className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-slate-800 dark:text-white">
+              <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                 Wealth<span className="text-emerald-600 dark:text-emerald-400">Wise</span>
               </span>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-4">
-              <a href="#features" className="text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
-                {t('nav.features')}
-              </a>
-              <a href="#benefits" className="text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
-                {t('nav.about')}
-              </a>
+            <div className="hidden md:flex items-center gap-6">
+              <a href="#features" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer">{t('nav.features')}</a>
+
               <ThemeToggle variant="icon" />
-              <LanguageSelector variant="nav" />
 
               {session ? (
                 <Link href="/dashboard">
-                  <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:shadow-lg hover:shadow-emerald-600/20 flex items-center gap-2 cursor-pointer">
                     {t('nav.dashboard')}
                     <ArrowRight className="w-4 h-4" />
                   </button>
@@ -120,24 +123,20 @@ export default function Home() {
               ) : (
                 <div className="flex items-center gap-3">
                   <Link href="/auth/signin">
-                    <button className="text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium transition-colors">
-                      {t('nav.signin')}
-                    </button>
+                    <button className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">{t('nav.signin')}</button>
                   </Link>
                   <Link href="/auth/signup">
-                    <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                      {t('nav.signup')}
-                    </button>
+                    <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:shadow-lg hover:shadow-emerald-600/20 cursor-pointer">{t('nav.signup')}</button>
                   </Link>
                 </div>
               )}
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="flex items-center gap-2 md:hidden">
+            <div className="flex items-center gap-3 md:hidden">
               <ThemeToggle variant="icon" />
               <button
-                className="p-2 text-slate-600 dark:text-slate-300"
+                className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -146,279 +145,261 @@ export default function Home() {
           </div>
 
           {/* Mobile Menu */}
-          {mobileMenuOpen && (
-            <div className="md:hidden absolute top-16 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 shadow-lg">
-              <div className="flex flex-col p-4 gap-3">
-                <a
-                  href="#features"
-                  className="text-slate-600 dark:text-slate-300 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t('nav.features')}
-                </a>
-                <a
-                  href="#benefits"
-                  className="text-slate-600 dark:text-slate-300 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t('nav.about')}
-                </a>
-                <div className="py-2">
-                  <LanguageSelector variant="mobile" />
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="md:hidden overflow-hidden"
+              >
+                <div className="flex flex-col py-4 gap-3 border-t border-slate-100 dark:border-slate-800 mt-2">
+                  <a href="#features" className="text-slate-600 dark:text-slate-300 font-medium py-2 cursor-pointer hover:text-emerald-600 dark:hover:text-emerald-400" onClick={() => setMobileMenuOpen(false)}>{t('nav.features')}</a>
+
+                  <hr className="border-slate-100 dark:border-slate-800" />
+                  {session ? (
+                    <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                      <button className="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold cursor-pointer">{t('nav.dashboard')}</button>
+                    </Link>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
+                        <button className="w-full border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 py-3 rounded-xl font-medium cursor-pointer">{t('nav.signin')}</button>
+                      </Link>
+                      <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>
+                        <button className="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold cursor-pointer">{t('nav.signup')}</button>
+                      </Link>
+                    </div>
+                  )}
                 </div>
-                <hr className="border-slate-100 dark:border-slate-800" />
-                {session ? (
-                  <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                    <button className="w-full bg-emerald-600 text-white py-3 rounded-lg font-medium">
-                      {t('nav.dashboard')}
-                    </button>
-                  </Link>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
-                      <button className="w-full border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 py-3 rounded-lg font-medium">
-                        {t('nav.signin')}
-                      </button>
-                    </Link>
-                    <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>
-                      <button className="w-full bg-emerald-600 text-white py-3 rounded-lg font-medium">
-                        {t('nav.signup')}
-                      </button>
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950 border border-emerald-100 dark:border-emerald-800 rounded-full px-4 py-1.5 mb-6">
-            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-sm text-emerald-700 dark:text-emerald-300 font-medium">{t('hero.badge')}</span>
-          </div>
+      <section className="relative pt-36 pb-24 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center">
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-full px-4 py-2 mb-8 backdrop-blur-sm"
+            >
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="text-sm text-emerald-700 dark:text-emerald-300 font-semibold tracking-wide">{t('hero.badge')}</span>
+            </motion.div>
 
-          {/* Headline */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white leading-tight mb-4">
-            {t('hero.title.part1')}{' '}
-            <span className="text-emerald-600 dark:text-emerald-400">{t('hero.title.part2')}</span>
-          </h1>
+            {/* Headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-5xl md:text-7xl lg:text-8xl font-black leading-[0.95] mb-6 tracking-tight text-slate-900 dark:text-white"
+            >
+              {t('hero.title.part1')}<br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-400">{t('hero.title.part2')}</span>
+            </motion.h1>
 
-          {/* Subtitle */}
-          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-8">
-            {t('hero.subtitle')}
-          </p>
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed font-medium"
+            >
+              {t('hero.subtitle')}
+            </motion.p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
-            {session ? (
-              <Link href="/dashboard">
-                <button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
-                  {t('hero.cta.dashboard')}
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </Link>
-            ) : (
-              <>
-                <Link href="/auth/signup">
-                  <button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
-                    {t('hero.cta.start')}
-                    <ArrowRight className="w-4 h-4" />
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+            >
+              {session ? (
+                <Link href="/dashboard">
+                  <button className="group w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold shadow-xl shadow-emerald-600/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+                    {t('hero.cta.dashboard')}
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </Link>
-                <Link href="/auth/signin">
-                  <button className="w-full sm:w-auto border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-700 dark:text-slate-300 px-6 py-3 rounded-lg font-medium transition-colors">
-                    {t('nav.signin')}
-                  </button>
-                </Link>
-              </>
-            )}
-          </div>
+              ) : (
+                <>
+                  <Link href="/auth/signup">
+                    <button className="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold shadow-xl shadow-emerald-600/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+                      {t('hero.cta.start')}
+                      <ArrowRight className="w-5 h-5" />
+                    </button>
+                  </Link>
+                  <Link href="/auth/signin">
+                    <button className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-2xl font-bold transition-all active:scale-95 cursor-pointer shadow-sm">
+                      {t('nav.signin')}
+                    </button>
+                  </Link>
+                </>
+              )}
+            </motion.div>
 
-          {/* Trust Indicators */}
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500 dark:text-slate-400">
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span>{t('trust.bankLevel')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span>{t('trust.noFees')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span>{t('trust.fastSetup')}</span>
-            </div>
+            {/* Trust Indicators */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="flex flex-wrap items-center justify-center gap-8 text-sm font-semibold text-slate-500 dark:text-slate-400"
+            >
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <span>{t('trust.bankLevel')}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <span>{t('trust.noFees')}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <span>{t('trust.fastSetup')}</span>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 px-4 sm:px-6 bg-slate-50 dark:bg-slate-900/50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3">
-              {t('features.title')}
-            </h2>
-            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              {t('features.subtitle')}
-            </p>
+      <section id="features" className="py-24 relative bg-slate-50/50 dark:bg-slate-900/30">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black mb-4 text-slate-900 dark:text-white">{t('features.title')}</h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-medium">{t('features.subtitle')}</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => {
               const Icon = feature.icon
               return (
-                <div
+                <motion.div
                   key={index}
-                  className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-100 dark:border-slate-700 hover:shadow-md dark:hover:shadow-slate-900/50 transition-shadow"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ y: -5 }}
+                  className="group relative cursor-pointer"
                 >
-                  <div className={`w-10 h-10 ${feature.bg} rounded-lg flex items-center justify-center mb-4`}>
-                    <Icon className={`w-5 h-5 ${feature.color}`} />
+                  <div className={`absolute -inset-px rounded-2xl bg-gradient-to-br ${feature.bgGlow} to-transparent opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500`} />
+                  <div className="relative h-full bg-white dark:bg-slate-800/80 backdrop-blur-xl border border-slate-200 dark:border-slate-700 p-8 rounded-2xl transition-all duration-300 group-hover:border-emerald-200 dark:group-hover:border-emerald-700 group-hover:shadow-xl dark:group-hover:shadow-emerald-900/10">
+                    <div className="w-12 h-12 bg-slate-50 dark:bg-slate-700/50 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-900/30">
+                      <Icon className={`w-6 h-6 ${feature.color}`} />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{feature.title}</h3>
+                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{feature.description}</p>
+                    <div className="mt-6 flex items-center text-sm font-bold text-emerald-600 dark:text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      Learn more <ChevronRight className="w-4 h-4 ml-1" />
+                    </div>
                   </div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{feature.title}</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{feature.description}</p>
-                </div>
+                </motion.div>
               )
             })}
           </div>
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section id="benefits" className="py-16 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3">
-              {t('benefits.title')}
-            </h2>
-            <p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
-              {t('benefits.subtitle')}
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-950 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{t('benefits.secure.title')}</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">{t('benefits.secure.description')}</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-14 h-14 bg-blue-100 dark:bg-blue-950 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Brain className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-              </div>
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{t('benefits.ai.title')}</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">{t('benefits.ai.description')}</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-14 h-14 bg-purple-100 dark:bg-purple-950 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <BarChart3 className="w-7 h-7 text-purple-600 dark:text-purple-400" />
-              </div>
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-2">{t('benefits.realtime.title')}</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">{t('benefits.realtime.description')}</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 sm:px-6 bg-slate-900 dark:bg-slate-800">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-            {t('cta.title.part1')} <span className="text-emerald-400">{t('cta.title.part2')}</span>
-          </h2>
-          <p className="text-slate-400 mb-8 max-w-xl mx-auto">
-            {t('cta.subtitle')}
-          </p>
+      <section className="py-24 relative">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="bg-slate-900 dark:bg-slate-800 text-white rounded-3xl p-12 md:p-16 relative overflow-hidden shadow-2xl"
+          >
+            {/* CTA Background Effects */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px]" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-500/10 rounded-full blur-[80px]" />
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            {session ? (
-              <Link href="/dashboard">
-                <button className="w-full sm:w-auto bg-white hover:bg-slate-100 text-slate-900 px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
-                  {t('cta.openDashboard')}
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </Link>
-            ) : (
-              <>
-                <Link href="/auth/signup">
-                  <button className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
-                    {t('cta.startJourney')}
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </Link>
-                <Link href="/auth/signin">
-                  <button className="w-full sm:w-auto border border-slate-700 hover:border-slate-600 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-                    {t('cta.signIn')}
-                  </button>
-                </Link>
-              </>
-            )}
-          </div>
+            <div className="relative z-10">
+              <h2 className="text-4xl md:text-5xl font-black mb-6">
+                {t('cta.title.part1')} <span className="text-emerald-400">{t('cta.title.part2')}</span>
+              </h2>
+              <p className="text-lg text-slate-300 mb-10 max-w-xl mx-auto font-medium">{t('cta.subtitle')}</p>
 
-          {/* Trust elements */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-slate-500">
-            <span className="flex items-center gap-1">
-              <Shield className="w-4 h-4" />
-              {t('cta.trust.secure')}
-            </span>
-            <span className="flex items-center gap-1">
-              <Zap className="w-4 h-4" />
-              {t('cta.trust.fast')}
-            </span>
-          </div>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                {session ? (
+                  <Link href="/dashboard">
+                    <button className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 rounded-2xl font-bold shadow-xl shadow-emerald-500/20 transition-all hover:scale-105 flex items-center justify-center gap-2 cursor-pointer">
+                      {t('cta.openDashboard')}
+                      <ArrowRight className="w-5 h-5" />
+                    </button>
+                  </Link>
+                ) : (
+                  <>
+                    <Link href="/auth/signup">
+                      <button className="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 rounded-2xl font-bold shadow-xl shadow-emerald-500/20 transition-all hover:scale-105 flex items-center justify-center gap-2 cursor-pointer">
+                        {t('cta.startJourney')}
+                        <ArrowRight className="w-5 h-5" />
+                      </button>
+                    </Link>
+                    <Link href="/auth/signin">
+                      <button className="w-full sm:w-auto px-8 py-4 border border-slate-600 hover:border-slate-500 text-white rounded-2xl font-bold transition-all cursor-pointer hover:bg-slate-800">
+                        {t('cta.signIn')}
+                      </button>
+                    </Link>
+                  </>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-8 mt-12 text-sm font-medium text-slate-400">
+                <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-emerald-400" /> Secure</span>
+                <span className="flex items-center gap-2"><Zap className="w-4 h-4 text-emerald-400" /> Fast Setup</span>
+                <span className="flex items-center gap-2"><Users className="w-4 h-4 text-emerald-400" /> 10K+ Users</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <footer className="py-16 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
             {/* Logo & Description */}
             <div className="md:col-span-2">
-              <Link href="/" className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-white" />
+              <Link href="/" className="flex items-center gap-2.5 mb-6 cursor-pointer">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md">
+                  <TrendingUp className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-xl font-bold text-slate-800 dark:text-white">
-                  Wealth<span className="text-emerald-600 dark:text-emerald-400">Wise</span>
-                </span>
+                <span className="text-2xl font-bold text-slate-900 dark:text-white">Wealth<span className="text-emerald-600 dark:text-emerald-400">Wise</span></span>
               </Link>
-              <p className="text-sm text-slate-600 dark:text-slate-400 max-w-xs">
-                {t('footer.description')}
-              </p>
+              <p className="text-slate-600 dark:text-slate-400 max-w-sm leading-relaxed">{t('footer.description')}</p>
             </div>
 
             {/* Product Links */}
             <div>
-              <h4 className="font-semibold text-slate-900 dark:text-white mb-3">{t('footer.product')}</h4>
-              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <li><a href="#features" className="hover:text-slate-900 dark:hover:text-white transition-colors">{t('footer.links.features')}</a></li>
-                <li><a href="#" className="hover:text-slate-900 dark:hover:text-white transition-colors">{t('footer.links.pricing')}</a></li>
-                <li><a href="#" className="hover:text-slate-900 dark:hover:text-white transition-colors">{t('footer.links.security')}</a></li>
+              <h4 className="font-bold text-slate-900 dark:text-white mb-6 uppercase tracking-wider text-sm">{t('footer.product')}</h4>
+              <ul className="space-y-4 text-slate-600 dark:text-slate-400">
+                <li><a href="#features" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer font-medium">{t('footer.links.features')}</a></li>
+                <li><a href="#" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer font-medium">{t('footer.links.pricing')}</a></li>
+                <li><a href="#" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer font-medium">{t('footer.links.security')}</a></li>
               </ul>
             </div>
 
             {/* Support Links */}
             <div>
-              <h4 className="font-semibold text-slate-900 dark:text-white mb-3">{t('footer.support')}</h4>
-              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <li><a href="#" className="hover:text-slate-900 dark:hover:text-white transition-colors">{t('footer.links.helpCenter')}</a></li>
-                <li><a href="#" className="hover:text-slate-900 dark:hover:text-white transition-colors">{t('footer.links.contact')}</a></li>
-                <li><Link href="/privacy-policy" className="hover:text-slate-900 dark:hover:text-white transition-colors">{t('footer.links.privacy')}</Link></li>
+              <h4 className="font-bold text-slate-900 dark:text-white mb-6 uppercase tracking-wider text-sm">{t('footer.support')}</h4>
+              <ul className="space-y-4 text-slate-600 dark:text-slate-400">
+                <li><a href="#" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer font-medium">{t('footer.links.helpCenter')}</a></li>
+                <li><a href="#" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer font-medium">{t('footer.links.contact')}</a></li>
+                <li><Link href="/privacy-policy" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer font-medium">{t('footer.links.privacy')}</Link></li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-slate-100 dark:border-slate-800 mt-8 pt-8 text-center text-sm text-slate-500 dark:text-slate-400">
+          <div className="border-t border-slate-200 dark:border-slate-800 mt-16 pt-8 text-center text-sm text-slate-500 dark:text-slate-400 font-medium">
             {t('footer.copyright')}
           </div>
         </div>

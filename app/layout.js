@@ -1,16 +1,18 @@
-import { Poppins } from "next/font/google";
+// IBM Plex Sans - Professional, fintech-standard typography
+import { IBM_Plex_Sans } from "next/font/google";
+
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-ibm-plex-sans",
+  subsets: ["latin"],
+  weight: ['100', '200', '300', '400', '500', '600', '700'],
+  display: 'swap',
+});
+
 import "./globals.css";
 import ClientProviders from '@/components/providers/ClientProviders'
 import PWARegister from '@/components/PWARegister'
 import PWAInstallPrompt from '@/components/PWAInstallPrompt'
-
-// Poppins font - clean, modern, highly readable for financial apps
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
-  display: 'swap',
-});
+import { FinanceChatbot } from "@/components/intelligence/FinanceChatbot";
 
 
 export const metadata = {
@@ -114,7 +116,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable} suppressHydrationWarning>
+    <html lang="en" className={ibmPlexSans.variable} suppressHydrationWarning>
       <head>
         {/* PWA Support */}
         <link rel="manifest" href="/manifest.json" />
@@ -185,7 +187,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className="font-poppins antialiased touch-manipulation bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200"
+        className="font-sans antialiased touch-manipulation bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200"
         style={{ fontFeatureSettings: "'kern' 1, 'liga' 1, 'calt' 1" }}
         suppressHydrationWarning
       >
@@ -207,6 +209,7 @@ export default function RootLayout({ children }) {
         <ClientProviders>
           {children}
           <PWAInstallPrompt />
+          <FinanceChatbot />
           {/* <VAPIVoiceAgent position="bottom-right" showTranscript={true} /> */}
         </ClientProviders>
       </body>

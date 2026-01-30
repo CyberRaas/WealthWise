@@ -230,7 +230,7 @@ function ExpensesContent() {
 
   return (
     <DashboardLayout title={t('expenses.title')}>
-      <div className="space-y-6 max-w-6xl mx-auto">
+      <div className="space-y-6 w-full">
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="bg-slate-100 dark:bg-slate-800 p-1 w-full sm:w-auto">

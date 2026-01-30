@@ -22,6 +22,8 @@ import {
   Receipt
 } from 'lucide-react'
 import { toast } from 'react-hot-toast'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import DebtCalculator from "@/components/dashboard/DebtCalculator"
 import { PieChart as RechartsPieChart, Cell, ResponsiveContainer, LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Pie } from 'recharts'
 
 // Skeleton component
@@ -294,6 +296,7 @@ function DebtOverview() {
   const [modalType, setModalType] = useState('taken')
   const [editingDebt, setEditingDebt] = useState(null)
   const [userProfile, setUserProfile] = useState(null)
+  const [activeTab, setActiveTab] = useState('overview')
 
   useEffect(() => {
     fetchDebts()
@@ -476,288 +479,313 @@ function DebtOverview() {
     <DashboardLayout title={t('debt.title')}>
       <div className="space-y-6 max-w-6xl mx-auto">
 
-        {loading ? (
-          <DebtSkeleton />
-        ) : (
-          <>
-            {/* Debt Summary Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Debt Taken */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-red-600 flex items-center gap-2">
-                    <TrendingDown className="w-5 h-5" />
-                    {t('debt.debtsTaken')}
-                    <span className="text-sm font-normal text-slate-400">({t('debt.liabilities')})</span>
-                  </h2>
-                  <Button onClick={() => handleAddDebt('taken')} size="sm" className="bg-red-500 hover:bg-red-600 text-white h-9">
-                    <Plus className="w-4 h-4 mr-1" />
-                    {t('debt.addDebt')}
-                  </Button>
-                </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <div className="flex items-center justify-between mb-6">
+            <TabsList className="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+              <TabsTrigger
+                value="overview"
+                className="rounded-lg px-4 py-2 text-sm font-medium data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 data-[state=active]:text-emerald-600 dark:data-[state=active]:text-emerald-400"
+              >
+                Overview
+              </TabsTrigger>
+              <TabsTrigger
+                value="calculator"
+                className="rounded-lg px-4 py-2 text-sm font-medium data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700 data-[state=active]:text-emerald-600 dark:data-[state=active]:text-emerald-400"
+              >
+                Calculator & Advisor
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-                <Card className="border-red-200 dark:border-red-900 bg-red-50/50 dark:bg-red-950/30">
-                  <CardContent className="p-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.totalAmount')}</p>
-                        <p className="text-lg font-bold text-red-700 dark:text-red-400">{formatCurrency(summary.taken.totalAmount)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.remainingAmount')}</p>
-                        <p className="text-lg font-bold text-red-700 dark:text-red-400">{formatCurrency(summary.taken.totalRemaining)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.monthlyPayments')}</p>
-                        <p className="text-sm font-semibold text-red-700 dark:text-red-400">{formatCurrency(summary.taken.totalMonthlyPayments)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.activeDebts')}</p>
-                        <p className="text-sm font-semibold text-red-700 dark:text-red-400">{summary.taken.count || 0}</p>
-                      </div>
+          <TabsContent value="overview" className="mt-0">
+            {loading ? (
+              <DebtSkeleton />
+            ) : (
+              <>
+                {/* Debt Summary Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Debt Taken */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-lg font-semibold text-red-600 flex items-center gap-2">
+                        <TrendingDown className="w-5 h-5" />
+                        {t('debt.debtsTaken')}
+                        <span className="text-sm font-normal text-slate-400">({t('debt.liabilities')})</span>
+                      </h2>
+                      <Button onClick={() => handleAddDebt('taken')} size="sm" className="bg-red-500 hover:bg-red-600 text-white h-9">
+                        <Plus className="w-4 h-4 mr-1" />
+                        {t('debt.addDebt')}
+                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
 
-                {/* Debt Taken List */}
-                <div className="space-y-2">
-                  {debts.filter(d => d.type === 'taken').slice(0, 3).map((debt) => {
-                    const daysLeft = getDaysUntilDue(debt.dueDate)
-                    const progress = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
-
-                    return (
-                      <div key={debt._id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-sm transition-shadow">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-slate-800 dark:text-white text-sm">{debt.name}</span>
-                          <div className="flex gap-1">
-                            <button onClick={() => handleEditDebt(debt)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-                              <Edit className="w-3.5 h-3.5" />
-                            </button>
-                            <button onClick={() => handleDeleteDebt(debt._id)} className="p-1 text-slate-400 hover:text-red-500">
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
+                    <Card className="border-red-200 dark:border-red-900 bg-red-50/50 dark:bg-red-950/30">
+                      <CardContent className="p-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.totalAmount')}</p>
+                            <p className="text-lg font-bold text-red-700 dark:text-red-400">{formatCurrency(summary.taken.totalAmount)}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.remainingAmount')}</p>
+                            <p className="text-lg font-bold text-red-700 dark:text-red-400">{formatCurrency(summary.taken.totalRemaining)}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.monthlyPayments')}</p>
+                            <p className="text-sm font-semibold text-red-700 dark:text-red-400">{formatCurrency(summary.taken.totalMonthlyPayments)}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-red-600 dark:text-red-400 font-medium">{t('debt.activeDebts')}</p>
+                            <p className="text-sm font-semibold text-red-700 dark:text-red-400">{summary.taken.count || 0}</p>
                           </div>
                         </div>
-                        <div className="flex items-center justify-between text-xs mb-2">
-                          <span className="text-slate-500 dark:text-slate-400">{t('debt.remaining')}: <span className="font-medium text-red-600 dark:text-red-400">{formatCurrency(debt.remainingBalance)}</span></span>
-                          <span className={daysLeft < 30 ? 'text-red-600 dark:text-red-400 font-medium' : 'text-slate-500 dark:text-slate-400'}>
-                            {daysLeft > 0 ? `${daysLeft} ${t('debt.days')}` : t('debt.overdue')}
-                          </span>
+                      </CardContent>
+                    </Card>
+
+                    {/* Debt Taken List */}
+                    <div className="space-y-2">
+                      {debts.filter(d => d.type === 'taken').slice(0, 3).map((debt) => {
+                        const daysLeft = getDaysUntilDue(debt.dueDate)
+                        const progress = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
+
+                        return (
+                          <div key={debt._id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-sm transition-shadow">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-medium text-slate-800 dark:text-white text-sm">{debt.name}</span>
+                              <div className="flex gap-1">
+                                <button onClick={() => handleEditDebt(debt)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                                  <Edit className="w-3.5 h-3.5" />
+                                </button>
+                                <button onClick={() => handleDeleteDebt(debt._id)} className="p-1 text-slate-400 hover:text-red-500">
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between text-xs mb-2">
+                              <span className="text-slate-500 dark:text-slate-400">{t('debt.remaining')}: <span className="font-medium text-red-600 dark:text-red-400">{formatCurrency(debt.remainingBalance)}</span></span>
+                              <span className={daysLeft < 30 ? 'text-red-600 dark:text-red-400 font-medium' : 'text-slate-500 dark:text-slate-400'}>
+                                {daysLeft > 0 ? `${daysLeft} ${t('debt.days')}` : t('debt.overdue')}
+                              </span>
+                            </div>
+                            <div className="w-full bg-red-100 dark:bg-red-900/30 rounded-full h-1.5">
+                              <div className="bg-red-500 h-1.5 rounded-full" style={{ width: `${progress}%` }} />
+                            </div>
+                          </div>
+                        )
+                      })}
+
+                      {debts.filter(d => d.type === 'taken').length === 0 && (
+                        <div className="text-center py-8 text-slate-400 dark:text-slate-500">
+                          <Receipt className="w-10 h-10 mx-auto mb-2 text-slate-200 dark:text-slate-600" />
+                          <p className="text-sm">{t('debt.noDebtsTaken')}</p>
                         </div>
-                        <div className="w-full bg-red-100 dark:bg-red-900/30 rounded-full h-1.5">
-                          <div className="bg-red-500 h-1.5 rounded-full" style={{ width: `${progress}%` }} />
-                        </div>
-                      </div>
-                    )
-                  })}
-
-                  {debts.filter(d => d.type === 'taken').length === 0 && (
-                    <div className="text-center py-8 text-slate-400 dark:text-slate-500">
-                      <Receipt className="w-10 h-10 mx-auto mb-2 text-slate-200 dark:text-slate-600" />
-                      <p className="text-sm">{t('debt.noDebtsTaken')}</p>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
+                  </div>
 
-              {/* Debt Given */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-emerald-600 flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5" />
-                    {t('debt.debtsGiven')}
-                    <span className="text-sm font-normal text-slate-400">({t('debt.assets')})</span>
-                  </h2>
-                  <Button onClick={() => handleAddDebt('given')} size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white h-9">
-                    <Plus className="w-4 h-4 mr-1" />
-                    {t('debt.addDebt')}
-                  </Button>
-                </div>
-
-                <Card className="border-emerald-200 dark:border-emerald-900 bg-emerald-50/50 dark:bg-emerald-950/30">
-                  <CardContent className="p-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.totalAmount')}</p>
-                        <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(summary.given.totalAmount)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.remainingAmount')}</p>
-                        <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(summary.given.totalRemaining)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.monthlyPayments')}</p>
-                        <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">{formatCurrency(summary.given.totalMonthlyPayments)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.activeDebts')}</p>
-                        <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">{summary.given.count || 0}</p>
-                      </div>
+                  {/* Debt Given */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-lg font-semibold text-emerald-600 flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5" />
+                        {t('debt.debtsGiven')}
+                        <span className="text-sm font-normal text-slate-400">({t('debt.assets')})</span>
+                      </h2>
+                      <Button onClick={() => handleAddDebt('given')} size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white h-9">
+                        <Plus className="w-4 h-4 mr-1" />
+                        {t('debt.addDebt')}
+                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
 
-                {/* Debt Given List */}
-                <div className="space-y-2">
-                  {debts.filter(d => d.type === 'given').slice(0, 3).map((debt) => {
-                    const daysLeft = getDaysUntilDue(debt.dueDate)
-                    const progress = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
-
-                    return (
-                      <div key={debt._id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-sm transition-shadow">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-slate-800 dark:text-white text-sm">{debt.name}</span>
-                          <div className="flex gap-1">
-                            <button onClick={() => handleEditDebt(debt)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-                              <Edit className="w-3.5 h-3.5" />
-                            </button>
-                            <button onClick={() => handleDeleteDebt(debt._id)} className="p-1 text-slate-400 hover:text-red-500">
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
+                    <Card className="border-emerald-200 dark:border-emerald-900 bg-emerald-50/50 dark:bg-emerald-950/30">
+                      <CardContent className="p-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.totalAmount')}</p>
+                            <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(summary.given.totalAmount)}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.remainingAmount')}</p>
+                            <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(summary.given.totalRemaining)}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.monthlyPayments')}</p>
+                            <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">{formatCurrency(summary.given.totalMonthlyPayments)}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{t('debt.activeDebts')}</p>
+                            <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">{summary.given.count || 0}</p>
                           </div>
                         </div>
-                        <div className="flex items-center justify-between text-xs mb-2">
-                          <span className="text-slate-500 dark:text-slate-400">{t('debt.remaining')}: <span className="font-medium text-emerald-600 dark:text-emerald-400">{formatCurrency(debt.remainingBalance)}</span></span>
-                          <span className={daysLeft < 30 ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-slate-500 dark:text-slate-400'}>
-                            {daysLeft > 0 ? `${daysLeft} ${t('debt.days')}` : t('debt.overdue')}
-                          </span>
-                        </div>
-                        <div className="w-full bg-emerald-100 dark:bg-emerald-900/30 rounded-full h-1.5">
-                          <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: `${progress}%` }} />
-                        </div>
-                      </div>
-                    )
-                  })}
+                      </CardContent>
+                    </Card>
 
-                  {debts.filter(d => d.type === 'given').length === 0 && (
-                    <div className="text-center py-8 text-slate-400 dark:text-slate-500">
-                      <DollarSign className="w-10 h-10 mx-auto mb-2 text-slate-200 dark:text-slate-600" />
-                      <p className="text-sm">{t('debt.noDebtsGiven')}</p>
+                    {/* Debt Given List */}
+                    <div className="space-y-2">
+                      {debts.filter(d => d.type === 'given').slice(0, 3).map((debt) => {
+                        const daysLeft = getDaysUntilDue(debt.dueDate)
+                        const progress = ((debt.amount - debt.remainingBalance) / debt.amount) * 100
+
+                        return (
+                          <div key={debt._id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 hover:shadow-sm transition-shadow">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-medium text-slate-800 dark:text-white text-sm">{debt.name}</span>
+                              <div className="flex gap-1">
+                                <button onClick={() => handleEditDebt(debt)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                                  <Edit className="w-3.5 h-3.5" />
+                                </button>
+                                <button onClick={() => handleDeleteDebt(debt._id)} className="p-1 text-slate-400 hover:text-red-500">
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between text-xs mb-2">
+                              <span className="text-slate-500 dark:text-slate-400">{t('debt.remaining')}: <span className="font-medium text-emerald-600 dark:text-emerald-400">{formatCurrency(debt.remainingBalance)}</span></span>
+                              <span className={daysLeft < 30 ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-slate-500 dark:text-slate-400'}>
+                                {daysLeft > 0 ? `${daysLeft} ${t('debt.days')}` : t('debt.overdue')}
+                              </span>
+                            </div>
+                            <div className="w-full bg-emerald-100 dark:bg-emerald-900/30 rounded-full h-1.5">
+                              <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: `${progress}%` }} />
+                            </div>
+                          </div>
+                        )
+                      })}
+
+                      {debts.filter(d => d.type === 'given').length === 0 && (
+                        <div className="text-center py-8 text-slate-400 dark:text-slate-500">
+                          <DollarSign className="w-10 h-10 mx-auto mb-2 text-slate-200 dark:text-slate-600" />
+                          <p className="text-sm">{t('debt.noDebtsGiven')}</p>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Analytics Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Debt Score */}
-              <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-                    {t('debt.debtScore')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="flex items-center justify-center">
-                    <div className="relative w-24 h-24">
-                      <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="40" stroke="#e5e7eb" className="dark:stroke-slate-700" strokeWidth="8" fill="none" />
-                        <circle
-                          cx="50" cy="50" r="40"
-                          stroke={getScoreRingColor(debtScore)}
-                          strokeWidth="8"
-                          fill="none"
-                          strokeDasharray={`${debtScore * 2.51} 251`}
-                          strokeLinecap="round"
-                          className="transition-all duration-700"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center">
-                          <div className={`text-2xl font-bold ${getScoreColor(debtScore)}`}>{debtScore}</div>
-                          <div className="text-[10px] text-slate-400 dark:text-slate-500">{t('debt.outOf100')}</div>
+                {/* Analytics Row */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Debt Score */}
+                  <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
+                        {t('debt.debtScore')}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex items-center justify-center">
+                        <div className="relative w-24 h-24">
+                          <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" stroke="#e5e7eb" className="dark:stroke-slate-700" strokeWidth="8" fill="none" />
+                            <circle
+                              cx="50" cy="50" r="40"
+                              stroke={getScoreRingColor(debtScore)}
+                              strokeWidth="8"
+                              fill="none"
+                              strokeDasharray={`${debtScore * 2.51} 251`}
+                              strokeLinecap="round"
+                              className="transition-all duration-700"
+                            />
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="text-center">
+                              <div className={`text-2xl font-bold ${getScoreColor(debtScore)}`}>{debtScore}</div>
+                              <div className="text-[10px] text-slate-400 dark:text-slate-500">{t('debt.outOf100')}</div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="text-center mt-2">
-                    <Badge className={`${debtScore >= 80 ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400' : debtScore >= 60 ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400' : debtScore >= 40 ? 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-400' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400'}`}>
-                      {getScoreLabel(debtScore)}
-                    </Badge>
-                  </div>
-                  <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 space-y-1.5 text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-slate-500 dark:text-slate-400">{t('debt.totalDebts')}:</span>
-                      <span className="font-medium dark:text-white">{debts.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500 dark:text-slate-400">{t('debt.totalBorrowed')}:</span>
-                      <span className="font-medium text-red-600 dark:text-red-400">{formatCurrency(summary.taken.totalRemaining)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500 dark:text-slate-400">{t('debt.totalLent')}:</span>
-                      <span className="font-medium text-emerald-600 dark:text-emerald-400">{formatCurrency(summary.given.totalRemaining)}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Distribution */}
-              <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                    <PieChart className="w-4 h-4 text-blue-500 dark:text-blue-400" />
-                    {t('debt.debtDistribution')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  {pieChartData.some(d => d.value > 0) ? (
-                    <ResponsiveContainer width="100%" height={140}>
-                      <RechartsPieChart>
-                        <Pie data={pieChartData.filter(d => d.value > 0)} cx="50%" cy="50%" innerRadius={30} outerRadius={50} dataKey="value">
-                          {pieChartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip formatter={(value) => formatCurrency(value)} />
-                      </RechartsPieChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <div className="flex items-center justify-center h-[140px] text-slate-400 dark:text-slate-500">
-                      <div className="text-center">
-                        <PieChart className="w-8 h-8 mx-auto mb-1 text-slate-200 dark:text-slate-600" />
-                        <p className="text-xs">{t('debt.noData')}</p>
+                      <div className="text-center mt-2">
+                        <Badge className={`${debtScore >= 80 ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400' : debtScore >= 60 ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400' : debtScore >= 40 ? 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-400' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400'}`}>
+                          {getScoreLabel(debtScore)}
+                        </Badge>
                       </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Trends */}
-              <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                    <LineChart className="w-4 h-4 text-purple-500 dark:text-purple-400" />
-                    {t('debt.debtTrends')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  {lineChartData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={140}>
-                      <RechartsLineChart data={lineChartData}>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
-                        <XAxis dataKey="month" fontSize={9} className="fill-slate-500 dark:fill-slate-400" />
-                        <YAxis fontSize={9} className="fill-slate-500 dark:fill-slate-400" tickFormatter={(v) => `₹${(v/1000).toFixed(0)}k`} />
-                        <Tooltip formatter={(value) => formatCurrency(value)} />
-                        <Line type="monotone" dataKey="taken" stroke="#ef4444" strokeWidth={2} dot={{ r: 2 }} />
-                        <Line type="monotone" dataKey="given" stroke="#10b981" strokeWidth={2} dot={{ r: 2 }} />
-                      </RechartsLineChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <div className="flex items-center justify-center h-[140px] text-slate-400 dark:text-slate-500">
-                      <div className="text-center">
-                        <LineChart className="w-8 h-8 mx-auto mb-1 text-slate-200 dark:text-slate-600" />
-                        <p className="text-xs">{t('debt.noTrendData')}</p>
+                      <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 space-y-1.5 text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-slate-500 dark:text-slate-400">{t('debt.totalDebts')}:</span>
+                          <span className="font-medium dark:text-white">{debts.length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500 dark:text-slate-400">{t('debt.totalBorrowed')}:</span>
+                          <span className="font-medium text-red-600 dark:text-red-400">{formatCurrency(summary.taken.totalRemaining)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500 dark:text-slate-400">{t('debt.totalLent')}:</span>
+                          <span className="font-medium text-emerald-600 dark:text-emerald-400">{formatCurrency(summary.given.totalRemaining)}</span>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </>
-        )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Distribution */}
+                  <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                        <PieChart className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+                        {t('debt.debtDistribution')}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      {pieChartData.some(d => d.value > 0) ? (
+                        <ResponsiveContainer width="100%" height={140}>
+                          <RechartsPieChart>
+                            <Pie data={pieChartData.filter(d => d.value > 0)} cx="50%" cy="50%" innerRadius={30} outerRadius={50} dataKey="value">
+                              {pieChartData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <Tooltip formatter={(value) => formatCurrency(value)} />
+                          </RechartsPieChart>
+                        </ResponsiveContainer>
+                      ) : (
+                        <div className="flex items-center justify-center h-[140px] text-slate-400 dark:text-slate-500">
+                          <div className="text-center">
+                            <PieChart className="w-8 h-8 mx-auto mb-1 text-slate-200 dark:text-slate-600" />
+                            <p className="text-xs">{t('debt.noData')}</p>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Trends */}
+                  <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                        <LineChart className="w-4 h-4 text-purple-500 dark:text-purple-400" />
+                        {t('debt.debtTrends')}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      {lineChartData.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={140}>
+                          <RechartsLineChart data={lineChartData}>
+                            <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
+                            <XAxis dataKey="month" fontSize={9} className="fill-slate-500 dark:fill-slate-400" />
+                            <YAxis fontSize={9} className="fill-slate-500 dark:fill-slate-400" tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
+                            <Tooltip formatter={(value) => formatCurrency(value)} />
+                            <Line type="monotone" dataKey="taken" stroke="#ef4444" strokeWidth={2} dot={{ r: 2 }} />
+                            <Line type="monotone" dataKey="given" stroke="#10b981" strokeWidth={2} dot={{ r: 2 }} />
+                          </RechartsLineChart>
+                        </ResponsiveContainer>
+                      ) : (
+                        <div className="flex items-center justify-center h-[140px] text-slate-400 dark:text-slate-500">
+                          <div className="text-center">
+                            <LineChart className="w-8 h-8 mx-auto mb-1 text-slate-200 dark:text-slate-600" />
+                            <p className="text-xs">{t('debt.noTrendData')}</p>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+              </>
+            )}
+          </TabsContent>
+
+          <TabsContent value="calculator" className="mt-0">
+            <DebtCalculator />
+          </TabsContent>
+        </Tabs>
 
         <DebtModal
           isOpen={showModal}
@@ -767,7 +795,7 @@ function DebtOverview() {
           type={modalType}
         />
       </div>
-    </DashboardLayout>
+    </DashboardLayout >
   )
 }
 

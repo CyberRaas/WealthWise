@@ -13,6 +13,7 @@ import SwipeGestureHandler from '@/components/mobile/SwipeGestureHandler'
 import PullToRefresh from '@/components/mobile/PullToRefresh'
 import LanguageSelector from '@/components/ui/LanguageSelector'
 import Logo from '@/components/ui/Logo'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   LogOut,
@@ -79,7 +80,7 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
       <div className="flex">
         {/* Desktop Sidebar - Hidden on Mobile */}
         <div className="hidden lg:block">
-          <div className="sticky top-0 h-screen">
+          <div className="sticky top-0 h-screen border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
             <Sidebar />
           </div>
         </div>
@@ -106,24 +107,10 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
                   </div>
 
                   {/* Title Section - Hidden on mobile, shown on desktop */}
-                  <div className="min-w-0 flex-1 hidden lg:block">
-                    <motion.h1
-                      key={pathname}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-800 dark:text-white truncate"
-                    >
+                  <div className="hidden lg:flex flex-col justify-center ml-4">
+                    <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
                       {title}
-                    </motion.h1>
-                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 hidden sm:block truncate">
-                      {new Date().toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })}
-                    </p>
+                    </h1>
                   </div>
                 </div>
 
@@ -140,21 +127,21 @@ export default function DashboardLayout({ children, title = "Dashboard", onRefre
                     variant="ghost"
                     size="icon"
                     onClick={() => router.push('/dashboard/notifications')}
-                    className="relative h-10 w-10 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95"
+                    className="relative h-9 w-9 rounded-full hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
                   >
-                    <Bell className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+                    <Bell className="h-[18px] w-[18px] text-slate-600 dark:text-slate-400" />
                     {/* Optional: Add notification badge */}
-                    {/* <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span> */}
+                    {/* <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-slate-900"></span> */}
                   </Button>
 
                   {/* User Profile Dropdown - Hidden on mobile */}
                   <div className="relative hidden lg:block" ref={dropdownRef}>
                     <Button
                       variant="ghost"
-                      className="flex items-center space-x-2 bg-slate-100/50 dark:bg-slate-800/50 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 rounded-xl px-3 py-2 h-10 transition-all duration-200 active:scale-95"
+                      className="flex items-center gap-3 pl-2 pr-4 py-1.5 h-auto hover:bg-slate-100 dark:hover:bg-white/10 rounded-full transition-all duration-200"
                       onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                     >
-                      <Avatar className="h-7 w-7 sm:h-8 sm:w-8 ring-2 ring-emerald-100 dark:ring-emerald-900">
+                      <Avatar className="h-8 w-8 border border-slate-200 dark:border-slate-700">
                         <AvatarImage src={profileImage} />
                         <AvatarFallback className="text-sm bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold">
                           {session?.user?.name?.[0] || 'A'}

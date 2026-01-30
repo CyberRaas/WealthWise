@@ -11,6 +11,7 @@ import LanguageSelector from '@/components/ui/LanguageSelector'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { WorthItWizard } from "@/components/tools/WorthItWizard";
 import {
   TrendingUp,
   Wallet,
@@ -41,6 +42,7 @@ import DailyPulseWidget from '@/components/retention/DailyPulseWidget'
 import DailyTipCard from '@/components/retention/DailyTipCard'
 import SmartNudgeToast from '@/components/retention/SmartNudgeToast'
 import { Trophy } from 'lucide-react'
+import { AchievementsWidget } from '@/components/education/AchievementsWidget'
 
 function DashboardContent() {
   const { data: session } = useSession()
@@ -373,139 +375,99 @@ function DashboardContent() {
       <div className="space-y-6">
 
         {/* Compact Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-700">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6">
           <div>
-            <h1 className="text-lg font-semibold text-slate-800 dark:text-white">
-              {greetingData.greeting}, {session?.user?.name?.split(' ')[0] || 'Friend'}
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mb-1">
+              {greetingData.greeting}, {session?.user?.name?.split(' ')[0]}
             </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{greetingData.date}</p>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">{greetingData.date}</p>
           </div>
 
-          {/* Quick Stats Pills */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className={`px-3 py-1.5 rounded-full text-sm font-medium ${
-              financialHealthScore >= 75 ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400' :
-              financialHealthScore >= 50 ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400' :
-              'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400'
-            }`}>
-              <span className="hidden sm:inline">Health: </span>{financialHealthScore}/100
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:block text-right mr-2">
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Financial Health</div>
+              <div className="text-sm font-bold text-slate-900 dark:text-white">{financialHealthScore}/100</div>
             </div>
-            {monthlyData.totalIncome > 0 && (
-              <>
-                <div className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-medium">
-                  {monthlyData.savingsRate}% saved
-                </div>
-                <div className="px-3 py-1.5 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 text-sm font-medium">
-                  {goals.filter(g => g.status === 'active').length} goals
-                </div>
-              </>
-            )}
+            <div className="h-10 w-10 rounded-full border-2 border-emerald-500/20 flex items-center justify-center bg-emerald-50 dark:bg-emerald-900/10">
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold text-sm">{financialHealthScore}</span>
+            </div>
           </div>
         </div>
 
         {/* Primary Action Row - 4 Column Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Financial Summary Card */}
-          <div className="col-span-2 lg:col-span-1 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-4 text-white">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-emerald-100 text-sm font-medium">This Month</span>
-              <Wallet className="w-5 h-5 text-emerald-200" />
+          <div className="col-span-2 lg:col-span-1 bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-5 text-white shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <Wallet className="w-24 h-24 rotate-12" />
             </div>
-            {monthlyData.totalIncome > 0 ? (
-              <>
-                <div className="text-2xl font-bold mb-1">
+
+            <div className="relative z-10">
+              <div className="mb-4">
+                <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Savings</span>
+                <div className="text-3xl font-bold mt-1 tracking-tight">
                   ₹{monthlyData.totalSaved > 0 ? monthlyData.totalSaved.toLocaleString('en-IN') : '0'}
                 </div>
-                <div className="text-emerald-100 text-sm">saved of ₹{monthlyData.totalIncome.toLocaleString('en-IN')}</div>
-                <div className="mt-3 bg-white/20 rounded-full h-2">
-                  <div
-                    className="bg-white rounded-full h-2 transition-all"
-                    style={{ width: `${Math.min(monthlyData.savingsRate, 100)}%` }}
-                  />
-                </div>
-              </>
-            ) : (
-              <div className="text-emerald-100">
-                <p className="text-sm mb-2">No budget set up yet</p>
-                <Button
-                  onClick={() => router.push('/dashboard/budget')}
-                  size="sm"
-                  variant="secondary"
-                  className="bg-white/20 hover:bg-white/30 text-white border-0"
-                >
-                  Set Up Budget
-                </Button>
               </div>
-            )}
+
+              <div className="flex items-center gap-3 text-sm text-slate-300">
+                <div className="flex-1 bg-white/10 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${Math.min(monthlyData.savingsRate, 100)}%` }} />
+                </div>
+                <span className="font-medium text-emerald-400">{monthlyData.savingsRate}%</span>
+              </div>
+            </div>
           </div>
 
           {/* Quick Add Expense */}
           <button
             onClick={() => setShowExpenseEntry(true)}
-            className="bg-white dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-xl p-4 transition-all group text-left"
+            className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-md hover:border-emerald-500/20 rounded-2xl p-5 text-left transition-all group"
           >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-800/50 flex items-center justify-center transition-colors">
-                <Mic className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <div>
-                <div className="font-semibold text-slate-800 dark:text-white">Quick Add</div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">Voice or manual</div>
-              </div>
+            <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <Plus className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <div className="text-xs text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-              + Add expense
-            </div>
+            <div className="font-semibold text-slate-900 dark:text-white">Add Expense</div>
+            <div className="text-xs text-slate-500 mt-1">Voice or manual entry</div>
           </button>
 
           {/* Budget Status */}
           <button
             onClick={handleViewBudget}
-            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 hover:shadow-sm rounded-xl p-4 transition-all text-left"
+            className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-md hover:border-blue-500/20 rounded-2xl p-5 text-left transition-all group"
           >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-violet-600 dark:text-violet-400" />
-              </div>
-              <div>
-                <div className="font-semibold text-slate-800 dark:text-white">Budget</div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">
-                  {budget ? `${Math.round((monthlyData.totalExpenses / budget.totalBudget) * 100)}% used` : 'Not set'}
-                </div>
-              </div>
+            <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <BarChart3 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
-            <div className="text-xs text-violet-600 dark:text-violet-400 font-medium">View details →</div>
+            <div className="font-semibold text-slate-900 dark:text-white">Budget</div>
+            <div className="text-xs text-slate-500 mt-1">
+              {budget ? `${Math.round((monthlyData.totalExpenses / budget.totalBudget) * 100)}% utilized` : 'Set up budget'}
+            </div>
           </button>
 
-          {/* Goals Status */}
-          <button
-            onClick={handleViewGoals}
-            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-purple-400 dark:hover:border-purple-500 hover:shadow-sm rounded-xl p-4 transition-all text-left"
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
-                <Target className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-              </div>
-              <div>
-                <div className="font-semibold text-slate-800 dark:text-white">Goals</div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">
-                  {goals.length > 0 ? `${goals.filter(g => g.status === 'completed').length}/${goals.length} complete` : 'None set'}
+          {/* Worth It Wizard */}
+          <WorthItWizard
+            customTrigger={
+              <button className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-md hover:border-purple-500/20 rounded-2xl p-5 text-left transition-all group w-full h-full">
+                <div className="w-10 h-10 rounded-full bg-purple-50 dark:bg-purple-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                  <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
-              </div>
-            </div>
-            <div className="text-xs text-purple-600 dark:text-purple-400 font-medium">Track progress →</div>
-          </button>
+                <div className="font-semibold text-slate-900 dark:text-white">Worth It?</div>
+                <div className="text-xs text-slate-500 mt-1">AI Purchase Advisor</div>
+              </button>
+            }
+          />
         </div>
 
-        {/* Daily Engagement Row - Balanced 2 Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Today's Pulse Widget */}
-          <DailyPulseWidget
-            onQuickAdd={() => setShowExpenseEntry(true)}
-          />
+        {/* Daily Engagement Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Today's Pulse Widget - Wider */}
+          <div className="lg:col-span-2">
+            <DailyPulseWidget onQuickAdd={() => setShowExpenseEntry(true)} />
+          </div>
 
-          {/* Recent Activity Card - Expanded */}
-          <Card className="border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
+          {/* Recent Activity Card - Narrower */}
+          <Card className="h-full border-slate-100 dark:border-white/5 shadow-sm">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold flex items-center gap-2 dark:text-white">
@@ -529,10 +491,10 @@ function DashboardContent() {
                         <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-base">
                           {expense.category === 'Food & Dining' ? '🍕' :
                             expense.category === 'Transportation' ? '🚗' :
-                            expense.category === 'Shopping' ? '🛒' :
-                            expense.category === 'Healthcare' ? '🏥' :
-                            expense.category === 'Entertainment' ? '🎬' :
-                            expense.category === 'Home & Utilities' ? '🏠' : '💰'}
+                              expense.category === 'Shopping' ? '🛒' :
+                                expense.category === 'Healthcare' ? '🏥' :
+                                  expense.category === 'Entertainment' ? '🎬' :
+                                    expense.category === 'Home & Utilities' ? '🏠' : '💰'}
                         </div>
                         <div>
                           <p className="text-sm font-medium text-slate-800 dark:text-white truncate max-w-[180px]">
@@ -629,11 +591,10 @@ function DashboardContent() {
                               </div>
                               <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5">
                                 <div
-                                  className={`h-1.5 rounded-full transition-all ${
-                                    spentPercentage > 90 ? 'bg-red-500' :
+                                  className={`h-1.5 rounded-full transition-all ${spentPercentage > 90 ? 'bg-red-500' :
                                     spentPercentage > 70 ? 'bg-amber-500' :
-                                    'bg-emerald-500'
-                                  }`}
+                                      'bg-emerald-500'
+                                    }`}
                                   style={{ width: `${Math.min(spentPercentage, 100)}%` }}
                                 />
                               </div>
@@ -655,12 +616,13 @@ function DashboardContent() {
             </div>
 
             {/* Seasonal & Income Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               <SeasonalPlanningWidget
                 compact={true}
                 onViewAll={() => router.push('/dashboard/budget#seasonal')}
               />
               <IncomeRecommendations compact={true} />
+              <AchievementsWidget />
             </div>
 
             {/* Goals Section */}
@@ -689,11 +651,10 @@ function DashboardContent() {
                       return (
                         <div
                           key={goal.id}
-                          className={`p-3 rounded-lg border ${
-                            isCompleted ? 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800' :
+                          className={`p-3 rounded-lg border ${isCompleted ? 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800' :
                             progress > 50 ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800' :
-                            'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
-                          }`}
+                              'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+                            }`}
                         >
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium text-slate-800 dark:text-white truncate">{goal.name}</span>
@@ -701,11 +662,10 @@ function DashboardContent() {
                           </div>
                           <div className="w-full bg-white dark:bg-slate-700 rounded-full h-1.5 mb-1">
                             <div
-                              className={`h-1.5 rounded-full ${
-                                isCompleted ? 'bg-emerald-500' :
+                              className={`h-1.5 rounded-full ${isCompleted ? 'bg-emerald-500' :
                                 progress > 50 ? 'bg-blue-500' :
-                                'bg-slate-400'
-                              }`}
+                                  'bg-slate-400'
+                                }`}
                               style={{ width: `${Math.min(progress, 100)}%` }}
                             />
                           </div>
