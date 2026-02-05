@@ -25,7 +25,8 @@ import {
   CircleDollarSign,
   BookOpen,
   Sparkles,
-  LayoutDashboard
+  LayoutDashboard,
+  Gamepad2
 } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 
@@ -96,6 +97,12 @@ const navigationGroups = [
         href: '/dashboard/goals',
         icon: Target,
         description: 'sidebar.goals_desc'
+      },
+      {
+        name: 'Financial Games',
+        href: '/dashboard/games',
+        icon: Gamepad2,
+        description: 'Learn through interactive games'
       },
       {
         name: 'Learning Hub',

@@ -38,11 +38,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SeasonalPlanningWidget } from '@/components/seasonal'
 import IncomeRecommendations from '@/components/budget/IncomeRecommendations'
 import { FinancialInsightsWidget } from '@/components/insights'
-import DailyPulseWidget from '@/components/retention/DailyPulseWidget'
-import DailyTipCard from '@/components/retention/DailyTipCard'
 import SmartNudgeToast from '@/components/retention/SmartNudgeToast'
 import { Trophy } from 'lucide-react'
 import { AchievementsWidget } from '@/components/education/AchievementsWidget'
+import GameProgressWidget from '@/components/games/GameProgressWidget'
+import FinancialHealthScore from '@/components/dashboard/FinancialHealthScore'
 
 function DashboardContent() {
   const { data: session } = useSession()
@@ -459,77 +459,6 @@ function DashboardContent() {
           />
         </div>
 
-        {/* Daily Engagement Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Today's Pulse Widget - Wider */}
-          <div className="lg:col-span-2">
-            <DailyPulseWidget onQuickAdd={() => setShowExpenseEntry(true)} />
-          </div>
-
-          {/* Recent Activity Card - Narrower */}
-          <Card className="h-full border-slate-100 dark:border-white/5 shadow-sm">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2 dark:text-white">
-                  <CreditCard className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-                  Recent Activity
-                </CardTitle>
-                <button
-                  onClick={() => router.push('/dashboard/expenses')}
-                  className="text-xs text-emerald-600 dark:text-emerald-400 font-medium hover:underline"
-                >
-                  View all →
-                </button>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-0">
-              {expenses.length > 0 ? (
-                <div className="space-y-2">
-                  {expenses.slice(0, 5).map((expense) => (
-                    <div key={expense.id} className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700 last:border-0">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-base">
-                          {expense.category === 'Food & Dining' ? '🍕' :
-                            expense.category === 'Transportation' ? '🚗' :
-                              expense.category === 'Shopping' ? '🛒' :
-                                expense.category === 'Healthcare' ? '🏥' :
-                                  expense.category === 'Entertainment' ? '🎬' :
-                                    expense.category === 'Home & Utilities' ? '🏠' : '💰'}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-slate-800 dark:text-white truncate max-w-[180px]">
-                            {expense.description || expense.merchant || expense.category}
-                          </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
-                            {new Date(expense.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                          </p>
-                        </div>
-                      </div>
-                      <span className="text-sm font-semibold text-red-600 dark:text-red-400">
-                        -₹{expense.amount.toLocaleString('en-IN')}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-6">
-                  <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mx-auto mb-3">
-                    <CreditCard className="w-6 h-6 text-slate-400 dark:text-slate-500" />
-                  </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">No transactions yet</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Start tracking your expenses</p>
-                  <Button onClick={() => setShowExpenseEntry(true)} size="sm" className="bg-emerald-600 hover:bg-emerald-700">
-                    Add First Expense
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Daily Tip - Full Width Banner */}
-        <DailyTipCard className="w-full" />
-
         {/* Main Dashboard Tabs */}
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsList className="bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
@@ -623,6 +552,19 @@ function DashboardContent() {
               />
               <IncomeRecommendations compact={true} />
               <AchievementsWidget />
+            </div>
+
+            {/* Game Progress & Financial Health Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <GameProgressWidget />
+              <FinancialHealthScore 
+                income={monthlyData.totalIncome}
+                expenses={monthlyData.totalExpenses}
+                savings={monthlyData.totalSaved}
+                debt={0}
+                emergencyFund={monthlyData.totalSaved}
+                goalProgress={goals.length > 0 ? Math.round(goals.reduce((sum, g) => sum + Math.min((g.currentAmount / g.targetAmount) * 100, 100), 0) / goals.length) : 0}
+              />
             </div>
 
             {/* Goals Section */}
