@@ -43,6 +43,11 @@ import { Trophy } from 'lucide-react'
 import { AchievementsWidget } from '@/components/education/AchievementsWidget'
 import GameProgressWidget from '@/components/games/GameProgressWidget'
 import FinancialHealthScore from '@/components/dashboard/FinancialHealthScore'
+import PredictiveBalanceAlert from '@/components/tools/PredictiveBalanceAlert'
+import SubscriptionAudit from '@/components/tools/SubscriptionAudit'
+import SmartNudgeEngine from '@/components/tools/SmartNudgeEngine'
+import LiteracyImprovementWidget from '@/components/games/LiteracyImprovementWidget'
+import LearningJourneyMap from '@/components/games/LearningJourneyMap'
 
 function DashboardContent() {
   const { data: session } = useSession()
@@ -459,6 +464,10 @@ function DashboardContent() {
           />
         </div>
 
+        {/* Phase 3: Guardian Layer - Predictive Alerts & Smart Nudges */}
+        <PredictiveBalanceAlert budget={budget} expenses={expenses} />
+        <SmartNudgeEngine budget={budget} expenses={expenses} goals={goals} />
+
         {/* Main Dashboard Tabs */}
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsList className="bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
@@ -477,6 +486,42 @@ function DashboardContent() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-4 mt-0">
+            {/* 🎮 Game-First: Learning Progress & Play CTA */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2">
+                <GameProgressWidget />
+              </div>
+              <Card className="border-2 border-dashed border-emerald-300 dark:border-emerald-700 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 shadow-lg hover:shadow-xl transition-shadow">
+                <CardContent className="flex flex-col items-center justify-center h-full py-8 text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center mb-4 shadow-lg shadow-emerald-200 dark:shadow-emerald-900/50">
+                    <Trophy className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+                    Play & Learn 🎮
+                  </h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                    Master money skills through fun games. Earn XP & level up!
+                  </p>
+                  <Button
+                    onClick={() => router.push('/dashboard/games')}
+                    className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md w-full"
+                  >
+                    <Target className="w-4 h-4 mr-2" />
+                    Start Playing
+                  </Button>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-2 font-medium">
+                    4 games · 10 financial themes
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Literacy Assessment & Learning Journey */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <LiteracyImprovementWidget />
+              <LearningJourneyMap compact={true} />
+            </div>
+
             {/* Two Column Layout - AI Insights & Spending */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* AI-Powered Financial Insights */}
@@ -544,19 +589,8 @@ function DashboardContent() {
               </Card>
             </div>
 
-            {/* Seasonal & Income Row */}
+            {/* Financial Health & Achievements Row */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <SeasonalPlanningWidget
-                compact={true}
-                onViewAll={() => router.push('/dashboard/budget#seasonal')}
-              />
-              <IncomeRecommendations compact={true} />
-              <AchievementsWidget />
-            </div>
-
-            {/* Game Progress & Financial Health Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <GameProgressWidget />
               <FinancialHealthScore 
                 income={monthlyData.totalIncome}
                 expenses={monthlyData.totalExpenses}
@@ -565,6 +599,17 @@ function DashboardContent() {
                 emergencyFund={monthlyData.totalSaved}
                 goalProgress={goals.length > 0 ? Math.round(goals.reduce((sum, g) => sum + Math.min((g.currentAmount / g.targetAmount) * 100, 100), 0) / goals.length) : 0}
               />
+              <AchievementsWidget />
+              <SeasonalPlanningWidget
+                compact={true}
+                onViewAll={() => router.push('/dashboard/budget#seasonal')}
+              />
+            </div>
+
+            {/* Income & Subscription Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <IncomeRecommendations compact={true} />
+              <SubscriptionAudit expenses={expenses} />
             </div>
 
             {/* Goals Section */}

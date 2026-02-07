@@ -142,6 +142,13 @@ const userProfileSchema = new mongoose.Schema({
     }
   },
 
+  // User Learning Track (NCFE - gamified journey persona)
+  userTrack: {
+    type: String,
+    enum: ['farmer', 'woman', 'student', 'young_adult', ''],
+    default: ''
+  },
+
   // Additional Profile Fields
   name: {
     type: String,

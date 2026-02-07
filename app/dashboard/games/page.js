@@ -11,9 +11,12 @@ import {
   XP_CONFIG,
   FINANCIAL_THEMES
 } from '@/lib/gameEngine'
+import { useProfile } from '@/contexts/ProfileContext'
 import ScamBusterGame from '@/components/games/ScamBusterGame'
 import LifeDecisionsGame from '@/components/games/LifeDecisionsGame'
 import InsuranceModule from '@/components/games/InsuranceModule'
+import FinancialFitnessTest from '@/components/games/FinancialFitnessTest'
+import LearningJourneyMap from '@/components/games/LearningJourneyMap'
 import {
   Gamepad2,
   Shield,
@@ -87,10 +90,28 @@ const GAMES = [
     difficulty: 'Easy',
     skills: ['Insurance Basics', 'Risk Assessment', 'Coverage Planning'],
     unlockLevel: 1
+  },
+  {
+    id: 'fitness-test',
+    name: 'Financial Fitness Test',
+    shortName: 'Fitness Test',
+    description: 'Assess your financial literacy level',
+    longDescription: 'Take a 10-question assessment covering budgeting, savings, insurance, fraud prevention and more. Track your improvement over time. Questions adapt to your learning track.',
+    icon: Target,
+    emoji: '🏋️',
+    color: 'bg-amber-500',
+    gradient: 'from-amber-500 to-orange-500',
+    xpReward: '25-100 XP',
+    duration: '5-8 min',
+    difficulty: 'Adaptive',
+    skills: ['All Financial Themes', 'Self-Assessment', 'Knowledge Tracking'],
+    unlockLevel: 1
   }
 ]
 
 export default function GamesPage() {
+  const { userTrack: profileTrack } = useProfile()
+  const userTrack = profileTrack || 'young_adult'
   const [activeView, setActiveView] = useState('home') // home, game
   const [selectedGame, setSelectedGame] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -328,7 +349,7 @@ export default function GamesPage() {
               </div>
               <div>
                 <h3 className="font-semibold text-lg text-emerald-800 dark:text-emerald-300 mb-1">
-                  Welcome! Here's how it works
+                  Welcome! Here&apos;s how it works
                 </h3>
                 <ul className="text-sm text-emerald-700 dark:text-emerald-400 space-y-1">
                   <li>🎯 Choose any game below to start learning</li>
@@ -337,7 +358,7 @@ export default function GamesPage() {
                   <li>🏆 Unlock achievements for special accomplishments</li>
                 </ul>
                 <p className="mt-3 text-sm font-medium text-emerald-800 dark:text-emerald-300">
-                  Start with <strong>Scam Buster</strong> - it's quick and fun!
+                  Start with <strong>Scam Buster</strong> - it&apos;s quick and fun!
                 </p>
               </div>
             </div>
@@ -378,10 +399,15 @@ export default function GamesPage() {
         </Card>
       )}
 
+      {/* Learning Journey Map */}
+      <div className="mb-8">
+        <LearningJourneyMap userTrack={userTrack} />
+      </div>
+
       {/* Games Grid */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">Choose a Game</h2>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3" role="list" aria-label="Available games">
           {GAMES.map((game, idx) => {
             const Icon = game.icon
             const isCompleted = userProgress.gamesCompleted.includes(game.id)
@@ -445,7 +471,7 @@ export default function GamesPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-emerald-500" />
-            What You'll Learn
+            What You&apos;ll Learn
           </CardTitle>
           <CardDescription>
             Master these essential financial skills through our games
@@ -486,6 +512,7 @@ export default function GamesPage() {
       <div className="p-4 md:p-6">
         {selectedGame === 'scam-buster' && (
           <ScamBusterGame
+            userTrack={userTrack}
             onComplete={(result) => handleGameComplete('scam-buster', result)}
             onXPEarned={(xp) => handleXPEarned(xp, 'scam-buster')}
           />
@@ -493,6 +520,7 @@ export default function GamesPage() {
 
         {selectedGame === 'life-decisions' && (
           <LifeDecisionsGame
+            userTrack={userTrack}
             onComplete={(result) => handleGameComplete('life-decisions', result)}
             onXPEarned={(xp) => handleXPEarned(xp, 'life-decisions')}
           />
@@ -500,8 +528,20 @@ export default function GamesPage() {
 
         {selectedGame === 'insurance-academy' && (
           <InsuranceModule
+            userTrack={userTrack}
             onComplete={(result) => handleGameComplete('insurance-academy', result)}
             onXPEarned={(xp) => handleXPEarned(xp, 'insurance-academy')}
+          />
+        )}
+
+        {selectedGame === 'fitness-test' && (
+          <FinancialFitnessTest
+            userTrack={userTrack}
+            isPreTest={!userProgress.gamesCompleted?.includes('fitness-test')}
+            onComplete={(result) => {
+              handleGameComplete('fitness-test', result)
+              if (result.earnedXP) handleXPEarned(result.earnedXP, 'fitness-test')
+            }}
           />
         )}
       </div>
@@ -511,9 +551,9 @@ export default function GamesPage() {
   return (
     <div className="flex h-[calc(100vh-4rem)] bg-slate-50 dark:bg-slate-950">
       {/* Desktop Sidebar */}
-      <div className="hidden md:block">
+      <nav className="hidden md:block" aria-label="Game navigation">
         <Sidebar />
-      </div>
+      </nav>
 
       {/* Mobile Header */}
       <div className="fixed top-0 left-0 right-0 z-50 md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3">
@@ -521,6 +561,7 @@ export default function GamesPage() {
           <button
             onClick={() => setMobileMenuOpen(true)}
             className="p-2 -ml-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+            aria-label="Open game menu"
           >
             <Menu className="w-5 h-5" />
           </button>

@@ -19,6 +19,7 @@ import {
   getScenarios,
 } from "@/lib/scamBusterGame";
 import { GameEngine, calculateGameResult } from "@/lib/gameEngine";
+import { useSpeech } from "@/hooks/useSpeech";
 import {
   Shield,
   AlertTriangle,
@@ -32,10 +33,12 @@ import {
   Zap,
   Target,
   BookOpen,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 
-export default function ScamBusterGame({ onComplete, onXPEarned }) {
+export default function ScamBusterGame({ onComplete, onXPEarned, userTrack }) {
   const [gameState, setGameState] = useState("intro"); // intro, playing, feedback, result
   const [scenarios, setScenarios] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -44,12 +47,14 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
   const [showLesson, setShowLesson] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
   const [totalXP, setTotalXP] = useState(0);
+  const { voiceEnabled, toggleVoice, speak, stop } = useSpeech();
 
   // Initialize game
   const startGame = () => {
     const gameScenarios = getScenarios({
       limit: SCAM_BUSTER_CONFIG.scenariosPerGame,
       random: true,
+      track: userTrack || null,
     });
     setScenarios(gameScenarios);
     setCurrentIndex(0);
@@ -60,6 +65,13 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
     setGameState("playing");
     setTimeLeft(60);
   };
+
+  // Narrate scenario when it changes
+  useEffect(() => {
+    if (gameState === 'playing' && currentScenario && voiceEnabled) {
+      speak(currentScenario.title + '. ' + currentScenario.scenario);
+    }
+  }, [currentIndex, gameState, voiceEnabled]);
 
   // Timer effect
   useEffect(() => {
@@ -105,6 +117,18 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
 
     setGameState("feedback");
   };
+
+  // Narrate feedback
+  useEffect(() => {
+    if (gameState === 'feedback' && voiceEnabled) {
+      const lastAnswer = answers[answers.length - 1];
+      if (lastAnswer?.isCorrect) {
+        speak('Correct!');
+      } else {
+        speak('Incorrect.');
+      }
+    }
+  }, [gameState, answers.length]);
 
   const handleNext = () => {
     if (currentIndex < scenarios.length - 1) {
@@ -248,7 +272,22 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
             Start Scam Busting
             <ChevronRight className="w-5 h-5 ml-2" />
           </Button>
-
+          {/* Voice Toggle */}
+          <div className="flex justify-center">
+            <button
+              onClick={toggleVoice}
+              aria-label={voiceEnabled ? 'Disable voice narration' : 'Enable voice narration'}
+              aria-pressed={voiceEnabled}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                voiceEnabled
+                  ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700'
+              }`}
+            >
+              {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              {voiceEnabled ? '🔊 Voice ON' : '🔇 Voice OFF'}
+            </button>
+          </div>
           <p className="text-xs text-center text-slate-500">
             {SCAM_BUSTER_CONFIG.scenariosPerGame} scenarios • Earn XP for
             correct answers
@@ -285,21 +324,32 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
 
           {/* Timer */}
           {gameState === "playing" && (
-            <div
-              className={`flex items-center gap-1 px-3 py-1 rounded-full ${
-                timeLeft < 15
-                  ? "bg-red-100 text-red-600"
-                  : "bg-slate-100 text-slate-600"
-              }`}
-            >
-              <Clock className="w-4 h-4" />
-              <span className="font-mono font-medium">{timeLeft}s</span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleVoice}
+                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                title={voiceEnabled ? 'Voice ON' : 'Voice OFF'}
+                aria-label={voiceEnabled ? 'Disable voice narration' : 'Enable voice narration'}
+                aria-pressed={voiceEnabled}
+              >
+                {voiceEnabled ? <Volume2 className="w-4 h-4 text-emerald-500" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
+              </button>
+              <div
+                className={`flex items-center gap-1 px-3 py-1 rounded-full ${
+                  timeLeft < 15
+                    ? "bg-red-100 text-red-600"
+                    : "bg-slate-100 text-slate-600"
+                }`}
+              >
+                <Clock className="w-4 h-4" />
+                <span className="font-mono font-medium">{timeLeft}s</span>
+              </div>
             </div>
           )}
         </div>
 
         {/* Scenario Card */}
-        <Card>
+        <Card role="region" aria-label={`Scam scenario ${currentIndex + 1} of ${scenarios.length}`}>
           <CardHeader>
             <div className="flex items-start justify-between">
               <Badge className="bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
@@ -311,6 +361,9 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
             <CardTitle className="text-xl mt-3">
               {currentScenario?.title}
             </CardTitle>
+            {currentScenario?.titleHindi && (
+              <p className="text-sm text-slate-500 dark:text-slate-400 italic mt-1">{currentScenario.titleHindi}</p>
+            )}
           </CardHeader>
 
           <CardContent className="space-y-6">
@@ -319,6 +372,9 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
               <p className="text-slate-700 dark:text-slate-300 whitespace-pre-line">
                 {currentScenario?.scenario}
               </p>
+              {currentScenario?.scenarioHindi && (
+                <p className="text-sm text-slate-500 dark:text-slate-400 italic mt-2">{currentScenario.scenarioHindi}</p>
+              )}
             </div>
 
             {/* Question */}
@@ -327,9 +383,12 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
                 <Zap className="w-5 h-5 text-amber-500" />
                 {currentScenario?.question}
               </h3>
+              {currentScenario?.questionHindi && (
+                <p className="text-sm text-slate-500 dark:text-slate-400 italic -mt-2 mb-4">{currentScenario.questionHindi}</p>
+              )}
 
               {/* Options */}
-              <div className="space-y-3">
+              <div className="space-y-3" role="group" aria-label="Answer options">
                 {currentScenario?.options.map((option) => {
                   const isSelected = selectedOption === option.id;
                   const showResult = gameState === "feedback";
@@ -360,6 +419,8 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
                       }`}
                       onClick={() => !showResult && handleAnswer(option.id)}
                       disabled={showResult}
+                      aria-label={`Option ${option.id.toUpperCase()}: ${option.text}${showResult && isCorrect ? ' (Correct answer)' : ''}${showResult && isSelected && !isCorrect ? ' (Your incorrect answer)' : ''}`}
+                      aria-pressed={isSelected}
                     >
                       <div className="flex items-start gap-3">
                         <div
@@ -381,6 +442,9 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
                         </div>
                         <span className="flex-1 text-slate-700 dark:text-slate-300">
                           {option.text}
+                          {option.textHindi && (
+                            <span className="block text-xs text-slate-500 dark:text-slate-400 italic mt-1">{option.textHindi}</span>
+                          )}
                         </span>
                       </div>
                     </motion.button>
@@ -396,6 +460,8 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="space-y-4"
+                  role="alert"
+                  aria-live="assertive"
                 >
                   {/* Consequence */}
                   <div
@@ -422,6 +488,9 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
                         <p className="text-sm mt-1 text-slate-600 dark:text-slate-300">
                           {selectedOpt.consequence}
                         </p>
+                        {selectedOpt.consequenceHindi && (
+                          <p className="text-xs mt-1 text-slate-500 dark:text-slate-400 italic">{selectedOpt.consequenceHindi}</p>
+                        )}
                         {selectedOpt.isCorrect && (
                           <p className="text-sm mt-2 font-medium text-emerald-600">
                             +{currentScenario.xpReward} XP earned!
@@ -453,6 +522,9 @@ export default function ScamBusterGame({ onComplete, onXPEarned }) {
                         <p className="font-medium text-amber-800 dark:text-amber-300">
                           {currentScenario.lesson}
                         </p>
+                        {currentScenario.lessonHindi && (
+                          <p className="text-sm mt-1 text-amber-700/80 dark:text-amber-400/80 italic">{currentScenario.lessonHindi}</p>
+                        )}
 
                         {currentScenario.tips && (
                           <div className="mt-3 pt-3 border-t border-amber-200 dark:border-amber-800">

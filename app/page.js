@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { useTranslation } from '@/lib/i18n'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import { Badge } from '@/components/ui/badge'
 import {
   TrendingUp,
   Shield,
@@ -12,22 +13,112 @@ import {
   ArrowRight,
   Menu,
   X,
-  CheckCircle,
-  MessageSquare,
   BookOpen,
-  Sparkles,
-  PieChart,
   Target,
   Users,
-  ChevronRight
+  ChevronRight,
+  Gamepad2,
+  Star,
+  Volume2,
+  WifiOff,
+  Globe
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+
+// User track personas for the landing page
+const USER_TRACKS_DISPLAY = [
+  {
+    id: 'farmer',
+    name: 'The Farmer',
+    nameHindi: 'किसान',
+    icon: '🌾',
+    color: 'from-emerald-500 to-green-600',
+    bgLight: 'bg-emerald-50 dark:bg-emerald-900/20',
+    borderColor: 'border-emerald-200 dark:border-emerald-800',
+    description: 'Manage seasonal income & protect your harvest',
+    descHindi: 'मौसमी आय का प्रबंधन करें',
+    skills: ['Cash Flow', 'Crop Insurance', 'Savings'],
+  },
+  {
+    id: 'woman',
+    name: 'The Woman',
+    nameHindi: 'महिला',
+    icon: '👩',
+    color: 'from-pink-500 to-rose-600',
+    bgLight: 'bg-pink-50 dark:bg-pink-900/20',
+    borderColor: 'border-pink-200 dark:border-pink-800',
+    description: 'Master household budgets & grow your savings',
+    descHindi: 'घरेलू वित्त में महारत हासिल करें',
+    skills: ['Digital Safety', 'Budget Management', 'SHG Savings'],
+  },
+  {
+    id: 'student',
+    name: 'The Student',
+    nameHindi: 'विद्यार्थी',
+    icon: '📚',
+    color: 'from-blue-500 to-indigo-600',
+    bgLight: 'bg-blue-50 dark:bg-blue-900/20',
+    borderColor: 'border-blue-200 dark:border-blue-800',
+    description: 'Build smart money habits from day one',
+    descHindi: 'स्मार्ट पैसे की आदतें बनाएं',
+    skills: ['Needs vs Wants', 'Saving Habits', 'Digital Safety'],
+  },
+  {
+    id: 'young_adult',
+    name: 'The Young Adult',
+    nameHindi: 'युवा',
+    icon: '💼',
+    color: 'from-violet-500 to-purple-600',
+    bgLight: 'bg-violet-50 dark:bg-violet-900/20',
+    borderColor: 'border-violet-200 dark:border-violet-800',
+    description: 'Navigate investments, taxes & big decisions',
+    descHindi: 'निवेश और करियर के वित्तीय निर्णय',
+    skills: ['Investments', 'Fraud Prevention', 'Tax Planning'],
+  },
+]
+
+// Game showcase data
+const GAMES_SHOWCASE = [
+  {
+    name: 'Scam Buster',
+    emoji: '🕵️',
+    description: 'Spot real-world scams before they fool you',
+    gradient: 'from-red-500 to-orange-500',
+    xp: '50-150 XP',
+    theme: 'Fraud Prevention'
+  },
+  {
+    name: 'Life Decisions',
+    emoji: '🎮',
+    description: '6-month financial simulation with real consequences',
+    gradient: 'from-violet-500 to-purple-500',
+    xp: '100-300 XP',
+    theme: 'Budgeting & Savings'
+  },
+  {
+    name: 'Insurance Academy',
+    emoji: '🛡️',
+    description: 'Learn essential coverage through interactive quizzes',
+    gradient: 'from-emerald-500 to-teal-500',
+    xp: '75-200 XP',
+    theme: 'Insurance'
+  },
+  {
+    name: 'Financial Fitness Test',
+    emoji: '🏋️',
+    description: 'Assess your knowledge & track your improvement',
+    gradient: 'from-amber-500 to-orange-500',
+    xp: '25-100 XP',
+    theme: 'All Themes'
+  },
+]
 
 export default function Home() {
   const { data: session } = useSession()
   const { t } = useTranslation()
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [hoveredTrack, setHoveredTrack] = useState(null)
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20)
@@ -37,44 +128,44 @@ export default function Home() {
 
   const features = [
     {
-      icon: MessageSquare,
-      title: t('features.ai_chatbot.title'),
-      description: t('features.ai_chatbot.description'),
+      icon: Gamepad2,
+      title: 'Learn by Playing',
+      description: 'Master money through interactive games, simulations, and real-life scenarios — not boring textbooks.',
       color: 'text-violet-600 dark:text-violet-400',
       bgGlow: 'from-violet-500/20'
     },
     {
       icon: BookOpen,
-      title: t('features.education.title'),
-      description: t('features.education.description'),
+      title: 'Learning Hub',
+      description: 'Gamified courses from basics to advanced. Earn XP, unlock badges, and level up your financial IQ.',
       color: 'text-amber-600 dark:text-amber-400',
       bgGlow: 'from-amber-500/20'
     },
     {
-      icon: Sparkles,
-      title: t('features.worth_it.title'),
-      description: t('features.worth_it.description'),
+      icon: Volume2,
+      title: 'Voice-First Design',
+      description: 'Hindi voice input, audio narration for games — designed for Bharat, not just metros.',
       color: 'text-indigo-600 dark:text-indigo-400',
       bgGlow: 'from-indigo-500/20'
     },
     {
-      icon: PieChart,
-      title: t('features.budgeting.title'),
-      description: t('features.budgeting.description'),
-      color: 'text-blue-600 dark:text-blue-400',
-      bgGlow: 'from-blue-500/20'
+      icon: Shield,
+      title: 'Scam Protection',
+      description: 'Practice spotting UPI fraud, phishing, fake loans & more in our Scam Buster game.',
+      color: 'text-red-600 dark:text-red-400',
+      bgGlow: 'from-red-500/20'
     },
     {
       icon: Target,
-      title: t('features.goals.title'),
-      description: t('features.goals.description'),
+      title: 'Decision Simulator',
+      description: 'Face real financial choices each month. See how your decisions impact savings, debt, and life goals.',
       color: 'text-emerald-600 dark:text-emerald-400',
       bgGlow: 'from-emerald-500/20'
     },
     {
-      icon: Shield,
-      title: t('features.security.title'),
-      description: t('features.security.description'),
+      icon: WifiOff,
+      title: 'Offline Ready (PWA)',
+      description: 'Works without internet. Lightweight, low-bandwidth friendly — perfect for rural India.',
       color: 'text-slate-600 dark:text-slate-400',
       bgGlow: 'from-slate-500/20'
     }
@@ -178,39 +269,47 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-36 pb-24 overflow-hidden">
+      {/* Hero Section — Game-First Positioning */}
+      <section className="relative pt-36 pb-16 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center">
-            {/* Badge */}
+            {/* NCFE Badge */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-full px-4 py-2 mb-8 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-full px-4 py-2 mb-6 backdrop-blur-sm"
             >
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-sm text-emerald-700 dark:text-emerald-300 font-semibold tracking-wide">{t('hero.badge')}</span>
+              <Gamepad2 className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <span className="text-sm text-amber-700 dark:text-amber-300 font-semibold tracking-wide">Innovate4FinLit Game Challenge — NCFE</span>
             </motion.div>
 
-            {/* Headline */}
+            {/* Headline — Game-First */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-5xl md:text-7xl lg:text-8xl font-black leading-[0.95] mb-6 tracking-tight text-slate-900 dark:text-white"
+              className="text-4xl md:text-6xl lg:text-7xl font-black leading-[0.95] mb-6 tracking-tight text-slate-900 dark:text-white"
             >
-              {t('hero.title.part1')}<br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-400">{t('hero.title.part2')}</span>
+              Learn Money by<br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-400">Playing Games 🎮</span>
             </motion.h1>
 
-            {/* Subtitle */}
+            {/* Subtitle — PS Aligned */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed font-medium"
+              className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-4 leading-relaxed font-medium"
             >
-              {t('hero.subtitle')}
+              India&apos;s gamified financial literacy platform. Master budgeting, spot scams, learn insurance — through play, not theory.
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.25 }}
+              className="text-base text-slate-500 dark:text-slate-500 max-w-xl mx-auto mb-10"
+            >
+              🌾 किसान · 👩 महिला · 📚 विद्यार्थी · 💼 युवा — हर किसी के लिए
             </motion.p>
 
             {/* CTA Buttons */}
@@ -218,12 +317,13 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
             >
               {session ? (
-                <Link href="/dashboard">
+                <Link href="/dashboard/games">
                   <button className="group w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold shadow-xl shadow-emerald-600/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
-                    {t('hero.cta.dashboard')}
+                    <Gamepad2 className="w-5 h-5" />
+                    Play Now
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </Link>
@@ -231,7 +331,8 @@ export default function Home() {
                 <>
                   <Link href="/auth/signup">
                     <button className="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold shadow-xl shadow-emerald-600/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
-                      {t('hero.cta.start')}
+                      <Gamepad2 className="w-5 h-5" />
+                      Start Playing — Free
                       <ArrowRight className="w-5 h-5" />
                     </button>
                   </Link>
@@ -244,26 +345,144 @@ export default function Home() {
               )}
             </motion.div>
 
-            {/* Trust Indicators */}
+            {/* Trust Indicators — PS Compliance */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="flex flex-wrap items-center justify-center gap-8 text-sm font-semibold text-slate-500 dark:text-slate-400"
+              className="flex flex-wrap items-center justify-center gap-6 text-sm font-semibold text-slate-500 dark:text-slate-400"
             >
               <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                <span>{t('trust.bankLevel')}</span>
+                <Globe className="w-4 h-4 text-emerald-500" />
+                <span>10+ Indian Languages</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                <span>{t('trust.noFees')}</span>
+                <Volume2 className="w-4 h-4 text-emerald-500" />
+                <span>Voice-First Design</span>
               </div>
               <div className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                <span>{t('trust.fastSetup')}</span>
+                <WifiOff className="w-4 h-4 text-emerald-500" />
+                <span>Works Offline (PWA)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-emerald-500" />
+                <span>NCFE Aligned</span>
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* User Tracks Section — "Choose Your Journey" */}
+      <section className="py-16 relative bg-slate-50/50 dark:bg-slate-900/30">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <Badge className="mb-4 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 px-3 py-1 text-xs font-bold">
+                4 TRACKS · 4 JOURNEYS
+              </Badge>
+              <h2 className="text-3xl md:text-5xl font-black mb-4 text-slate-900 dark:text-white">Choose Your Financial Journey</h2>
+              <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-medium">
+                Every Indian&apos;s financial reality is different. Pick the track closest to yours — the games adapt to your needs.
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {USER_TRACKS_DISPLAY.map((track, index) => (
+              <motion.div
+                key={track.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                onHoverStart={() => setHoveredTrack(track.id)}
+                onHoverEnd={() => setHoveredTrack(null)}
+                className="cursor-pointer"
+              >
+                <div className={`relative h-full rounded-2xl border-2 ${track.borderColor} ${track.bgLight} p-6 transition-all duration-300 ${hoveredTrack === track.id ? 'shadow-xl' : 'shadow-sm'}`}>
+                  {/* Icon */}
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${track.color} flex items-center justify-center text-3xl mb-4 shadow-lg`}>
+                    {track.icon}
+                  </div>
+
+                  {/* Names */}
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-0.5">{track.name}</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 font-medium">{track.nameHindi}</p>
+
+                  {/* Description */}
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">{track.description}</p>
+
+                  {/* Skills tags */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {track.skills.map((skill, idx) => (
+                      <span key={idx} className="text-[10px] font-semibold px-2 py-0.5 bg-white/80 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Games Showcase Section */}
+      <section className="py-16 relative">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <Badge className="mb-4 bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800 px-3 py-1 text-xs font-bold">
+                LEARN BY PLAYING
+              </Badge>
+              <h2 className="text-3xl md:text-5xl font-black mb-4 text-slate-900 dark:text-white">Interactive Financial Games</h2>
+              <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-medium">
+                No boring textbooks. Make real decisions, face real consequences, and build financial muscle memory.
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {GAMES_SHOWCASE.map((game, index) => (
+              <motion.div
+                key={game.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="group relative cursor-pointer"
+              >
+                <div className="h-full bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 transition-all group-hover:shadow-xl group-hover:border-emerald-200 dark:group-hover:border-emerald-700">
+                  {/* Game emoji */}
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${game.gradient} flex items-center justify-center text-2xl mb-4 shadow-lg`}>
+                    {game.emoji}
+                  </div>
+
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{game.name}</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">{game.description}</p>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                      <Star className="w-3 h-3" /> {game.xp}
+                    </span>
+                    <span className="text-[10px] font-semibold px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded-full text-slate-500 dark:text-slate-400">
+                      {game.theme}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

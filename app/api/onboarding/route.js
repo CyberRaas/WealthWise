@@ -58,7 +58,9 @@ export async function GET() {
         hasKids: userProfile.hasKids || false,
         monthlyRent: userProfile.monthlyRent || 0,
         // Financial pulse
-        financialPulse: userProfile.financialPulse || {}
+        financialPulse: userProfile.financialPulse || {},
+        // User learning track
+        userTrack: userProfile.userTrack || ''
       }
     })
 
@@ -121,6 +123,18 @@ export async function POST(request) {
 
     // Update profile based on step
     switch (step) {
+      case 'track_selection':
+        const { userTrack } = data
+        if (!userTrack || !['farmer', 'woman', 'student', 'young_adult'].includes(userTrack)) {
+          return NextResponse.json(
+            { error: 'Please select a valid learning track' },
+            { status: 400 }
+          )
+        }
+        userProfile.userTrack = userTrack
+        userProfile.onboardingStep = 'income'
+        break
+
       case 'income':
         const { monthlyIncome, incomeSource, incomeSources } = data
 
@@ -295,7 +309,9 @@ export async function POST(request) {
         hasKids: userProfile.hasKids || false,
         monthlyRent: userProfile.monthlyRent || 0,
         // Financial pulse
-        financialPulse: userProfile.financialPulse || {}
+        financialPulse: userProfile.financialPulse || {},
+        // User learning track
+        userTrack: userProfile.userTrack || ''
       }
     })
 

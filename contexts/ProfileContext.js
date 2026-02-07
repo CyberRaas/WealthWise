@@ -56,6 +56,7 @@ export function ProfileProvider({ children }) {
   const value = {
     profileImage,
     profileData,
+    userTrack: profileData?.userTrack || '',
     loading,
     updateProfileImage,
     updateProfileData

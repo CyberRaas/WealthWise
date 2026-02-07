@@ -17,6 +17,7 @@ import {
   MONTHLY_DECISIONS,
   LIFE_EVENTS,
   getMonthlyDecision,
+  getTrackDecisions,
   calculateImpact,
   getFinalGrade,
 } from "@/lib/lifeDecisionsGame";
@@ -37,14 +38,18 @@ import {
   CheckCircle,
   Sparkles,
   Target,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
+import { useSpeech } from "@/hooks/useSpeech";
 import confetti from "canvas-confetti";
 
-export default function LifeDecisionsGame({ onComplete, onXPEarned }) {
+export default function LifeDecisionsGame({ onComplete, onXPEarned, userTrack }) {
   const [gameState, setGameState] = useState("intro"); // intro, playing, event, result
   const [currentMonth, setCurrentMonth] = useState(1);
   const [selectedOption, setSelectedOption] = useState(null);
   const [showImpact, setShowImpact] = useState(false);
+  const [trackDecisions, setTrackDecisions] = useState(MONTHLY_DECISIONS);
 
   // Financial State
   const [finances, setFinances] = useState({
@@ -59,8 +64,16 @@ export default function LifeDecisionsGame({ onComplete, onXPEarned }) {
   const [decisions, setDecisions] = useState([]);
   const [totalScore, setTotalScore] = useState(0);
   const [pendingEvent, setPendingEvent] = useState(null);
+  const { voiceEnabled, toggleVoice, speak, stop } = useSpeech();
 
-  const currentDecision = MONTHLY_DECISIONS[currentMonth];
+  const currentDecision = trackDecisions[currentMonth];
+
+  // Narrate decision when month changes
+  useEffect(() => {
+    if (gameState === 'playing' && currentDecision && voiceEnabled) {
+      speak('Month ' + currentMonth + '. ' + currentDecision.title + '. ' + currentDecision.scenario);
+    }
+  }, [currentMonth, gameState, voiceEnabled]);
 
   // Start game
   const startGame = () => {
@@ -78,6 +91,9 @@ export default function LifeDecisionsGame({ onComplete, onXPEarned }) {
     setSelectedOption(null);
     setShowImpact(false);
     setPendingEvent(null);
+    // Load track-specific decisions
+    const decisions = getTrackDecisions(userTrack);
+    setTrackDecisions(decisions);
     setGameState("playing");
   };
 
@@ -329,6 +345,23 @@ export default function LifeDecisionsGame({ onComplete, onXPEarned }) {
             Start Your Financial Journey
             <ChevronRight className="w-5 h-5 ml-2" />
           </Button>
+
+          {/* Voice Toggle */}
+          <div className="flex justify-center">
+            <button
+              onClick={toggleVoice}
+              aria-label={voiceEnabled ? 'Disable voice narration' : 'Enable voice narration'}
+              aria-pressed={voiceEnabled}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                voiceEnabled
+                  ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700'
+              }`}
+            >
+              {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              {voiceEnabled ? '🔊 Voice ON' : '🔇 Voice OFF'}
+            </button>
+          </div>
         </CardContent>
       </Card>
     );
@@ -401,12 +434,15 @@ export default function LifeDecisionsGame({ onComplete, onXPEarned }) {
         </div>
 
         {/* Decision Card */}
-        <Card>
+        <Card role="region" aria-label={`Month ${currentMonth} decision: ${currentDecision.title}`}>
           <CardHeader>
             <Badge variant="outline" className="w-fit mb-2">
               {currentDecision.category}
             </Badge>
             <CardTitle className="text-xl">{currentDecision.title}</CardTitle>
+            {currentDecision.titleHindi && (
+              <p className="text-sm text-slate-500 dark:text-slate-400 italic">{currentDecision.titleHindi}</p>
+            )}
             <CardDescription>{currentDecision.description}</CardDescription>
           </CardHeader>
 
@@ -416,10 +452,13 @@ export default function LifeDecisionsGame({ onComplete, onXPEarned }) {
               <p className="text-slate-700 dark:text-slate-300">
                 {currentDecision.scenario}
               </p>
+              {currentDecision.scenarioHindi && (
+                <p className="text-sm text-slate-500 dark:text-slate-400 italic mt-2">{currentDecision.scenarioHindi}</p>
+              )}
             </div>
 
             {/* Options */}
-            <div className="space-y-3">
+            <div className="space-y-3" role="group" aria-label="Decision options">
               {currentDecision.options.map((option, idx) => {
                 const isSelected = selectedOption?.id === option.id;
                 const isDisabled = showImpact && !isSelected;
@@ -438,6 +477,8 @@ export default function LifeDecisionsGame({ onComplete, onXPEarned }) {
                     }`}
                     onClick={() => !showImpact && handleDecision(option)}
                     disabled={isDisabled}
+                    aria-label={`Option ${String.fromCharCode(65 + idx)}: ${option.text}`}
+                    aria-pressed={isSelected}
                   >
                     <div className="flex items-start gap-3">
                       <div
@@ -453,6 +494,9 @@ export default function LifeDecisionsGame({ onComplete, onXPEarned }) {
                         <span className="text-slate-700 dark:text-slate-300 font-medium">
                           {option.text}
                         </span>
+                        {option.textHindi && (
+                          <span className="block text-xs text-slate-500 dark:text-slate-400 italic mt-1">{option.textHindi}</span>
+                        )}
 
                         {/* Show impact after selection */}
                         {showImpact && isSelected && (
@@ -464,6 +508,9 @@ export default function LifeDecisionsGame({ onComplete, onXPEarned }) {
                             <p className="text-sm text-slate-600 dark:text-slate-400 italic">
                               {option.outcome}
                             </p>
+                            {option.consequenceHindi && (
+                              <p className="text-xs text-slate-500 dark:text-slate-400 italic">{option.consequenceHindi}</p>
+                            )}
                             <div className="flex flex-wrap gap-2">
                               <ImpactBadge
                                 value={option.impact.savings}
@@ -519,6 +566,8 @@ export default function LifeDecisionsGame({ onComplete, onXPEarned }) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="space-y-4"
+                  role="alert"
+                  aria-live="polite"
                 >
                   {/* Tip */}
                   {currentDecision.tip && (
@@ -526,6 +575,9 @@ export default function LifeDecisionsGame({ onComplete, onXPEarned }) {
                       <p className="text-sm text-amber-700 dark:text-amber-300">
                         💡 <strong>Tip:</strong> {currentDecision.tip}
                       </p>
+                      {currentDecision.lessonHindi && (
+                        <p className="text-xs text-amber-600/80 dark:text-amber-400/80 italic mt-1">{currentDecision.lessonHindi}</p>
+                      )}
                     </div>
                   )}
 

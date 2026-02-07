@@ -73,7 +73,8 @@ export async function GET() {
         dateOfBirth: userProfile.dateOfBirth || '',
         occupation: userProfile.occupation || '',
         image: userProfile.profileImage || session.user.image || '',
-        monthlyIncome: userProfile.monthlyIncome || ''
+        monthlyIncome: userProfile.monthlyIncome || '',
+        userTrack: userProfile.userTrack || ''
       }
     })
   } catch (error) {

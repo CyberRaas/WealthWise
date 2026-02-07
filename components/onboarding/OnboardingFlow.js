@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge'
 import LanguageSelector from '../ui/LanguageSelector'
 import DetailedBudgetReport from '@/components/budget/DetailedBudgetReport'
 import LifestyleQuiz from '@/components/onboarding/LifestyleQuiz'
+import TrackSelector from '@/components/games/TrackSelector'
 import MultiIncomeStep from '@/components/onboarding/MultiIncomeStep'
 import FinancialPulseStep from '@/components/onboarding/FinancialPulseStep'
 import EnhancedDemographicsStep from '@/components/onboarding/EnhancedDemographicsStep'
@@ -50,6 +51,7 @@ const INCOME_SOURCES = [
 
 const ONBOARDING_STEPS = [
   { key: 'language', title: 'Language', shortTitle: 'Language', icon: '🌐' },
+  { key: 'track_selection', title: 'Your Journey', shortTitle: 'Track', icon: '🎮' },
   { key: 'income', title: 'Income Details', shortTitle: 'Income', icon: '💰' },
   { key: 'demographics', title: 'About You', shortTitle: 'Profile', icon: '👤' },
   { key: 'financial_pulse', title: 'Financial Pulse', shortTitle: 'Pulse', icon: '💡' },
@@ -80,6 +82,7 @@ export default function OnboardingFlow() {
     monthlyRent: '',
     // Financial Pulse (strategic questions)
     financialPulse: {},
+    userTrack: '', // farmer | woman | student | young_adult
     budgetPreferences: {
       language: 'hinglish',
       notifications: true
@@ -187,6 +190,20 @@ export default function OnboardingFlow() {
         setCurrentStep(1)
         break
 
+      case 'track_selection':
+        // Track selection - user picks their financial journey persona
+        if (!profile.userTrack) {
+          toast.error('Please select your learning track')
+          return
+        }
+        const trackSuccess = await updateProfile('track_selection', {
+          userTrack: profile.userTrack
+        })
+        if (trackSuccess) {
+          setCurrentStep(2)
+        }
+        break
+
       case 'income':
         // Support both multi-income and legacy single income
         const hasIncomeSources = profile.incomeSources && profile.incomeSources.length > 0
@@ -207,7 +224,7 @@ export default function OnboardingFlow() {
         const incomeSuccess = await updateProfile('income', incomeData)
 
         if (incomeSuccess) {
-          setCurrentStep(2)
+          setCurrentStep(3)
         }
         break
 
@@ -230,7 +247,7 @@ export default function OnboardingFlow() {
         })
 
         if (demoSuccess) {
-          setCurrentStep(3)
+          setCurrentStep(4)
         }
         break
 
@@ -253,14 +270,14 @@ export default function OnboardingFlow() {
         })
 
         if (pulseSuccess) {
-          setCurrentStep(4)
+          setCurrentStep(5)
         }
         break
 
       case 'budget_generation':
         const budgetSuccess = await generateBudget()
         if (budgetSuccess) {
-          setCurrentStep(5)
+          setCurrentStep(6)
         }
         break
 
@@ -325,11 +342,12 @@ export default function OnboardingFlow() {
             </h1>
             <p className="text-slate-600 dark:text-slate-400 text-sm">
               {currentStep === 0 && "Choose your preferred language"}
-              {currentStep === 1 && "Tell us about your earnings"}
-              {currentStep === 2 && "Help us personalize your budget for your lifestyle"}
-              {currentStep === 3 && "5 quick questions for smarter AI recommendations"}
-              {currentStep === 4 && "Let AI create your personalized budget"}
-              {currentStep === 5 && "Review and finalize your setup"}
+              {currentStep === 1 && "Pick the track that matches your financial life"}
+              {currentStep === 2 && "Tell us about your earnings"}
+              {currentStep === 3 && "Help us personalize your budget for your lifestyle"}
+              {currentStep === 4 && "5 quick questions for smarter AI recommendations"}
+              {currentStep === 5 && "Let AI create your personalized budget"}
+              {currentStep === 6 && "Review and finalize your setup"}
             </p>
           </div>
         </div>
@@ -338,9 +356,16 @@ export default function OnboardingFlow() {
         <div className="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm dark:shadow-slate-900/50 overflow-hidden flex flex-col mb-4">
           <div className="flex-1 overflow-y-auto p-6 sm:p-8">
             {currentStep === 0 && <LanguageStep />}
-            {currentStep === 1 && <MultiIncomeStep profile={profile} setProfile={setProfile} />}
-            {currentStep === 2 && <EnhancedDemographicsStep profile={profile} setProfile={setProfile} />}
-            {currentStep === 3 && (
+            {currentStep === 1 && (
+              <TrackSelector
+                currentTrack={profile.userTrack}
+                onSelectTrack={(trackId) => setProfile(prev => ({ ...prev, userTrack: trackId }))}
+                showDescription={true}
+              />
+            )}
+            {currentStep === 2 && <MultiIncomeStep profile={profile} setProfile={setProfile} />}
+            {currentStep === 3 && <EnhancedDemographicsStep profile={profile} setProfile={setProfile} />}
+            {currentStep === 4 && (
               <FinancialPulseStep
                 profile={profile}
                 setProfile={setProfile}
@@ -349,8 +374,8 @@ export default function OnboardingFlow() {
                 }}
               />
             )}
-            {currentStep === 4 && <BudgetGenerationStep isGenerating={isGeneratingBudget} profile={profile} />}
-            {currentStep === 5 && <ReviewStep profile={profile} budget={generatedBudget} />}
+            {currentStep === 5 && <BudgetGenerationStep isGenerating={isGeneratingBudget} profile={profile} />}
+            {currentStep === 6 && <ReviewStep profile={profile} budget={generatedBudget} />}
           </div>
         </div>
 
