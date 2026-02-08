@@ -341,8 +341,7 @@ const userSchema = new mongoose.Schema({
   // Metadata
   createdAt: {
     type: Date,
-    default: Date.now,
-    index: true
+    default: Date.now
   },
 
   updatedAt: {

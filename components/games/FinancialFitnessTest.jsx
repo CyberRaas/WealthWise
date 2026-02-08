@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { GameEngine, calculateGameResult, USER_TRACKS, FINANCIAL_THEMES } from '@/lib/gameEngine'
-import useSpeech from '@/hooks/useSpeech'
+import { useSpeech } from '@/hooks/useSpeech'
 import {
   Trophy, Star, ArrowRight, CheckCircle, XCircle,
   RotateCcw, Sparkles, Brain, Target, TrendingUp,
@@ -537,7 +537,7 @@ export default function FinancialFitnessTest({ userTrack = 'young_adult', onComp
 
   const handleComplete = () => {
     const results = getResults()
-    
+
     // Save assessment to API for pre/post comparison
     const saveAssessment = async () => {
       try {
@@ -547,7 +547,7 @@ export default function FinancialFitnessTest({ userTrack = 'young_adult', onComp
           total: data.total,
           percentage: Math.round((data.correct / data.total) * 100)
         }))
-        
+
         await fetch('/api/assessment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -567,7 +567,7 @@ export default function FinancialFitnessTest({ userTrack = 'young_adult', onComp
       }
     }
     saveAssessment()
-    
+
     if (onComplete) {
       onComplete({
         ...results,
