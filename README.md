@@ -213,12 +213,3 @@ WealthWise/
 
 ---
 
-## 👥 Team
-
-Built for the **Innovate4FinLit Game Challenge** presented by **NCFE** (National Centre for Financial Education).
-
----
-
-## 📄 License
-
-This project is built for the NCFE Innovate4FinLit hackathon.
