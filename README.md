@@ -2,9 +2,9 @@
 
 > **Innovate4FinLit Game Challenge — NCFE (National Centre for Financial Education)**
 
-WealthWise is a **game-first** financial literacy platform that teaches budgeting, savings, insurance, fraud prevention, and investments through **interactive games, simulations, and decision-based learning** — not textbooks.
+WealthWise is a **game-first** financial literacy platform that teaches budgeting, savings, insurance, fraud prevention, and investments through **interactive games, simulations, and decision-based learning** not textbooks.
 
-Designed for India's diverse population — **farmers, women, students, and young adults** — with support for 10+ Indian languages, voice narration, offline mode (PWA), and low-bandwidth readiness.
+Designed for India's diverse population — **farmers, women, students, and young adults**  with support for 10+ Indian languages, voice narration, offline mode (PWA) and low-bandwidth readiness.
 
 ---
 
