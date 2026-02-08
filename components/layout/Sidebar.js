@@ -1,126 +1,53 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { useTranslation } from '@/lib/i18n'
-import { Button } from '@/components/ui/button'
 import {
-  Home,
   Wallet,
   Target,
   TrendingUp,
   PieChart,
   ChevronLeft,
   ChevronRight,
-  User,
   CreditCard,
   BarChart3,
   X,
   LogOut,
-  Calculator,
-  Shield,
-  Users,
   CircleDollarSign,
   BookOpen,
   Sparkles,
   LayoutDashboard,
   Gamepad2
 } from 'lucide-react'
-import Logo from '@/components/ui/Logo'
 
 const navigationGroups = [
   {
     title: 'Overview',
     items: [
-      {
-        name: 'sidebar.dashboard',
-        href: '/dashboard',
-        icon: LayoutDashboard,
-        description: 'sidebar.dashboard_desc'
-      },
-      {
-        name: 'sidebar.analytics',
-        href: '/dashboard/analytics',
-        icon: BarChart3,
-        description: 'sidebar.analytics_desc'
-      },
-      {
-        name: 'AI Insights',
-        href: '/dashboard/insights',
-        icon: Sparkles,
-        description: 'AI-powered financial analysis'
-      }
+      { name: 'sidebar.dashboard', href: '/dashboard', icon: LayoutDashboard },
+      { name: 'sidebar.analytics', href: '/dashboard/analytics', icon: BarChart3 },
+      { name: 'AI Insights', href: '/dashboard/insights', icon: Sparkles },
     ]
   },
   {
     title: 'Finance',
     items: [
-      {
-        name: 'Omni-Channel Model',
-        href: '/dashboard/financial-model',
-        icon: TrendingUp, // Using imported TrendingUp
-        description: 'Advanced financial IQ'
-      },
-      {
-        name: 'Investment',
-        href: '/dashboard/investment',
-        icon: CircleDollarSign,
-        description: 'Plan & Visualize Wealth'
-      },
-      {
-        name: 'sidebar.expenses',
-        href: '/dashboard/expenses',
-        icon: Wallet,
-        description: 'sidebar.expenses_desc'
-      },
-      {
-        name: 'sidebar.budget',
-        href: '/dashboard/budget',
-        icon: PieChart,
-        description: 'sidebar.budget_desc'
-      },
-      {
-        name: 'sidebar.debt',
-        href: '/dashboard/debt',
-        icon: CreditCard,
-        description: 'sidebar.debt_desc'
-      }
+      { name: 'Omni-Channel Model', href: '/dashboard/financial-model', icon: TrendingUp },
+      { name: 'Investment', href: '/dashboard/investment', icon: CircleDollarSign },
+      { name: 'sidebar.expenses', href: '/dashboard/expenses', icon: Wallet },
+      { name: 'sidebar.budget', href: '/dashboard/budget', icon: PieChart },
+      { name: 'sidebar.debt', href: '/dashboard/debt', icon: CreditCard },
     ]
   },
   {
     title: 'Growth',
     items: [
-      {
-        name: 'sidebar.goals',
-        href: '/dashboard/goals',
-        icon: Target,
-        description: 'sidebar.goals_desc'
-      },
-      {
-        name: 'Financial Games',
-        href: '/dashboard/games',
-        icon: Gamepad2,
-        description: 'Learn through interactive games'
-      },
-      {
-        name: 'Learning Hub',
-        href: '/dashboard/learning',
-        icon: BookOpen,
-        description: 'Master financial concepts'
-      }
-    ]
-  },
-  {
-    title: 'Account',
-    items: [
-      {
-        name: 'sidebar.profile',
-        href: '/dashboard/profile',
-        icon: User,
-        description: 'sidebar.profile_desc'
-      }
+      { name: 'sidebar.goals', href: '/dashboard/goals', icon: Target },
+      { name: 'Financial Games', href: '/dashboard/games', icon: Gamepad2 },
+      { name: 'Learning Hub', href: '/dashboard/learning', icon: BookOpen },
     ]
   }
 ]
@@ -131,181 +58,96 @@ export default function Sidebar({ isOpen, onClose }) {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const pathname = usePathname()
 
-  // Check if user is admin
-  const isAdmin = ['moderator', 'admin', 'super_admin'].includes(session?.user?.role)
-
   return (
     <>
-      {/* Mobile overlay - Full screen like Codolio */}
+      {/* Mobile Overlay */}
       {isOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
-          {/* Background overlay */}
-          <div
-            className="absolute inset-0 bg-black/20 dark:bg-black/50 backdrop-blur-sm"
-            onClick={onClose}
-          />
-
-          {/* Sidebar panel - Full height, slides from left */}
-          <div className="relative w-80 max-w-[85vw] h-full bg-white dark:bg-slate-900 shadow-2xl animate-in slide-in-from-left duration-300">
-            {/* Header with close button */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 h-16">
-              <Logo size="medium" textClassName="text-lg" />
-
-              {/* Close button - Top right like Codolio */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onClose}
-                className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg w-8 h-8 p-0"
-              >
-                <X className="h-5 w-5" />
-              </Button>
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
+          <div className="relative w-72 max-w-[80vw] h-full bg-white dark:bg-slate-950 shadow-2xl animate-in slide-in-from-left duration-200 flex flex-col">
+            <div className="flex items-center justify-between h-16 px-5 border-b border-slate-100 dark:border-white/5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-white" />
+                </div>
+                <span className="font-semibold text-slate-900 dark:text-white tracking-tight">
+                  Wealth<span className="text-emerald-500">Wise</span>
+                </span>
+              </div>
+              <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-white/5 dark:hover:text-white transition-colors">
+                <X className="h-4 w-4" />
+              </button>
             </div>
-
-            {/* Navigation for mobile */}
-            <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-              {navigationItems.map((item) => {
-                const isActive = pathname === item.href
-                const Icon = item.icon
-
-                return (
-                  <Link key={item.name} href={item.href} onClick={onClose}>
-                    <div
-                      className={`group relative flex items-center px-3 py-3 rounded-lg transition-all duration-150 cursor-pointer ${isActive
-                        ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
-                        : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-                        }`}
-                    >
-                      {/* Active indicator bar */}
-                      {isActive && (
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-7 bg-emerald-500 rounded-r-full" />
-                      )}
-
-                      <Icon className={`h-5 w-5 ${isActive
-                        ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
-                        } transition-colors flex-shrink-0`} />
-
-                      <div className="ml-3 flex-1 min-w-0">
-                        <p className={`text-sm font-medium ${isActive ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white'
-                          }`}>
-                          {t(item.name)}
-                        </p>
-                        <p className={`text-xs ${isActive ? 'text-emerald-600/70 dark:text-emerald-500/70' : 'text-slate-400 dark:text-slate-500'
-                          }`}>
-                          {t(item.description)}
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                )
-              })}
+            <nav className="flex-1 overflow-y-auto py-4 px-3">
+              {navigationGroups.map((group, idx) => (
+                <div key={idx} className={idx > 0 ? 'mt-6' : ''}>
+                  <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 mb-2">{group.title}</p>
+                  <div className="space-y-0.5">
+                    {group.items.map((item) => {
+                      const isActive = pathname === item.href
+                      const Icon = item.icon
+                      return (
+                        <Link key={item.href} href={item.href} onClick={onClose}>
+                          <div className={`relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${isActive ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}>
+                            {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-emerald-500 rounded-r-full" />}
+                            <Icon className={`h-[18px] w-[18px] flex-shrink-0 ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'}`} />
+                            <span>{t(item.name)}</span>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
             </nav>
-
-            {/* Bottom Signout Section for mobile */}
-            <div className="p-4 border-t border-slate-200 dark:border-slate-700">
-              <Button
-                onClick={() => {
-                  signOut({ callbackUrl: window.location.origin })
-                  onClose()
-                }}
-                variant="outline"
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 hover:border-red-300 dark:hover:border-red-800 rounded-xl transition-all duration-200"
-              >
-                <LogOut className="w-5 h-5" />
-                <span className="font-medium">Sign Out</span>
-              </Button>
+            <div className="p-4 border-t border-slate-100 dark:border-white/5">
+              <button onClick={() => { signOut({ callbackUrl: window.location.origin }); onClose() }} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors">
+                <LogOut className="w-4 h-4" />
+                Sign Out
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Desktop Sidebar - Sticky and Enhanced */}
-      <div className={`
-        hidden lg:flex
-        bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700
-        transition-all duration-300 ease-in-out
-        ${isCollapsed ? 'w-20' : 'w-72'}
-        h-screen
-        flex-col
-      `}>
-
-        {/* Header */}
-        <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 h-16 flex items-center">
-          <div className="flex items-center justify-between w-full">
-            {!isCollapsed && (
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white dark:border-slate-700">
-                  <TrendingUp className="w-6 h-6 text-white" />
-                </div>
-                <div className="flex flex-col justify-center">
-                  <h1 className="text-xl font-bold leading-tight">
-                    <span className="text-slate-800 dark:text-white">Wealth</span>
-                    <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">Wise</span>
-                  </h1>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-tight">Smart Finance Platform</p>
-                </div>
+      {/* Desktop Sidebar */}
+      <div className={`hidden lg:flex flex-col h-screen bg-white dark:bg-slate-950 border-r border-slate-100 dark:border-white/5 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-[68px]' : 'w-64'}`}>
+        <div className="flex items-center justify-between h-16 px-4 border-b border-slate-100 dark:border-white/5">
+          {!isCollapsed && (
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-sm">
+                <TrendingUp className="w-4 h-4 text-white" />
               </div>
-            )}
-
-            {/* Collapsed state - Show just the logo */}
-            {isCollapsed && (
-              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white dark:border-slate-700 mx-auto">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
-            )}
-
-            {/* Collapse Toggle - Desktop Only */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg w-8 h-8 p-0 flex-shrink-0"
-            >
-              {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-            </Button>
-          </div>
+              <span className="text-[15px] font-bold tracking-tight">
+                <span className="text-slate-900 dark:text-white">Wealth</span>
+                <span className="text-emerald-500">Wise</span>
+              </span>
+            </div>
+          )}
+          {isCollapsed && (
+            <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center mx-auto shadow-sm">
+              <TrendingUp className="w-4 h-4 text-white" />
+            </div>
+          )}
+          <button onClick={() => setIsCollapsed(!isCollapsed)} className={`w-7 h-7 flex items-center justify-center rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-white/5 dark:hover:text-white transition-colors ${isCollapsed ? 'mx-auto mt-0' : ''}`}>
+            {isCollapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
+          </button>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-8 overflow-y-auto">
-          {navigationGroups.map((group, index) => (
-            <div key={index}>
-              {!isCollapsed && group.title && (
-                <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-2">
-                  {group.title}
-                </h3>
-              )}
-              <div className="space-y-1">
+        <nav className="flex-1 overflow-y-auto py-4 px-3">
+          {navigationGroups.map((group, idx) => (
+            <div key={idx} className={idx > 0 ? 'mt-6' : ''}>
+              {!isCollapsed && <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 mb-2">{group.title}</p>}
+              {isCollapsed && idx > 0 && <div className="mx-3 mb-3 border-t border-slate-100 dark:border-white/5" />}
+              <div className="space-y-0.5">
                 {group.items.map((item) => {
                   const isActive = pathname === item.href
                   const Icon = item.icon
-
                   return (
-                    <Link key={item.name} href={item.href}>
-                      <div
-                        className={`group relative flex items-center px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer ${isActive
-                          ? 'bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white font-medium'
-                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'
-                          }`}
-                      >
-                        {/* Active indicator dot */}
-                        {isActive && (
-                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-blue-600 dark:bg-blue-500 rounded-r-full" />
-                        )}
-
-                        <Icon className={`h-[18px] w-[18px] ${isActive
-                          ? 'text-blue-600 dark:text-blue-400'
-                          : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
-                          } transition-colors flex-shrink-0`} />
-
-                        {!isCollapsed && (
-                          <div className="ml-3 flex-1 min-w-0">
-                            <span className="text-sm truncate">
-                              {t(item.name)}
-                            </span>
-                          </div>
-                        )}
+                    <Link key={item.href} href={item.href}>
+                      <div className={`relative flex items-center gap-3 rounded-lg transition-all duration-150 cursor-pointer ${isCollapsed ? 'px-0 py-2.5 justify-center' : 'px-3 py-2'} ${isActive ? 'bg-slate-900 dark:bg-white/10 text-white dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`} title={isCollapsed ? t(item.name) : undefined}>
+                        <Icon className={`h-[18px] w-[18px] flex-shrink-0 ${isActive ? 'text-white dark:text-white' : ''}`} />
+                        {!isCollapsed && <span className="text-sm">{t(item.name)}</span>}
                       </div>
                     </Link>
                   )
@@ -315,32 +157,25 @@ export default function Sidebar({ isOpen, onClose }) {
           ))}
         </nav>
 
-        {/* Bottom Signout Section */}
-        {!isCollapsed && (
-          <div className="p-4 border-t border-slate-200 dark:border-slate-700">
-            <Button
-              onClick={() => signOut({ callbackUrl: window.location.origin })}
-              variant="outline"
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 hover:border-red-300 dark:hover:border-red-800 rounded-xl transition-all duration-200"
-            >
-              <LogOut className="w-5 h-5" />
-              <span className="font-medium">Sign Out</span>
-            </Button>
-          </div>
-        )}
-
-        {/* Collapsed Signout Indicator */}
-        {isCollapsed && (
-          <div className="p-4 border-t border-slate-200 dark:border-slate-700">
-            <Button
-              onClick={() => signOut({ callbackUrl: window.location.origin })}
-              variant="outline"
-              className="w-12 h-12 border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 hover:border-red-300 dark:hover:border-red-800 rounded-xl mx-auto flex items-center justify-center transition-all duration-200"
-            >
-              <LogOut className="w-6 h-6" />
-            </Button>
-          </div>
-        )}
+        <div className="border-t border-slate-100 dark:border-white/5 p-3">
+          {!isCollapsed ? (
+            <div className="flex items-center gap-3 px-3 py-2">
+              <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-sm font-semibold text-slate-600 dark:text-slate-300">
+                {session?.user?.name?.[0] || 'U'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{session?.user?.name?.split(' ')[0] || 'User'}</p>
+              </div>
+              <button onClick={() => signOut({ callbackUrl: window.location.origin })} className="w-7 h-7 flex items-center justify-center rounded-md text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors" title="Sign Out">
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <button onClick={() => signOut({ callbackUrl: window.location.origin })} className="w-10 h-10 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 mx-auto transition-colors" title="Sign Out">
+              <LogOut className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
     </>
   )

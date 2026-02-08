@@ -288,6 +288,36 @@ const QUESTION_BANK = {
       tracks: ['student', 'woman', 'farmer', 'young_adult'],
       theme: 'consumer_rights',
     },
+    {
+      id: 'cr2',
+      question: 'A shopkeeper sells you expired packaged food. Which of the following is TRUE?',
+      questionHindi: 'दुकानदार आपको एक्सपायर्ड पैकेज्ड खाना बेचता है। इनमें से क्या सही है?',
+      options: [
+        { text: 'It\'s your fault for not checking the date', isCorrect: false },
+        { text: 'You can demand a refund and report to FSSAI through the Food Safety Connect app', isCorrect: true },
+        { text: 'You can only complain if you fall sick', isCorrect: false },
+        { text: 'There is no law covering food products', isCorrect: false },
+      ],
+      explanation: 'Under the Food Safety and Standards Act 2006, selling expired food is a punishable offence. You can report to FSSAI (Food Safety Connect app or 1800-112-100) and demand a full refund.',
+      difficulty: 'beginner',
+      tracks: ['student', 'woman', 'farmer', 'young_adult'],
+      theme: 'consumer_rights',
+    },
+    {
+      id: 'cr3',
+      question: 'You keep getting spam calls about loans even after registering on DND. What should you do?',
+      questionHindi: 'DND पर रजिस्टर करने के बाद भी लोन के स्पैम कॉल आते हैं। क्या करें?',
+      options: [
+        { text: 'Block the number and ignore', isCorrect: false },
+        { text: 'Nothing can be done about telemarketing', isCorrect: false },
+        { text: 'Complain to TRAI via the DND 3.0 app — the caller can be fined ₹1,000 per violation', isCorrect: true },
+        { text: 'Change your phone number', isCorrect: false },
+      ],
+      explanation: 'If you\'re registered on DND (Do Not Disturb) and still receive unsolicited calls, file a complaint on the TRAI DND 3.0 app within 3 days. Telemarketers can be fined ₹1,000 per violation.',
+      difficulty: 'intermediate',
+      tracks: ['student', 'woman', 'farmer', 'young_adult'],
+      theme: 'consumer_rights',
+    },
   ],
 
   // ----- TAXES -----
@@ -306,6 +336,55 @@ const QUESTION_BANK = {
       difficulty: 'intermediate',
       tracks: ['young_adult', 'student'],
       theme: 'taxes',
+    },
+  ],
+
+  // ----- RETIREMENT PLANNING -----
+  retirement: [
+    {
+      id: 'ret1',
+      question: 'Your employer deducts 12% of your basic salary for EPF. What does your employer contribute?',
+      questionHindi: 'आपका नियोक्ता EPF के लिए 12% काटता है। नियोक्ता कितना देता है?',
+      options: [
+        { text: 'Nothing — only employee contributes', isCorrect: false },
+        { text: 'Employer also contributes 12% — but 8.33% goes to EPS (pension)', isCorrect: true },
+        { text: 'Employer contributes 6%', isCorrect: false },
+        { text: 'Employer contribution depends on your performance', isCorrect: false },
+      ],
+      explanation: 'Your employer matches your 12% EPF contribution. Of the employer\'s 12%, 8.33% goes to EPS (Employee Pension Scheme) and 3.67% to your EPF account. Total 24% of basic salary goes toward your retirement!',
+      difficulty: 'intermediate',
+      tracks: ['young_adult'],
+      theme: 'retirement',
+    },
+    {
+      id: 'ret2',
+      question: 'Which government scheme gives you an extra ₹50,000 tax deduction (above 80C limit) for retirement savings?',
+      questionHindi: 'कौन सी सरकारी योजना रिटायरमेंट बचत पर 80C से ऊपर ₹50,000 की अतिरिक्त छूट देती है?',
+      options: [
+        { text: 'PPF (Public Provident Fund)', isCorrect: false },
+        { text: 'NPS (National Pension System) under Section 80CCD(1B)', isCorrect: true },
+        { text: 'FD (Fixed Deposit)', isCorrect: false },
+        { text: 'Sukanya Samriddhi Yojana', isCorrect: false },
+      ],
+      explanation: 'NPS gives you an additional ₹50,000 deduction under Section 80CCD(1B) — over and above the ₹1.5 lakh limit of Section 80C. This makes NPS one of the most tax-efficient retirement tools.',
+      difficulty: 'advanced',
+      tracks: ['young_adult', 'woman'],
+      theme: 'retirement',
+    },
+    {
+      id: 'ret3',
+      question: 'You are 25 years old and invest ₹5,000/month for retirement at 12% return. How much will you have at 60?',
+      questionHindi: 'आप 25 साल के हैं और रिटायरमेंट के लिए ₹5,000/महीना 12% रिटर्न पर लगाते हैं। 60 पर कितना होगा?',
+      options: [
+        { text: '₹21 lakhs', isCorrect: false },
+        { text: '₹1.06 crore', isCorrect: false },
+        { text: '₹3.24 crore', isCorrect: true },
+        { text: '₹63 lakhs', isCorrect: false },
+      ],
+      explanation: 'Thanks to compound interest over 35 years, ₹5,000/month at 12% becomes ₹3.24 crore! You invest only ₹21 lakhs total — the rest is growth. Starting early is the biggest superpower in retirement planning.',
+      difficulty: 'intermediate',
+      tracks: ['student', 'young_adult', 'woman', 'farmer'],
+      theme: 'retirement',
     },
   ],
 }

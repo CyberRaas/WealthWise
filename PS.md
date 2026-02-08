@@ -8,7 +8,7 @@ The Innovate4FinLit Game Challenge is a national innovation challenge designed t
 
 Open to students, professionals, startups, freelancers, educators, and independent innovators, the event encourages the use of creativity, technology, and game-based methodologies to simplify core financial concepts for citizens of all ages.
 
-Through this initiative, NCFE aims to foster a new wave of interactive learning tools that can effectively empower individuals to make informed financial decisions—strengthening India’s collective financial well-being.
+Through this initiative, NCFE aims to foster a new wave of interactive learning tools that can effec tively empower individuals to make informed financial decisions—strengthening India’s collective financial well-being.
 
 Join the Innovate4FinLit Game Challenge to contribute to a national movement that blends innovation, education, and play to reshape the way India learns about finance.
 

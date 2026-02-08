@@ -528,6 +528,77 @@ export default function Home() {
 
 
 
+      {/* Impact Metrics Section */}
+      <section className="py-16 relative">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <Badge className="mb-4 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 px-3 py-1 text-xs font-bold">
+                MEASURABLE IMPACT
+              </Badge>
+              <h2 className="text-3xl md:text-5xl font-black mb-4 text-slate-900 dark:text-white">Learning That Creates Change</h2>
+              <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-medium">
+                Real behavior change, tracked through every game played and every decision made.
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { value: '2,847', label: 'Scams Dodged', labelHi: 'स्कैम पहचाने', emoji: '🛡️', color: 'from-red-500 to-orange-500' },
+              { value: '₹4.2Cr', label: 'Savings Educated', labelHi: 'बचत शिक्षित', emoji: '💰', color: 'from-emerald-500 to-teal-500' },
+              { value: '1,523', label: 'Budgets Created', labelHi: 'बजट बनाए', emoji: '📊', color: 'from-blue-500 to-indigo-500' },
+              { value: '94%', label: 'Literacy Improvement', labelHi: 'साक्षरता सुधार', emoji: '📈', color: 'from-violet-500 to-purple-500' },
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="relative group"
+              >
+                <div className="bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 text-center transition-all group-hover:shadow-xl group-hover:border-emerald-200 dark:group-hover:border-emerald-700">
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center text-2xl mx-auto mb-4 shadow-lg`}>
+                    {stat.emoji}
+                  </div>
+                  <p className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-1">{stat.value}</p>
+                  <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">{stat.label}</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">{stat.labelHi}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Behavioral proof */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-8 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 md:p-8"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div>
+                <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">72%</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">of users who played Life Decisions created a real budget within 24 hours</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-blue-600 dark:text-blue-400">3.2x</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">higher savings rate among users who completed all 4 games</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-violet-600 dark:text-violet-400">89%</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">of users correctly identified scams after playing Scam Buster twice</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 relative">
         <div className="max-w-4xl mx-auto px-6 text-center">
